@@ -1,0 +1,33 @@
+{
+  "prices": [
+    {
+      "provider": "lambda",
+      "instance_type": "gpu_8x_h100_sxm",
+      "gpu_type": "H100 SXM",
+      "gpus_per_instance": 8,
+      "gpu_memory_gb": 80.0,
+      "price_per_gpu_hour": 2.49,
+      "price_per_instance_hour": 19.92,
+      "region": "sample-offline",
+      "source_url": "tests/fixtures/lambda_pricing_snapshot.html",
+      "source_timestamp": "2026-06-16T00:00:00Z",
+      "tax_included": false,
+      "notes": "Offline scaffold fixture, not live pricing."
+    },
+    {
+      "provider": "lambda",
+      "instance_type": "gpu_8x_a100_sxm",
+      "gpu_type": "A100 SXM",
+      "gpus_per_instance": 8,
+      "gpu_memory_gb": 80.0,
+      "price_per_gpu_hour": 1.29,
+      "price_per_instance_hour": 10.32,
+      "region": "sample-offline",
+      "source_url": "tests/fixtures/lambda_pricing_snapshot.html",
+      "source_timestamp": "2026-06-16T00:00:00Z",
+      "tax_included": false,
+      "notes": "Offline scaffold fixture, not live pricing."
+    }
+  ]
+}
+

@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "decodilo"
+version = "0.1.0"
+description = "CPU-only scaffold for a Decoupled DiLoCo training platform."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "DecoDiLo maintainers" }]
+dependencies = [
+  "beautifulsoup4>=4.12,<5",
+  "numpy>=1.24",
+  "pydantic>=2,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.5",
+]
+torch = [
+  "torch>=2.1",
+]
+
+[project.scripts]
+decodilo = "decodilo.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"decodilo.pricing" = ["sample_lambda_prices.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "unit: fast isolated tests for pure logic",
+  "integration: tests that run subprocesses or multiple components",
+  "slow: longer local runtime or stress tests",
+  "soak: local soak profile tests",
+  "perf: local performance baseline tests",
+  "torch_optional: tests that require optional torch",
+  "cloud_disabled: tests proving cloud launch paths remain disabled",
+  "storage: chunk/artifact storage tests",
+  "replay: event replay and replay snapshot tests",
+  "runtime: local runtime tests",
+  "lifecycle: lifecycle stress, compaction, audit, or GC transaction tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "UP"]
