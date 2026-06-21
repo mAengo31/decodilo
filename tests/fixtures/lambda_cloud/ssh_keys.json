@@ -1,0 +1,7 @@
+[
+  {
+    "key_id": "key-fixture-public-only",
+    "name": "fixture-public-key",
+    "public_key_fingerprint": "SHA256:fixture-only"
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "hourly_cost": 0.75,
+    "image_id": "img-ubuntu-2204-cuda-fixture",
+    "instance_id": "i-fixture-managed",
+    "instance_type_id": "gpu_1x_a10",
+    "name": "fixture-managed",
+    "region_id": "us-west-1",
+    "status": "active",
+    "tags": {
+      "decodilo_run_id": "fixture-run"
+    }
+  },
+  {
+    "hourly_cost": 0.75,
+    "image_id": "img-ubuntu-2204-cuda-fixture",
+    "instance_id": "i-fixture-unmanaged",
+    "instance_type_id": "gpu_1x_a10",
+    "name": "fixture-unmanaged",
+    "region_id": "us-west-1",
+    "status": "active",
+    "tags": {}
+  }
+]

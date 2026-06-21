@@ -2,9 +2,12 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 from decodilo.runtime.artifact_manifest import ArtifactManifest, validate_artifact_manifest
 
 
+@pytest.mark.integration
 def test_artifact_manifest_includes_hashes_and_validates(tmp_path) -> None:
     report_path = tmp_path / "report.json"
     subprocess.run(

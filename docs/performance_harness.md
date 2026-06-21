@@ -45,3 +45,8 @@ streaming merge, or checkpointing dominate the local runtime.
 Milestone 011 adds `perf merge-benchmark`, `perf artifact-io`, and
 `perf compare-codecs` for smaller targeted baselines. See
 `docs/perf_baselines.md`.
+
+Milestone 014 adds `perf characterize` for the stable
+`PerformanceCharacterizationReport`, `perf matrix` for small scaling grids, and
+`perf check-budget` for explicit overhead thresholds. See
+`docs/performance_characterization.md` and `docs/overhead_budget.md`.

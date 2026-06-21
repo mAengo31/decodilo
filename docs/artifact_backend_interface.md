@@ -33,3 +33,20 @@ preflight integration, and replay/checkpoint compatibility before it is enabled.
 
 Until those requirements are implemented, preflight reports
 `remote_backend_enabled=false`.
+
+## Milestone 015 Contract And Simulator
+
+Milestone 015 adds a formal remote backend contract and a local simulator. The
+contract lists future operations such as conditional manifest put, range reads,
+delete transactions, lifecycle marks, and health checks. The simulator can model
+latency, bandwidth caps, throttling, consistency delays, retries, corruption,
+and lifecycle delete behavior without making network calls.
+
+The simulator is evidence for design review only. It is not a remote backend and
+does not change `remote_backend_enabled=false`.
+
+## Milestone 016 Readiness Evidence
+
+Milestone 016 formalizes future backend review with a readiness gate,
+conformance suite, evidence package, symbolic credential/auth models, and a
+manual provider matrix. These remain local-only planning artifacts.

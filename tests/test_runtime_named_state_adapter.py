@@ -3,6 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from decodilo.trainer.numpy_convex import NumpyConvexTrainer
 from decodilo.trainer.state import TrainerConfig
 
@@ -31,6 +33,7 @@ def test_numpy_convex_trainer_exports_named_state_fragments() -> None:
     assert fragment.flat_fragment is not None
 
 
+@pytest.mark.integration
 def test_local_runtime_uses_named_state_path(tmp_path) -> None:
     report_path = tmp_path / "report.json"
     completed = subprocess.run(

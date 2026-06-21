@@ -10,6 +10,7 @@ from decodilo.storage.artifact_backend import (
     ArtifactBackendRef,
 )
 from decodilo.storage.manifest import StorageArtifactManifest
+from decodilo.storage.remote_backend_contract import RemoteArtifactBackendCapabilities
 
 
 class RemoteBackendDisabledError(RuntimeError):
@@ -26,6 +27,12 @@ class DisabledRemoteArtifactBackend:
             write_supported=False,
             list_supported=False,
             credentials_required=False,
+        )
+
+    def remote_capabilities(self) -> RemoteArtifactBackendCapabilities:
+        return RemoteArtifactBackendCapabilities(
+            backend_name="remote_disabled",
+            remote_backend_enabled=False,
         )
 
     def write_bytes(self, *, artifact_id: str, data: bytes) -> ArtifactBackendRef:

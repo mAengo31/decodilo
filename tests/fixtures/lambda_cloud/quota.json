@@ -1,0 +1,6 @@
+{
+  "max_gpus": 16,
+  "max_instances": 4,
+  "running_gpus": 2,
+  "running_instances": 2
+}

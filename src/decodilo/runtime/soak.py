@@ -68,6 +68,13 @@ def run_local_soak(
         "total_wall_time_seconds": time.monotonic() - started,
         "replay_failures": replay_failures,
         "metric_validation_failures": metric_failures,
+        "lifecycle_cycles": 0,
+        "compactions": 0,
+        "snapshots": 0,
+        "gc_plans": 0,
+        "perf_reports": [],
+        "artifact_audit_failures": 0,
+        "run_validate_failures": 0,
         "artifact_paths": [result["report_json"] for result in results.values()],
         "cases": results,
     }

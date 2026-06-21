@@ -18,6 +18,9 @@ class SoakProfile(BaseModel):
     cases: list[str]
     trainer: str = "numpy_convex"
     optional: bool = False
+    requires_long: bool = False
+    lifecycle_cycles: int = 0
+    writes_perf_report: bool = False
 
 
 SOAK_PROFILES: dict[str, SoakProfile] = {
@@ -94,6 +97,52 @@ SOAK_PROFILES: dict[str, SoakProfile] = {
         fragments=1,
         local_steps_per_sync=10,
         cases=["baseline", "syncer_restart"],
+    ),
+    "lifecycle_ci": SoakProfile(
+        name="lifecycle_ci",
+        learners=2,
+        steps=40,
+        min_quorum=1,
+        vector_dim=4,
+        fragments=1,
+        local_steps_per_sync=10,
+        cases=["baseline"],
+        lifecycle_cycles=1,
+    ),
+    "binary_perf_ci": SoakProfile(
+        name="binary_perf_ci",
+        learners=2,
+        steps=30,
+        min_quorum=1,
+        vector_dim=4,
+        fragments=1,
+        local_steps_per_sync=10,
+        cases=["baseline"],
+        writes_perf_report=True,
+    ),
+    "local_long_lifecycle": SoakProfile(
+        name="local_long_lifecycle",
+        learners=3,
+        steps=240,
+        min_quorum=2,
+        vector_dim=8,
+        fragments=2,
+        local_steps_per_sync=10,
+        cases=["baseline", "syncer_restart"],
+        requires_long=True,
+        lifecycle_cycles=3,
+    ),
+    "local_long_binary": SoakProfile(
+        name="local_long_binary",
+        learners=3,
+        steps=240,
+        min_quorum=2,
+        vector_dim=8,
+        fragments=2,
+        local_steps_per_sync=10,
+        cases=["baseline", "syncer_restart"],
+        requires_long=True,
+        writes_perf_report=True,
     ),
 }
 

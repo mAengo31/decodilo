@@ -112,6 +112,7 @@ def test_cli_manifest_root_detects_live_artifact_store(tmp_path) -> None:
     assert _chunk_store_root_for_manifest(manifest_path) == tmp_path / "artifacts" / "store"
 
 
+@pytest.mark.integration
 def test_storage_cli_verifies_portable_manifest_layouts(tmp_path) -> None:
     store_root = tmp_path / "store-root"
     store = ChunkStore(store_root)

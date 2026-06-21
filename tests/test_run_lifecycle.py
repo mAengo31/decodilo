@@ -7,7 +7,7 @@ import pytest
 from decodilo.runtime.artifact_manifest import build_artifact_manifest, write_artifact_manifest
 from decodilo.syncer.event_log import EventLog, EventType
 
-pytestmark = [pytest.mark.unit, pytest.mark.replay]
+pytestmark = [pytest.mark.unit, pytest.mark.replay, pytest.mark.integration]
 
 
 def _write_valid_minimal_run(tmp_path) -> None:

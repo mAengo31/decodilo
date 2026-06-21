@@ -111,3 +111,24 @@ chunk_size_bytes = 64 * 1024 * 1024
 If `total_state_bytes <= memory_budget_bytes`, `fits_in_memory=true` and
 `spill_required=false`. Otherwise, `fits_in_memory=false` and
 `spill_required=true`.
+
+## Learner Pod Scaling
+
+Milestone 014A adds learner-pod scaling estimates for fixed total compute,
+expanding compute, and scavenged compute. The model evaluates candidate learner
+counts against:
+
+- failure and recovery availability
+- quorum availability
+- accepted contribution ratio
+- artifact read/write pressure
+- WAN bandwidth pressure
+- syncer merge pressure
+- heuristic algorithmic efficiency
+- cost per useful token
+- cost per sample-efficiency-adjusted token
+
+The optimizer produces a recommendation only when configured bandwidth,
+artifact, and syncer caps are not exceeded. Backend design targets in the report
+are planning targets for a future remote artifact backend; they are not a remote
+backend validation.

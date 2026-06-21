@@ -1,0 +1,12 @@
+[
+  {
+    "available": true,
+    "name": "US West 1",
+    "region_id": "us-west-1"
+  },
+  {
+    "available": true,
+    "name": "US East 1",
+    "region_id": "us-east-1"
+  }
+]

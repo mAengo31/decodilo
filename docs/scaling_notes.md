@@ -84,3 +84,39 @@ recovery on a shared local filesystem. This is still not a WAN/object-store
 design. Production scale still needs remote artifact transport, sharded merge,
 authn/authz around artifact access, retention policy, and failure tests across
 real network boundaries.
+
+## Milestone 014 Local Timing Boundary
+
+Performance characterization, perf matrices, and overhead budgets measure local
+CPU/filesystem behavior only. They help identify whether encoding, artifact I/O,
+merge, checkpoint, replay, lifecycle validation, or GC planning dominates before
+GPU/cloud work, but they are not cloud throughput guarantees.
+
+## Milestone 014A Learner-Pod Planning Boundary
+
+Learner-pod scaling reports answer when adding pods helps and when overhead
+dominates. They combine failure goodput, quorum/grace policy, artifact pressure,
+bandwidth pressure, syncer pressure, heuristic algorithmic efficiency, and cost.
+
+The algorithmic efficiency number is explicitly a heuristic proxy. It is useful
+for planning sensitivity and bottlenecks, not for claiming final model quality.
+Local learner-scaling experiments can calibrate local overhead coefficients, but
+they do not prove cloud or remote-backend performance.
+
+## Milestone 015 Remote Backend Readiness Boundary
+
+Remote backend validation remains a local simulation and requirements exercise.
+It can identify bandwidth, consistency, lifecycle, security, and cost blockers
+for a future backend, but it does not implement or validate a real remote object
+store. No remote credentials or cloud APIs are used.
+
+Milestone 016 adds the evidence gate around that planning output. Learner-scaling
+targets, conformance results, readiness reports, and manual provider matrices
+can inform future backend design, but they do not prove live provider behavior.
+
+## Milestone 018 Lambda Boundary
+
+Lambda planning remains offline. Fake discovery can provide instance type,
+region, quota, and usage fixture data for local planning exercises, but these
+values are not live availability or live pricing. They should not be used as
+evidence that Lambda capacity exists or that a launch is safe.

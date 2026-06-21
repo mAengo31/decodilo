@@ -2,8 +2,12 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 from decodilo.runtime.syncer_checkpoint import load_chunked_syncer_checkpoint
 from decodilo.syncer.recovery_manifest import load_recovery_manifest
+
+pytestmark = pytest.mark.integration
 
 
 def test_chunked_checkpoint_is_primary_live_recovery_source(tmp_path) -> None:

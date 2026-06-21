@@ -95,3 +95,50 @@ Local preflight now also runs artifact-reference audit, recovery-manifest chain
 validation, failed-GC-transaction checks, and lifecycle warnings for segmented
 runs without a recent replay snapshot. These checks improve local run safety;
 they do not imply cloud launch readiness.
+
+## Milestone 015 Remote Backend Evidence
+
+Cloud preflight now warns when remote backend requirements or design validation
+reports are missing. When present, it surfaces the target learner count, stress
+learner count, design status, and blockers. These checks are evidence gates only:
+`remote_backend_enabled=false`, `launch_ready=false`, and `launch_allowed=false`
+remain enforced.
+
+## Milestone 014A Scaling Report Checks
+
+Local preflight surfaces a learner scaling report when one is present. Cloud
+preflight warns if a cloud-intended plan lacks a learner scaling report, because
+future remote artifact design needs target learner count, artifact bandwidth,
+artifact operation rate, syncer merge bandwidth, checkpoint growth, event-log
+growth, and replay snapshot frequency.
+
+Even when backend design targets are present, cloud preflight remains
+non-launchable:
+
+```json
+{"launch_ready": false, "launch_allowed": false}
+```
+
+The report also warns that the scaling model is heuristic unless calibrated and
+that no remote artifact backend or live cloud availability check exists.
+
+## Milestone 018 Lambda API Evidence
+
+Preflight can now surface Lambda API boundary evidence when present:
+
+- fake discovery report
+- mutation guard summary
+- resource ledger
+- dry-run Lambda launch plan
+- dry-run Lambda teardown plan
+- Lambda preflight report
+
+This evidence remains offline-only. Cloud preflight still reports
+`launch_ready=false` and `launch_allowed=false`, and warns when Lambda evidence
+is missing for cloud-intended work.
+
+## Milestone 019 Live Read-Only Lambda Evidence
+
+Preflight can also surface live read-only discovery, read-only audit, and live
+resource ledger reports. Live API usage is allowed only for read-only discovery
+evidence and does not make the run launchable.

@@ -1,10 +1,13 @@
 import subprocess
 import sys
 
+import pytest
+
 from decodilo.runtime.preflight import run_local_preflight
 from decodilo.runtime.run_spec import RunSpec, write_run_spec
 
 
+@pytest.mark.integration
 def test_local_preflight_passes_live_chunked_run(tmp_path) -> None:
     subprocess.run(
         [

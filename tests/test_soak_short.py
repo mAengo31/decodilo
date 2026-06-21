@@ -2,6 +2,10 @@ import json
 import subprocess
 import sys
 
+import pytest
+
+pytestmark = [pytest.mark.integration, pytest.mark.soak]
+
 
 def test_short_local_soak_runs_and_writes_summary(tmp_path) -> None:
     completed = subprocess.run(

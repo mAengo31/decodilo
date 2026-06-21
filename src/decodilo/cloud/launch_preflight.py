@@ -6,10 +6,13 @@ import json
 from pathlib import Path
 from typing import Any
 
+from decodilo.cloud.lambda_api_preflight import collect_lambda_api_preflight_evidence
 from decodilo.cloud.launch_plan import load_cloud_dry_run_report
 from decodilo.cloud.launch_review import load_launch_review_checklist
+from decodilo.cloud.remote_backend_preflight import collect_remote_backend_preflight_evidence
 from decodilo.cloud.safety import validate_cloud_plan
 from decodilo.runtime.preflight import PreflightResult, run_local_preflight
+from decodilo.scaling.scaling_report import load_scaling_decision_report
 
 
 def run_cloud_preflight(
@@ -31,6 +34,12 @@ def run_cloud_preflight(
         warnings.append("remote artifact backend is disabled in this build")
     if "local retention policy is not a cloud retention policy" not in warnings:
         warnings.append("local retention policy is not a cloud retention policy")
+    if "local perf numbers are not cloud performance guarantees" not in warnings:
+        warnings.append("local perf numbers are not cloud performance guarantees")
+    if "no accelerator characterization for target shape" not in warnings:
+        warnings.append("no accelerator characterization for target shape")
+    if "scaling model is heuristic unless calibrated" not in warnings:
+        warnings.append("scaling model is heuristic unless calibrated")
     checked = [str(dry_run_plan)]
     if plan.launch_allowed:
         errors.append("launch_allowed must remain false")
@@ -68,12 +77,41 @@ def run_cloud_preflight(
             "large expected state cannot be checked for chunked runtime modes without workdir"
         )
     artifact_checks_passed = True
+    backend_targets: dict[str, Any] | None = None
     if workdir is not None:
         local = run_local_preflight(workdir=workdir)
         checked.extend(local.checked_artifacts)
         errors.extend(f"local: {error}" for error in local.errors)
         warnings.extend(f"local: {warning}" for warning in local.warnings)
         artifact_checks_passed = local.artifact_checks_passed
+        scaling_resource = local.resource_limit_summary.get("learner_scaling_report")
+        if scaling_resource is not None:
+            backend_targets = scaling_resource.get("backend_design_targets")
+    if backend_targets is None:
+        report_path = Path(dry_run_plan).with_name("learner_scaling_report.json")
+        if report_path.exists():
+            try:
+                scaling_report = load_scaling_decision_report(report_path)
+                backend_targets = scaling_report.backend_design_targets
+                checked.append(str(report_path))
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"learner scaling report unreadable: {exc}")
+    if backend_targets is None:
+        warnings.append("learner scaling report missing for cloud-intended plan")
+    remote_backend_evidence: dict[str, Any] | None = None
+    lambda_api_evidence: dict[str, Any] | None = None
+    if workdir is not None:
+        evidence = collect_remote_backend_preflight_evidence(root=workdir)
+        remote_backend_evidence = evidence["summary"]
+        warnings.extend(evidence["warnings"])
+        errors.extend(evidence["errors"])
+        lambda_evidence = collect_lambda_api_preflight_evidence(root=workdir)
+        lambda_api_evidence = lambda_evidence["summary"]
+        warnings.extend(lambda_evidence["warnings"])
+        errors.extend(lambda_evidence["errors"])
+    else:
+        warnings.append("remote backend evidence cannot be checked without workdir")
+        warnings.append("Lambda API boundary evidence cannot be checked without workdir")
     budget_summary: dict[str, Any] | None = None
     if plan.budget_manifest is not None:
         budget_summary = {
@@ -116,6 +154,9 @@ def run_cloud_preflight(
             },
             "out_of_core_merge_configured": False,
             "max_working_bytes": None,
+            "backend_design_targets": backend_targets,
+            "remote_backend_evidence": remote_backend_evidence,
+            "lambda_api_evidence": lambda_api_evidence,
         },
         scaling_summary=plan.capacity_plan,
     )

@@ -1,0 +1,9 @@
+[
+  {
+    "filesystem_id": "fs-fixture-decodi",
+    "mounted": false,
+    "name": "fixture-decodi",
+    "region_id": "us-west-1",
+    "size_gb": 1024
+  }
+]

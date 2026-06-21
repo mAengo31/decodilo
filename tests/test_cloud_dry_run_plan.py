@@ -40,6 +40,7 @@ def test_lambda_dry_run_plan_from_fresh_manual_snapshot(tmp_path) -> None:
     assert "AKIA" not in report.to_json()
 
 
+@pytest.mark.integration
 def test_cloud_dry_run_cli_writes_and_validates_plan(tmp_path) -> None:
     snapshot_path = tmp_path / "snapshot.json"
     out = tmp_path / "dry-run.json"

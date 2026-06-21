@@ -41,3 +41,21 @@ reachability and refuses to delete artifacts that became reachable after the
 plan was created. Delete candidates are moved into `.decodilo_trash/` under a
 transaction id. Failed or interrupted transactions remain visible to
 `run validate`.
+
+## Milestone 014 Trash Cleanup
+
+Trash cleanup is separate from GC. It is dry-run by default and only purges
+trash directories for completed GC transactions unless
+`--allow-failed-transaction-purge` is supplied.
+
+```bash
+python -m decodilo.cli artifacts trash inspect --workdir /tmp/decodilo-run
+
+python -m decodilo.cli artifacts trash cleanup \
+  --workdir /tmp/decodilo-run \
+  --dry-run \
+  --out /tmp/decodilo-run/trash_cleanup_report.json
+```
+
+Cleanup is resumable and idempotent. Retained artifacts outside
+`.decodilo_trash/` must never be deleted by trash cleanup.

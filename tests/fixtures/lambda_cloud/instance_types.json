@@ -1,0 +1,27 @@
+[
+  {
+    "gpu_type": "H100 SXM",
+    "gpus": 8,
+    "instance_type_id": "gpu_8x_h100_sxm",
+    "memory_gb": 1800,
+    "name": "8x H100 SXM",
+    "price_per_hour": 29.52,
+    "regions": [
+      "us-west-1"
+    ],
+    "vcpus": 192
+  },
+  {
+    "gpu_type": "A10",
+    "gpus": 1,
+    "instance_type_id": "gpu_1x_a10",
+    "memory_gb": 64,
+    "name": "1x A10",
+    "price_per_hour": 0.75,
+    "regions": [
+      "us-west-1",
+      "us-east-1"
+    ],
+    "vcpus": 24
+  }
+]

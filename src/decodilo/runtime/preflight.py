@@ -8,16 +8,29 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from decodilo.cloud.lambda_api_preflight import collect_lambda_api_preflight_evidence
+from decodilo.cloud.remote_backend_review_preflight import (
+    collect_remote_backend_review_preflight,
+)
 from decodilo.runtime.artifact_manifest import (
     ArtifactManifest,
     validate_artifact_manifest,
 )
 from decodilo.runtime.metrics_validation import validate_report_payload
+from decodilo.runtime.perf_characterization import load_performance_characterization
+from decodilo.runtime.remote_backend_design_report import load_remote_backend_design_report
 from decodilo.runtime.run_spec import load_run_spec
+from decodilo.scaling.scaling_report import load_scaling_decision_report
 from decodilo.storage.artifact_reference_audit import audit_artifact_references
 from decodilo.storage.gc import plan_artifact_gc
 from decodilo.storage.gc_safety import failed_gc_transactions
 from decodilo.storage.lifecycle_policy import ArtifactRetentionPolicy
+from decodilo.storage.reachability_graph_report import build_reachability_graph_report
+from decodilo.storage.remote_backend_conformance import load_remote_backend_conformance_report
+from decodilo.storage.remote_backend_evidence import load_remote_backend_evidence_package
+from decodilo.storage.remote_backend_readiness import load_remote_backend_readiness_report
+from decodilo.storage.remote_backend_requirements import load_remote_backend_requirements
+from decodilo.storage.trash_lifecycle import inspect_trash
 from decodilo.syncer.recovery_audit import validate_recovery_manifest_chain
 from decodilo.syncer.recovery_manifest import load_recovery_manifest
 
@@ -149,6 +162,133 @@ def run_local_preflight(*, workdir: str | Path) -> PreflightResult:
                 warnings.extend(f"gc dry-run: {error}" for error in gc_plan.errors)
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"gc dry-run unavailable: {exc}")
+        perf_path = root / "perf_characterization.json"
+        if not perf_path.exists():
+            perf_candidates = sorted(root.rglob("perf_characterization.json"))
+            perf_path = perf_candidates[-1] if perf_candidates else perf_path
+        if perf_path.exists():
+            try:
+                perf_report = load_performance_characterization(perf_path)
+                resource_summary["perf_characterization"] = {
+                    "path": str(perf_path),
+                    "top_components_by_wall_time": perf_report.bottlenecks[
+                        "top_components_by_wall_time"
+                    ],
+                    "validation": perf_report.validation,
+                }
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"perf characterization unreadable: {exc}")
+        else:
+            warnings.append("perf characterization report not present")
+        lifecycle_path = root / "lifecycle_stress_report.json"
+        if lifecycle_path.exists():
+            try:
+                lifecycle = json.loads(lifecycle_path.read_text(encoding="utf-8"))
+                resource_summary["lifecycle_stress"] = {
+                    "path": str(lifecycle_path),
+                    "cycles_completed": lifecycle.get("cycles_completed"),
+                    "run_validate_passed": lifecycle.get("run_validate_passed"),
+                    "artifact_audit_passed": lifecycle.get("artifact_audit_passed"),
+                }
+            except json.JSONDecodeError as exc:
+                warnings.append(f"lifecycle stress report unreadable: {exc}")
+        trash = inspect_trash(root)
+        resource_summary["trash_cleanup"] = {
+            "entries": len(trash.entries),
+            "failed_transactions": [
+                entry.transaction_id
+                for entry in trash.entries
+                if entry.transaction_state in {"failed", "applying", "aborted"}
+            ],
+        }
+        if resource_summary["trash_cleanup"]["failed_transactions"]:
+            warnings.append("trash contains failed or incomplete GC transactions")
+        try:
+            reachability = build_reachability_graph_report(workdir=root)
+            resource_summary["reachability_graph"] = {
+                "nodes": len(reachability.nodes),
+                "edges": len(reachability.edges),
+                "unreachable_nodes": len(reachability.unreachable_nodes),
+                "unresolved_references": len(reachability.unresolved_references),
+            }
+        except Exception as exc:  # noqa: BLE001
+            warnings.append(f"reachability graph unavailable: {exc}")
+        scaling_report_path = _find_scaling_report(root)
+        if scaling_report_path is not None:
+            try:
+                scaling_report = load_scaling_decision_report(scaling_report_path)
+                resource_summary["learner_scaling_report"] = {
+                    "path": str(scaling_report_path),
+                    "recommended_learner_count": scaling_report.recommended_learner_count,
+                    "dominant_bottleneck": scaling_report.dominant_bottleneck,
+                    "backend_design_targets": scaling_report.backend_design_targets,
+                    "launch_ready": scaling_report.cloud_state["launch_ready"],
+                    "launch_allowed": scaling_report.cloud_state["launch_allowed"],
+                }
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"learner scaling report unreadable: {exc}")
+        remote_requirements_path = root / "remote_backend_requirements.json"
+        remote_design_path = root / "remote_backend_design_validation.json"
+        remote_conformance_path = root / "remote_conformance.json"
+        remote_readiness_path = root / "remote_backend_readiness.json"
+        remote_evidence_path = root / "remote_backend_evidence_package.json"
+        remote_summary: dict[str, Any] = {"remote_backend_enabled": False}
+        if remote_requirements_path.exists():
+            try:
+                requirements = load_remote_backend_requirements(remote_requirements_path)
+                remote_summary["requirements_path"] = str(remote_requirements_path)
+                remote_summary["target_learner_count"] = requirements.target_learner_count
+                remote_summary["stress_learner_count"] = requirements.stress_learner_count
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"remote backend requirements unreadable: {exc}")
+        if remote_design_path.exists():
+            try:
+                design = load_remote_backend_design_report(remote_design_path)
+                remote_summary["design_validation_path"] = str(remote_design_path)
+                remote_summary["design_status"] = design.recommendation.design_status
+                remote_summary["blockers"] = design.blockers
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"remote backend design validation unreadable: {exc}")
+        if remote_conformance_path.exists():
+            try:
+                conformance = load_remote_backend_conformance_report(remote_conformance_path)
+                remote_summary["conformance_path"] = str(remote_conformance_path)
+                remote_summary["conformance_status"] = conformance.conformance_status
+                remote_summary["conformance_passed"] = conformance.passed
+                if conformance.passed:
+                    warnings.append(
+                        "simulator conformance is not production backend readiness"
+                    )
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"remote backend conformance unreadable: {exc}")
+        if remote_readiness_path.exists():
+            try:
+                readiness = load_remote_backend_readiness_report(remote_readiness_path)
+                remote_summary["readiness_path"] = str(remote_readiness_path)
+                remote_summary["readiness_status"] = readiness.readiness_status.value
+                remote_summary["readiness_blockers"] = readiness.blockers
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"remote backend readiness unreadable: {exc}")
+        if remote_evidence_path.exists():
+            try:
+                evidence = load_remote_backend_evidence_package(remote_evidence_path)
+                remote_summary["evidence_package_path"] = str(remote_evidence_path)
+                remote_summary["evidence_completeness_score"] = (
+                    evidence.manifest.evidence_completeness_score
+                )
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"remote backend evidence package unreadable: {exc}")
+        review = collect_remote_backend_review_preflight(root=root)
+        remote_summary["review_evidence"] = review["summary"]
+        warnings.extend(review["warnings"])
+        errors.extend(review["errors"])
+        if len(remote_summary) > 1:
+            resource_summary["remote_backend_design"] = remote_summary
+        if _has_lambda_api_evidence(root):
+            lambda_evidence = collect_lambda_api_preflight_evidence(root=root)
+            resource_summary["lambda_api_boundary"] = lambda_evidence["summary"]
+            warnings.extend(lambda_evidence["warnings"])
+            errors.extend(lambda_evidence["errors"])
         expected_state_bytes = _expected_state_bytes(spec.trainer_config)
         if expected_state_bytes is not None:
             resource_summary["expected_model_state_bytes"] = expected_state_bytes
@@ -206,6 +346,54 @@ def run_local_preflight(*, workdir: str | Path) -> PreflightResult:
         budget_summary=None,
         resource_limit_summary=resource_summary,
     )
+
+
+def _find_scaling_report(root: Path) -> Path | None:
+    names = [
+        "learner_scaling_report.json",
+        "pod_optimization.json",
+        "scaling_report.json",
+        "learner-sweep.json",
+    ]
+    for name in names:
+        candidate = root / name
+        if candidate.exists():
+            return candidate
+    matches = sorted(root.rglob("*scaling*.json"))
+    for match in matches:
+        try:
+            load_scaling_decision_report(match)
+        except Exception:  # noqa: BLE001
+            continue
+        return match
+    return None
+
+
+def _has_lambda_api_evidence(root: Path) -> bool:
+    names = {
+        "lambda-discovery.json",
+        "lambda-ledger.json",
+        "lambda-preflight.json",
+        "lambda-launch-plan.json",
+        "lambda-teardown-plan.json",
+        "lambda-m026-decision.json",
+        "lambda-m027-authorization.json",
+        "lambda-blocker-matrix.json",
+        "lambda-evidence-freshness.json",
+        "lambda-minimal-mutation-preflight.json",
+        "lambda-minimal-mutation-audit.json",
+        "lambda-m028-state-snapshot.json",
+        "lambda-m028-budget-lock.json",
+        "lambda-m028-resource-lock.json",
+        "lambda-m028-no-mutation-audit.json",
+        "lambda-m029-authorization.json",
+        "lambda-m028-decision.json",
+        "lambda-m028-report.json",
+        "lambda-m029-report.json",
+        "lambda-m029-spend-audit.json",
+        "lambda-m029-ledger.json",
+    }
+    return any((root / name).exists() for name in names)
 
 
 def _expected_state_bytes(trainer_config: dict[str, Any]) -> int | None:

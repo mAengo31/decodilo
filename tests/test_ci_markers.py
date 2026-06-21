@@ -7,7 +7,14 @@ import pytest
 def test_pytest_markers_are_configured(pytestconfig) -> None:
     markers = "\n".join(pytestconfig.getini("markers"))
 
-    for marker in ("slow", "soak", "perf", "torch_optional", "cloud_disabled"):
+    for marker in (
+        "slow",
+        "soak",
+        "perf",
+        "torch_optional",
+        "hardware_optional",
+        "cloud_disabled",
+    ):
         assert marker in markers
 
 
@@ -26,7 +33,7 @@ def test_quick_marker_command_runs_cleanly() -> None:
             "tests/test_retry_policy.py",
             "-q",
             "-m",
-            "not slow and not soak and not perf",
+            "not slow and not soak and not perf and not hardware_optional",
         ],
         capture_output=True,
         text=True,

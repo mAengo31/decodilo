@@ -2,6 +2,8 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 from decodilo.runtime.learner_checkpoint import load_chunked_learner_checkpoint
 from decodilo.runtime.resource_limits import RuntimeResourceLimits
 from decodilo.runtime.syncer_checkpoint import load_chunked_syncer_checkpoint
@@ -21,6 +23,7 @@ def test_runtime_resource_limits_convert_from_mb(tmp_path) -> None:
     assert limits.to_memory_budget().allow_spill_to_disk is True
 
 
+@pytest.mark.integration
 def test_local_run_accepts_memory_limit_and_chunked_checkpoint_flags(tmp_path) -> None:
     completed = subprocess.run(
         [

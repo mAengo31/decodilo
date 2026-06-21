@@ -128,6 +128,7 @@ def test_stale_snapshot_budget_use_is_rejected_by_default(tmp_path) -> None:
         require_usable_snapshot(stale)
 
 
+@pytest.mark.integration
 def test_local_run_report_includes_budget_manifest_when_pricing_supplied(tmp_path) -> None:
     snapshot_path = tmp_path / "snapshot.json"
     import_json_snapshot(

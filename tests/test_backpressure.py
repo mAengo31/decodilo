@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 import numpy as np
+import pytest
 
 from decodilo.runtime.backpressure import BackpressureConfig, BackpressureState
 from decodilo.runtime.syncer_service import SyncerService, SyncerServiceConfig
@@ -79,6 +80,7 @@ def test_backpressure_rejection_is_idempotent_and_not_useful(tmp_path) -> None:
     asyncio.run(scenario())
 
 
+@pytest.mark.integration
 def test_local_report_includes_backpressure_metrics(tmp_path) -> None:
     report_path = tmp_path / "report.json"
     subprocess.run(

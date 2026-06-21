@@ -1,0 +1,35 @@
+from lambda_m029_helpers import m029_fixture
+from lambda_m034a_helpers import write_m034a_artifacts
+
+from decodilo.lambda_cloud.m034_gate_check import build_lambda_m034_gate_check_from_paths
+from decodilo.lambda_cloud.third_attempt_authorization import (
+    load_lambda_third_attempt_authorization,
+    write_lambda_third_attempt_authorization,
+)
+
+
+def test_m034_blocks_wrong_authorization_status(tmp_path):
+    fx = m029_fixture(tmp_path)
+    paths = write_m034a_artifacts(tmp_path, m029_authorization=fx["authorization"])
+    authorization = load_lambda_third_attempt_authorization(paths["m034_authorization"])
+    write_lambda_third_attempt_authorization(
+        paths["m034_authorization"],
+        authorization.model_copy(update={"status": "not_authorized"}),
+    )
+
+    report = build_lambda_m034_gate_check_from_paths(
+        m028_report=fx["m028_report"],
+        m029_authorization=fx["m029_authorization"],
+        endpoint_confirmation=paths["endpoint_confirmation"],
+        response_capture_lock=paths["response_capture_lock"],
+        timeout_policy=paths["timeout_policy"],
+        risk_review=paths["risk_review"],
+        correlation_plan=paths["correlation_plan"],
+        reconciliation_plan=paths["reconciliation_plan"],
+        m034_authorization=paths["m034_authorization"],
+        third_go_no_go=paths["third_go_no_go"],
+        m033_report=paths["m033_report"],
+    )
+
+    assert report.gate_passed is False
+    assert "m034_authorization_not_authorized_for_third_attempt" in report.blockers

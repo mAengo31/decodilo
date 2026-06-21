@@ -2,7 +2,11 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 from decodilo.runtime.preflight import run_local_preflight
+
+pytestmark = pytest.mark.integration
 
 
 def _local_run(tmp_path) -> None:
@@ -81,3 +85,6 @@ def test_preflight_local_cli_writes_json(tmp_path) -> None:
     written = json.loads(out.read_text(encoding="utf-8"))
     assert written["launch_ready"] is False
     assert written["launch_allowed"] is False
+    assert "trash_cleanup" in written["resource_limit_summary"]
+    assert "reachability_graph" in written["resource_limit_summary"]
+    assert any("perf characterization" in warning for warning in written["warnings"])

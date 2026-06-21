@@ -15,6 +15,7 @@ def test_marker_summary_command_works() -> None:
     )
 
     assert "not slow and not soak and not perf and not integration" in completed.stdout
+    assert "not hardware_optional" in completed.stdout
 
 
 def test_quick_command_deselects_substantially_more_than_seven_tests() -> None:
@@ -31,7 +32,8 @@ def test_quick_command_deselects_substantially_more_than_seven_tests() -> None:
             "tests/test_retry_policy.py",
             "-q",
             "-m",
-            "not slow and not soak and not perf and not integration",
+            "not slow and not soak and not perf and not integration and not lifecycle "
+            "and not hardware_optional",
         ],
         check=True,
         capture_output=True,

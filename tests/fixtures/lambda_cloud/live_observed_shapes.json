@@ -1,0 +1,31 @@
+{
+  "images": [
+    {
+      "description": "Redacted live-like image fixture.",
+      "name": "GPU Base 24.04",
+      "region": {
+        "name": "us-west-1"
+      }
+    }
+  ],
+  "instances": [
+    {
+      "firewall_rulesets": [],
+      "instance_type": "gpu_1x_a10",
+      "name": "redacted-instance-name",
+      "status": "active"
+    }
+  ],
+  "regions": [
+    {
+      "description": "Osaka, Japan",
+      "name": "asia-northeast-1"
+    }
+  ],
+  "ssh_keys": [
+    {
+      "name": "redacted-key-name",
+      "public_key": "ssh-rsa REDACTED_PUBLIC_KEY"
+    }
+  ]
+}

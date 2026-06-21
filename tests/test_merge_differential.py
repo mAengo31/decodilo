@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
 from decodilo.storage.tensor_artifact import write_tensor_artifact
@@ -69,6 +70,7 @@ def _run_case(tmp_path, *, learners: int, length: int, dtype: str, outer_lr: flo
     np.testing.assert_allclose(actual.new_values, expected, rtol=1e-3, atol=1e-5)
 
 
+@pytest.mark.slow
 def test_out_of_core_merge_differential_cases(tmp_path) -> None:
     case_id = 0
     for learners in (1, 2, 3, 5):

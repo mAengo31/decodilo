@@ -91,6 +91,7 @@ def _events(workdir: Path) -> list[dict]:
     ]
 
 
+@pytest.mark.integration
 def test_live_chunked_fragment_submission_update_delivery_and_replay(tmp_path) -> None:
     report = _run_local(tmp_path, chunked=True)
     events = _events(tmp_path)
@@ -210,6 +211,7 @@ def test_inline_and_chunked_merge_paths_are_numerically_equivalent(tmp_path) -> 
     assert '"vector": [' not in (tmp_path / "chunked.jsonl").read_text(encoding="utf-8")
 
 
+@pytest.mark.integration
 def test_chunked_replay_rejects_missing_or_corrupt_artifact(tmp_path) -> None:
     _run_local(tmp_path, chunked=True)
     first_submission = next(

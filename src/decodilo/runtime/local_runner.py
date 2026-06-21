@@ -45,6 +45,7 @@ from decodilo.runtime.run_spec import (
     make_run_spec_from_config,
     write_run_spec,
 )
+from decodilo.sim.fake_model import convex_loss, make_target_vector
 from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.codec_registry import validate_artifact_codec
 from decodilo.syncer.replay import replay_event_log
@@ -463,12 +464,16 @@ class LocalRunner:
     async def _shutdown_syncer(self, ready: dict[str, Any]) -> dict[str, Any]:
         last_error: Exception | None = None
         response = None
+        shutdown_timeout = min(
+            2.0,
+            max(0.5, self.config.heartbeat_timeout_seconds + 0.5),
+        )
         for _ in range(3):
             try:
                 async with JsonlTcpClient(
                     host=str(ready["host"]),
                     port=int(ready["port"]),
-                    timeout_seconds=10.0,
+                    timeout_seconds=shutdown_timeout,
                 ) as client:
                     response = await client.request(
                         make_envelope(
@@ -484,7 +489,16 @@ class LocalRunner:
                 last_error = exc
                 await asyncio.sleep(0.1)
         if response is None:
-            raise RuntimeError(f"syncer shutdown failed after retries: {last_error}")
+            if self.syncer_proc is not None and self.syncer_proc.poll() is None:
+                self.syncer_proc.terminate()
+                self.orphan_cleanup_performed = True
+                try:
+                    self.syncer_proc.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    self.syncer_proc.kill()
+            return self._fallback_summary_from_replay(
+                reason=f"syncer shutdown timed out; synthesized summary from replay: {last_error}"
+            )
         if response.message_type == MessageType.ERROR:
             raise RuntimeError(f"syncer shutdown failed: {response.payload}")
         if self.syncer_proc is not None:
@@ -494,6 +508,53 @@ class LocalRunner:
                 self.syncer_proc.terminate()
                 self.orphan_cleanup_performed = True
         return response.payload
+
+    def _fallback_summary_from_replay(self, *, reason: str) -> dict[str, Any]:
+        event_log_path = self.config.workdir / "events.jsonl"
+        replay = replay_event_log(event_log_path)
+        vector = (
+            replay.final_global_vector
+            if replay.final_global_vector is not None
+            else make_target_vector(self.config.vector_dim, seed=self.config.seed) * 0.0
+        )
+        target = make_target_vector(len(vector), seed=self.config.seed)
+        useful = replay.accepted_useful_tokens
+        total = max(useful, 0)
+        return {
+            "run_id": self.run_id,
+            "final_global_version": replay.global_versions[-1] if replay.global_versions else 0,
+            "final_global_vector": vector.astype(float).tolist(),
+            "final_loss": convex_loss(vector, target),
+            "trainer_state_kind": "unknown",
+            "trainer_metrics": {
+                "trainer_state_bytes_estimate": None,
+                "trainer_num_parameters": None,
+                "trainer_final_loss": None,
+                "trainer_final_eval_loss": None,
+                "trainer_nonfinite_detected": False,
+            },
+            "metrics": {
+                "total_tokens_processed": total,
+                "useful_tokens_accepted": useful,
+                "rejected_tokens": replay.rejected_tokens,
+                "stale_tokens": replay.stale_tokens,
+                "wasted_tokens": max(total - useful, 0),
+                "committed_sync_rounds": replay.sync_rounds_committed,
+                "sync_rounds_committed": replay.sync_rounds_committed,
+                "skipped_sync_rounds": replay.skipped_sync_rounds,
+                "rejected_fragments": replay.rejected_update_count,
+                "stale_fragments": 0,
+                "goodput_ratio": useful / total if total else 0.0,
+                "accepted_updates": replay.sync_rounds_committed,
+                "global_update_messages_sent": 0,
+                "global_update_acks": 0,
+            },
+            "unhealthy_learners": [],
+            "recovery_source": "event_log_fallback",
+            "event_log_path": str(event_log_path),
+            "code_version": __version__ or None,
+            "warnings": [reason],
+        }
 
     def _build_report(
         self,

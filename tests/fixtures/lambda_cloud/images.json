@@ -1,0 +1,8 @@
+[
+  {
+    "description": "Fixture image; not a live Lambda image.",
+    "family": "ubuntu",
+    "image_id": "img-ubuntu-2204-cuda-fixture",
+    "name": "ubuntu-22.04-cuda-fixture"
+  }
+]

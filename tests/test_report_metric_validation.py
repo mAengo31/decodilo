@@ -2,7 +2,10 @@ import json
 import subprocess
 import sys
 
+import pytest
 
+
+@pytest.mark.integration
 def test_validate_report_cli_passes_and_fails_tampered_report(tmp_path) -> None:
     report_path = tmp_path / "report.json"
     subprocess.run(

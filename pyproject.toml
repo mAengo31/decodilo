@@ -38,6 +38,17 @@ where = ["src"]
 testpaths = ["tests"]
 markers = [
   "unit: fast isolated tests for pure logic",
+  "quick: representative fast development confidence profile",
+  "lambda_offline: Lambda fixture, parser, fake-server, and safety tests with no live API calls",
+  "lambda_live: manual-only real Lambda read-only tests",
+  "lambda_real_mutation: manual-only real Lambda mutation tests; not run by default",
+  "subprocess_heavy: tests that spawn subprocesses or heavier local runtimes",
+  "runtime_local: local runtime tests that do not call cloud APIs",
+  "cloud: cloud-adjacent tests that remain offline unless explicitly marked live/manual",
+  "cloud_fake: fake cloud server or fake cloud client tests",
+  "cloud_manual: manual cloud tests that require explicit operator action",
+  "launch_history_heavy: generated launch milestone/history tests kept out of quick profile",
+  "flaky_policy: tests that validate flake handling policy",
   "integration: tests that run subprocesses or multiple components",
   "slow: longer local runtime or stress tests",
   "soak: local soak profile tests",
@@ -48,6 +59,7 @@ markers = [
   "replay: event replay and replay snapshot tests",
   "runtime: local runtime tests",
   "lifecycle: lifecycle stress, compaction, audit, or GC transaction tests",
+  "hardware_optional: optional CPU/CUDA/MPS hardware probe tests",
 ]
 
 [tool.ruff]

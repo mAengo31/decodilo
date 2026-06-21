@@ -36,3 +36,6 @@ validation status, event segment counts, and GC reclaimable-byte estimates.
 A pass means the local lifecycle artifacts are internally consistent. It does
 not mean the system is ready for cloud launch.
 
+Milestone 014 adds `lifecycle_ci` and longer guarded soak profiles that reuse
+the lifecycle compaction/snapshot path. Long profiles require `--long` so they
+do not run accidentally in quick CI.

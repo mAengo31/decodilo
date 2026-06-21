@@ -40,3 +40,19 @@ throughput estimates, validation status, and warnings.
 
 Do not overinterpret local timing. These commands are for regression and rough
 overhead comparisons only.
+
+For matrix-style characterization across learner count, element count, and
+chunk size, use:
+
+```bash
+python -m decodilo.cli perf matrix \
+  --workdir /tmp/decodilo-m014-perf-matrix \
+  --trainer numpy_convex \
+  --learners 1,2,4 \
+  --elements 1024,8192 \
+  --chunk-size-kb 64,256 \
+  --steps 40 \
+  --min-quorum 1 \
+  --codec binary_v1 \
+  --out /tmp/decodilo-m014-perf-matrix/matrix.json
+```
