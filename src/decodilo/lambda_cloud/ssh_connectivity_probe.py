@@ -2,15 +2,20 @@
 
 from __future__ import annotations
 
+import hashlib
+import importlib
 import json
 import subprocess
 import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from decodilo.lambda_cloud.real_launch_result import redact_instance_id
+from decodilo.lambda_cloud.ssh_failure_classifier import classify_ssh_failure
+from decodilo.lambda_cloud.ssh_failure_stderr_capture import redact_ssh_stderr
 from decodilo.lambda_cloud.ssh_host_discovery import (
     LambdaSSHHostDiscoveryResult,
     extract_ssh_host_from_instance_metadata,
@@ -27,6 +32,7 @@ LambdaSSHConnectivityAuthResult = Literal[
     "auth_succeeded_timeout_after_probe_window",
     "auth_failed",
     "connection_failed",
+    "ssh_port_not_reachable",
     "blocked",
     "ssh_key_missing",
     "host_discovery_failed",
@@ -54,6 +60,19 @@ class LambdaSSHConnectivityProbeEvidence(BaseModel):
     ssh_key_permissions_too_open: bool = False
     private_key_reference_redacted: str = "<redacted-private-key-reference>"
     ssh_username: str = "ubuntu"
+    ssh_port_readiness_attempted: bool = False
+    ssh_port_reachable: bool = False
+    ssh_port_poll_count: int = 0
+    ssh_port_wait_seconds: float = 0.0
+    ssh_port_connect_timeout_seconds: float = 0.0
+    stderr_capture_active: bool = True
+    redacted_stderr_present: bool = False
+    stderr_redacted: str | None = None
+    stderr_sha256_prefix: str | None = None
+    stderr_truncated: bool = False
+    stderr_secret_scan_passed: bool = True
+    stderr_redaction_patterns_applied: list[str] = Field(default_factory=list)
+    ssh_failure_classification: str | None = None
     client_mode: str = "openssh_batch_mode_connectivity_probe"
     bounded_timeout_seconds: int = 15
     exit_status: int | None = None
@@ -93,6 +112,8 @@ class LambdaSSHConnectivityProbeEvidence(BaseModel):
             or self.stdout_stored
             or self.stderr_stored
             or self.retry_attempted
+            or not self.stderr_capture_active
+            or not self.stderr_secret_scan_passed
         ):
             raise ValueError("M054B SSH probe evidence violates no-exec constraints")
         return self
@@ -122,6 +143,11 @@ def run_lambda_ssh_connectivity_probe(
     safe_client_command: str | Path,
     ssh_username: str = "ubuntu",
     timeout_seconds: int = 15,
+    ssh_port_ready_timeout_seconds: float = 300.0,
+    ssh_port_poll_interval_seconds: float = 5.0,
+    ssh_port_connect_timeout_seconds: float = 3.0,
+    tcp_connect_checker: Callable[[str, int, float], bool] | None = None,
+    sleep_func: Callable[[float], None] = time.sleep,
     fake_mode: bool = False,
     host_discovery_result: LambdaSSHHostDiscoveryResult | None = None,
 ) -> LambdaSSHConnectivityProbeEvidence:
@@ -186,6 +212,44 @@ def run_lambda_ssh_connectivity_probe(
             blockers=["ssh_key_missing"],
         )
 
+    port_ready = _wait_for_ssh_port_ready(
+        host=host_discovery_result.host,
+        timeout_seconds=ssh_port_ready_timeout_seconds,
+        interval_seconds=ssh_port_poll_interval_seconds,
+        connect_timeout_seconds=ssh_port_connect_timeout_seconds,
+        checker=tcp_connect_checker or _default_tcp_connect_checker,
+        sleep_func=sleep_func,
+    )
+    if not port_ready.reachable:
+        return LambdaSSHConnectivityProbeEvidence(
+            probe_attempted=False,
+            probe_completed=False,
+            probe_passed=False,
+            auth_result="ssh_port_not_reachable",
+            owned_instance_id_redacted=redact_instance_id(owned_instance_id),
+            target_host_redacted=host_discovery_result.host_redacted or "<redacted-host>",
+            host_discovery_attempted=True,
+            host_discovery_status=host_discovery_result.status,
+            host_discovery_source_path=host_discovery_result.source_path,
+            host_discovery_poll_count=host_discovery_result.poll_count,
+            host_discovery_duration_seconds=host_discovery_result.duration_seconds,
+            sanitized_metadata_keys=host_discovery_result.sanitized_metadata_keys,
+            sanitized_metadata_key_paths=host_discovery_result.sanitized_metadata_key_paths,
+            ssh_key_present=True,
+            ssh_key_permissions_too_open=bool(private_key_path.stat().st_mode & 0o077),
+            ssh_username=ssh_username,
+            ssh_port_readiness_attempted=True,
+            ssh_port_reachable=False,
+            ssh_port_poll_count=port_ready.poll_count,
+            ssh_port_wait_seconds=port_ready.elapsed_seconds,
+            ssh_port_connect_timeout_seconds=ssh_port_connect_timeout_seconds,
+            blockers=["ssh_port_not_reachable"],
+            warnings=[
+                "SSH host was discovered, but TCP port 22 did not become reachable "
+                "inside the bounded readiness window; SSH auth probe was skipped."
+            ],
+        )
+
     command = _real_ssh_command(
         host=host_discovery_result.host,
         private_key_path=private_key_path,
@@ -197,11 +261,17 @@ def run_lambda_ssh_connectivity_probe(
             command,
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
             timeout=timeout_seconds,
             check=False,
         )
     except subprocess.TimeoutExpired:
+        capture = _redacted_stderr_fields(
+            stderr="",
+            private_key_path=private_key_path,
+            host=host_discovery_result.host,
+        )
         return LambdaSSHConnectivityProbeEvidence(
             probe_attempted=True,
             probe_completed=False,
@@ -219,21 +289,42 @@ def run_lambda_ssh_connectivity_probe(
             ssh_key_present=True,
             ssh_key_permissions_too_open=bool(private_key_path.stat().st_mode & 0o077),
             ssh_username=ssh_username,
+            ssh_port_readiness_attempted=True,
+            ssh_port_reachable=True,
+            ssh_port_poll_count=port_ready.poll_count,
+            ssh_port_wait_seconds=port_ready.elapsed_seconds,
+            ssh_port_connect_timeout_seconds=ssh_port_connect_timeout_seconds,
             elapsed_seconds=round(time.monotonic() - started, 6),
+            **capture,
             warnings=[
                 "OpenSSH -N/-T held the connection until the bounded local timeout; "
                 "no remote command output was collected"
             ],
         )
     elapsed = round(time.monotonic() - started, 6)
+    capture = _redacted_stderr_fields(
+        stderr=completed.stderr or "",
+        private_key_path=private_key_path,
+        host=host_discovery_result.host,
+    )
+    classification = classify_ssh_failure(
+        exit_code=completed.returncode,
+        stderr_redacted=capture["stderr_redacted"],
+        tcp_readiness_succeeded=True,
+    )
     if completed.returncode == 0:
         auth_result: LambdaSSHConnectivityAuthResult = "auth_succeeded"
         passed = True
         errors: list[str] = []
+        failure_classification = None
     else:
         auth_result = "auth_failed" if completed.returncode == 255 else "connection_failed"
         passed = False
-        errors = [f"ssh_probe_exit_status_{completed.returncode}"]
+        failure_classification = classification.classification
+        errors = [
+            f"ssh_probe_exit_status_{completed.returncode}",
+            f"ssh_failure_classification_{classification.classification}",
+        ]
     return LambdaSSHConnectivityProbeEvidence(
         probe_attempted=True,
         probe_completed=True,
@@ -251,9 +342,17 @@ def run_lambda_ssh_connectivity_probe(
         ssh_key_present=True,
         ssh_key_permissions_too_open=bool(private_key_path.stat().st_mode & 0o077),
         ssh_username=ssh_username,
+        ssh_port_readiness_attempted=True,
+        ssh_port_reachable=True,
+        ssh_port_poll_count=port_ready.poll_count,
+        ssh_port_wait_seconds=port_ready.elapsed_seconds,
+        ssh_port_connect_timeout_seconds=ssh_port_connect_timeout_seconds,
+        ssh_failure_classification=failure_classification,
         exit_status=completed.returncode,
         elapsed_seconds=elapsed,
+        **capture,
         errors=errors,
+        warnings=classification.warnings,
     )
 
 
@@ -285,6 +384,12 @@ def _real_ssh_command(
         "-o",
         "ControlMaster=no",
         "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        f"UserKnownHostsFile={_isolated_known_hosts_path(host)}",
+        "-o",
+        "StrictHostKeyChecking=accept-new",
+        "-o",
         "SessionType=none",
         "-o",
         "PasswordAuthentication=no",
@@ -304,6 +409,79 @@ def _real_ssh_command(
         str(private_key_path),
         f"{ssh_username}@{host}",
     ]
+
+
+def _isolated_known_hosts_path(host: str) -> Path:
+    digest = hashlib.sha256(host.encode("utf-8")).hexdigest()[:16]
+    return Path("/tmp") / f"decodilo-lambda-ssh-known-hosts-{digest}"
+
+
+def _redacted_stderr_fields(
+    *,
+    stderr: str,
+    private_key_path: Path,
+    host: str,
+) -> dict[str, object]:
+    capture = redact_ssh_stderr(
+        stderr,
+        private_key_path=str(private_key_path),
+        host=host,
+    )
+    return {
+        "redacted_stderr_present": bool(capture.stderr_redacted),
+        "stderr_redacted": capture.stderr_redacted,
+        "stderr_sha256_prefix": capture.stderr_sha256_prefix,
+        "stderr_truncated": capture.stderr_truncated,
+        "stderr_secret_scan_passed": capture.secret_scan_passed,
+        "stderr_redaction_patterns_applied": capture.redaction_patterns_applied,
+    }
+
+
+class _SSHPortReadiness(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    reachable: bool
+    poll_count: int
+    elapsed_seconds: float
+
+
+def _wait_for_ssh_port_ready(
+    *,
+    host: str,
+    timeout_seconds: float,
+    interval_seconds: float,
+    connect_timeout_seconds: float,
+    checker: Callable[[str, int, float], bool],
+    sleep_func: Callable[[float], None],
+) -> _SSHPortReadiness:
+    started = time.monotonic()
+    deadline = started + max(0.0, timeout_seconds)
+    poll_count = 0
+    while True:
+        poll_count += 1
+        if checker(host, 22, connect_timeout_seconds):
+            return _SSHPortReadiness(
+                reachable=True,
+                poll_count=poll_count,
+                elapsed_seconds=round(time.monotonic() - started, 6),
+            )
+        now = time.monotonic()
+        if now >= deadline:
+            return _SSHPortReadiness(
+                reachable=False,
+                poll_count=poll_count,
+                elapsed_seconds=round(now - started, 6),
+            )
+        sleep_func(min(interval_seconds, max(0.0, deadline - now)))
+
+
+def _default_tcp_connect_checker(host: str, port: int, timeout_seconds: float) -> bool:
+    socket = importlib.import_module("socket")
+    try:
+        with socket.create_connection((host, port), timeout=timeout_seconds):
+            return True
+    except OSError:
+        return False
 
 
 def write_lambda_ssh_connectivity_probe_evidence(

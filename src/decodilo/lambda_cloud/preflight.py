@@ -73,6 +73,8 @@ from decodilo.lambda_cloud.m050_report import LambdaM050Report, load_lambda_m050
 from decodilo.lambda_cloud.m052_report import LambdaM052Report, load_lambda_m052_report
 from decodilo.lambda_cloud.m053_report import LambdaM053Report, load_lambda_m053_report
 from decodilo.lambda_cloud.m054a_report import LambdaM054AReport, load_lambda_m054a_report
+from decodilo.lambda_cloud.m055b_report import LambdaM055BReport, load_lambda_m055b_report
+from decodilo.lambda_cloud.m055d_report import LambdaM055DReport, load_lambda_m055d_report
 from decodilo.lambda_cloud.minimal_mutation_audit import (
     LambdaMinimalMutationAuditReport,
     load_lambda_minimal_mutation_audit_report,
@@ -185,6 +187,8 @@ class LambdaPreflightReport(BaseModel):
     m052_metadata_bootstrap_closeout_summary: dict[str, Any] | None = None
     m053_ssh_connectivity_planning_summary: dict[str, Any] | None = None
     m054a_ssh_connectivity_execution_summary: dict[str, Any] | None = None
+    m055b_ssh_failure_diagnostic_summary: dict[str, Any] | None = None
+    m055d_ssh_capacity_retry_summary: dict[str, Any] | None = None
     real_mutation_enabled: bool = False
     warnings: list[str] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
@@ -257,6 +261,8 @@ def run_lambda_preflight(
     m052_report: str | Path | LambdaM052Report | None = None,
     m053_report: str | Path | LambdaM053Report | None = None,
     m054a_report: str | Path | LambdaM054AReport | None = None,
+    m055b_report: str | Path | LambdaM055BReport | None = None,
+    m055d_report: str | Path | LambdaM055DReport | None = None,
 ) -> LambdaPreflightReport:
     warnings: list[str] = [
         "Lambda preflight is read-only/non-launching",
@@ -337,6 +343,8 @@ def run_lambda_preflight(
     m052 = _load_m052_report(m052_report, warnings, errors)
     m053 = _load_m053_report(m053_report, warnings, errors)
     m054a = _load_m054a_report(m054a_report, warnings, errors)
+    m055b = _load_m055b_report(m055b_report, warnings, errors)
+    m055d = _load_m055d_report(m055d_report, warnings, errors)
     credential_audit = None
     if credential_policy is not None:
         try:
@@ -715,6 +723,24 @@ def run_lambda_preflight(
         ):
             errors.append("M054A SSH connectivity execution package must remain non-launchable")
         warnings.append("M054A prepares SSH connectivity only; it performs no SSH or launch")
+    if m055b is not None:
+        if (
+            m055b.launch_ready
+            or m055b.launch_allowed
+            or m055b.real_mutation_enabled
+            or m055b.billable_action_performed
+        ):
+            errors.append("M055B SSH failure diagnostic must remain non-launchable")
+        warnings.append("M055B is offline diagnostics only; it performs no SSH or launch")
+    if m055d is not None:
+        if (
+            m055d.launch_ready
+            or m055d.launch_allowed
+            or m055d.real_mutation_enabled
+            or m055d.billable_action_performed
+        ):
+            errors.append("M055D SSH capacity retry review must remain non-launchable")
+        warnings.append("M055D is offline capacity retry planning; it performs no SSH or launch")
     status: Literal[
         "passed_read_only",
         "passed_read_only_with_warnings",
@@ -836,6 +862,8 @@ def run_lambda_preflight(
         m052_metadata_bootstrap_closeout_summary=_m052_summary(m052),
         m053_ssh_connectivity_planning_summary=_m053_summary(m053),
         m054a_ssh_connectivity_execution_summary=_m054a_summary(m054a),
+        m055b_ssh_failure_diagnostic_summary=_m055b_summary(m055b),
+        m055d_ssh_capacity_retry_summary=_m055d_summary(m055d),
         warnings=warnings,
         errors=errors,
     )
@@ -1773,6 +1801,40 @@ def _load_m054a_report(
         return None
 
 
+def _load_m055b_report(
+    value: str | Path | LambdaM055BReport | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM055BReport | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM055BReport):
+        return value
+    try:
+        return load_lambda_m055b_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M055B SSH failure diagnostic report unreadable: {exc}")
+        warnings.append("Lambda M055B SSH failure diagnostic report could not be loaded")
+        return None
+
+
+def _load_m055d_report(
+    value: str | Path | LambdaM055DReport | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM055DReport | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM055DReport):
+        return value
+    try:
+        return load_lambda_m055d_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M055D SSH capacity retry report unreadable: {exc}")
+        warnings.append("Lambda M055D SSH capacity retry report could not be loaded")
+        return None
+
+
 def _m026_summary(
     decision: LambdaRealLaunchDecisionRecord | None,
     authorization: LambdaM027AuthorizationRecord | None,
@@ -2215,4 +2277,46 @@ def _m054a_summary(report: LambdaM054AReport | None) -> dict[str, Any] | None:
         "launch_ready": False,
         "launch_allowed": False,
         "message": "M054A prepares future SSH connectivity only; SSH and launch remain disabled",
+    }
+
+
+def _m055b_summary(report: LambdaM055BReport | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "username_policy_status": report.username_policy_status,
+        "host_key_policy_status": report.host_key_policy_status,
+        "identity_policy_status": report.identity_policy_status,
+        "private_key_file_policy_status": report.private_key_file_policy_status,
+        "stderr_capture_policy_status": report.stderr_capture_policy_status,
+        "provider_key_attachment_diagnostic_status": (
+            report.provider_key_attachment_diagnostic_status
+        ),
+        "historical_probe_classification": report.historical_probe_classification,
+        "retry_policy_status": report.retry_policy_status,
+        "report_passed": report.report_passed,
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": "M055B is offline SSH failure diagnostics; SSH and launch remain disabled",
+    }
+
+
+def _m055d_summary(report: LambdaM055DReport | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "capacity_closeout_status": report.capacity_closeout_status,
+        "live_candidate_selection_status": report.live_candidate_selection_status,
+        "selected_candidate": report.selected_candidate,
+        "selected_region": report.selected_region,
+        "retry_policy_status": report.retry_policy_status,
+        "operator_decision_status": report.operator_decision_status,
+        "m056_authorization_status": report.m056_authorization_status,
+        "command_preview_status": report.command_preview_status,
+        "report_passed": report.report_passed,
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": "M055D prepares a future M056 review; SSH and launch remain disabled",
     }

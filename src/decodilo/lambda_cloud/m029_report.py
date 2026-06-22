@@ -95,6 +95,17 @@ class LambdaM029Report(BaseModel):
     ssh_host_present: bool = False
     ssh_key_present: bool | None = None
     ssh_auth_result: str | None = None
+    ssh_port_readiness_attempted: bool = False
+    ssh_port_reachable: bool | None = None
+    ssh_port_poll_count: int = 0
+    ssh_port_wait_seconds: float = 0.0
+    ssh_port_connect_timeout_seconds: float | None = None
+    ssh_exit_status: int | None = None
+    ssh_failure_classification: str | None = None
+    ssh_redacted_stderr_present: bool = False
+    ssh_stderr_sha256_prefix: str | None = None
+    ssh_stderr_truncated: bool = False
+    ssh_stderr_secret_scan_passed: bool | None = None
     remote_command_attempted: bool = False
     remote_command_result: str | None = None
     file_transfer_attempted: bool = False

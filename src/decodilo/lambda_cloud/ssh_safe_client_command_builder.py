@@ -22,6 +22,9 @@ REQUIRED_SAFE_OPTIONS = (
     "ForwardX11=no",
     "PermitLocalCommand=no",
     "ControlMaster=no",
+    "IdentitiesOnly=yes",
+    "UserKnownHostsFile=<redacted-run-known-hosts-file>",
+    "StrictHostKeyChecking=accept-new",
     "SessionType=none",
     "PasswordAuthentication=no",
     "NumberOfPasswordPrompts=0",
@@ -50,7 +53,7 @@ UNSAFE_TOKENS = (
     "rsync",
 )
 
-HOST_PLACEHOLDER = "lambda-user@<redacted-host>"
+HOST_PLACEHOLDER = "ubuntu@<redacted-host>"
 KEY_REF_PLACEHOLDER = "<redacted-private-key-reference>"
 
 
@@ -138,7 +141,7 @@ def build_lambda_ssh_safe_client_command_from_path(
         blockers=sorted(set(blockers)),
         warnings=[
             "M054A does not execute this SSH command preview",
-            "SessionType=none and -N are required to avoid shell/session requests",
+            "SessionType=none, -N, and -T are required to avoid shell/session requests",
             "future M054B controller must enforce the local process timeout",
             *policy.warnings,
         ],
@@ -152,6 +155,7 @@ def build_safe_openssh_connectivity_probe_command() -> list[str]:
     command.extend(
         [
             "-N",
+            "-T",
             "-i",
             KEY_REF_PLACEHOLDER,
             HOST_PLACEHOLDER,
@@ -180,7 +184,9 @@ def validate_ssh_connectivity_command_preview(command: list[str]) -> dict[str, o
     remote_command_present = _remote_command_present(command)
     if remote_command_present:
         blockers.append("remote_command_present")
-    interactive_shell_requested = "-N" not in command or "SessionType=none" not in option_values
+    interactive_shell_requested = (
+        "-N" not in command or "-T" not in command or "SessionType=none" not in option_values
+    )
     if interactive_shell_requested:
         blockers.append("interactive_shell_not_prevented")
     if KEY_REF_PLACEHOLDER not in command:

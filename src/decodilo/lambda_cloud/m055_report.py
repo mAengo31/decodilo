@@ -33,6 +33,11 @@ class LambdaM055Report(BaseModel):
     ssh_key_present: bool | None = None
     ssh_probe_attempted: bool
     ssh_auth_result: str | None = None
+    ssh_port_readiness_attempted: bool = False
+    ssh_port_reachable: bool | None = None
+    ssh_port_poll_count: int = 0
+    ssh_port_wait_seconds: float = 0.0
+    ssh_port_connect_timeout_seconds: float | None = None
     remote_command_attempted: bool
     remote_command_result: str | None = None
     termination_request_sent: bool
@@ -130,6 +135,30 @@ def build_lambda_m055_report(
             run_report.get("ssh_attempted") or ssh_evidence.get("probe_attempted")
         ),
         ssh_auth_result=run_report.get("ssh_auth_result") or ssh_evidence.get("auth_result"),
+        ssh_port_readiness_attempted=bool(
+            run_report.get("ssh_port_readiness_attempted")
+            or ssh_evidence.get("ssh_port_readiness_attempted")
+        ),
+        ssh_port_reachable=(
+            run_report.get("ssh_port_reachable")
+            if "ssh_port_reachable" in run_report
+            else ssh_evidence.get("ssh_port_reachable")
+        ),
+        ssh_port_poll_count=int(
+            run_report.get("ssh_port_poll_count")
+            or ssh_evidence.get("ssh_port_poll_count")
+            or 0
+        ),
+        ssh_port_wait_seconds=float(
+            run_report.get("ssh_port_wait_seconds")
+            or ssh_evidence.get("ssh_port_wait_seconds")
+            or 0.0
+        ),
+        ssh_port_connect_timeout_seconds=(
+            run_report.get("ssh_port_connect_timeout_seconds")
+            if "ssh_port_connect_timeout_seconds" in run_report
+            else ssh_evidence.get("ssh_port_connect_timeout_seconds")
+        ),
         remote_command_attempted=bool(run_report.get("remote_command_attempted")),
         remote_command_result=run_report.get("remote_command_result"),
         termination_request_sent=bool(run_report.get("termination_request_sent")),

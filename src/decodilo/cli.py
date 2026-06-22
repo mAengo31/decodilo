@@ -6,9 +6,11 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import NamedTuple
 
 from decodilo.cloud.disabled_launcher import DisabledCloudLauncher
 from decodilo.cloud.dry_run import validate_report as validate_cloud_dry_run_report
@@ -858,6 +860,14 @@ from decodilo.lambda_cloud.m055_report import (
     build_lambda_m055_report_from_paths,
     write_lambda_m055_report,
 )
+from decodilo.lambda_cloud.m055b_report import (
+    build_lambda_m055b_report_from_paths,
+    write_lambda_m055b_report,
+)
+from decodilo.lambda_cloud.m055d_report import (
+    build_lambda_m055d_report_from_paths,
+    write_lambda_m055d_report,
+)
 from decodilo.lambda_cloud.metadata_bootstrap_closeout import (
     build_lambda_metadata_bootstrap_closeout_from_paths,
     write_lambda_metadata_bootstrap_closeout,
@@ -1123,6 +1133,14 @@ from decodilo.lambda_cloud.shape_evidence import (
     build_lambda_shape_evidence_report,
     write_lambda_shape_evidence_report,
 )
+from decodilo.lambda_cloud.ssh_capacity_history import (
+    build_lambda_ssh_capacity_history_from_paths,
+    write_lambda_ssh_capacity_history,
+)
+from decodilo.lambda_cloud.ssh_capacity_retry_closeout import (
+    build_lambda_ssh_capacity_retry_closeout_from_paths,
+    write_lambda_ssh_capacity_retry_closeout,
+)
 from decodilo.lambda_cloud.ssh_client_policy import (
     build_lambda_ssh_client_policy,
     write_lambda_ssh_client_policy,
@@ -1146,6 +1164,40 @@ from decodilo.lambda_cloud.ssh_connectivity_m054b_plan import (
     m054b_plan_hash,
     resolve_default_private_key_path,
     write_lambda_ssh_connectivity_m054b_plan,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m055c_gate_check import (
+    build_lambda_ssh_connectivity_m055c_gate_check_from_paths,
+    load_lambda_ssh_connectivity_m055c_gate_check,
+    write_lambda_ssh_connectivity_m055c_gate_check,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m055c_plan import (
+    build_lambda_ssh_connectivity_m055c_plan_from_paths,
+    load_lambda_ssh_connectivity_m055c_plan,
+    write_lambda_ssh_connectivity_m055c_plan,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m056_gate_check import (
+    build_lambda_ssh_connectivity_m056_gate_check_from_paths,
+    load_lambda_ssh_connectivity_m056_gate_check,
+    write_lambda_ssh_connectivity_m056_gate_check,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m056_one_shot_arming import (
+    build_lambda_ssh_connectivity_m056_one_shot_arming_from_paths,
+    is_lambda_ssh_connectivity_m056_one_shot_arming_expired,
+    load_lambda_ssh_connectivity_m056_one_shot_arming,
+    write_lambda_ssh_connectivity_m056_one_shot_arming,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m056_plan import (
+    M056_SELECTED_CANDIDATE,
+    M056_SELECTED_REGION,
+    build_lambda_ssh_connectivity_m056_plan_from_paths,
+    load_lambda_ssh_connectivity_m056_plan,
+    m056_plan_hash,
+    write_lambda_ssh_connectivity_m056_plan,
+)
+from decodilo.lambda_cloud.ssh_connectivity_m056_reviewer_bridge import (
+    build_lambda_ssh_connectivity_m056_reviewer_bridge_from_path,
+    load_lambda_ssh_connectivity_m056_reviewer_bridge,
+    write_lambda_ssh_connectivity_m056_reviewer_bridge,
 )
 from decodilo.lambda_cloud.ssh_connectivity_no_exec_audit import (
     build_lambda_ssh_connectivity_no_exec_audit_from_paths,
@@ -1189,23 +1241,77 @@ from decodilo.lambda_cloud.ssh_credential_policy import (
     build_lambda_ssh_credential_policy_from_path,
     write_lambda_ssh_credential_policy,
 )
+from decodilo.lambda_cloud.ssh_failure_stderr_capture import (
+    build_lambda_ssh_stderr_capture_policy,
+    load_lambda_ssh_stderr_capture_policy,
+    write_lambda_ssh_stderr_capture_policy,
+)
 from decodilo.lambda_cloud.ssh_host_discovery import (
     poll_ssh_host_from_provider_metadata,
     write_lambda_ssh_host_discovery_result,
+)
+from decodilo.lambda_cloud.ssh_host_key_policy import (
+    build_lambda_ssh_host_key_policy,
+    write_lambda_ssh_host_key_policy,
+)
+from decodilo.lambda_cloud.ssh_identity_policy import (
+    build_lambda_ssh_identity_policy_from_path,
+    write_lambda_ssh_identity_policy,
+)
+from decodilo.lambda_cloud.ssh_live_candidate_selector import (
+    build_lambda_ssh_live_candidate_selection_from_paths,
+    write_lambda_ssh_live_candidate_selection,
 )
 from decodilo.lambda_cloud.ssh_operator_approval import (
     build_lambda_ssh_operator_approval,
     write_lambda_ssh_operator_approval,
 )
+from decodilo.lambda_cloud.ssh_private_key_file_policy import (
+    build_lambda_ssh_private_key_file_policy,
+    write_lambda_ssh_private_key_file_policy,
+)
 from decodilo.lambda_cloud.ssh_private_key_reference_policy import (
     build_lambda_ssh_private_key_reference_policy_from_path,
     write_lambda_ssh_private_key_reference_policy,
+)
+from decodilo.lambda_cloud.ssh_probe_diagnostic_artifact import (
+    build_lambda_ssh_probe_diagnostic_from_paths,
+    write_lambda_ssh_probe_diagnostic,
+)
+from decodilo.lambda_cloud.ssh_probe_retry_policy import (
+    build_lambda_ssh_probe_retry_policy_from_path,
+    write_lambda_ssh_probe_retry_policy,
+)
+from decodilo.lambda_cloud.ssh_provider_key_attachment_diagnostic import (
+    build_lambda_ssh_provider_key_attachment_diagnostic_from_paths,
+    write_lambda_ssh_provider_key_attachment_diagnostic,
+)
+from decodilo.lambda_cloud.ssh_retry_candidate_policy import (
+    build_lambda_ssh_retry_candidate_policy_from_paths,
+    write_lambda_ssh_retry_candidate_policy,
+)
+from decodilo.lambda_cloud.ssh_retry_command_preview import (
+    build_lambda_ssh_retry_command_preview_from_path,
+    write_lambda_ssh_retry_command_preview,
+)
+from decodilo.lambda_cloud.ssh_retry_future_authorization import (
+    build_lambda_ssh_retry_future_authorization_from_paths,
+    load_lambda_ssh_retry_future_authorization,
+    write_lambda_ssh_retry_future_authorization,
+)
+from decodilo.lambda_cloud.ssh_retry_operator_decision import (
+    build_lambda_ssh_retry_operator_decision_from_paths,
+    write_lambda_ssh_retry_operator_decision,
 )
 from decodilo.lambda_cloud.ssh_safe_client_command_builder import (
     build_lambda_ssh_safe_client_command_from_path,
     load_lambda_ssh_safe_client_command,
     validate_ssh_connectivity_command_preview,
     write_lambda_ssh_safe_client_command,
+)
+from decodilo.lambda_cloud.ssh_username_policy import (
+    build_lambda_ssh_username_policy,
+    write_lambda_ssh_username_policy,
 )
 from decodilo.lambda_cloud.strand_cli_compatibility import (
     build_strand_cli_compatibility_report,
@@ -2464,6 +2570,7 @@ def _cmd_lambda_preflight(args: argparse.Namespace) -> int:
         m052_report=args.m052_report,
         m053_report=args.m053_report,
         m054a_report=args.m054a_report,
+        m055d_report=args.m055d_report,
     )
     if args.out is not None:
         write_lambda_preflight_report(args.out, report)
@@ -3756,7 +3863,9 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
     workdir = args.workdir
     workdir.mkdir(parents=True, exist_ok=True)
     fake_mode = bool(args.fake_server_url or args.in_memory_fake)
-    m054b_ssh_attempt = _load_m054b_ssh_connectivity_execution_gates(args)
+    m054b_ssh_attempt = _load_m056_ssh_retry_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m054b_ssh_connectivity_execution_gates(args)
     if m054b_ssh_attempt is not None and (
         _has_m051_specific_run_flags(args)
         or _has_m039_specific_run_flags(args)
@@ -3859,8 +3968,10 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         authorization = None
         second_attempt = None
         third_attempt = None
-        run_id = "lambda-m054b-ssh-connectivity"
-        plan_hash = m054b_plan_hash(m054b_ssh_attempt["plan"])
+        run_id = m054b_ssh_attempt.get("run_id", "lambda-m054b-ssh-connectivity")
+        plan_hash = m054b_ssh_attempt.get("plan_hash") or m054b_plan_hash(
+            m054b_ssh_attempt["plan"]
+        )
     else:
         m028_report = None
         authorization = None
@@ -3984,6 +4095,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             ssh_connectivity=m054b_ssh_attempt,
             idempotency_key=launch_idempotency_key,
             fake_server_mode=fake_mode,
+            env_file=args.env_file,
         )
         (workdir / "m054b-ssh-connectivity-gates.json").write_text(
             json.dumps(
@@ -3995,7 +4107,11 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             encoding="utf-8",
         )
         write_lambda_ssh_connectivity_m054b_plan(
-            workdir / "m054b-plan.json",
+            workdir / (
+                "m056-plan.json"
+                if m054b_ssh_attempt.get("milestone") == "M056"
+                else "m054b-plan.json"
+            ),
             m054b_ssh_attempt["plan"],
         )
     else:
@@ -4145,13 +4261,13 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 m054b_ssh_attempt["ssh_key_selection"].selected_ssh_key_name_for_payload
             )
             if fake_mode
-            else _m055_explicit_private_key_path()
+            else _m055_explicit_private_key_path(args.env_file)
         )
         ssh_evidence = run_lambda_ssh_connectivity_probe(
             owned_instance_id=launch_result.owned_instance_id,
             instance_payload=instance_payload,
             private_key_path=private_key_path,
-            safe_client_command=args.m054_ssh_safe_client_command,
+            safe_client_command=m054b_ssh_attempt["safe_client_command_path"],
             ssh_username=m054b_ssh_attempt["plan"].ssh_username,
             timeout_seconds=15,
             fake_mode=fake_mode,
@@ -4273,6 +4389,21 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             "ssh_key_present": ssh_evidence.ssh_key_present,
             "ssh_attempted": ssh_evidence.probe_attempted,
             "ssh_auth_result": ssh_evidence.auth_result,
+            "ssh_port_readiness_attempted": (
+                ssh_evidence.ssh_port_readiness_attempted
+            ),
+            "ssh_port_reachable": ssh_evidence.ssh_port_reachable,
+            "ssh_port_poll_count": ssh_evidence.ssh_port_poll_count,
+            "ssh_port_wait_seconds": ssh_evidence.ssh_port_wait_seconds,
+            "ssh_port_connect_timeout_seconds": (
+                ssh_evidence.ssh_port_connect_timeout_seconds
+            ),
+            "ssh_exit_status": ssh_evidence.exit_status,
+            "ssh_failure_classification": ssh_evidence.ssh_failure_classification,
+            "ssh_redacted_stderr_present": ssh_evidence.redacted_stderr_present,
+            "ssh_stderr_sha256_prefix": ssh_evidence.stderr_sha256_prefix,
+            "ssh_stderr_truncated": ssh_evidence.stderr_truncated,
+            "ssh_stderr_secret_scan_passed": ssh_evidence.stderr_secret_scan_passed,
             "remote_command_attempted": ssh_evidence.remote_command_attempted,
             "remote_command_result": (
                 "not_attempted"
@@ -4643,6 +4774,199 @@ def _has_m054_ssh_connectivity_run_flags(args: argparse.Namespace) -> bool:
     return any(getattr(args, name, None) is not None for name in names)
 
 
+def _has_m056_ssh_retry_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m056_plan",
+        "m056_gate_check",
+        "m056_authorization",
+        "m056_one_shot_arming",
+        "m056_reviewer_bridge",
+        "m056_ssh_static_validation",
+        "m056_ssh_no_exec_audit",
+        "m056_ssh_safe_client_command",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _load_m056_ssh_retry_execution_gates(args: argparse.Namespace) -> dict | None:
+    values = {
+        "m056_plan": args.m056_plan,
+        "m056_gate_check": args.m056_gate_check,
+        "m056_authorization": args.m056_authorization,
+        "m056_one_shot_arming": args.m056_one_shot_arming,
+        "m056_reviewer_bridge": args.m056_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    if not _has_m056_ssh_retry_run_flags(args):
+        return None
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M056 SSH retry run requires all M056 artifacts; missing "
+            + ", ".join(missing)
+        )
+    plan = load_lambda_ssh_connectivity_m056_plan(args.m056_plan)
+    gate = load_lambda_ssh_connectivity_m056_gate_check(args.m056_gate_check)
+    authorization = load_lambda_ssh_retry_future_authorization(args.m056_authorization)
+    arming = load_lambda_ssh_connectivity_m056_one_shot_arming(
+        args.m056_one_shot_arming
+    )
+    bridge = load_lambda_ssh_connectivity_m056_reviewer_bridge(
+        args.m056_reviewer_bridge
+    )
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(
+        args.response_loss_controls
+    )
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m056_plan_not_passed"])
+    if plan.selected_candidate != M056_SELECTED_CANDIDATE:
+        blockers.append("m056_selected_candidate_must_be_gpu_1x_a10")
+    if plan.selected_region != M056_SELECTED_REGION:
+        blockers.append("m056_selected_region_must_be_us_east_1")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m056_gate_not_passed"])
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m056_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m056_gate_region_mismatch")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m056_live_candidate_ssh_retry_review"
+    ):
+        blockers.extend(authorization.blockers or ["m056_authorization_not_ready"])
+    if authorization.selected_candidate != plan.selected_candidate:
+        blockers.append("m056_authorization_candidate_mismatch")
+    if authorization.selected_region != plan.selected_region:
+        blockers.append("m056_authorization_region_mismatch")
+    if arming.arming_status != "armed_for_one_shot_m056_ssh_retry":
+        blockers.extend(arming.blockers or ["m056_one_shot_arming_not_armed"])
+    if is_lambda_ssh_connectivity_m056_one_shot_arming_expired(arming):
+        blockers.append("m056_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m056_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m056_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m056_bridge_ssh_probe_not_permitted")
+    if bridge.selected_candidate != plan.selected_candidate:
+        blockers.append("m056_bridge_candidate_mismatch")
+    if bridge.selected_region != plan.selected_region:
+        blockers.append("m056_bridge_region_mismatch")
+    if bridge.max_launch_attempts != 1 or bridge.max_ssh_connectivity_attempts != 1:
+        blockers.append("m056_bridge_attempt_counts_not_one")
+    if not bridge.no_auto_retry:
+        blockers.append("m056_bridge_auto_retry_enabled")
+    if (
+        not bridge.no_remote_exec
+        or not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+        or not bridge.stderr_capture_enabled
+    ):
+        blockers.append("m056_bridge_allows_forbidden_ssh_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if (
+        safe_command.remote_command_present
+        or safe_command.interactive_shell_requested
+        or safe_command.file_transfer_detected
+        or safe_command.port_forwarding_detected
+        or safe_command.unsafe_ssh_option_detected
+        or safe_command.needs_more_design
+    ):
+        blockers.append("m056_safe_client_command_detected_unsafe_behavior")
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m056_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m056_plan_exceeds_budget_or_runtime_limit")
+    if not plan.private_key_reference_available_for_probe:
+        blockers.append("m056_private_key_reference_unavailable_for_probe")
+    if blockers:
+        raise SystemExit(
+            "M056 SSH retry execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M056",
+        "run_id": "lambda-m056-ssh-connectivity-retry",
+        "plan": plan,
+        "plan_hash": m056_plan_hash(plan),
+        "gate": gate,
+        "authorization": authorization,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m056_ssh_retry",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m056_ssh_retry_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "remote_exec_allowed": False,
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
 def _load_m054b_ssh_connectivity_execution_gates(
     args: argparse.Namespace,
 ) -> dict | None:
@@ -4656,6 +4980,9 @@ def _load_m054b_ssh_connectivity_execution_gates(
         "m054_ssh_safe_client_command": args.m054_ssh_safe_client_command,
         "ssh_key_selection": args.ssh_key_selection,
         "response_loss_controls": args.response_loss_controls,
+        "m055c_plan": args.m055c_plan,
+        "m055c_gate_check": args.m055c_gate_check,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
     }
     trigger_names = [
         "m054b_plan",
@@ -4665,10 +4992,22 @@ def _load_m054b_ssh_connectivity_execution_gates(
         "m054_ssh_no_exec_audit",
         "m054_ssh_command_preview",
         "m054_ssh_safe_client_command",
+        "m055c_plan",
+        "m055c_gate_check",
+        "ssh_stderr_capture_policy",
     ]
     if not any(values[name] is not None for name in trigger_names):
         return None
-    missing = [name for name, value in values.items() if value is None]
+    optional_m055c_names = {
+        "m055c_plan",
+        "m055c_gate_check",
+        "ssh_stderr_capture_policy",
+    }
+    missing = [
+        name
+        for name, value in values.items()
+        if value is None and name not in optional_m055c_names
+    ]
     if missing:
         raise SystemExit(
             "M054B SSH-connectivity run requires all M054B artifacts; missing "
@@ -4691,6 +5030,21 @@ def _load_m054b_ssh_connectivity_execution_gates(
     safe_command = load_lambda_ssh_safe_client_command(args.m054_ssh_safe_client_command)
     safe_validation = validate_ssh_connectivity_command_preview(
         safe_command.command_preview
+    )
+    m055c_plan = (
+        load_lambda_ssh_connectivity_m055c_plan(args.m055c_plan)
+        if args.m055c_plan is not None
+        else None
+    )
+    m055c_gate = (
+        load_lambda_ssh_connectivity_m055c_gate_check(args.m055c_gate_check)
+        if args.m055c_gate_check is not None
+        else None
+    )
+    stderr_policy = (
+        load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+        if args.ssh_stderr_capture_policy is not None
+        else None
     )
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(
@@ -4771,6 +5125,39 @@ def _load_m054b_ssh_connectivity_execution_gates(
         blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
     if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
         blockers.append("m054_plan_ssh_key_hash_mismatch")
+    m055c_triggered = any(
+        value is not None
+        for value in (args.m055c_plan, args.m055c_gate_check, args.ssh_stderr_capture_policy)
+    )
+    if m055c_triggered and (
+        m055c_plan is None or m055c_gate is None or stderr_policy is None
+    ):
+        blockers.append("m055c_requires_plan_gate_and_stderr_policy")
+    if m055c_plan is not None:
+        if m055c_plan.plan_status != "plan_passed":
+            blockers.extend(m055c_plan.blockers or ["m055c_plan_not_passed"])
+        if m055c_plan.selected_candidate != plan.selected_candidate:
+            blockers.append("m055c_plan_candidate_mismatch")
+        if m055c_plan.selected_region != plan.selected_region:
+            blockers.append("m055c_plan_region_mismatch")
+        if m055c_plan.ssh_username != plan.ssh_username:
+            blockers.append("m055c_plan_username_mismatch")
+        if not m055c_plan.stderr_capture_enabled:
+            blockers.append("m055c_plan_stderr_capture_not_enabled")
+    if m055c_gate is not None:
+        if not m055c_gate.gate_passed:
+            blockers.extend(m055c_gate.blockers or ["m055c_gate_not_passed"])
+        if not m055c_gate.stderr_capture_active:
+            blockers.append("m055c_gate_stderr_capture_not_active")
+        if m055c_gate.max_ssh_attempts != 1 or m055c_gate.max_launch_attempts != 1:
+            blockers.append("m055c_gate_attempt_counts_not_one")
+        if not m055c_gate.no_auto_retry:
+            blockers.append("m055c_gate_auto_retry_enabled")
+    if stderr_policy is not None:
+        if stderr_policy.capture_policy_status != "policy_defined":
+            blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+        if not stderr_policy.secret_scan_passed:
+            blockers.append("stderr_capture_policy_secret_scan_failed")
     if plan.quantity != 1:
         blockers.append("quantity_must_equal_one")
     if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
@@ -4791,6 +5178,9 @@ def _load_m054b_ssh_connectivity_execution_gates(
         "command_preview": preview,
         "safe_client_command": safe_command,
         "safe_client_command_path": args.m054_ssh_safe_client_command,
+        "m055c_plan": m055c_plan,
+        "m055c_gate": m055c_gate,
+        "stderr_capture_policy": stderr_policy,
         "ssh_key_selection": ssh_selection,
         "response_loss_controls": controls,
         "summary": {
@@ -5542,6 +5932,7 @@ def _arm_m054b_ssh_connectivity_attempt(
     ssh_connectivity: dict,
     idempotency_key: str,
     fake_server_mode: bool,
+    env_file: Path | None = None,
 ) -> LambdaM029ArmingReport:
     blockers: list[str] = []
     plan = ssh_connectivity["plan"]
@@ -5550,6 +5941,11 @@ def _arm_m054b_ssh_connectivity_attempt(
     static = ssh_connectivity["static_validation"]
     audit = ssh_connectivity["no_exec_audit"]
     safe_command = ssh_connectivity["safe_client_command"]
+    expected_arming_status = ssh_connectivity.get(
+        "expected_arming_status",
+        "armed_for_one_shot_m054_ssh_connectivity",
+    )
+    is_m056 = ssh_connectivity.get("milestone") == "M056"
     if not execute_real_launch:
         blockers.append("missing --execute-real-launch")
     if confirm_billable_action != CONFIRM_BILLABLE_ACTION:
@@ -5558,14 +5954,21 @@ def _arm_m054b_ssh_connectivity_attempt(
         blockers.append("missing exact terminate-required confirmation")
     if (
         not fake_server_mode
-        and os.environ.get("CONFIRM_" + "LAM" + "BDA_BILLABLE_ACTION") != "true"
+        and _m055_env_source_value("CONFIRM_" + "LAM" + "BDA_BILLABLE_ACTION", env_file)
+        != "true"
     ):
         blockers.append("missing CONFIRM_LAMBDA_BILLABLE_ACTION=true")
+    if not fake_server_mode:
+        key_resolution = _m055_private_key_resolution(env_file)
+        if key_resolution.path is None:
+            blockers.append(key_resolution.blocker or "missing m055 private key file")
     if plan.plan_status != "plan_passed":
-        blockers.extend(plan.blockers or ["m054b_plan_not_passed"])
-    if arming.arming_status != "armed_for_one_shot_m054_ssh_connectivity":
-        blockers.extend(arming.blockers or ["m054_ssh_one_shot_arming_not_armed"])
-    if is_lambda_ssh_connectivity_one_shot_arming_expired(arming):
+        blockers.extend(plan.blockers or ["ssh_connectivity_plan_not_passed"])
+    if arming.arming_status != expected_arming_status:
+        blockers.extend(arming.blockers or ["ssh_one_shot_arming_not_armed"])
+    if is_m056 and is_lambda_ssh_connectivity_m056_one_shot_arming_expired(arming):
+        blockers.append("m056_ssh_one_shot_arming_expired")
+    if not is_m056 and is_lambda_ssh_connectivity_one_shot_arming_expired(arming):
         blockers.append("m054_ssh_one_shot_arming_expired")
     if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
         blockers.extend(bridge.blockers or ["m054_ssh_reviewer_bridge_not_ready"])
@@ -7048,6 +7451,170 @@ def _cmd_lambda_ssh_connectivity_private_key_policy(args: argparse.Namespace) ->
     return 0 if report.key_reference_policy_status == "policy_defined" else 1
 
 
+def _cmd_lambda_ssh_connectivity_username_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_username_policy()
+    write_lambda_ssh_username_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.username_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_host_key_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_host_key_policy()
+    write_lambda_ssh_host_key_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.host_key_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_identity_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_identity_policy_from_path(args.private_key_policy)
+    write_lambda_ssh_identity_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.identity_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_private_key_file_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_private_key_file_policy()
+    write_lambda_ssh_private_key_file_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.private_key_file_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_stderr_capture_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_stderr_capture_policy()
+    write_lambda_ssh_stderr_capture_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.capture_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_provider_key_diagnostic(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_provider_key_attachment_diagnostic_from_paths(
+        ssh_key_selection=args.ssh_key_selection,
+        launch_report=args.launch_report,
+        provider_key_list=args.provider_key_list,
+        local_private_key_matches_public_identity=(
+            True if args.local_private_key_matches_public_identity else None
+        ),
+    )
+    write_lambda_ssh_provider_key_attachment_diagnostic(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.key_attachment_diagnostic_status != "mismatch" else 1
+
+
+def _cmd_lambda_ssh_connectivity_diagnose_failure(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_probe_diagnostic_from_paths(
+        workdir=args.workdir,
+        fallback_report=args.fallback_report,
+    )
+    write_lambda_ssh_probe_diagnostic(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_ssh_connectivity_retry_policy(args: argparse.Namespace) -> int:
+    if args.probe_diagnostic is not None:
+        report = build_lambda_ssh_probe_retry_policy_from_path(args.probe_diagnostic)
+        write_lambda_ssh_probe_retry_policy(args.out, report)
+        _print_json(report.model_dump(mode="json"))
+        return 0 if report.retry_policy_status == "future_retry_review_allowed" else 1
+    if args.capacity_history is None or args.stderr_policy is None:
+        raise SystemExit(
+            "retry-policy requires either --probe-diagnostic or both "
+            "--capacity-history and --stderr-policy"
+        )
+    report = build_lambda_ssh_retry_candidate_policy_from_paths(
+        capacity_history=args.capacity_history,
+        stderr_policy=args.stderr_policy,
+    )
+    write_lambda_ssh_retry_candidate_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_passed" else 1
+
+
+def _cmd_lambda_ssh_connectivity_capacity_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_capacity_retry_closeout_from_paths(
+        workdir=args.workdir,
+        capacity_closeout=args.capacity_closeout,
+        post_discovery=args.post_discovery,
+    )
+    write_lambda_ssh_capacity_retry_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_ssh_connectivity_capacity_history(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_capacity_history_from_paths(
+        latest_closeout=args.latest_closeout,
+    )
+    write_lambda_ssh_capacity_history(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_ssh_connectivity_select_live_candidate(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_live_candidate_selection_from_paths(
+        discovery_report=args.discovery_report,
+        price_snapshot=args.price_snapshot,
+        ssh_key_selection=args.ssh_key_selection,
+        capacity_history=args.capacity_history,
+        max_budget=args.max_budget,
+    )
+    write_lambda_ssh_live_candidate_selection(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.selection_status == "selected_live_candidate" else 1
+
+
+def _cmd_lambda_ssh_connectivity_retry_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_retry_operator_decision_from_paths(
+        candidate_selection=args.candidate_selection,
+        retry_policy=args.retry_policy,
+    )
+    write_lambda_ssh_retry_operator_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.decision_status == "authorize_future_live_candidate_ssh_retry_review"
+        else 1
+    )
+
+
+def _cmd_lambda_ssh_connectivity_authorize_m056(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_retry_future_authorization_from_paths(
+        capacity_closeout=args.capacity_closeout,
+        candidate_selection=args.candidate_selection,
+        retry_policy=args.retry_policy,
+        operator_decision=args.operator_decision,
+    )
+    write_lambda_ssh_retry_future_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m056_live_candidate_ssh_retry_review"
+        else 1
+    )
+
+
+def _cmd_lambda_ssh_connectivity_retry_command_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_retry_command_preview_from_path(args.authorization)
+    write_lambda_ssh_retry_command_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m056_live_candidate_ssh_retry_review"
+        else 1
+    )
+
+
 def _cmd_lambda_ssh_connectivity_safe_client_command(args: argparse.Namespace) -> int:
     report = build_lambda_ssh_safe_client_command_from_path(args.private_key_policy)
     write_lambda_ssh_safe_client_command(args.out, report)
@@ -7124,6 +7691,90 @@ def _cmd_lambda_ssh_connectivity_m054b_plan(args: argparse.Namespace) -> int:
     return 0 if report.plan_status == "plan_passed" else 1
 
 
+def _cmd_lambda_ssh_connectivity_m055c_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_connectivity_m055c_plan_from_paths(
+        discovery_report=args.discovery_report,
+        username_policy=args.username_policy,
+        host_key_policy=args.host_key_policy,
+        identity_policy=args.identity_policy,
+        private_key_file_policy=args.private_key_file_policy,
+        stderr_capture_policy=args.stderr_capture_policy,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_ssh_connectivity_m055c_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_ssh_connectivity_m055c_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_connectivity_m055c_gate_check_from_paths(
+        plan=args.plan,
+        safe_client_command=args.safe_client_command,
+        static_validation=args.static_validation,
+        no_exec_audit=args.no_exec_audit,
+        stderr_capture_policy=args.stderr_capture_policy,
+    )
+    write_lambda_ssh_connectivity_m055c_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_ssh_connectivity_m056_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_connectivity_m056_plan_from_paths(
+        discovery_report=args.discovery_report,
+        authorization=args.authorization,
+        username_policy=args.username_policy,
+        host_key_policy=args.host_key_policy,
+        identity_policy=args.identity_policy,
+        private_key_file_policy=args.private_key_file_policy,
+        stderr_capture_policy=args.stderr_capture_policy,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_ssh_connectivity_m056_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_ssh_connectivity_m056_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_connectivity_m056_gate_check_from_paths(
+        plan=args.plan,
+        stderr_capture_policy=args.stderr_capture_policy,
+        retry_policy=args.retry_policy,
+        safe_client_command=args.safe_client_command,
+        static_validation=args.static_validation,
+        no_exec_audit=args.no_exec_audit,
+    )
+    write_lambda_ssh_connectivity_m056_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_ssh_connectivity_m056_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_connectivity_m056_one_shot_arming_from_paths(
+        plan=args.plan,
+        gate_check=args.gate_check,
+        authorization=args.authorization,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_ssh_connectivity_m056_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.arming_status == "armed_for_one_shot_m056_ssh_retry" else 1
+
+
+def _cmd_lambda_ssh_connectivity_m056_reviewer_bridge(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_connectivity_m056_reviewer_bridge_from_path(
+        arming=args.arming,
+    )
+    write_lambda_ssh_connectivity_m056_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
 def _cmd_lambda_m053_report(args: argparse.Namespace) -> int:
     report = build_lambda_m053_report_from_paths(
         scope=args.scope,
@@ -7180,6 +7831,37 @@ def _cmd_lambda_m055_report(args: argparse.Namespace) -> int:
     write_lambda_m055_report(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0
+
+
+def _cmd_lambda_m055b_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m055b_report_from_paths(
+        username_policy=args.username_policy,
+        host_key_policy=args.host_key_policy,
+        identity_policy=args.identity_policy,
+        private_key_file_policy=args.private_key_file_policy,
+        stderr_policy=args.stderr_policy,
+        provider_key_diagnostic=args.provider_key_diagnostic,
+        probe_diagnostic=args.probe_diagnostic,
+        retry_policy=args.retry_policy,
+    )
+    write_lambda_m055b_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m055d_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m055d_report_from_paths(
+        capacity_closeout=args.capacity_closeout,
+        capacity_history=args.capacity_history,
+        candidate_selection=args.candidate_selection,
+        retry_policy=args.retry_policy,
+        operator_decision=args.operator_decision,
+        authorization=args.authorization,
+        command_preview=args.command_preview,
+    )
+    write_lambda_m055d_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
 
 
 def _cmd_lambda_m052_report(args: argparse.Namespace) -> int:
@@ -8488,12 +9170,241 @@ def _m054b_get_owned_instance_payload(
         return {"data": {"id": owned_instance_id}}
 
 
-def _m055_explicit_private_key_path() -> Path | None:
-    raw_path = os.environ.get("LAMBDA" + "_SSH_PRIVATE_KEY_PATH")
-    if not raw_path:
+class _M055PrivateKeyResolution(NamedTuple):
+    path: Path | None
+    source: str | None
+    blocker: str | None
+
+
+def _m055_explicit_private_key_path(env_file: Path | None = None) -> Path | None:
+    return _m055_private_key_resolution(env_file).path
+
+
+def _m055_private_key_resolution(env_file: Path | None = None) -> _M055PrivateKeyResolution:
+    for source, raw_value in _m055_private_key_source_values(env_file):
+        resolved = _m055_resolve_private_key_source_value(raw_value)
+        if resolved is not None:
+            return _M055PrivateKeyResolution(resolved, source, None)
+    if _m055_env_source_value("LAMBDA" + "_SSH_KEY", env_file) is not None:
+        return _M055PrivateKeyResolution(
+            None,
+            "LAMBDA_SSH_KEY",
+            "LAMBDA_SSH_KEY must name an existing local private key file",
+        )
+    return _M055PrivateKeyResolution(
+        None,
+        None,
+        "missing LAMBDA_SSH_PRIVATE_KEY_PATH or LAMBDA_SSH_KEY local private key file",
+    )
+
+
+def _m055_private_key_source_values(
+    env_file: Path | None = None,
+) -> list[tuple[str, str]]:
+    names = ("LAMBDA" + "_SSH_PRIVATE_KEY_PATH", "LAMBDA" + "_SSH_KEY")
+    values: list[tuple[str, str]] = []
+    for name in names:
+        value = os.environ.get(name)
+        if value:
+            values.append((name, value))
+    for name in names:
+        value = _m055_env_file_value(env_file, name)
+        if value:
+            values.append((f"env_file:{name}", value))
+    return values
+
+
+def _m055_env_source_value(name: str, env_file: Path | None = None) -> str | None:
+    return os.environ.get(name) or _m055_env_file_value(env_file, name)
+
+
+def _m055_env_file_value(env_file: Path | None, name: str) -> str | None:
+    if env_file is None or not env_file.is_file():
         return None
-    path = Path(raw_path).expanduser()
-    return path if path.is_file() else None
+    for raw_line in env_file.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        if key.strip() != name:
+            continue
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        return value or None
+    return None
+
+
+def _m055_resolve_private_key_source_value(raw_value: str) -> Path | None:
+    value = raw_value.strip()
+    if not value or "\n" in value or "\r" in value:
+        return None
+    if value.startswith("-----BEGIN ") or "PRIVATE KEY-----" in value:
+        return None
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path if path.is_file() else None
+    if not any(separator in value for separator in {"/", "\\"}):
+        candidate = Path.home() / ".ssh" / value
+        if candidate.is_file():
+            return candidate
+        comment_match = _m055_private_key_from_public_key_comment(value)
+        if comment_match is not None:
+            return comment_match
+    return _m055_private_key_from_public_key_material(value)
+
+
+def _m055_private_key_from_public_key_material(value: str) -> Path | None:
+    identity = _m055_public_key_identity(value)
+    if identity is None:
+        return None
+    for ssh_dir in _m055_private_key_search_dirs():
+        for public_key_path in sorted(ssh_dir.glob("*.pub")):
+            try:
+                public_identity = _m055_public_key_identity(
+                    public_key_path.read_text(encoding="utf-8", errors="ignore")
+                )
+            except OSError:
+                continue
+            if public_identity != identity:
+                continue
+            private_key_path = public_key_path.with_suffix("")
+            if private_key_path.is_file():
+                return private_key_path
+        for private_key_path in _m055_candidate_private_key_files(ssh_dir):
+            if _m055_public_key_identity_from_private_key(private_key_path) == identity:
+                return private_key_path
+    for private_key_path in _m055_direct_tmp_private_key_files():
+        if _m055_public_key_identity_from_private_key(private_key_path) == identity:
+            return private_key_path
+    return None
+
+
+def _m055_private_key_from_public_key_comment(comment: str) -> Path | None:
+    ssh_dir = Path.home() / ".ssh"
+    if not ssh_dir.is_dir():
+        return None
+    for public_key_path in sorted(ssh_dir.glob("*.pub")):
+        try:
+            parts = public_key_path.read_text(
+                encoding="utf-8",
+                errors="ignore",
+            ).strip().split(maxsplit=2)
+        except OSError:
+            continue
+        if len(parts) < 3 or parts[2] != comment:
+            continue
+        private_key_path = public_key_path.with_suffix("")
+        if private_key_path.is_file():
+            return private_key_path
+    return None
+
+
+def _m055_public_key_identity(value: str) -> str | None:
+    parts = value.strip().split()
+    if len(parts) < 2:
+        return None
+    key_type, key_body = parts[0], parts[1]
+    if not (
+        key_type in {"ssh-ed25519", "ssh-rsa"}
+        or key_type.startswith("ecdsa-sha2-")
+        or key_type.startswith("sk-ssh-ed25519")
+        or key_type.startswith("sk-ecdsa-sha2-")
+    ):
+        return None
+    if not key_body or any(character.isspace() for character in key_body):
+        return None
+    return f"{key_type} {key_body}"
+
+
+def _m055_candidate_private_key_files(ssh_dir: Path) -> list[Path]:
+    excluded_names = {
+        "authorized_keys",
+        "config",
+        "environment",
+        "known_hosts",
+        "known_hosts.old",
+    }
+    candidates: list[Path] = []
+    for path in sorted(ssh_dir.iterdir()):
+        if (
+            not path.is_file()
+            or path.name in excluded_names
+            or path.name.endswith(".pub")
+            or path.name.startswith(".")
+            or not _m055_file_looks_like_private_key(path)
+        ):
+            continue
+        candidates.append(path)
+    return candidates
+
+
+def _m055_direct_tmp_private_key_files() -> list[Path]:
+    tmp = Path("/tmp")
+    if not tmp.is_dir():
+        return []
+    return [
+        path
+        for path in sorted(tmp.glob("decodilo*"))
+        if path.is_file()
+        and path.stat().st_size <= 50_000
+        and _m055_file_looks_like_private_key(path)
+    ]
+
+
+def _m055_file_looks_like_private_key(path: Path) -> bool:
+    try:
+        head = path.read_text(encoding="utf-8", errors="ignore")[:300]
+    except OSError:
+        return False
+    return any(
+        marker in head
+        for marker in (
+            "BEGIN OPENSSH PRIVATE KEY",
+            "BEGIN RSA PRIVATE KEY",
+            "BEGIN EC PRIVATE KEY",
+            "PRIVATE KEY-----",
+        )
+    )
+
+
+def _m055_private_key_search_dirs() -> list[Path]:
+    dirs: list[Path] = []
+    home_ssh = Path.home() / ".ssh"
+    if home_ssh.is_dir():
+        dirs.append(home_ssh)
+    cwd = Path.cwd()
+    if cwd.is_dir():
+        dirs.append(cwd)
+    tmp = Path("/tmp")
+    if tmp.is_dir():
+        dirs.extend(path for path in sorted(tmp.glob("decodilo*")) if path.is_dir())
+    seen: set[Path] = set()
+    unique: list[Path] = []
+    for path in dirs:
+        resolved = path.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            unique.append(path)
+    return unique
+
+
+def _m055_public_key_identity_from_private_key(private_key_path: Path) -> str | None:
+    try:
+        completed = subprocess.run(  # noqa: S603 - local ssh-keygen, no shell.
+            ["ssh-keygen", "-y", "-f", str(private_key_path)],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=3,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if completed.returncode != 0:
+        return None
+    return _m055_public_key_identity(completed.stdout)
 
 
 def _m054b_poll_owned_instance_ssh_host(
@@ -9941,6 +10852,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_preflight.add_argument("--m052-report", type=Path, default=None)
     lambda_preflight.add_argument("--m053-report", type=Path, default=None)
     lambda_preflight.add_argument("--m054a-report", type=Path, default=None)
+    lambda_preflight.add_argument("--m055d-report", type=Path, default=None)
     lambda_preflight.add_argument("--out", type=Path, default=None)
     lambda_preflight.set_defaults(func=_cmd_lambda_preflight)
     lambda_live = lambda_sub.add_parser("live-discover", allow_abbrev=False)
@@ -10688,6 +11600,17 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m029_run.add_argument("--m054-ssh-no-exec-audit", type=Path, default=None)
     lambda_m029_run.add_argument("--m054-ssh-command-preview", type=Path, default=None)
     lambda_m029_run.add_argument("--m054-ssh-safe-client-command", type=Path, default=None)
+    lambda_m029_run.add_argument("--m055c-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m055c-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--ssh-stderr-capture-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-authorization", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-ssh-static-validation", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-ssh-no-exec-audit", type=Path, default=None)
+    lambda_m029_run.add_argument("--m056-ssh-safe-client-command", type=Path, default=None)
     lambda_m029_run.set_defaults(func=_cmd_lambda_m029_run)
     lambda_m029_verify = lambda_m029_sub.add_parser("verify")
     lambda_m029_verify.add_argument("--workdir", type=Path, required=True)
@@ -13038,6 +13961,149 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_private_key.set_defaults(
         func=_cmd_lambda_ssh_connectivity_private_key_policy
     )
+    lambda_ssh_username = lambda_ssh_connectivity_sub.add_parser("username-policy")
+    lambda_ssh_username.add_argument("--out", type=Path, required=True)
+    lambda_ssh_username.set_defaults(func=_cmd_lambda_ssh_connectivity_username_policy)
+    lambda_ssh_host_key = lambda_ssh_connectivity_sub.add_parser("host-key-policy")
+    lambda_ssh_host_key.add_argument("--out", type=Path, required=True)
+    lambda_ssh_host_key.set_defaults(func=_cmd_lambda_ssh_connectivity_host_key_policy)
+    lambda_ssh_identity = lambda_ssh_connectivity_sub.add_parser("identity-policy")
+    lambda_ssh_identity.add_argument("--private-key-policy", type=Path, required=True)
+    lambda_ssh_identity.add_argument("--out", type=Path, required=True)
+    lambda_ssh_identity.set_defaults(func=_cmd_lambda_ssh_connectivity_identity_policy)
+    lambda_ssh_key_file = lambda_ssh_connectivity_sub.add_parser(
+        "private-key-file-policy"
+    )
+    lambda_ssh_key_file.add_argument("--out", type=Path, required=True)
+    lambda_ssh_key_file.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_private_key_file_policy
+    )
+    lambda_ssh_stderr = lambda_ssh_connectivity_sub.add_parser(
+        "stderr-capture-policy"
+    )
+    lambda_ssh_stderr.add_argument("--out", type=Path, required=True)
+    lambda_ssh_stderr.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_stderr_capture_policy
+    )
+    lambda_ssh_provider_key = lambda_ssh_connectivity_sub.add_parser(
+        "provider-key-diagnostic"
+    )
+    lambda_ssh_provider_key.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_provider_key.add_argument("--launch-report", type=Path, default=None)
+    lambda_ssh_provider_key.add_argument("--provider-key-list", type=Path, default=None)
+    lambda_ssh_provider_key.add_argument(
+        "--local-private-key-matches-public-identity",
+        action="store_true",
+    )
+    lambda_ssh_provider_key.add_argument("--out", type=Path, required=True)
+    lambda_ssh_provider_key.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_provider_key_diagnostic
+    )
+    lambda_ssh_diagnose = lambda_ssh_connectivity_sub.add_parser("diagnose-failure")
+    lambda_ssh_diagnose.add_argument("--workdir", type=Path, default=None)
+    lambda_ssh_diagnose.add_argument("--fallback-report", type=Path, default=None)
+    lambda_ssh_diagnose.add_argument("--out", type=Path, required=True)
+    lambda_ssh_diagnose.set_defaults(func=_cmd_lambda_ssh_connectivity_diagnose_failure)
+    lambda_ssh_capacity_closeout = lambda_ssh_connectivity_sub.add_parser(
+        "capacity-closeout"
+    )
+    lambda_ssh_capacity_closeout.add_argument("--workdir", type=Path, required=True)
+    lambda_ssh_capacity_closeout.add_argument(
+        "--capacity-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_capacity_closeout.add_argument(
+        "--post-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_capacity_closeout.add_argument("--out", type=Path, required=True)
+    lambda_ssh_capacity_closeout.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_capacity_closeout
+    )
+    lambda_ssh_capacity_history = lambda_ssh_connectivity_sub.add_parser(
+        "capacity-history"
+    )
+    lambda_ssh_capacity_history.add_argument(
+        "--latest-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_capacity_history.add_argument("--out", type=Path, required=True)
+    lambda_ssh_capacity_history.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_capacity_history
+    )
+    lambda_ssh_select_live = lambda_ssh_connectivity_sub.add_parser(
+        "select-live-candidate"
+    )
+    lambda_ssh_select_live.add_argument("--discovery-report", type=Path, required=True)
+    lambda_ssh_select_live.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_ssh_select_live.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_ssh_select_live.add_argument("--capacity-history", type=Path, required=True)
+    lambda_ssh_select_live.add_argument("--max-budget", type=float, required=True)
+    lambda_ssh_select_live.add_argument("--out", type=Path, required=True)
+    lambda_ssh_select_live.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_select_live_candidate
+    )
+    lambda_ssh_retry = lambda_ssh_connectivity_sub.add_parser("retry-policy")
+    lambda_ssh_retry.add_argument("--probe-diagnostic", type=Path, default=None)
+    lambda_ssh_retry.add_argument("--capacity-history", type=Path, default=None)
+    lambda_ssh_retry.add_argument("--stderr-policy", type=Path, default=None)
+    lambda_ssh_retry.add_argument("--out", type=Path, required=True)
+    lambda_ssh_retry.set_defaults(func=_cmd_lambda_ssh_connectivity_retry_policy)
+    lambda_ssh_retry_decision = lambda_ssh_connectivity_sub.add_parser(
+        "retry-decision"
+    )
+    lambda_ssh_retry_decision.add_argument(
+        "--candidate-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_retry_decision.add_argument("--retry-policy", type=Path, required=True)
+    lambda_ssh_retry_decision.add_argument("--out", type=Path, required=True)
+    lambda_ssh_retry_decision.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_retry_decision
+    )
+    lambda_ssh_authorize_m056 = lambda_ssh_connectivity_sub.add_parser(
+        "authorize-m056"
+    )
+    lambda_ssh_authorize_m056.add_argument(
+        "--capacity-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_authorize_m056.add_argument(
+        "--candidate-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_authorize_m056.add_argument("--retry-policy", type=Path, required=True)
+    lambda_ssh_authorize_m056.add_argument(
+        "--operator-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_authorize_m056.add_argument("--out", type=Path, required=True)
+    lambda_ssh_authorize_m056.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_authorize_m056
+    )
+    lambda_ssh_retry_preview = lambda_ssh_connectivity_sub.add_parser(
+        "retry-command-preview"
+    )
+    lambda_ssh_retry_preview.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_retry_preview.add_argument("--out", type=Path, required=True)
+    lambda_ssh_retry_preview.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_retry_command_preview
+    )
     lambda_ssh_safe_command = lambda_ssh_connectivity_sub.add_parser(
         "safe-client-command"
     )
@@ -13093,6 +14159,104 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_ssh_m054b_plan.add_argument("--out", type=Path, required=True)
     lambda_ssh_m054b_plan.set_defaults(func=_cmd_lambda_ssh_connectivity_m054b_plan)
+    lambda_ssh_m055c_plan = lambda_ssh_connectivity_sub.add_parser("m055c-plan")
+    lambda_ssh_m055c_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument("--username-policy", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument("--host-key-policy", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument("--identity-policy", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument(
+        "--private-key-file-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m055c_plan.add_argument(
+        "--stderr-capture-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m055c_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_ssh_m055c_plan.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m055c_plan.set_defaults(func=_cmd_lambda_ssh_connectivity_m055c_plan)
+    lambda_ssh_m055c_gate = lambda_ssh_connectivity_sub.add_parser("m055c-gate-check")
+    lambda_ssh_m055c_gate.add_argument("--plan", type=Path, required=True)
+    lambda_ssh_m055c_gate.add_argument(
+        "--safe-client-command",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m055c_gate.add_argument("--static-validation", type=Path, required=True)
+    lambda_ssh_m055c_gate.add_argument("--no-exec-audit", type=Path, required=True)
+    lambda_ssh_m055c_gate.add_argument(
+        "--stderr-capture-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m055c_gate.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m055c_gate.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m055c_gate_check
+    )
+    lambda_ssh_m056_plan = lambda_ssh_connectivity_sub.add_parser("m056-plan")
+    lambda_ssh_m056_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--username-policy", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--host-key-policy", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--identity-policy", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument(
+        "--private-key-file-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m056_plan.add_argument(
+        "--stderr-capture-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m056_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_ssh_m056_plan.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m056_plan.set_defaults(func=_cmd_lambda_ssh_connectivity_m056_plan)
+    lambda_ssh_m056_gate = lambda_ssh_connectivity_sub.add_parser("m056-gate-check")
+    lambda_ssh_m056_gate.add_argument("--plan", type=Path, required=True)
+    lambda_ssh_m056_gate.add_argument(
+        "--stderr-capture-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m056_gate.add_argument("--retry-policy", type=Path, required=True)
+    lambda_ssh_m056_gate.add_argument(
+        "--safe-client-command",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m056_gate.add_argument("--static-validation", type=Path, required=True)
+    lambda_ssh_m056_gate.add_argument("--no-exec-audit", type=Path, required=True)
+    lambda_ssh_m056_gate.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m056_gate.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m056_gate_check
+    )
+    lambda_ssh_m056_arm = lambda_ssh_connectivity_sub.add_parser("m056-arm-one-shot")
+    lambda_ssh_m056_arm.add_argument("--plan", type=Path, required=True)
+    lambda_ssh_m056_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_ssh_m056_arm.add_argument("--authorization", type=Path, required=True)
+    lambda_ssh_m056_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m056_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_ssh_m056_arm.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m056_arm.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m056_arm_one_shot
+    )
+    lambda_ssh_m056_bridge = lambda_ssh_connectivity_sub.add_parser(
+        "m056-reviewer-bridge"
+    )
+    lambda_ssh_m056_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_ssh_m056_bridge.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m056_bridge.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m056_reviewer_bridge
+    )
     lambda_m050 = lambda_sub.add_parser("m050")
     lambda_m050_sub = lambda_m050.add_subparsers(
         dest="lambda_m050_command",
@@ -13190,6 +14354,45 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m055_report.add_argument("--secret-scan-result", default="not_run")
     lambda_m055_report.add_argument("--out", type=Path, required=True)
     lambda_m055_report.set_defaults(func=_cmd_lambda_m055_report)
+    lambda_m055b = lambda_sub.add_parser("m055b")
+    lambda_m055b_sub = lambda_m055b.add_subparsers(
+        dest="lambda_m055b_command",
+        required=True,
+    )
+    lambda_m055b_report = lambda_m055b_sub.add_parser("report")
+    lambda_m055b_report.add_argument("--username-policy", type=Path, required=True)
+    lambda_m055b_report.add_argument("--host-key-policy", type=Path, required=True)
+    lambda_m055b_report.add_argument("--identity-policy", type=Path, required=True)
+    lambda_m055b_report.add_argument(
+        "--private-key-file-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m055b_report.add_argument("--stderr-policy", type=Path, required=True)
+    lambda_m055b_report.add_argument(
+        "--provider-key-diagnostic",
+        type=Path,
+        required=True,
+    )
+    lambda_m055b_report.add_argument("--probe-diagnostic", type=Path, required=True)
+    lambda_m055b_report.add_argument("--retry-policy", type=Path, required=True)
+    lambda_m055b_report.add_argument("--out", type=Path, required=True)
+    lambda_m055b_report.set_defaults(func=_cmd_lambda_m055b_report)
+    lambda_m055d = lambda_sub.add_parser("m055d")
+    lambda_m055d_sub = lambda_m055d.add_subparsers(
+        dest="lambda_m055d_command",
+        required=True,
+    )
+    lambda_m055d_report = lambda_m055d_sub.add_parser("report")
+    lambda_m055d_report.add_argument("--capacity-closeout", type=Path, required=True)
+    lambda_m055d_report.add_argument("--capacity-history", type=Path, required=True)
+    lambda_m055d_report.add_argument("--candidate-selection", type=Path, required=True)
+    lambda_m055d_report.add_argument("--retry-policy", type=Path, required=True)
+    lambda_m055d_report.add_argument("--operator-decision", type=Path, required=True)
+    lambda_m055d_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m055d_report.add_argument("--command-preview", type=Path, required=True)
+    lambda_m055d_report.add_argument("--out", type=Path, required=True)
+    lambda_m055d_report.set_defaults(func=_cmd_lambda_m055d_report)
     lambda_m052 = lambda_sub.add_parser("m052")
     lambda_m052_sub = lambda_m052.add_subparsers(
         dest="lambda_m052_command",

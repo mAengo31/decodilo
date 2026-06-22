@@ -1279,6 +1279,12 @@ M029B never launches, terminates, mutates, or spends.
 - M055 host discovery may inspect provider list/detail metadata only through the
   existing gated lifecycle path. Public artifacts may store sanitized metadata key
   names and paths, but not raw private key material or secrets.
+- Real M055 execution requires a local private key file before launch.
+  `LAMBDA_SSH_PRIVATE_KEY_PATH` is preferred. `LAMBDA_SSH_KEY` may be used only as
+  a compatibility source for an existing local private key path, a simple
+  `~/.ssh` filename, or OpenSSH public key material/comment that matches a local
+  `~/.ssh/*.pub` file with a sibling private key; inline private key material and
+  arbitrary relative paths are rejected.
 - If no host/IP is discovered, the SSH probe must not open a socket and the owned
   instance must still be terminated and verified.
 - Private/non-global IPs are rejected by default unless an explicit private-network
@@ -1288,3 +1294,43 @@ M029B never launches, terminates, mutates, or spends.
 - M055 keeps remote commands, command output collection, file transfer, port
   forwarding, package installation, setup scripts, cloud-init, and training
   forbidden.
+
+## M055B SSH Failure Diagnostic Hardening
+
+- M055B must not launch, terminate, mutate Lambda resources, call live Lambda APIs,
+  use credentials, SSH, open network connections, run remote commands, transfer
+  files, forward ports, install packages, train, or spend.
+- M055B may only create offline policy and diagnostic artifacts for username,
+  host-key handling, identity selection, private-key-file rules, bounded redacted
+  stderr capture, provider-key attachment evidence, historical SSH probe
+  classification, retry policy, and report rollup.
+- Future OpenSSH previews must use explicit `ubuntu`, `IdentitiesOnly=yes`,
+  run-scoped `UserKnownHostsFile`, explicit host-key policy, `BatchMode=yes`,
+  `RequestTTY=no`, `ClearAllForwardings=yes`, `ForwardAgent=no`, `ForwardX11=no`,
+  `PermitLocalCommand=no`, `SessionType=none`, bounded timeouts, and no remote
+  command.
+- Historical SSH failures with exit 255 and no captured stderr remain
+  `unknown_exit_255`; future live retry review is blocked until bounded redacted
+  stderr capture is enabled.
+- Missing provider `user_id` fields are not blockers by themselves. Key-attachment
+  diagnostics must block only on selected-key/provider/local-identity mismatch.
+- M055B artifacts keep `launch_ready=false`, `launch_allowed=false`,
+  `billable_action_performed=false`, and `real_mutation_enabled=false`.
+
+## M055D SSH Capacity Retry Closeout
+
+- M055D must not launch, terminate, mutate Lambda resources, call live Lambda
+  APIs, use credentials, SSH, open network connections, run remote commands,
+  transfer files, forward ports, install packages, train, or spend.
+- Capacity rejection with no owned instance and zero visible/unmanaged final
+  discovery maps to `teardown_not_required_capacity_rejected`, not a teardown
+  failure.
+- The same candidate/region that returned a capacity rejection remains blocked
+  by default for future SSH retries unless fresh live availability evidence or a
+  future explicit operator review changes that decision.
+- Future SSH retry selection must prefer live read-only instance-type evidence,
+  lowest buffered 30-minute cost, single-GPU shapes, and deterministic region
+  choice. It must not fabricate availability.
+- M055D may authorize only a future M056 review. It must keep
+  `launch_ready=false`, `launch_allowed=false`, `billable_action_performed=false`,
+  and `real_mutation_enabled=false`.

@@ -1,8 +1,7 @@
-"""M054B SSH-connectivity launch/probe plan."""
+"""M055C SSH-connectivity diagnostic retry plan."""
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Literal
@@ -17,38 +16,47 @@ from decodilo.lambda_cloud.m051_metadata_bootstrap_plan import (
     LambdaM051MetadataBootstrapPlan,
     load_lambda_m051_metadata_bootstrap_plan,
 )
-from decodilo.lambda_cloud.ssh_connectivity_execution_plan import (
-    load_lambda_ssh_connectivity_execution_plan,
+from decodilo.lambda_cloud.ssh_failure_stderr_capture import (
+    load_lambda_ssh_stderr_capture_policy,
 )
-from decodilo.lambda_cloud.ssh_connectivity_static_validator import (
-    load_lambda_ssh_connectivity_static_validation,
+from decodilo.lambda_cloud.ssh_host_key_policy import load_lambda_ssh_host_key_policy
+from decodilo.lambda_cloud.ssh_identity_policy import load_lambda_ssh_identity_policy
+from decodilo.lambda_cloud.ssh_private_key_file_policy import (
+    load_lambda_ssh_private_key_file_policy,
 )
-from decodilo.lambda_cloud.ssh_private_key_reference_policy import (
-    load_lambda_ssh_private_key_reference_policy,
-)
+from decodilo.lambda_cloud.ssh_username_policy import load_lambda_ssh_username_policy
 from decodilo.lambda_cloud.strand_ssh_key_selection import (
     load_lambda_existing_ssh_key_selection,
 )
 from decodilo.pricing.snapshots import PriceSnapshot, SnapshotPriceRecord, load_price_snapshot
 
-LambdaSSHConnectivityM054BPlanStatus = Literal["plan_passed", "blocked"]
+LambdaSSHConnectivityM055CPlanStatus = Literal["plan_passed", "blocked"]
 
 
-class LambdaSSHConnectivityM054BPlan(BaseModel):
+class LambdaSSHConnectivityM055CPlan(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     report_schema_version: int = 1
-    ssh_connectivity_path_used: bool = True
-    plan_status: LambdaSSHConnectivityM054BPlanStatus
+    milestone: str = "M055C"
+    plan_status: LambdaSSHConnectivityM055CPlanStatus
     selected_candidate: str | None = None
     selected_region: str | None = None
     selected_candidate_source: str | None = None
     quantity: int = 1
     selected_ssh_key_hash: str | None = None
     ssh_username: str = "ubuntu"
-    private_key_reference_source: str = "approved_default_key_lookup"
-    private_key_reference_available_for_probe: bool = False
-    private_key_reference_public: str = "<redacted-private-key-reference>"
+    identities_only: bool = True
+    isolated_known_hosts: bool = True
+    strict_host_key_checking_policy: str = "accept-new"
+    stderr_capture_enabled: bool = True
+    max_ssh_attempts: int = 1
+    max_launch_attempts: int = 1
+    no_auto_retry: bool = True
+    no_remote_command: bool = True
+    no_file_transfer: bool = True
+    no_port_forwarding: bool = True
+    no_package_install: bool = True
+    no_training: bool = True
     gpu_type: str | None = None
     gpus_per_instance: int | None = None
     price_per_instance_hour: float | None = None
@@ -56,32 +64,9 @@ class LambdaSSHConnectivityM054BPlan(BaseModel):
     buffered_estimated_30min_cost: float | None = None
     max_budget: float = 50.0
     max_runtime_minutes: int = 30
-    max_launch_attempts: int = 1
-    max_ssh_connectivity_attempts: int = 1
     response_capture_active: bool = True
     status_before_parse: bool = True
-    no_auto_launch_retry: bool = True
-    strand_payload_compatible: bool = True
     effective_launch_timeout_seconds: float = 30.0
-    effective_terminate_timeout_seconds: float = 30.0
-    effective_read_only_verification_timeout_seconds: float = 30.0
-    ssh_connectivity_only: bool = True
-    ssh_attempted: bool = False
-    remote_command_attempted: bool = False
-    file_transfer_attempted: bool = False
-    port_forwarding_attempted: bool = False
-    package_install_attempted: bool = False
-    training_attempted: bool = False
-    remote_exec_allowed: bool = False
-    interactive_shell_allowed: bool = False
-    file_transfer_allowed: bool = False
-    port_forwarding_allowed: bool = False
-    package_install_allowed: bool = False
-    training_allowed: bool = False
-    setup_scripts_allowed: bool = False
-    cloud_init_allowed: bool = False
-    old_path_fallback_blocked: bool = True
-    m039_path_fallback_blocked: bool = True
     blockers: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     launch_ready: bool = False
@@ -90,62 +75,64 @@ class LambdaSSHConnectivityM054BPlan(BaseModel):
     real_mutation_enabled: bool = False
 
     @model_validator(mode="after")
-    def _validate_disabled(self) -> LambdaSSHConnectivityM054BPlan:
+    def _validate_disabled(self) -> LambdaSSHConnectivityM055CPlan:
         if (
             self.launch_ready
             or self.launch_allowed
             or self.billable_action_performed
             or self.real_mutation_enabled
-            or self.remote_command_attempted
-            or self.file_transfer_attempted
-            or self.port_forwarding_attempted
-            or self.package_install_attempted
-            or self.training_attempted
-            or self.remote_exec_allowed
-            or self.interactive_shell_allowed
-            or self.file_transfer_allowed
-            or self.port_forwarding_allowed
-            or self.package_install_allowed
-            or self.training_allowed
-            or self.setup_scripts_allowed
-            or self.cloud_init_allowed
+            or not self.identities_only
+            or not self.isolated_known_hosts
+            or not self.stderr_capture_enabled
+            or not self.no_auto_retry
+            or not self.no_remote_command
+            or not self.no_file_transfer
+            or not self.no_port_forwarding
+            or not self.no_package_install
+            or not self.no_training
+            or self.max_ssh_attempts != 1
+            or self.max_launch_attempts != 1
         ):
-            raise ValueError("M054B plan cannot enable unsafe SSH or launch flags")
+            raise ValueError("M055C plan violates one-shot diagnostic constraints")
         if self.plan_status == "plan_passed" and self.blockers:
-            raise ValueError("passing M054B plan cannot carry blockers")
-        if self.max_launch_attempts != 1 or self.max_ssh_connectivity_attempts != 1:
-            raise ValueError("M054B plan must remain one-shot")
+            raise ValueError("passing M055C plan cannot carry blockers")
         return self
 
     def to_json(self) -> str:
         return json.dumps(self.model_dump(mode="json"), indent=2, sort_keys=True) + "\n"
 
 
-def build_lambda_ssh_connectivity_m054b_plan_from_paths(
+def build_lambda_ssh_connectivity_m055c_plan_from_paths(
     *,
     discovery_report: str | Path,
-    execution_plan: str | Path,
-    private_key_policy: str | Path,
-    static_validation: str | Path,
-    price_snapshot: str | Path,
+    username_policy: str | Path,
+    host_key_policy: str | Path,
+    identity_policy: str | Path,
+    private_key_file_policy: str | Path,
+    stderr_capture_policy: str | Path,
     ssh_key_selection: str | Path,
-    preferred_metadata_plan: str | Path | None = None,
+    price_snapshot: str | Path,
+    preferred_metadata_plan: str | Path | None = Path(
+        "/tmp/decodilo-lambda-m051-metadata-bootstrap-plan.json"
+    ),
     max_budget: float = 50.0,
     planned_runtime_minutes: int = 30,
     safety_buffer_multiplier: float = 1.15,
-) -> LambdaSSHConnectivityM054BPlan:
+) -> LambdaSSHConnectivityM055CPlan:
     preferred = (
         load_lambda_m051_metadata_bootstrap_plan(preferred_metadata_plan)
         if preferred_metadata_plan is not None and Path(preferred_metadata_plan).exists()
         else None
     )
-    return build_lambda_ssh_connectivity_m054b_plan(
+    return build_lambda_ssh_connectivity_m055c_plan(
         discovery=load_lambda_live_discovery_report(discovery_report),
-        execution_plan_path=execution_plan,
-        private_key_policy_path=private_key_policy,
-        static_validation_path=static_validation,
-        price_snapshot=load_price_snapshot(price_snapshot),
+        username_policy_path=username_policy,
+        host_key_policy_path=host_key_policy,
+        identity_policy_path=identity_policy,
+        private_key_file_policy_path=private_key_file_policy,
+        stderr_capture_policy_path=stderr_capture_policy,
         ssh_key_selection_path=ssh_key_selection,
+        price_snapshot=load_price_snapshot(price_snapshot),
         preferred_metadata_plan=preferred,
         max_budget=max_budget,
         planned_runtime_minutes=planned_runtime_minutes,
@@ -153,39 +140,38 @@ def build_lambda_ssh_connectivity_m054b_plan_from_paths(
     )
 
 
-def build_lambda_ssh_connectivity_m054b_plan(
+def build_lambda_ssh_connectivity_m055c_plan(
     *,
     discovery: LambdaLiveDiscoveryReport,
-    execution_plan_path: str | Path,
-    private_key_policy_path: str | Path,
-    static_validation_path: str | Path,
-    price_snapshot: PriceSnapshot,
+    username_policy_path: str | Path,
+    host_key_policy_path: str | Path,
+    identity_policy_path: str | Path,
+    private_key_file_policy_path: str | Path,
+    stderr_capture_policy_path: str | Path,
     ssh_key_selection_path: str | Path,
+    price_snapshot: PriceSnapshot,
     preferred_metadata_plan: LambdaM051MetadataBootstrapPlan | None = None,
     max_budget: float = 50.0,
     planned_runtime_minutes: int = 30,
     safety_buffer_multiplier: float = 1.15,
-) -> LambdaSSHConnectivityM054BPlan:
-    execution_plan = load_lambda_ssh_connectivity_execution_plan(execution_plan_path)
-    key_policy = load_lambda_ssh_private_key_reference_policy(private_key_policy_path)
-    static = load_lambda_ssh_connectivity_static_validation(static_validation_path)
+) -> LambdaSSHConnectivityM055CPlan:
+    username = load_lambda_ssh_username_policy(username_policy_path)
+    host_key = load_lambda_ssh_host_key_policy(host_key_policy_path)
+    identity = load_lambda_ssh_identity_policy(identity_policy_path)
+    key_file = load_lambda_ssh_private_key_file_policy(private_key_file_policy_path)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(stderr_capture_policy_path)
     ssh = load_lambda_existing_ssh_key_selection(ssh_key_selection_path)
     blockers: list[str] = []
     warnings = [
-        "M054B plan is still non-executable until m029 run arms it",
-        "private key material is not serialized; default lookup is local only",
+        "M055C plan is non-executable until the one-shot reviewer bridge is used",
+        "bounded redacted stderr capture is required for SSH failure classification",
     ]
-
-    if execution_plan.plan_status != "plan_defined":
-        blockers.extend(execution_plan.blockers or ["execution_plan_not_defined"])
-    if key_policy.key_reference_policy_status != "policy_defined":
-        blockers.extend(key_policy.blockers or ["private_key_policy_not_defined"])
-    if not static.static_validation_passed:
-        blockers.extend(static.blockers or ["static_validation_not_passed"])
     if not discovery.live_api_used or not discovery.read_only_mode:
         blockers.append("fresh_live_read_only_discovery_required")
     if not discovery.required_endpoint_success:
         blockers.append("required_read_only_endpoint_failed")
+    if discovery.summary.read_operations <= 0:
+        blockers.append("read_only_discovery_must_have_read_operations")
     if discovery.summary.mutating_operations != 0:
         blockers.append("read_only_discovery_report_contains_mutation")
     if discovery.billable_action_performed:
@@ -193,7 +179,25 @@ def build_lambda_ssh_connectivity_m054b_plan(
     if discovery.unmanaged_instances:
         blockers.append("unmanaged_instances_present")
     if price_snapshot.is_sample_data:
-        blockers.append("sample_price_snapshot_cannot_authorize_m054b")
+        blockers.append("sample_price_snapshot_cannot_authorize_m055c")
+    if username.username_policy_status != "policy_defined":
+        blockers.extend(username.blockers or ["username_policy_not_defined"])
+    if username.selected_username != "ubuntu":
+        blockers.append("m055c_requires_ubuntu_username")
+    if host_key.host_key_policy_status != "policy_defined":
+        blockers.extend(host_key.blockers or ["host_key_policy_not_defined"])
+    if not host_key.isolated_known_hosts_file or host_key.strict_host_key_checking_no:
+        blockers.append("isolated_known_hosts_accept_new_policy_required")
+    if identity.identity_policy_status != "policy_defined":
+        blockers.extend(identity.blockers or ["identity_policy_not_defined"])
+    if not identity.identities_only_required or identity.identity_file_reference_count != 1:
+        blockers.append("exactly_one_identities_only_key_required")
+    if key_file.private_key_file_policy_status != "policy_defined":
+        blockers.extend(key_file.blockers or ["private_key_file_policy_not_defined"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
     if not ssh.selection_passed:
         blockers.extend(ssh.errors or ["existing_ssh_key_selection_required"])
     if not ssh.selected_ssh_key_name_for_payload:
@@ -202,8 +206,6 @@ def build_lambda_ssh_connectivity_m054b_plan(
         blockers.append("raw_public_key_material_present")
     if planned_runtime_minutes > 30:
         blockers.append("planned_runtime_exceeds_30_minutes")
-    if not _default_private_key_reference_available(ssh.selected_ssh_key_name_for_payload):
-        blockers.append("approved_default_private_key_reference_missing")
 
     live_item = _select_live_item(
         discovery,
@@ -211,27 +213,13 @@ def build_lambda_ssh_connectivity_m054b_plan(
         preferred_metadata_plan=preferred_metadata_plan,
     )
     if live_item is None:
-        blockers.append("no_valid_m054b_live_candidate")
+        blockers.append("no_valid_m055c_live_candidate")
         shape = None
         region = None
         source = None
     else:
         shape = live_item.name or live_item.instance_type_id
-        region = (
-            preferred_metadata_plan.selected_region
-            if preferred_metadata_plan is not None
-            and (
-                preferred_metadata_plan.selected_region in live_item.regions
-                or (
-                    not live_item.regions
-                    and _discovery_has_region(
-                        discovery,
-                        preferred_metadata_plan.selected_region,
-                    )
-                )
-            )
-            else (live_item.regions[0] if live_item.regions else None)
-        )
+        region = _select_region(live_item.regions, preferred_metadata_plan, discovery)
         source = (
             "m051_metadata_success_candidate_fresh_live_validated"
             if preferred_metadata_plan is not None
@@ -254,15 +242,17 @@ def build_lambda_ssh_connectivity_m054b_plan(
     if buffered is not None and buffered >= max_budget:
         blockers.append("buffered_estimated_cost_not_below_max_budget")
 
-    return LambdaSSHConnectivityM054BPlan(
+    return LambdaSSHConnectivityM055CPlan(
         plan_status="plan_passed" if not blockers else "blocked",
         selected_candidate=shape,
         selected_region=region,
         selected_candidate_source=source,
         selected_ssh_key_hash=ssh.selected_ssh_key_name_redacted_or_hash,
-        private_key_reference_available_for_probe=(
-            _default_private_key_reference_available(ssh.selected_ssh_key_name_for_payload)
-        ),
+        ssh_username=username.selected_username or "ubuntu",
+        identities_only=identity.identities_only_required,
+        isolated_known_hosts=host_key.isolated_known_hosts_file,
+        strict_host_key_checking_policy=host_key.strict_host_key_checking_policy,
+        stderr_capture_enabled=stderr_policy.capture_policy_status == "policy_defined",
         gpu_type=(
             record.gpu_type
             if record is not None
@@ -283,16 +273,38 @@ def build_lambda_ssh_connectivity_m054b_plan(
     )
 
 
-def m054b_plan_hash(plan: LambdaSSHConnectivityM054BPlan) -> str:
-    material = {
-        "selected_candidate": plan.selected_candidate,
-        "selected_region": plan.selected_region,
-        "selected_ssh_key_hash": plan.selected_ssh_key_hash,
-        "ssh_connectivity_only": plan.ssh_connectivity_only,
-    }
-    return hashlib.sha256(
-        json.dumps(material, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    ).hexdigest()
+def _select_region(
+    regions: list[str],
+    preferred_metadata_plan: LambdaM051MetadataBootstrapPlan | None,
+    discovery: LambdaLiveDiscoveryReport,
+) -> str | None:
+    if (
+        preferred_metadata_plan is not None
+        and (
+            preferred_metadata_plan.selected_region in regions
+            or (
+                not regions
+                and _discovery_has_region(
+                    discovery,
+                    preferred_metadata_plan.selected_region,
+                )
+            )
+        )
+    ):
+        return preferred_metadata_plan.selected_region
+    return regions[0] if regions else None
+
+
+def _discovery_has_region(
+    discovery: LambdaLiveDiscoveryReport,
+    region_name: str | None,
+) -> bool:
+    if not region_name:
+        return False
+    return any(
+        region.name == region_name or region.region_id == region_name
+        for region in discovery.regions
+    )
 
 
 def _select_live_item(
@@ -329,18 +341,6 @@ def _select_live_item(
     )
 
 
-def _discovery_has_region(
-    discovery: LambdaLiveDiscoveryReport,
-    region_name: str | None,
-) -> bool:
-    if not region_name:
-        return False
-    return any(
-        region.name == region_name or region.region_id == region_name
-        for region in discovery.regions
-    )
-
-
 def _price_for_item(
     shape: str,
     live_price: float | None,
@@ -374,30 +374,17 @@ def _estimate(price_per_hour: float | None, planned_runtime_minutes: int) -> flo
     return round(price_per_hour * planned_runtime_minutes / 60, 8)
 
 
-def _default_private_key_reference_available(selected_key_name: str | None) -> bool:
-    return resolve_default_private_key_path(selected_key_name) is not None
-
-
-def resolve_default_private_key_path(selected_key_name: str | None) -> Path | None:
-    ssh_dir = Path.home() / ".ssh"
-    selected = ssh_dir / selected_key_name if selected_key_name else None
-    if selected is not None and selected.is_file():
-        return selected
-    defaults = [path for path in [ssh_dir / "id_ed25519", ssh_dir / "id_rsa"] if path.is_file()]
-    return defaults[0] if len(defaults) == 1 else None
-
-
-def load_lambda_ssh_connectivity_m054b_plan(
+def load_lambda_ssh_connectivity_m055c_plan(
     path: str | Path,
-) -> LambdaSSHConnectivityM054BPlan:
-    return LambdaSSHConnectivityM054BPlan.model_validate_json(
+) -> LambdaSSHConnectivityM055CPlan:
+    return LambdaSSHConnectivityM055CPlan.model_validate_json(
         Path(path).read_text(encoding="utf-8")
     )
 
 
-def write_lambda_ssh_connectivity_m054b_plan(
+def write_lambda_ssh_connectivity_m055c_plan(
     path: str | Path,
-    report: LambdaSSHConnectivityM054BPlan,
+    report: LambdaSSHConnectivityM055CPlan,
 ) -> None:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
