@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 
 from decodilo.errors import PricingAmbiguityError
 from decodilo.pricing.snapshots import PriceSnapshot
+from decodilo.time_compat import UTC
 
 
 def _parse_timestamp(value: str) -> datetime:

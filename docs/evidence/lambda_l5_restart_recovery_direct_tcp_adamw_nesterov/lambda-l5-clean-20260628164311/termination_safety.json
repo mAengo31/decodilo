@@ -1,0 +1,11 @@
+{
+  "billing_safety_status": "BILLING_SAFETY_OK",
+  "cleanup_method": "manual_read_only_check_and_terminate_retry_after_runner_dns_failure",
+  "contains_credentials": false,
+  "observed_final_live_instance_count": 0,
+  "owned_instance_ids": [
+    "822952cc39b4408abf1fa94fbd1c2f6b",
+    "678e06512ba44dd2a9bbfaf29d680acd",
+    "e0a474d4bbb34811987c34cd2f6bff55"
+  ]
+}

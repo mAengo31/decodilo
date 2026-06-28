@@ -29,16 +29,19 @@ class UpdateStream:
     sent_versions: dict[str, set[int]] = field(default_factory=dict)
     acked_versions: dict[str, set[int]] = field(default_factory=dict)
     learner_update_lag_current: dict[str, int] = field(default_factory=dict)
+    current_global_version: int = 0
     _update_event: asyncio.Event = field(default_factory=asyncio.Event)
 
     def register(self, learner_id: str, *, version: int) -> None:
         previous = self.learner_versions.get(learner_id, -1)
         self.learner_versions[learner_id] = max(previous, version)
+        self.current_global_version = max(self.current_global_version, version)
         self.sent_versions.setdefault(learner_id, set())
         self.acked_versions.setdefault(learner_id, set())
         self.refresh_lag_metrics(current_version=version)
 
     def notify_commit(self, *, global_version: int) -> None:
+        self.current_global_version = max(self.current_global_version, global_version)
         self.metrics.global_update_broadcasts += 1
         self._update_event.set()
         self.refresh_lag_metrics(current_version=global_version)
@@ -51,15 +54,17 @@ class UpdateStream:
         current_version: int,
         timeout_seconds: float,
     ) -> bool:
-        if learner_version < current_version:
+        effective_current_version = max(current_version, self.current_global_version)
+        if learner_version < effective_current_version:
             return True
         try:
             await asyncio.wait_for(self._update_event.wait(), timeout=timeout_seconds)
-        except TimeoutError:
+        except (asyncio.TimeoutError, TimeoutError):
             return False
         finally:
             self._update_event.clear()
-        return learner_version < current_version
+        effective_current_version = max(current_version, self.current_global_version)
+        return learner_version < effective_current_version
 
     def mark_sent(self, learner_id: str, *, global_version: int) -> None:
         self.sent_versions.setdefault(learner_id, set()).add(global_version)
@@ -124,6 +129,7 @@ class UpdateStream:
     def snapshot(self) -> dict[str, Any]:
         return {
             "max_version_lag": self.max_version_lag,
+            "current_global_version": self.current_global_version,
             "learner_versions": dict(self.learner_versions),
             "sent_versions": {
                 learner_id: sorted(versions)
@@ -142,6 +148,12 @@ class UpdateStream:
             str(key): int(value)
             for key, value in dict(payload.get("learner_versions", {})).items()
         }
+        self.current_global_version = int(
+            payload.get(
+                "current_global_version",
+                max(self.learner_versions.values(), default=0),
+            )
+        )
         self.sent_versions = {
             str(key): {int(version) for version in versions}
             for key, versions in dict(payload.get("sent_versions", {})).items()

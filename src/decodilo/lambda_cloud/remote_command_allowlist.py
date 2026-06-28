@@ -20,9 +20,9 @@ SAFE_COMMANDS_BY_PROFILE: dict[LambdaRemoteCommandAllowlistProfile, list[str]] =
     "metadata-only": [],
     "connectivity-only": ["hostname"],
     "gpu-visibility-check": [
-        "nvidia-smi --query-gpu=name,memory.total --format=csv,noheader"
+        "nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader"
     ],
-    "python-version-check": ["python --version"],
+    "python-version-check": ["python3 --version"],
     "decodilo-version-check": ["python -m decodilo.cli --version"],
 }
 
@@ -113,6 +113,9 @@ def build_lambda_remote_command_allowlist(
             "allowlisted commands are planned only in M050 and are not executed",
             "remote command execution requires a later supervised milestone",
             "M053 SSH connectivity-only planning requires an empty command surface",
+            "M058 opens only a future M059 identity-command review",
+            "M062 opens only a future M063 GPU visibility query review",
+            "M064 opens only a future M065 python3 --version runtime query review",
         ],
     )
 

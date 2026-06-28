@@ -139,7 +139,7 @@ class LearnerWorker:
 
     async def _reconnect(self) -> None:
         ready_path = self.workdir / "syncer_ready.json"
-        deadline = time.monotonic() + 3.0
+        deadline = time.monotonic() + 15.0
         last_error: Exception | None = None
         await self.client.close()
         while time.monotonic() < deadline:
@@ -264,6 +264,7 @@ class LearnerWorker:
     async def _heartbeat(self) -> None:
         assert self.trainer is not None
         health = self.trainer.health()
+        state_metadata = self.trainer.get_full_state().metadata
         payload = {
             "local_step": health.local_step,
             "tokens_processed": health.tokens_processed,
@@ -276,6 +277,24 @@ class LearnerWorker:
             "trainer_final_eval_loss": health.final_eval_loss,
             "trainer_nonfinite_detected": health.nonfinite_detected,
         }
+        if state_metadata.get("optimizer") == "adamw":
+            payload.update(
+                {
+                    "inner_optimizer": "adamw",
+                    "inner_optimizer_semantics": "adamw",
+                    "training_attempted": bool(health.local_step > 0),
+                    "real_training_mechanics_exercised": bool(
+                        state_metadata.get("real_training_mechanics_exercised", False)
+                    ),
+                    "real_model_training_claimed": bool(
+                        state_metadata.get("real_model_training_claimed", False)
+                    ),
+                    "paper_scale_training_claimed": bool(
+                        state_metadata.get("paper_scale_training_claimed", False)
+                    ),
+                    "optimizer_state": state_metadata.get("optimizer_state", {}),
+                }
+            )
         if self.pending_control_event is not None:
             payload.update(self.pending_control_event)
             self.pending_control_event = None
@@ -319,6 +338,22 @@ class LearnerWorker:
             "flat_state_checksum": state.flat_state_checksum,
             "named_state_checksum": state.named_state_checksum,
         }
+        if state.metadata.get("optimizer") == "adamw":
+            payload.update(
+                {
+                    "inner_optimizer": "adamw",
+                    "inner_optimizer_semantics": "adamw",
+                    "training_attempted": True,
+                    "real_training_mechanics_exercised": True,
+                    "real_model_training_claimed": bool(
+                        state.metadata.get("real_model_training_claimed", False)
+                    ),
+                    "paper_scale_training_claimed": bool(
+                        state.metadata.get("paper_scale_training_claimed", False)
+                    ),
+                    "optimizer_state": state.metadata.get("optimizer_state", {}),
+                }
+            )
         inline_payload_bytes = len(json.dumps(payload, sort_keys=True).encode("utf-8"))
         if should_use_chunked_payload(
             mode=self.payload_storage_mode,
@@ -465,8 +500,12 @@ class LearnerWorker:
 
     def _handle_global_payload(self, payload: dict[str, Any]) -> None:
         assert self.trainer is not None
-        last_commit = payload.get("last_commit")
-        if last_commit and self.learner_id in last_commit.get("accepted_learner_ids", []):
+        last_commit = payload.get("last_commit") or payload.get("commit")
+        if (
+            last_commit
+            and self.in_flight_idempotency_key is not None
+            and self.learner_id in last_commit.get("accepted_learner_ids", [])
+        ):
             if hasattr(self.trainer, "mark_update_accepted"):
                 self.trainer.mark_update_accepted()
             self.in_flight_idempotency_key = None
@@ -482,12 +521,14 @@ class LearnerWorker:
                 raise RuntimeError("global update artifact version mismatch")
             if int(global_version) > self.trainer.health().global_version:
                 self._apply_global_vector(vector, global_version=int(global_version))
+                self.in_flight_idempotency_key = None
         elif global_version is not None and global_vector is not None:
             if int(global_version) > self.trainer.health().global_version:
                 self._apply_global_vector(
                     np.asarray(global_vector, dtype=np.float64),
                     global_version=int(global_version),
                 )
+                self.in_flight_idempotency_key = None
 
     def _apply_global_vector(self, vector: np.ndarray, *, global_version: int) -> None:
         assert self.trainer is not None

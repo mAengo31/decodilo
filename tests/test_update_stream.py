@@ -13,6 +13,17 @@ def test_update_stream_long_poll_and_ack_reduces_lag() -> None:
         stream = UpdateStream(max_version_lag=1)
         stream.register("learner-0", version=0)
 
+        pending_update = asyncio.create_task(
+            stream.wait_for_update(
+                learner_id="learner-0",
+                learner_version=0,
+                current_version=0,
+                timeout_seconds=1.0,
+            )
+        )
+        await asyncio.sleep(0)
+        assert not pending_update.done()
+
         assert not await stream.wait_for_update(
             learner_id="learner-0",
             learner_version=0,
@@ -21,6 +32,7 @@ def test_update_stream_long_poll_and_ack_reduces_lag() -> None:
         )
 
         stream.notify_commit(global_version=1)
+        assert await pending_update
         assert await stream.wait_for_update(
             learner_id="learner-0",
             learner_version=0,

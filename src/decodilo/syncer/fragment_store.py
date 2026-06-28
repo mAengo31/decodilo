@@ -13,7 +13,7 @@ from decodilo.errors import InvariantViolation
 from decodilo.protocol.messages import CheckpointRecord, MergeDecision
 from decodilo.sim.fake_model import split_vector
 from decodilo.syncer.event_log import EventLog, EventType
-from decodilo.syncer.outer_optimizer import OuterOptimizer, SGDOuterOptimizer
+from decodilo.syncer.outer_optimizer import OuterOptimizer, SGDOuterOptimizer, outer_optimizer_name
 from decodilo.syncer.quorum import PendingUpdate, QuorumPolicy, QuorumTracker
 from decodilo.syncer.streaming_merge import streaming_token_weighted_merge
 from decodilo.syncer.token_weighted_merge import LearnerDelta, token_weighted_merge
@@ -254,6 +254,8 @@ class FragmentStore:
             raise InvariantViolation("sync round cannot commit below quorum")
 
         round_id = decision.round_id or f"round-{self.global_version + 1:08d}"
+        optimizer_name = outer_optimizer_name(self.optimizer)
+        outer_momentum = getattr(self.optimizer, "momentum", None)
         self.event_log.append(
             EventType.SYNC_ROUND_STARTED,
             logical_time=current_tick,
@@ -414,8 +416,9 @@ class FragmentStore:
             accepted_learner_ids=merge_result.included_learner_ids,
             token_weights=merge_result.token_weights,
             useful_tokens=merge_result.useful_tokens,
-            outer_optimizer="sgd",
+            outer_optimizer=optimizer_name,
             outer_lr=float(getattr(self.optimizer, "outer_lr", 1.0)),
+            outer_momentum=float(outer_momentum) if outer_momentum is not None else None,
             old_global_vector=old_vector.tolist(),
             weighted_delta=merge_result.weighted_delta.tolist(),
             new_global_vector=self.global_vector.tolist(),
@@ -447,8 +450,11 @@ class FragmentStore:
                 "accepted_learner_ids": merge_result.included_learner_ids,
                 "token_weights": merge_result.token_weights,
                 "useful_tokens": merge_result.useful_tokens,
-                "outer_optimizer": "sgd",
+                "outer_optimizer": optimizer_name,
                 "outer_lr": float(getattr(self.optimizer, "outer_lr", 1.0)),
+                "outer_momentum": (
+                    float(outer_momentum) if outer_momentum is not None else None
+                ),
                 "numeric_merge_performed": True,
                 "simulation_only": False,
                 "merge_mode": self.merge_mode,

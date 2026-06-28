@@ -38,7 +38,12 @@ class JsonlTcpServer:
         self.bound_port: int | None = None
 
     async def start(self) -> None:
-        self.server = await asyncio.start_server(self._handle_client, self.host, self.port)
+        self.server = await asyncio.start_server(
+            self._handle_client,
+            self.host,
+            self.port,
+            limit=max(DEFAULT_MAX_MESSAGE_BYTES, self.max_message_bytes) + 1,
+        )
         sockets = self.server.sockets or []
         if not sockets:
             raise TransportError("server did not expose a bound socket")

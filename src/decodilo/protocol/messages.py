@@ -77,6 +77,7 @@ class MergeDecision(BaseModel):
     useful_tokens: int = Field(ge=0)
     outer_optimizer: str = "sgd"
     outer_lr: float = Field(ge=0)
+    outer_momentum: float | None = Field(default=None, ge=0)
     old_global_vector: list[float]
     weighted_delta: list[float]
     new_global_vector: list[float]

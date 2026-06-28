@@ -96,3 +96,12 @@ def test_causal_lm_checkpoint_restore_reproduces_state_checksum() -> None:
     restored.restore_from_checkpoint(checkpoint)
 
     assert restored.get_full_state().checksum == trainer.get_full_state().checksum
+
+
+def test_causal_lm_metadata_records_actual_device_and_cuda_availability() -> None:
+    trainer = _trainer()
+    metadata = trainer.get_full_state().metadata
+
+    assert metadata["requested_device"] == "cpu"
+    assert metadata["actual_device"] == "cpu"
+    assert isinstance(metadata["cuda_available"], bool)

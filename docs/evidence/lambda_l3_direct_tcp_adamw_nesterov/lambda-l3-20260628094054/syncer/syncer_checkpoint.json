@@ -1,0 +1,679 @@
+{
+  "checkpoint_schema_version": "v1",
+  "checksum": "db82c1cc60d874f6c14fe2b4535584ab48463292f8ebe93a47ef4543777d0e56",
+  "committed_round_state": {
+    "global_version": 1,
+    "last_commit_payload": {
+      "accepted_learner_ids": [
+        "learner-0",
+        "learner-1"
+      ],
+      "new_global_vector": [
+        -0.04749999920997681,
+        -0.04749999958943005,
+        -0.04749999978614522,
+        -0.047499999799658535,
+        0.04749999970732825,
+        0.047499999609532356,
+        -0.04749999976887255,
+        0.047499999780909345
+      ],
+      "new_global_version": 1,
+      "old_global_vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "outer_lr": 0.5,
+      "outer_momentum": 0.9,
+      "outer_optimizer": "nesterov",
+      "previous_global_version": 0,
+      "round_id": "round-00000001",
+      "token_weights": {
+        "learner-0": 0.47619047619047616,
+        "learner-1": 0.5238095238095238
+      },
+      "useful_tokens": 210,
+      "weighted_delta": [
+        -0.04999999916839664,
+        -0.049999999567821106,
+        -0.049999999774889704,
+        -0.04999999978911424,
+        0.04999999969192448,
+        0.04999999958898143,
+        -0.04999999975670795,
+        0.04999999976937826
+      ]
+    }
+  },
+  "event_log_offset": 86,
+  "fragment_store_state": {
+    "checkpoint_artifact_codec": "json_safe",
+    "global_vector_artifact_ref": null,
+    "num_fragments": 1,
+    "pending_policy": "discard_on_recovery"
+  },
+  "global_vector": [
+    -0.04749999920997681,
+    -0.04749999958943005,
+    -0.04749999978614522,
+    -0.047499999799658535,
+    0.04749999970732825,
+    0.047499999609532356,
+    -0.04749999976887255,
+    0.047499999780909345
+  ],
+  "global_version": 1,
+  "idempotency_table": {
+    "lambda-l3-20260628094054:learner-0:step-1:v-0": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 0,
+        "idempotency_key": "lambda-l3-20260628094054:learner-0:step-1:v-0",
+        "last_commit": null,
+        "outcome": "queued"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-1:v-0": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-1:v-0",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "committed"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-3:v-1": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-3:v-1",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "queued"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-4:v-1": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-4:v-1",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "queued"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-5:v-1": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-5:v-1",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "queued"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-6:v-1": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-6:v-1",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "queued"
+      }
+    },
+    "lambda-l3-20260628094054:learner-1:step-7:v-1": {
+      "message_type": "submit_fragment_ack",
+      "payload": {
+        "global_version": 1,
+        "idempotency_key": "lambda-l3-20260628094054:learner-1:step-7:v-1",
+        "last_commit": {
+          "accepted_learner_ids": [
+            "learner-0",
+            "learner-1"
+          ],
+          "new_global_vector": [
+            -0.04749999920997681,
+            -0.04749999958943005,
+            -0.04749999978614522,
+            -0.047499999799658535,
+            0.04749999970732825,
+            0.047499999609532356,
+            -0.04749999976887255,
+            0.047499999780909345
+          ],
+          "new_global_version": 1,
+          "old_global_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "outer_lr": 0.5,
+          "outer_momentum": 0.9,
+          "outer_optimizer": "nesterov",
+          "previous_global_version": 0,
+          "round_id": "round-00000001",
+          "token_weights": {
+            "learner-0": 0.47619047619047616,
+            "learner-1": 0.5238095238095238
+          },
+          "useful_tokens": 210,
+          "weighted_delta": [
+            -0.04999999916839664,
+            -0.049999999567821106,
+            -0.049999999774889704,
+            -0.04999999978911424,
+            0.04999999969192448,
+            0.04999999958898143,
+            -0.04999999975670795,
+            0.04999999976937826
+          ]
+        },
+        "outcome": "queued"
+      }
+    }
+  },
+  "last_event_id": "lambda-l3-20260628094054:00000085:global_update_acked",
+  "learner_registry_state": {
+    "learner_status": {
+      "learner-0": "paused",
+      "learner-1": "paused"
+    },
+    "learner_tokens_processed": {
+      "learner-0": 3000,
+      "learner-1": 3300
+    },
+    "learner_trainer_metrics": {
+      "learner-0": {
+        "inner_optimizer": "adamw",
+        "inner_optimizer_semantics": "adamw",
+        "optimizer_state": {
+          "m": [
+            0.18662985932344775,
+            0.47253299403755733,
+            1.3234745298073853,
+            1.4581819901088775,
+            -0.8113680662827581,
+            -0.5110628346070173,
+            1.1764689961524202,
+            -1.2761772775666747
+          ],
+          "step": 30,
+          "v": [
+            0.0025599497552722104,
+            0.012504407427611731,
+            0.06471355040926871,
+            0.07696561028193503,
+            0.028336239338494176,
+            0.014029883383210465,
+            0.052633579446435166,
+            0.060680587786296626
+          ]
+        },
+        "paper_scale_training_claimed": false,
+        "real_model_training_claimed": false,
+        "real_training_mechanics_exercised": true,
+        "trainer_final_eval_loss": 2.857494491072232,
+        "trainer_final_loss": 2.857494491072232,
+        "trainer_nonfinite_detected": false,
+        "trainer_num_parameters": 8,
+        "trainer_state_bytes_estimate": 192,
+        "training_attempted": true
+      },
+      "learner-1": {
+        "inner_optimizer": "adamw",
+        "inner_optimizer_semantics": "adamw",
+        "optimizer_state": {
+          "m": [
+            0.001899536670769095,
+            -0.11650697615954081,
+            0.45498681000126157,
+            0.5736463300231385,
+            -0.04814689608999753,
+            0.10758893459616178,
+            0.3294543347507987,
+            -0.4140878446758025
+          ],
+          "step": 30,
+          "v": [
+            0.0016412949431702422,
+            0.007772240690836139,
+            0.04448880782116611,
+            0.05374031952211678,
+            0.01843802852651974,
+            0.00879796517813529,
+            0.03557777192774019,
+            0.04148872900554559
+          ]
+        },
+        "paper_scale_training_claimed": false,
+        "real_model_training_claimed": false,
+        "real_training_mechanics_exercised": true,
+        "trainer_final_eval_loss": 0.046407728202907464,
+        "trainer_final_loss": 0.046407728202907464,
+        "trainer_nonfinite_detected": false,
+        "trainer_num_parameters": 8,
+        "trainer_state_bytes_estimate": 192,
+        "training_attempted": true
+      }
+    },
+    "registered_learners": [
+      "learner-0",
+      "learner-1"
+    ],
+    "trainer_state_kind": "named_tensors",
+    "unhealthy_learners": [],
+    "update_stream": {
+      "acked_versions": {
+        "learner-0": [
+          1
+        ],
+        "learner-1": [
+          1
+        ]
+      },
+      "current_global_version": 1,
+      "learner_versions": {
+        "learner-0": 1,
+        "learner-1": 1
+      },
+      "max_version_lag": 2,
+      "metrics": {
+        "duplicate_global_update_acks": 64,
+        "global_update_acks": 2,
+        "global_update_broadcasts": 1,
+        "global_update_messages_sent": 2,
+        "learner_update_lag_avg": 0.0,
+        "learner_update_lag_current": {
+          "learner-0": 0,
+          "learner-1": 0
+        },
+        "learner_update_lag_max": 1,
+        "missing_global_update_acks": 0,
+        "stale_due_to_lag_count": 0
+      },
+      "sent_versions": {
+        "learner-0": [
+          1
+        ],
+        "learner-1": [
+          1
+        ]
+      }
+    }
+  },
+  "metrics_snapshot": {
+    "backpressure": {
+      "backpressure_rejections": 0,
+      "byte_pressure": 0,
+      "inflight_bytes_current": 0,
+      "inflight_bytes_peak": 3336,
+      "memory_budget_pressure": 0,
+      "message_count_pressure": 0,
+      "pending_fragments_current": 0,
+      "pending_messages_current": 0,
+      "spill_budget_pressure": 0
+    },
+    "store": {
+      "accepted_updates": 2,
+      "artifact_bytes_read": 0,
+      "artifact_chunks_read": 0,
+      "artifact_ref_validation_failures": 0,
+      "artifact_ref_validations": 0,
+      "artifact_validation_seconds": 0.0,
+      "binary_streaming_merge_bytes_read": 0,
+      "binary_streaming_merge_bytes_written": 0,
+      "binary_streaming_merge_chunks_read": 0,
+      "binary_streaming_merge_chunks_written": 0,
+      "binary_streaming_merge_peak_working_bytes_estimate": 0,
+      "binary_streaming_merge_wall_time_seconds": 0.0,
+      "binary_streaming_merges": 0,
+      "chunked_fragment_bytes_accepted": 0,
+      "chunked_fragment_bytes_rejected": 0,
+      "chunked_fragment_submissions": 0,
+      "inline_fragment_submissions": 7,
+      "live_streaming_merge_bytes_read": 0,
+      "live_streaming_merge_bytes_written": 0,
+      "live_streaming_merge_chunks_processed": 0,
+      "live_streaming_merge_peak_working_bytes_estimate": 0,
+      "live_streaming_merges": 0,
+      "numeric_merge_performed": true,
+      "quorum_compositions": [
+        [
+          "learner-0",
+          "learner-1"
+        ]
+      ],
+      "rejected_fragments": 0,
+      "rejected_tokens": 0,
+      "rejected_updates": 0,
+      "rejection_reasons": {},
+      "simulation_only_merge_count": 0,
+      "stale_fragments": 0,
+      "stale_tokens": 0,
+      "sync_rounds_committed": 1,
+      "sync_rounds_skipped": 6,
+      "useful_tokens": 210
+    },
+    "update_stream": {
+      "duplicate_global_update_acks": 64,
+      "global_update_acks": 2,
+      "global_update_broadcasts": 1,
+      "global_update_messages_sent": 2,
+      "learner_update_lag_avg": 0.0,
+      "learner_update_lag_current": {
+        "learner-0": 0,
+        "learner-1": 0
+      },
+      "learner_update_lag_max": 1,
+      "missing_global_update_acks": 0,
+      "stale_due_to_lag_count": 0
+    }
+  },
+  "outer_optimizer_state": {
+    "momentum": 0.9,
+    "outer_lr": 0.5,
+    "outer_optimizer": "nesterov",
+    "outer_optimizer_semantics": "nesterov",
+    "step": 1,
+    "velocity": [
+      0.04999999916839664,
+      0.049999999567821106,
+      0.049999999774889704,
+      0.04999999978911424,
+      -0.04999999969192448,
+      -0.04999999958898143,
+      0.04999999975670795,
+      -0.04999999976937826
+    ]
+  },
+  "pending_round_state": {
+    "discarded_on_recovery": true
+  },
+  "run_id": "lambda-l3-20260628094054",
+  "written_logical_time": 85
+}

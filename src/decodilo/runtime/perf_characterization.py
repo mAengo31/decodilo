@@ -6,7 +6,7 @@ import json
 import platform
 import sys
 import time
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from decodilo.runtime.bottleneck_report import bounded_fraction, top_components_by_value
 from decodilo.runtime.local_runner import LocalRunConfig
 from decodilo.runtime.perf_harness import run_local_overhead_harness
+from decodilo.time_compat import UTC
 from decodilo.trainer.torch_optional import torch_available
 
 

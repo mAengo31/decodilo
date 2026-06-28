@@ -1,0 +1,10 @@
+{
+  "instance_id": "1bada235b1e5447d8bfbf2dd1b2c2309",
+  "region": "us-east-1",
+  "instance_type": "gpu_1x_a10",
+  "observed_final_live_instance_count": 0,
+  "billing_safety_status": "BILLING_SAFETY_OK",
+  "observation_source": "independent read-only Lambda /instances check after evidence persistence",
+  "read_only_check_reperformed": true,
+  "contains_credentials": false
+}

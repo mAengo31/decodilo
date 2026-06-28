@@ -135,3 +135,35 @@ def test_server_shuts_down_cleanly() -> None:
         assert server.server is None
 
     asyncio.run(scenario())
+
+
+def test_tcp_client_can_read_response_larger_than_asyncio_default_line_limit() -> None:
+    async def scenario() -> None:
+        payload = {"blob": "x" * 100_000}
+
+        async def handler(envelope):
+            return make_envelope(
+                run_id=envelope.run_id,
+                sender_id="server",
+                recipient_id=envelope.sender_id,
+                message_type=MessageType.HEARTBEAT_ACK,
+                payload=payload,
+            )
+
+        server = JsonlTcpServer(handler=handler, run_id="run-large")
+        await server.start()
+        assert server.bound_port is not None
+        async with JsonlTcpClient(host="127.0.0.1", port=server.bound_port) as client:
+            response = await client.request(
+                make_envelope(
+                    run_id="run-large",
+                    sender_id="client",
+                    message_type=MessageType.HEARTBEAT,
+                    payload={},
+                )
+            )
+        await server.close()
+        assert response.message_type == MessageType.HEARTBEAT_ACK
+        assert response.payload == payload
+
+    asyncio.run(scenario())

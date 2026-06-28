@@ -64,3 +64,8 @@ class LocalRuntimeReport(BaseModel):
     started_at_utc: str | None = None
     finished_at_utc: str | None = None
     code_version: str | None = None
+    launch_ready: bool = False
+    launch_allowed: bool = False
+    billable_action_performed: bool = False
+    remote_backend_enabled: bool = False
+    network_scope: str = "localhost_only"

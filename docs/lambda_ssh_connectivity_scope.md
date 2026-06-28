@@ -36,3 +36,10 @@ setup scripts, cloud-init, and training remain out of scope.
 M054A artifacts are planning and reviewer artifacts only. They must keep
 `launch_ready=false`, `launch_allowed=false`, and
 `billable_action_performed=false`.
+
+## After connectivity
+
+M057 was the first separate minimal remote-command milestone. It did not expand
+the M054 SSH-connectivity scope retroactively; it created a new staged command
+policy for exactly one no-op command, `true`. M058 closes out that evidence and
+keeps the next command stage future-only.

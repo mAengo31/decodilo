@@ -67,6 +67,9 @@ def build_lambda_no_training_policy() -> LambdaNoTrainingPolicyReport:
         warnings=[
             "training, downloads, and benchmarks are denied for M051 bootstrap",
             "M053 carries no-training denial forward into SSH connectivity planning",
+            "M058 carries no-training denial forward into identity-command review",
+            "M062 carries no-training denial forward into GPU visibility review",
+            "M064 carries no-training denial forward into Python version query review",
         ],
     )
 

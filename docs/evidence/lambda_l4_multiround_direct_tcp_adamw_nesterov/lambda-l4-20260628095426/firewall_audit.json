@@ -1,0 +1,7 @@
+{
+  "attempted": true,
+  "original_rule_count": 2,
+  "restore_error": "Lambda API PUT /firewall-rules failed: 500 {\"error\":{\"code\":\"provider/internal-api-error\",\"message\":\"Failed to update security groups\"}}",
+  "restore_response": null,
+  "restored": false
+}
