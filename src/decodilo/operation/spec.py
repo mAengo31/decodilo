@@ -7,6 +7,9 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from decodilo.runtime.chunked_payloads import chunk_size_bytes_from_mb
+from decodilo.runtime.chunked_runtime_modes import validate_runtime_modes
+
 
 class OperationSafetyEnvelope(BaseModel):
     """Explicit, fail-closed safety envelope carried by every operation.
@@ -63,6 +66,12 @@ class OperationSpec(BaseModel):
     trainer_config: dict[str, Any] = Field(default_factory=lambda: {"optimizer": "adamw"})
     syncer_checkpoint_interval_rounds: int = Field(default=1, ge=0)
     restart_syncer_after_round: int | None = None
+    payload_storage_mode: str = "inline"
+    checkpoint_storage_mode: str = "inline"
+    merge_mode: str = "in_memory"
+    global_update_storage_mode: str = "inline"
+    inline_payload_max_bytes: int = Field(default=1_000_000, ge=1)
+    chunk_size_bytes: int = Field(default=1024 * 1024, ge=1)
     safety: OperationSafetyEnvelope = Field(default_factory=OperationSafetyEnvelope)
 
     @classmethod
@@ -90,6 +99,12 @@ class OperationSpec(BaseModel):
         outer_lr: float = 0.5,
         outer_momentum: float = 0.9,
         restart_syncer_after_round: int | None = None,
+        payload_storage_mode: str = "inline",
+        checkpoint_storage_mode: str = "inline",
+        merge_mode: str = "in_memory",
+        global_update_storage_mode: str = "inline",
+        inline_payload_max_bytes: int = 1_000_000,
+        chunk_size_mb: int = 1,
     ) -> OperationSpec:
         """Build an operation spec for the real torch causal-LM trainer path.
 
@@ -138,10 +153,22 @@ class OperationSpec(BaseModel):
                 "paper_scale_training_claimed": False,
             },
             restart_syncer_after_round=restart_syncer_after_round,
+            payload_storage_mode=payload_storage_mode,
+            checkpoint_storage_mode=checkpoint_storage_mode,
+            merge_mode=merge_mode,
+            global_update_storage_mode=global_update_storage_mode,
+            inline_payload_max_bytes=inline_payload_max_bytes,
+            chunk_size_bytes=chunk_size_bytes_from_mb(chunk_size_mb),
         )
 
     @model_validator(mode="after")
     def _validate(self) -> OperationSpec:
+        validate_runtime_modes(
+            payload_storage_mode=self.payload_storage_mode,
+            checkpoint_storage_mode=self.checkpoint_storage_mode,
+            merge_mode=self.merge_mode,
+            global_update_storage_mode=self.global_update_storage_mode,
+        )
         if self.min_quorum > self.learners:
             raise ValueError("min_quorum cannot exceed learners")
         if self.inner_optimizer != "adamw":

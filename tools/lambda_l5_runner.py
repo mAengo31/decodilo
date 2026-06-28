@@ -67,6 +67,12 @@ def main() -> int:
     parser.add_argument("--min-quorum", type=int, default=2)
     parser.add_argument("--local-steps-per-sync", type=int, default=1)
     parser.add_argument("--fragments", type=int, default=1)
+    parser.add_argument("--payload-storage-mode", default="inline")
+    parser.add_argument("--checkpoint-storage-mode", default="inline")
+    parser.add_argument("--merge-mode", default="in_memory")
+    parser.add_argument("--global-update-storage-mode", default="inline")
+    parser.add_argument("--inline-payload-max-bytes", type=int, default=1_000_000)
+    parser.add_argument("--chunk-size-mb", type=int, default=1)
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
 
@@ -359,60 +365,83 @@ def _start_syncer(syncer: Instance, args: argparse.Namespace, *, recover: bool =
     _BACKGROUND_PROCS.append(proc)
 
 
+def _runtime_mode_args(args: argparse.Namespace, *, include_syncer_only: bool) -> list[str]:
+    values = [
+        "--payload-storage-mode",
+        str(getattr(args, "payload_storage_mode", "inline")),
+        "--global-update-storage-mode",
+        str(getattr(args, "global_update_storage_mode", "inline")),
+        "--inline-payload-max-bytes",
+        str(getattr(args, "inline_payload_max_bytes", 1_000_000)),
+        "--chunk-size-bytes",
+        str(int(getattr(args, "chunk_size_mb", 1)) * 1024 * 1024),
+    ]
+    if include_syncer_only:
+        values.extend(
+            [
+                "--checkpoint-storage-mode",
+                str(getattr(args, "checkpoint_storage_mode", "inline")),
+                "--merge-mode",
+                str(getattr(args, "merge_mode", "in_memory")),
+            ]
+        )
+    return values
+
+
 def _syncer_command(args: argparse.Namespace, *, recover: bool = False) -> str:
     command = [
-            "env",
-            "PYTHONPATH=src",
-            "python3",
-            "-m",
-            "decodilo.cli",
-            "syncer",
-            "serve",
-            "--host",
-            "0.0.0.0",
-            "--port",
-            str(args.port),
-            "--ready-file",
-            f"{REMOTE_RUN}/syncer_ready.json",
-            "--workdir",
-            REMOTE_RUN,
-            "--run-id",
-            args.run_id,
-            "--learners",
-            str(args.learners),
-            "--steps",
-            str(args.steps),
-            "--vector-dim",
-            str(args.vector_dim),
-            "--fragments",
-            str(args.fragments),
-            "--local-steps-per-sync",
-            str(args.local_steps_per_sync),
-            "--min-quorum",
-            str(args.min_quorum),
-            "--seed",
-            "123",
-            "--learner-lr",
-            "0.05",
-            "--outer-lr",
-            "0.5",
-            "--outer-optimizer",
-            "nesterov",
-            "--outer-momentum",
-            "0.9",
-            "--heartbeat-timeout-seconds",
-            "10",
-            "--heartbeat-check-interval-seconds",
-            "0.1",
-            "--update-long-poll-timeout-seconds",
-            "0.05",
-            "--syncer-checkpoint-interval-rounds",
-            "1",
-        ]
+        "env",
+        "PYTHONPATH=src",
+        "python3",
+        "-m",
+        "decodilo.cli",
+        "syncer",
+        "serve",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        str(args.port),
+        "--ready-file",
+        f"{REMOTE_RUN}/syncer_ready.json",
+        "--workdir",
+        REMOTE_RUN,
+        "--run-id",
+        args.run_id,
+        "--learners",
+        str(args.learners),
+        "--steps",
+        str(args.steps),
+        "--vector-dim",
+        str(args.vector_dim),
+        "--fragments",
+        str(args.fragments),
+        "--local-steps-per-sync",
+        str(args.local_steps_per_sync),
+        "--min-quorum",
+        str(args.min_quorum),
+        "--seed",
+        "123",
+        "--learner-lr",
+        "0.05",
+        "--outer-lr",
+        "0.5",
+        "--outer-optimizer",
+        "nesterov",
+        "--outer-momentum",
+        "0.9",
+        "--heartbeat-timeout-seconds",
+        "10",
+        "--heartbeat-check-interval-seconds",
+        "0.1",
+        "--update-long-poll-timeout-seconds",
+        "0.05",
+        "--syncer-checkpoint-interval-rounds",
+        "1",
+        *_runtime_mode_args(args, include_syncer_only=True),
+    ]
     if recover:
         command.append("--recover-from-checkpoint")
     return shlex.join(command)
-
 
 def _learner_command(args: argparse.Namespace, learner_id: str, syncer_ip: str) -> str:
     return shlex.join(
@@ -450,6 +479,7 @@ def _learner_command(args: argparse.Namespace, learner_id: str, syncer_ip: str) 
             args.trainer_config_json,
             "--seed",
             "123",
+            *_runtime_mode_args(args, include_syncer_only=False),
         ]
     )
 

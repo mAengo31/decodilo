@@ -62,6 +62,12 @@ class LambdaOperationPlan:
     fragments: int
     real_model_training_claimed: bool
     paper_scale_training_claimed: bool
+    payload_storage_mode: str
+    checkpoint_storage_mode: str
+    merge_mode: str
+    global_update_storage_mode: str
+    inline_payload_max_bytes: int
+    chunk_size_bytes: int
     launch_ready: bool = False
     launch_allowed: bool = False
 
@@ -87,6 +93,12 @@ class LambdaOperationPlan:
             "fragments": self.fragments,
             "real_model_training_claimed": self.real_model_training_claimed,
             "paper_scale_training_claimed": self.paper_scale_training_claimed,
+            "payload_storage_mode": self.payload_storage_mode,
+            "checkpoint_storage_mode": self.checkpoint_storage_mode,
+            "merge_mode": self.merge_mode,
+            "global_update_storage_mode": self.global_update_storage_mode,
+            "inline_payload_max_bytes": self.inline_payload_max_bytes,
+            "chunk_size_bytes": self.chunk_size_bytes,
             "launch_ready": self.launch_ready,
             "launch_allowed": self.launch_allowed,
         }
@@ -138,6 +150,12 @@ def build_lambda_operation_plan(
         paper_scale_training_claimed=bool(
             spec.trainer_config.get("paper_scale_training_claimed", False)
         ),
+        payload_storage_mode=spec.payload_storage_mode,
+        checkpoint_storage_mode=spec.checkpoint_storage_mode,
+        merge_mode=spec.merge_mode,
+        global_update_storage_mode=spec.global_update_storage_mode,
+        inline_payload_max_bytes=spec.inline_payload_max_bytes,
+        chunk_size_bytes=spec.chunk_size_bytes,
     )
 
 
@@ -184,6 +202,18 @@ def build_lambda_l5_runner_command(
         str(spec.local_steps_per_sync),
         "--fragments",
         str(spec.fragments),
+        "--payload-storage-mode",
+        spec.payload_storage_mode,
+        "--checkpoint-storage-mode",
+        spec.checkpoint_storage_mode,
+        "--merge-mode",
+        spec.merge_mode,
+        "--global-update-storage-mode",
+        spec.global_update_storage_mode,
+        "--inline-payload-max-bytes",
+        str(spec.inline_payload_max_bytes),
+        "--chunk-size-mb",
+        str(max(1, spec.chunk_size_bytes // (1024 * 1024))),
     ]
     if config.ssh_key_name:
         command.extend(["--ssh-key-name", config.ssh_key_name])

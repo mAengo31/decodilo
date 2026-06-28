@@ -110,3 +110,39 @@ def test_l5_runner_commands_accept_torch_causal_lm_args(tmp_path: Path) -> None:
     assert "device" in learner_command
     assert "cuda" in learner_command
     assert "--steps 8" in learner_command
+
+
+def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> None:
+    runner = _load_runner()
+    args = type(
+        "Args",
+        (),
+        {
+            "port": 28080,
+            "run_id": "lambda-l5-gpu-chunked",
+            "trainer_type": "torch_causal_lm",
+            "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
+            "vector_dim": 3408,
+            "learners": 2,
+            "steps": 16,
+            "min_quorum": 2,
+            "local_steps_per_sync": 1,
+            "fragments": 1,
+            "payload_storage_mode": "chunked",
+            "checkpoint_storage_mode": "chunked",
+            "merge_mode": "streaming_chunked",
+            "global_update_storage_mode": "chunked",
+            "chunk_size_mb": 1,
+            "inline_payload_max_bytes": 1024,
+        },
+    )()
+
+    syncer_command = runner._syncer_command(args)
+    learner_command = runner._learner_command(args, "learner-0", "127.0.0.1")
+
+    for command in [syncer_command, learner_command]:
+        assert "--payload-storage-mode chunked" in command
+        assert "--global-update-storage-mode chunked" in command
+        assert "--chunk-size" in command or "--chunk-size-bytes" in command
+    assert "--checkpoint-storage-mode chunked" in syncer_command
+    assert "--merge-mode streaming_chunked" in syncer_command

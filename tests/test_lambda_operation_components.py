@@ -152,3 +152,45 @@ def test_lambda_operation_plan_carries_torch_causal_lm_trainer_config(tmp_path: 
     assert preview["trainer_type"] == "torch_causal_lm"
     assert preview["real_model_training_claimed"] is True
     assert preview["paper_scale_training_claimed"] is False
+
+
+def test_lambda_operation_plan_carries_chunked_transport_modes(tmp_path: Path) -> None:
+    spec = OperationSpec.torch_causal_lm_profile(
+        name="lambda-gpu-chunked-profile",
+        learners=2,
+        min_quorum=2,
+        steps=16,
+        device="cuda",
+        vocab_size=32,
+        seq_len=8,
+        batch_size=2,
+        d_model=16,
+        num_layers=1,
+        num_heads=2,
+        learning_rate=0.001,
+        payload_storage_mode="chunked",
+        checkpoint_storage_mode="chunked",
+        merge_mode="streaming_chunked",
+        global_update_storage_mode="chunked",
+        chunk_size_mb=1,
+    )
+    config = LambdaOperationBackendConfig(
+        run_id="lambda-l6-gpu-chunked-profile",
+        evidence_root=tmp_path / "evidence",
+        env_file=tmp_path / ".env",
+        ssh_key_name="test-key",
+        ssh_private_key=tmp_path / "private-key.pem",
+        restart_after_round=4,
+    )
+
+    plan = build_lambda_operation_plan(spec, config=config, workdir=tmp_path)
+    command = plan.command
+
+    assert command[command.index("--payload-storage-mode") + 1] == "chunked"
+    assert command[command.index("--checkpoint-storage-mode") + 1] == "chunked"
+    assert command[command.index("--merge-mode") + 1] == "streaming_chunked"
+    assert command[command.index("--global-update-storage-mode") + 1] == "chunked"
+    assert command[command.index("--chunk-size-mb") + 1] == "1"
+    preview = plan.to_preview_dict()
+    assert preview["payload_storage_mode"] == "chunked"
+    assert preview["global_update_storage_mode"] == "chunked"
