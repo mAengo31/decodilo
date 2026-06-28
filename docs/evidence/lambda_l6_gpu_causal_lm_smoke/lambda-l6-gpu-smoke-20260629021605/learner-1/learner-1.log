@@ -1,0 +1,11 @@
+{"event_type": "starting", "learner_id": "learner-1", "payload": {}}
+{"event_type": "registered", "learner_id": "learner-1", "payload": {"global_version": 0, "reconnected": false, "slow_factor": 1.0, "trainer_type": "torch_causal_lm"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-1:v-0", "outcome": "committed", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-2:v-1", "outcome": "committed", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-3:v-2", "outcome": "committed", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-4:v-3", "outcome": "committed", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-5:v-4", "outcome": "committed", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-6:v-5", "outcome": "queued", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-7:v-5", "outcome": "queued", "response_type": "submit_fragment_ack"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-l6-gpu-smoke-20260629021605:learner-1:step-8:v-5", "outcome": "queued", "response_type": "submit_fragment_ack"}}
+{"event_type": "finished", "learner_id": "learner-1", "payload": {}}

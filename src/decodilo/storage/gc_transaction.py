@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import shutil
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Literal
 from uuid import uuid4
@@ -16,6 +16,7 @@ from decodilo.storage.artifact_index import build_artifact_index
 from decodilo.storage.checksums import sha256_file
 from decodilo.storage.gc_accounting import build_gc_accounting_report
 from decodilo.storage.reachability import build_reachability_graph
+from decodilo.time_compat import UTC
 
 GC_TRANSACTION_SCHEMA_VERSION = "v1"
 TransactionState = Literal["planned", "applying", "completed", "failed", "aborted"]
@@ -161,4 +162,3 @@ def apply_gc_transaction(
     if failed:
         raise InvariantViolation(f"gc transaction failed: {failed}")
     return log
-

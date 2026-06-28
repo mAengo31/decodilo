@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from decodilo.scaling.learner_pods import LearnerPodScalingScenario
 from decodilo.scaling.pod_count_optimizer import PodCountOptimizationResult
+from decodilo.time_compat import UTC
 
 
 class LearnerScalingDecisionReport(BaseModel):
@@ -140,4 +141,3 @@ def _backend_targets(optimization: PodCountOptimizationResult) -> dict[str, Any]
         "event_log_growth_mb_per_hour": target_count * 0.5,
         "required_replay_snapshot_frequency": "every checkpoint or compaction cycle",
     }
-

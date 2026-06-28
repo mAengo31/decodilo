@@ -1,0 +1,26 @@
+{
+  "network_path": "ssh_reverse_tunnel_via_operator",
+  "remote_instance_count": 3,
+  "roles": {
+    "learner-0": {
+      "instance_id": "fc79a9786d0d4754bef69b1831b0f41e",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.213.80.54",
+      "region": "us-east-1"
+    },
+    "learner-1": {
+      "instance_id": "d69d9ca3d4454325875cf83925b6f89b",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.213.131.161",
+      "region": "us-east-1"
+    },
+    "syncer": {
+      "instance_id": "af631357651845cf9913b6247a3864aa",
+      "instance_type": "gpu_1x_a10",
+      "ip": "157.151.226.38",
+      "region": "us-east-1"
+    }
+  },
+  "run_id": "lambda-l2-20260628013644",
+  "syncer_port": 28080
+}

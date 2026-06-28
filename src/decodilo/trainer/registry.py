@@ -5,6 +5,7 @@ from __future__ import annotations
 from decodilo.trainer.interface import TrainerAdapter
 from decodilo.trainer.numpy_convex import NumpyConvexTrainer
 from decodilo.trainer.scripted import ScriptedTrainer
+from decodilo.trainer.tiny_adamw import TinyAdamWTrainer
 
 
 def create_trainer(trainer_type: str) -> TrainerAdapter:
@@ -12,6 +13,8 @@ def create_trainer(trainer_type: str) -> TrainerAdapter:
         return NumpyConvexTrainer()
     if trainer_type == "scripted":
         return ScriptedTrainer()
+    if trainer_type == "tiny_adamw":
+        return TinyAdamWTrainer()
     if trainer_type == "torch_tiny":
         from decodilo.trainer.torch_tiny import TinyTorchMLPTrainer
 

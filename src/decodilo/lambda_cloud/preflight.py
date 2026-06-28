@@ -75,6 +75,11 @@ from decodilo.lambda_cloud.m053_report import LambdaM053Report, load_lambda_m053
 from decodilo.lambda_cloud.m054a_report import LambdaM054AReport, load_lambda_m054a_report
 from decodilo.lambda_cloud.m055b_report import LambdaM055BReport, load_lambda_m055b_report
 from decodilo.lambda_cloud.m055d_report import LambdaM055DReport, load_lambda_m055d_report
+from decodilo.lambda_cloud.m058_report import LambdaM058Report, load_lambda_m058_report
+from decodilo.lambda_cloud.m060_report import LambdaM060Report, load_lambda_m060_report
+from decodilo.lambda_cloud.m062_report import LambdaM062Report, load_lambda_m062_report
+from decodilo.lambda_cloud.m070_report import LambdaM070Report, load_lambda_m070_report
+from decodilo.lambda_cloud.m072_report import LambdaM072Report, load_lambda_m072_report
 from decodilo.lambda_cloud.minimal_mutation_audit import (
     LambdaMinimalMutationAuditReport,
     load_lambda_minimal_mutation_audit_report,
@@ -189,6 +194,11 @@ class LambdaPreflightReport(BaseModel):
     m054a_ssh_connectivity_execution_summary: dict[str, Any] | None = None
     m055b_ssh_failure_diagnostic_summary: dict[str, Any] | None = None
     m055d_ssh_capacity_retry_summary: dict[str, Any] | None = None
+    m058_ssh_noop_closeout_summary: dict[str, Any] | None = None
+    m060_hostname_identity_closeout_summary: dict[str, Any] | None = None
+    m062_whoami_gpu_visibility_summary: dict[str, Any] | None = None
+    m070_remote_decodilo_vslice_summary: dict[str, Any] | None = None
+    m072_first_experiment_closeout_summary: dict[str, Any] | None = None
     real_mutation_enabled: bool = False
     warnings: list[str] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
@@ -263,6 +273,11 @@ def run_lambda_preflight(
     m054a_report: str | Path | LambdaM054AReport | None = None,
     m055b_report: str | Path | LambdaM055BReport | None = None,
     m055d_report: str | Path | LambdaM055DReport | None = None,
+    m058_report: str | Path | LambdaM058Report | None = None,
+    m060_report: str | Path | LambdaM060Report | None = None,
+    m062_report: str | Path | LambdaM062Report | None = None,
+    m070_report: str | Path | LambdaM070Report | None = None,
+    m072_report: str | Path | LambdaM072Report | None = None,
 ) -> LambdaPreflightReport:
     warnings: list[str] = [
         "Lambda preflight is read-only/non-launching",
@@ -345,6 +360,11 @@ def run_lambda_preflight(
     m054a = _load_m054a_report(m054a_report, warnings, errors)
     m055b = _load_m055b_report(m055b_report, warnings, errors)
     m055d = _load_m055d_report(m055d_report, warnings, errors)
+    m058 = _load_m058_report(m058_report, warnings, errors)
+    m060 = _load_m060_report(m060_report, warnings, errors)
+    m062 = _load_m062_report(m062_report, warnings, errors)
+    m070 = _load_m070_report(m070_report, warnings, errors)
+    m072 = _load_m072_report(m072_report, warnings, errors)
     credential_audit = None
     if credential_policy is not None:
         try:
@@ -741,6 +761,39 @@ def run_lambda_preflight(
         ):
             errors.append("M055D SSH capacity retry review must remain non-launchable")
         warnings.append("M055D is offline capacity retry planning; it performs no SSH or launch")
+    if m058 is not None:
+        if (
+            m058.launch_ready
+            or m058.launch_allowed
+            or m058.real_mutation_enabled
+            or m058.billable_action_performed
+        ):
+            errors.append("M058 SSH no-op closeout must remain non-launchable")
+        warnings.append("M058 records historical no-op command evidence only")
+    if m060 is not None:
+        if (
+            m060.launch_ready
+            or m060.launch_allowed
+            or m060.real_mutation_enabled
+            or m060.billable_action_performed
+        ):
+            errors.append("M060 hostname identity closeout must remain non-launchable")
+        warnings.append("M060 records historical hostname command evidence only")
+    if m062 is not None:
+        if (
+            m062.launch_ready
+            or m062.launch_allowed
+            or m062.real_mutation_enabled
+            or m062.billable_action_performed
+        ):
+            errors.append("M062 whoami/GPU visibility review must remain non-launchable")
+        warnings.append("M062 records historical whoami evidence only")
+    if m070 is not None:
+        if m070.launch_ready or m070.launch_allowed or m070.billable_action_performed:
+            errors.append("M070 remote Decodilo closeout must remain non-launchable")
+        if not m070.report_passed:
+            warnings.append("M070 remote Decodilo closeout has blockers")
+        warnings.append("M070 authorizes only a future M071R review; launch remains disabled")
     status: Literal[
         "passed_read_only",
         "passed_read_only_with_warnings",
@@ -864,6 +917,11 @@ def run_lambda_preflight(
         m054a_ssh_connectivity_execution_summary=_m054a_summary(m054a),
         m055b_ssh_failure_diagnostic_summary=_m055b_summary(m055b),
         m055d_ssh_capacity_retry_summary=_m055d_summary(m055d),
+        m058_ssh_noop_closeout_summary=_m058_summary(m058),
+        m060_hostname_identity_closeout_summary=_m060_summary(m060),
+        m062_whoami_gpu_visibility_summary=_m062_summary(m062),
+        m070_remote_decodilo_vslice_summary=_m070_summary(m070),
+        m072_first_experiment_closeout_summary=_m072_summary(m072),
         warnings=warnings,
         errors=errors,
     )
@@ -1835,6 +1893,91 @@ def _load_m055d_report(
         return None
 
 
+def _load_m058_report(
+    value: str | Path | LambdaM058Report | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM058Report | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM058Report):
+        return value
+    try:
+        return load_lambda_m058_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M058 SSH no-op closeout report unreadable: {exc}")
+        warnings.append("Lambda M058 SSH no-op closeout report could not be loaded")
+        return None
+
+
+def _load_m060_report(
+    value: str | Path | LambdaM060Report | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM060Report | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM060Report):
+        return value
+    try:
+        return load_lambda_m060_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M060 hostname identity closeout report unreadable: {exc}")
+        warnings.append("Lambda M060 hostname identity closeout report could not be loaded")
+        return None
+
+
+def _load_m062_report(
+    value: str | Path | LambdaM062Report | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM062Report | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM062Report):
+        return value
+    try:
+        return load_lambda_m062_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M062 whoami/GPU visibility report unreadable: {exc}")
+        warnings.append("Lambda M062 whoami/GPU visibility report could not be loaded")
+        return None
+
+
+def _load_m070_report(
+    value: str | Path | LambdaM070Report | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM070Report | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM070Report):
+        return value
+    try:
+        return load_lambda_m070_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M070 remote Decodilo report unreadable: {exc}")
+        warnings.append("Lambda M070 remote Decodilo report could not be loaded")
+        return None
+
+
+def _load_m072_report(
+    value: str | Path | LambdaM072Report | None,
+    warnings: list[str],
+    errors: list[str],
+) -> LambdaM072Report | None:
+    if value is None:
+        return None
+    if isinstance(value, LambdaM072Report):
+        return value
+    try:
+        return load_lambda_m072_report(value)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Lambda M072 first experiment report unreadable: {exc}")
+        warnings.append("Lambda M072 first experiment report could not be loaded")
+        return None
+
+
 def _m026_summary(
     decision: LambdaRealLaunchDecisionRecord | None,
     authorization: LambdaM027AuthorizationRecord | None,
@@ -2319,4 +2462,123 @@ def _m055d_summary(report: LambdaM055DReport | None) -> dict[str, Any] | None:
         "launch_ready": False,
         "launch_allowed": False,
         "message": "M055D prepares a future M056 review; SSH and launch remain disabled",
+    }
+
+
+def _m058_summary(report: LambdaM058Report | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "success_record_status": report.success_record_status,
+        "reconciliation_status": report.reconciliation_status,
+        "closeout_status": report.closeout_status,
+        "stage_policy_status": report.stage_policy_status,
+        "selected_future_command_set": report.selected_future_command_set,
+        "m059_authorization_status": report.m059_authorization_status,
+        "runbook_preview_status": report.runbook_preview_status,
+        "report_passed": report.report_passed,
+        "historical_billable_action_performed": report.historical_billable_action_performed,
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": "M058 is offline closeout only; launch and command execution remain disabled",
+    }
+
+
+def _m060_summary(report: LambdaM060Report | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "success_record_status": report.success_record_status,
+        "reconciliation_status": report.reconciliation_status,
+        "evidence_complete": report.evidence_complete,
+        "closeout_status": report.closeout_status,
+        "m061_decision": report.m061_decision,
+        "next_allowed_review_command": report.next_allowed_review_command,
+        "report_passed": report.report_passed,
+        "historical_billable_action_performed": report.historical_billable_action_performed,
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": "M060 is offline closeout only; launch and command execution remain disabled",
+    }
+
+
+def _m062_summary(report: LambdaM062Report | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "success_record_status": report.success_record_status,
+        "reconciliation_status": report.reconciliation_status,
+        "evidence_complete": report.evidence_complete,
+        "closeout_status": report.closeout_status,
+        "command_policy_status": report.command_policy_status,
+        "output_policy_status": report.output_policy_status,
+        "command_review_status": report.command_review_status,
+        "m063_authorization_status": report.m063_authorization_status,
+        "runbook_preview_status": report.runbook_preview_status,
+        "selected_future_command_set": report.selected_future_command_set,
+        "report_passed": report.report_passed,
+        "historical_billable_action_performed": report.historical_billable_action_performed,
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": (
+            "M062 is offline closeout and future GPU visibility review only; "
+            "launch and command execution remain disabled"
+        ),
+    }
+
+
+def _m070_summary(report: LambdaM070Report | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "m069r_success_status": report.m069r_success_status,
+        "reconciliation_passed": report.reconciliation_passed,
+        "closeout_status": report.closeout_status,
+        "closeout_succeeded": report.closeout_succeeded,
+        "first_experiment_readiness_status": report.first_experiment_readiness_status,
+        "command_discovery_status": report.command_discovery_status,
+        "m071r_authorization_status": report.m071r_authorization_status,
+        "runbook_preview_status": report.runbook_preview_status,
+        "report_passed": report.report_passed,
+        "historical_billable_action_performed": (
+            report.historical_billable_action_performed
+        ),
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": (
+            "M070 closes out M069R and prepares a future M071R review only; "
+            "launch and remote execution remain disabled"
+        ),
+    }
+
+
+def _m072_summary(report: LambdaM072Report | None) -> dict[str, Any] | None:
+    if report is None:
+        return None
+    return {
+        "m071r_success_status": report.m071r_success_status,
+        "reconciliation_passed": report.reconciliation_passed,
+        "closeout_status": report.closeout_status,
+        "closeout_succeeded": report.closeout_succeeded,
+        "artifact_audit_passed": report.artifact_audit_passed,
+        "tiny_smoke_discovery_status": report.tiny_smoke_discovery_status,
+        "tiny_smoke_policy_status": report.tiny_smoke_policy_status,
+        "m073r_authorization_status": report.m073r_authorization_status,
+        "runbook_preview_status": report.runbook_preview_status,
+        "report_passed": report.report_passed,
+        "m073r_blockers": report.m073r_blockers,
+        "historical_billable_action_performed": (
+            report.historical_billable_action_performed
+        ),
+        "blockers": report.blockers,
+        "launch_ready": False,
+        "launch_allowed": False,
+        "message": (
+            "M072 closes out M071R and prepares a future M073R review only; "
+            "launch and remote execution remain disabled"
+        ),
     }

@@ -23,6 +23,16 @@ from decodilo.cloud.launch_review import (
     write_launch_review_checklist,
 )
 from decodilo.cloud.launcher_interface import LaunchRequest
+from decodilo.dev.bounded_diloco_experiment import run_bounded_diloco_experiment
+from decodilo.dev.diloco_optimizer_smoke import run_diloco_optimizer_smoke
+from decodilo.dev.diloco_smoke import run_diloco_smoke
+from decodilo.dev.integrated_diloco_smoke import run_integrated_diloco_smoke
+from decodilo.dev.learner_syncer_smoke import run_learner_syncer_smoke
+from decodilo.dev.parameter_fragment_smoke import run_parameter_fragment_smoke
+from decodilo.dev.runtime_smoke import run_runtime_smoke
+from decodilo.dev.synthetic_experiment import run_synthetic_experiment
+from decodilo.dev.tiny_real_training_smoke import run_tiny_real_training_smoke
+from decodilo.dev.tiny_smoke import run_tiny_smoke
 from decodilo.errors import LaunchDisabledError
 from decodilo.lambda_cloud.alternative_shape_operator_selection import (
     build_lambda_alternative_shape_operator_selection_from_paths,
@@ -66,6 +76,46 @@ from decodilo.lambda_cloud.bootstrap_evidence_schema import (
 from decodilo.lambda_cloud.bootstrap_risk_review import (
     build_lambda_bootstrap_risk_review_from_paths,
     write_lambda_bootstrap_risk_review,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_artifact_audit import (
+    build_lambda_bounded_diloco_experiment_artifact_audit_from_paths,
+    write_lambda_bounded_diloco_experiment_artifact_audit,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_closeout import (
+    build_lambda_bounded_diloco_experiment_closeout_from_paths,
+    write_lambda_bounded_diloco_experiment_closeout,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_discovery import (
+    discover_lambda_bounded_diloco_experiment_command,
+    write_lambda_bounded_diloco_experiment_command_discovery,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_evidence_package import (
+    build_lambda_bounded_diloco_experiment_evidence_package_from_paths,
+    write_lambda_bounded_diloco_experiment_evidence_package,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_policy import (
+    build_lambda_bounded_diloco_experiment_policy_from_path,
+    write_lambda_bounded_diloco_experiment_policy,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_readiness import (
+    build_lambda_bounded_diloco_experiment_readiness_from_path,
+    write_lambda_bounded_diloco_experiment_readiness,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_reconciliation import (
+    build_lambda_bounded_diloco_experiment_reconciliation_from_paths,
+    write_lambda_bounded_diloco_experiment_reconciliation,
+)
+from decodilo.lambda_cloud.bounded_diloco_experiment_success_record import (
+    build_lambda_bounded_diloco_experiment_success_record_from_paths,
+    write_lambda_bounded_diloco_experiment_success_record,
+)
+from decodilo.lambda_cloud.bounded_experiment_evidence_interpretation import (
+    build_lambda_bounded_experiment_evidence_interpretation_from_paths,
+    write_lambda_bounded_experiment_evidence_interpretation,
+)
+from decodilo.lambda_cloud.bounded_experiment_result_summary import (
+    build_lambda_bounded_experiment_result_summary_from_paths,
+    write_lambda_bounded_experiment_result_summary,
 )
 from decodilo.lambda_cloud.capacity_aware_report_semantics import (
     build_lambda_capacity_aware_run_semantics_from_path,
@@ -195,6 +245,78 @@ from decodilo.lambda_cloud.crash_safe_transport_diagnostics import (
     validate_lambda_crash_safe_transport_diagnostics_from_paths,
     write_lambda_crash_safe_transport_diagnostics,
 )
+from decodilo.lambda_cloud.diloco_artifact_parser import (
+    parse_diloco_artifact_file,
+    write_diloco_artifact_parser_report,
+)
+from decodilo.lambda_cloud.diloco_optimizer_artifact_audit import (
+    build_lambda_diloco_optimizer_artifact_audit_from_paths,
+    write_lambda_diloco_optimizer_artifact_audit,
+)
+from decodilo.lambda_cloud.diloco_optimizer_closeout import (
+    build_lambda_diloco_optimizer_closeout_from_paths,
+    write_lambda_diloco_optimizer_closeout,
+)
+from decodilo.lambda_cloud.diloco_optimizer_command_discovery import (
+    discover_lambda_diloco_optimizer_command,
+    write_lambda_diloco_optimizer_command_discovery,
+)
+from decodilo.lambda_cloud.diloco_optimizer_evidence_package import (
+    build_lambda_diloco_optimizer_evidence_package_from_paths,
+    write_lambda_diloco_optimizer_evidence_package,
+)
+from decodilo.lambda_cloud.diloco_optimizer_policy import (
+    build_lambda_diloco_optimizer_policy_from_path,
+    write_lambda_diloco_optimizer_policy,
+)
+from decodilo.lambda_cloud.diloco_optimizer_readiness import (
+    build_lambda_diloco_optimizer_readiness_from_path,
+    write_lambda_diloco_optimizer_readiness,
+)
+from decodilo.lambda_cloud.diloco_optimizer_reconciliation import (
+    build_lambda_diloco_optimizer_reconciliation_from_paths,
+    write_lambda_diloco_optimizer_reconciliation,
+)
+from decodilo.lambda_cloud.diloco_optimizer_success_record import (
+    build_lambda_diloco_optimizer_success_record_from_paths,
+    write_lambda_diloco_optimizer_success_record,
+)
+from decodilo.lambda_cloud.diloco_smoke_attempt_closeout import (
+    build_lambda_diloco_smoke_attempt_closeout_from_paths,
+    write_lambda_diloco_smoke_attempt_closeout,
+)
+from decodilo.lambda_cloud.diloco_synthetic_artifact_audit import (
+    build_lambda_diloco_synthetic_artifact_audit_from_paths,
+    write_lambda_diloco_synthetic_artifact_audit,
+)
+from decodilo.lambda_cloud.diloco_synthetic_closeout import (
+    build_lambda_diloco_synthetic_closeout_from_paths,
+    write_lambda_diloco_synthetic_closeout,
+)
+from decodilo.lambda_cloud.diloco_synthetic_command_discovery import (
+    discover_lambda_diloco_synthetic_command,
+    write_lambda_diloco_synthetic_command_discovery,
+)
+from decodilo.lambda_cloud.diloco_synthetic_evidence_package import (
+    build_lambda_diloco_synthetic_evidence_package_from_paths,
+    write_lambda_diloco_synthetic_evidence_package,
+)
+from decodilo.lambda_cloud.diloco_synthetic_policy import (
+    build_lambda_diloco_synthetic_policy_from_path,
+    write_lambda_diloco_synthetic_policy,
+)
+from decodilo.lambda_cloud.diloco_synthetic_readiness import (
+    build_lambda_diloco_synthetic_readiness_from_path,
+    write_lambda_diloco_synthetic_readiness,
+)
+from decodilo.lambda_cloud.diloco_synthetic_reconciliation import (
+    build_lambda_diloco_synthetic_reconciliation_from_paths,
+    write_lambda_diloco_synthetic_reconciliation,
+)
+from decodilo.lambda_cloud.diloco_synthetic_success_record import (
+    build_lambda_diloco_synthetic_success_record_from_paths,
+    write_lambda_diloco_synthetic_success_record,
+)
 from decodilo.lambda_cloud.disabled_mutation_transport_spec import (
     build_lambda_disabled_mutation_transport_spec,
     write_lambda_disabled_mutation_transport_spec,
@@ -308,6 +430,34 @@ from decodilo.lambda_cloud.final_teardown_verification_plan import (
     build_lambda_final_teardown_verification_plan,
     write_lambda_final_teardown_verification_plan,
 )
+from decodilo.lambda_cloud.first_experiment_closeout import (
+    build_lambda_first_experiment_closeout_from_paths,
+    write_lambda_first_experiment_closeout,
+)
+from decodilo.lambda_cloud.first_experiment_command_discovery import (
+    discover_lambda_first_experiment_command,
+    write_lambda_first_experiment_command_discovery,
+)
+from decodilo.lambda_cloud.first_experiment_evidence_package import (
+    build_lambda_first_experiment_evidence_package_from_paths,
+    write_lambda_first_experiment_evidence_package,
+)
+from decodilo.lambda_cloud.first_experiment_manifest import (
+    build_lambda_first_experiment_manifest_from_paths,
+    write_lambda_first_experiment_manifest,
+)
+from decodilo.lambda_cloud.first_experiment_readiness import (
+    build_lambda_first_experiment_readiness_from_path,
+    write_lambda_first_experiment_readiness,
+)
+from decodilo.lambda_cloud.first_experiment_reconciliation import (
+    build_lambda_first_experiment_reconciliation_from_paths,
+    write_lambda_first_experiment_reconciliation,
+)
+from decodilo.lambda_cloud.first_experiment_success_record import (
+    build_lambda_first_experiment_success_record_from_paths,
+    write_lambda_first_experiment_success_record,
+)
 from decodilo.lambda_cloud.first_launch_evidence_package import (
     build_lambda_first_launch_evidence_package,
     write_lambda_first_launch_evidence_package,
@@ -327,6 +477,18 @@ from decodilo.lambda_cloud.first_launch_runbook import (
 from decodilo.lambda_cloud.first_launch_safety_case import (
     build_lambda_first_launch_safety_case,
     write_lambda_first_launch_safety_case,
+)
+from decodilo.lambda_cloud.first_synthetic_experiment_discovery import (
+    discover_lambda_first_synthetic_experiment_command,
+    write_lambda_first_synthetic_experiment_discovery,
+)
+from decodilo.lambda_cloud.first_synthetic_experiment_policy import (
+    build_lambda_first_synthetic_experiment_policy_from_path,
+    write_lambda_first_synthetic_experiment_policy,
+)
+from decodilo.lambda_cloud.first_synthetic_experiment_readiness import (
+    build_lambda_first_synthetic_experiment_readiness_from_path,
+    write_lambda_first_synthetic_experiment_readiness,
 )
 from decodilo.lambda_cloud.flexible_selector_authorization import (
     build_lambda_flexible_selector_authorization_from_paths,
@@ -364,6 +526,58 @@ from decodilo.lambda_cloud.go_no_go_record import (
     build_lambda_go_no_go_record,
     write_lambda_go_no_go_record,
 )
+from decodilo.lambda_cloud.gpu_visibility_closeout import (
+    build_lambda_gpu_visibility_closeout_from_paths,
+    write_lambda_gpu_visibility_closeout,
+)
+from decodilo.lambda_cloud.gpu_visibility_command_policy import (
+    build_lambda_gpu_visibility_command_policy,
+    load_lambda_gpu_visibility_command_policy,
+    write_lambda_gpu_visibility_command_policy,
+)
+from decodilo.lambda_cloud.gpu_visibility_command_review import (
+    build_lambda_gpu_visibility_command_review_from_paths,
+    load_lambda_gpu_visibility_command_review,
+    write_lambda_gpu_visibility_command_review,
+)
+from decodilo.lambda_cloud.gpu_visibility_evidence_package import (
+    build_lambda_gpu_visibility_evidence_package_from_paths,
+    write_lambda_gpu_visibility_evidence_package,
+)
+from decodilo.lambda_cloud.gpu_visibility_m063_execution import (
+    M063_GPU_VISIBILITY_COMMAND,
+    build_lambda_m063_gpu_visibility_gate_check_from_paths,
+    build_lambda_m063_gpu_visibility_plan_from_paths,
+    build_lambda_m063_one_shot_arming_from_paths,
+    build_lambda_m063_reviewer_bridge_from_path,
+    is_lambda_m063_one_shot_arming_expired,
+    load_lambda_m063_gpu_visibility_gate_check,
+    load_lambda_m063_gpu_visibility_plan,
+    load_lambda_m063_one_shot_arming,
+    load_lambda_m063_reviewer_bridge,
+    m063_plan_hash,
+    write_lambda_m063_gpu_visibility_gate_check,
+    write_lambda_m063_gpu_visibility_plan,
+    write_lambda_m063_one_shot_arming,
+    write_lambda_m063_reviewer_bridge,
+)
+from decodilo.lambda_cloud.gpu_visibility_output_policy import (
+    build_lambda_gpu_visibility_output_policy,
+    load_lambda_gpu_visibility_output_policy,
+    write_lambda_gpu_visibility_output_policy,
+)
+from decodilo.lambda_cloud.gpu_visibility_parsed_output_audit import (
+    build_lambda_gpu_visibility_parsed_output_audit_from_paths,
+    write_lambda_gpu_visibility_parsed_output_audit,
+)
+from decodilo.lambda_cloud.gpu_visibility_reconciliation import (
+    build_lambda_gpu_visibility_reconciliation_from_paths,
+    write_lambda_gpu_visibility_reconciliation,
+)
+from decodilo.lambda_cloud.gpu_visibility_success_record import (
+    build_lambda_gpu_visibility_success_record_from_paths,
+    write_lambda_gpu_visibility_success_record,
+)
 from decodilo.lambda_cloud.human_review_manifest import (
     build_lambda_human_review_manifest,
     write_lambda_human_review_manifest,
@@ -376,6 +590,42 @@ from decodilo.lambda_cloud.human_review_validator import (
 from decodilo.lambda_cloud.idempotency_semantics_evidence import (
     build_lambda_idempotency_semantics_evidence_from_path,
     write_lambda_idempotency_semantics_evidence,
+)
+from decodilo.lambda_cloud.identity_command_stage_policy import (
+    build_lambda_identity_command_stage_policy,
+    write_lambda_identity_command_stage_policy,
+)
+from decodilo.lambda_cloud.integrated_diloco_artifact_audit import (
+    build_lambda_integrated_diloco_artifact_audit_from_paths,
+    write_lambda_integrated_diloco_artifact_audit,
+)
+from decodilo.lambda_cloud.integrated_diloco_closeout import (
+    build_lambda_integrated_diloco_closeout_from_paths,
+    write_lambda_integrated_diloco_closeout,
+)
+from decodilo.lambda_cloud.integrated_diloco_command_discovery import (
+    discover_lambda_integrated_diloco_command,
+    write_lambda_integrated_diloco_command_discovery,
+)
+from decodilo.lambda_cloud.integrated_diloco_evidence_package import (
+    build_lambda_integrated_diloco_evidence_package_from_paths,
+    write_lambda_integrated_diloco_evidence_package,
+)
+from decodilo.lambda_cloud.integrated_diloco_policy import (
+    build_lambda_integrated_diloco_policy_from_path,
+    write_lambda_integrated_diloco_policy,
+)
+from decodilo.lambda_cloud.integrated_diloco_reconciliation import (
+    build_lambda_integrated_diloco_reconciliation_from_paths,
+    write_lambda_integrated_diloco_reconciliation,
+)
+from decodilo.lambda_cloud.integrated_diloco_success_record import (
+    build_lambda_integrated_diloco_success_record_from_paths,
+    write_lambda_integrated_diloco_success_record,
+)
+from decodilo.lambda_cloud.integrated_diloco_synthetic_readiness import (
+    build_lambda_integrated_diloco_synthetic_readiness_from_paths,
+    write_lambda_integrated_diloco_synthetic_readiness,
 )
 from decodilo.lambda_cloud.launch_attempt_history import (
     build_lambda_launch_attempt_history_report_from_paths,
@@ -427,6 +677,34 @@ from decodilo.lambda_cloud.launch_window_lock import (
     build_lambda_launch_window_lock,
     write_lambda_launch_window_lock,
 )
+from decodilo.lambda_cloud.learner_syncer_artifact_parser import (
+    parse_learner_syncer_artifact_file,
+    write_learner_syncer_artifact_parser_report,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_artifact_audit import (
+    build_lambda_learner_syncer_smoke_artifact_audit_from_paths,
+    write_lambda_learner_syncer_smoke_artifact_audit,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_attempt_closeout import (
+    build_lambda_learner_syncer_smoke_attempt_closeout_from_paths,
+    write_lambda_learner_syncer_smoke_attempt_closeout,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_closeout import (
+    build_lambda_learner_syncer_smoke_closeout_from_paths,
+    write_lambda_learner_syncer_smoke_closeout,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_evidence_package import (
+    build_lambda_learner_syncer_smoke_evidence_package_from_paths,
+    write_lambda_learner_syncer_smoke_evidence_package,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_reconciliation import (
+    build_lambda_learner_syncer_smoke_reconciliation_from_paths,
+    write_lambda_learner_syncer_smoke_reconciliation,
+)
+from decodilo.lambda_cloud.learner_syncer_smoke_success_record import (
+    build_lambda_learner_syncer_smoke_success_record_from_paths,
+    write_lambda_learner_syncer_smoke_success_record,
+)
 from decodilo.lambda_cloud.lifecycle_smoke_closeout import (
     build_lambda_lifecycle_smoke_closeout_from_paths,
     write_lambda_lifecycle_smoke_closeout,
@@ -442,6 +720,10 @@ from decodilo.lambda_cloud.lifecycle_smoke_postrun_reconciliation import (
 from decodilo.lambda_cloud.lifecycle_smoke_success_record import (
     build_lambda_lifecycle_smoke_success_record_from_paths,
     write_lambda_lifecycle_smoke_success_record,
+)
+from decodilo.lambda_cloud.linux_python310_wheelhouse_plan import (
+    build_lambda_linux_python310_wheelhouse_plan_from_paths,
+    write_lambda_linux_python310_wheelhouse_plan,
 )
 from decodilo.lambda_cloud.live_capacity_candidate_extractor import (
     extract_lambda_capacity_candidates_from_paths,
@@ -868,6 +1150,328 @@ from decodilo.lambda_cloud.m055d_report import (
     build_lambda_m055d_report_from_paths,
     write_lambda_m055d_report,
 )
+from decodilo.lambda_cloud.m058_report import (
+    build_lambda_m058_report_from_paths,
+    write_lambda_m058_report,
+)
+from decodilo.lambda_cloud.m059_command_runbook_preview import (
+    build_lambda_m059_command_runbook_preview_from_path,
+    write_lambda_m059_command_runbook_preview,
+)
+from decodilo.lambda_cloud.m059_remote_command_authorization import (
+    build_lambda_m059_remote_command_authorization_from_paths,
+    load_lambda_m059_remote_command_authorization,
+    write_lambda_m059_remote_command_authorization,
+)
+from decodilo.lambda_cloud.m060_report import (
+    build_lambda_m060_report_from_paths,
+    write_lambda_m060_report,
+)
+from decodilo.lambda_cloud.m061_next_step_decision import (
+    build_lambda_m061_next_step_decision_from_paths,
+    write_lambda_m061_next_step_decision,
+)
+from decodilo.lambda_cloud.m061_whoami_authorization import (
+    build_lambda_m061_whoami_authorization_from_paths,
+    load_lambda_m061_whoami_authorization,
+    write_lambda_m061_whoami_authorization,
+)
+from decodilo.lambda_cloud.m062_report import (
+    build_lambda_m062_report_from_paths,
+    write_lambda_m062_report,
+)
+from decodilo.lambda_cloud.m063_gpu_visibility_authorization import (
+    build_lambda_m063_gpu_visibility_authorization_from_paths,
+    load_lambda_m063_gpu_visibility_authorization,
+    write_lambda_m063_gpu_visibility_authorization,
+)
+from decodilo.lambda_cloud.m063_gpu_visibility_runbook_preview import (
+    build_lambda_m063_gpu_visibility_runbook_preview_from_path,
+    write_lambda_m063_gpu_visibility_runbook_preview,
+)
+from decodilo.lambda_cloud.m064_report import (
+    build_lambda_m064_report_from_paths,
+    write_lambda_m064_report,
+)
+from decodilo.lambda_cloud.m065_python_runtime_authorization import (
+    build_lambda_m065_python_runtime_authorization_from_paths,
+    load_lambda_m065_python_runtime_authorization,
+    write_lambda_m065_python_runtime_authorization,
+)
+from decodilo.lambda_cloud.m065_python_runtime_runbook_preview import (
+    build_lambda_m065_python_runtime_runbook_preview_from_path,
+    write_lambda_m065_python_runtime_runbook_preview,
+)
+from decodilo.lambda_cloud.m067s_report import (
+    build_lambda_m067s_report_from_paths,
+    write_lambda_m067s_report,
+)
+from decodilo.lambda_cloud.m068w_report import (
+    build_lambda_m068w_report_from_paths,
+    write_lambda_m068w_report,
+)
+from decodilo.lambda_cloud.m070_report import (
+    build_lambda_m070_report_from_paths,
+    write_lambda_m070_report,
+)
+from decodilo.lambda_cloud.m071r_first_experiment_authorization import (
+    build_lambda_m071r_first_experiment_authorization_from_paths,
+    write_lambda_m071r_first_experiment_authorization,
+)
+from decodilo.lambda_cloud.m071r_first_experiment_runbook_preview import (
+    build_lambda_m071r_first_experiment_runbook_preview_from_path,
+    write_lambda_m071r_first_experiment_runbook_preview,
+)
+from decodilo.lambda_cloud.m072_report import (
+    build_lambda_m072_report_from_paths,
+    write_lambda_m072_report,
+)
+from decodilo.lambda_cloud.m072a_report import (
+    build_lambda_m072a_report_from_paths,
+    write_lambda_m072a_report,
+)
+from decodilo.lambda_cloud.m073r2_retry_authorization import (
+    build_lambda_m073r2_retry_authorization_from_paths,
+    write_lambda_m073r2_retry_authorization,
+)
+from decodilo.lambda_cloud.m073r2_runbook_preview import (
+    build_lambda_m073r2_runbook_preview_from_paths,
+    write_lambda_m073r2_runbook_preview,
+)
+from decodilo.lambda_cloud.m073r_tiny_smoke_authorization import (
+    build_lambda_m073r_tiny_smoke_authorization_from_paths,
+    write_lambda_m073r_tiny_smoke_authorization,
+)
+from decodilo.lambda_cloud.m073r_tiny_smoke_runbook_preview import (
+    build_lambda_m073r_tiny_smoke_runbook_preview_from_path,
+    write_lambda_m073r_tiny_smoke_runbook_preview,
+)
+from decodilo.lambda_cloud.m073s_report import (
+    build_lambda_m073s_report_from_paths,
+    write_lambda_m073s_report,
+)
+from decodilo.lambda_cloud.m074_report import (
+    build_lambda_m074_report_from_paths,
+    write_lambda_m074_report,
+)
+from decodilo.lambda_cloud.m074a_report import (
+    build_lambda_m074a_report_from_paths,
+    write_lambda_m074a_report,
+)
+from decodilo.lambda_cloud.m075r2_runtime_smoke_retry_authorization import (
+    build_lambda_m075r2_runtime_smoke_retry_authorization_from_paths,
+    load_lambda_m075r2_runtime_smoke_retry_authorization,
+    write_lambda_m075r2_runtime_smoke_retry_authorization,
+)
+from decodilo.lambda_cloud.m075r2_runtime_smoke_runbook_preview import (
+    build_lambda_m075r2_runtime_smoke_runbook_preview_from_paths,
+    write_lambda_m075r2_runtime_smoke_runbook_preview,
+)
+from decodilo.lambda_cloud.m075r3_runtime_smoke_retry_authorization import (
+    build_lambda_m075r3_runtime_smoke_retry_authorization_from_paths,
+    load_lambda_m075r3_runtime_smoke_retry_authorization,
+    write_lambda_m075r3_runtime_smoke_retry_authorization,
+)
+from decodilo.lambda_cloud.m075r3_runtime_smoke_runbook_preview import (
+    build_lambda_m075r3_runtime_smoke_runbook_preview_from_paths,
+    write_lambda_m075r3_runtime_smoke_runbook_preview,
+)
+from decodilo.lambda_cloud.m075r4_runtime_smoke_retry_authorization import (
+    build_lambda_m075r4_runtime_smoke_retry_authorization_from_paths,
+    load_lambda_m075r4_runtime_smoke_retry_authorization,
+    write_lambda_m075r4_runtime_smoke_retry_authorization,
+)
+from decodilo.lambda_cloud.m075r4_runtime_smoke_runbook_preview import (
+    build_lambda_m075r4_runtime_smoke_runbook_preview_from_path,
+    write_lambda_m075r4_runtime_smoke_runbook_preview,
+)
+from decodilo.lambda_cloud.m075r_runtime_protocol_smoke_authorization import (
+    build_lambda_m075r_runtime_protocol_smoke_authorization_from_paths,
+    load_lambda_m075r_runtime_protocol_smoke_authorization,
+    write_lambda_m075r_runtime_protocol_smoke_authorization,
+)
+from decodilo.lambda_cloud.m075r_runtime_protocol_smoke_runbook_preview import (
+    build_lambda_m075r_runtime_protocol_smoke_runbook_preview_from_path,
+    write_lambda_m075r_runtime_protocol_smoke_runbook_preview,
+)
+from decodilo.lambda_cloud.m075s_report import (
+    build_lambda_m075s_report_from_paths,
+    write_lambda_m075s_report,
+)
+from decodilo.lambda_cloud.m075t_report import (
+    build_lambda_m075t_report_from_paths,
+    write_lambda_m075t_report,
+)
+from decodilo.lambda_cloud.m075u_report import (
+    build_lambda_m075u_report_from_paths,
+    write_lambda_m075u_report,
+)
+from decodilo.lambda_cloud.m076_report import (
+    build_lambda_m076_report_from_paths,
+    write_lambda_m076_report,
+)
+from decodilo.lambda_cloud.m076a_report import (
+    build_lambda_m076a_report_from_paths,
+    write_lambda_m076a_report,
+)
+from decodilo.lambda_cloud.m077r_first_synthetic_experiment_authorization import (
+    build_lambda_m077r_first_synthetic_experiment_authorization_from_paths,
+    load_lambda_m077r_first_synthetic_experiment_authorization,
+    write_lambda_m077r_first_synthetic_experiment_authorization,
+)
+from decodilo.lambda_cloud.m077r_first_synthetic_experiment_runbook_preview import (
+    build_lambda_m077r_first_synthetic_experiment_runbook_preview_from_path,
+    write_lambda_m077r_first_synthetic_experiment_runbook_preview,
+)
+from decodilo.lambda_cloud.m078_report import (
+    build_lambda_m078_report_from_paths,
+    write_lambda_m078_report,
+)
+from decodilo.lambda_cloud.m078a_report import (
+    build_lambda_m078a_report_from_paths,
+    write_lambda_m078a_report,
+)
+from decodilo.lambda_cloud.m079r2_next_synthetic_experiment_authorization import (
+    build_lambda_m079r2_next_synthetic_experiment_authorization_from_paths,
+    load_lambda_m079r2_next_synthetic_experiment_authorization,
+    write_lambda_m079r2_next_synthetic_experiment_authorization,
+)
+from decodilo.lambda_cloud.m079r2_next_synthetic_experiment_runbook_preview import (
+    build_lambda_m079r2_next_synthetic_experiment_runbook_preview_from_paths,
+    write_lambda_m079r2_next_synthetic_experiment_runbook_preview,
+)
+from decodilo.lambda_cloud.m079r_next_synthetic_experiment_authorization import (
+    build_lambda_m079r_next_synthetic_experiment_authorization_from_paths,
+    load_lambda_m079r_next_synthetic_experiment_authorization,
+    write_lambda_m079r_next_synthetic_experiment_authorization,
+)
+from decodilo.lambda_cloud.m079r_next_synthetic_experiment_runbook_preview import (
+    build_lambda_m079r_next_synthetic_experiment_runbook_preview_from_path,
+    write_lambda_m079r_next_synthetic_experiment_runbook_preview,
+)
+from decodilo.lambda_cloud.m079s_report import (
+    build_lambda_m079s_report_from_paths,
+    write_lambda_m079s_report,
+)
+from decodilo.lambda_cloud.m080_report import (
+    build_lambda_m080_report_from_paths,
+    write_lambda_m080_report,
+)
+from decodilo.lambda_cloud.m080a_report import (
+    build_lambda_m080a_report_from_paths,
+    write_lambda_m080a_report,
+)
+from decodilo.lambda_cloud.m081r2_diloco_synthetic_authorization import (
+    build_lambda_m081r2_diloco_synthetic_authorization_from_paths,
+    load_lambda_m081r2_diloco_synthetic_authorization,
+    write_lambda_m081r2_diloco_synthetic_authorization,
+)
+from decodilo.lambda_cloud.m081r2_diloco_synthetic_runbook_preview import (
+    build_lambda_m081r2_diloco_synthetic_runbook_preview_from_paths,
+    write_lambda_m081r2_diloco_synthetic_runbook_preview,
+)
+from decodilo.lambda_cloud.m081r_diloco_synthetic_authorization import (
+    build_lambda_m081r_diloco_synthetic_authorization_from_paths,
+    load_lambda_m081r_diloco_synthetic_authorization,
+    write_lambda_m081r_diloco_synthetic_authorization,
+)
+from decodilo.lambda_cloud.m081r_diloco_synthetic_runbook_preview import (
+    build_lambda_m081r_diloco_synthetic_runbook_preview_from_path,
+    write_lambda_m081r_diloco_synthetic_runbook_preview,
+)
+from decodilo.lambda_cloud.m081s_report import (
+    build_lambda_m081s_report_from_paths,
+    write_lambda_m081s_report,
+)
+from decodilo.lambda_cloud.m082_report import (
+    build_lambda_m082_report_from_paths,
+    write_lambda_m082_report,
+)
+from decodilo.lambda_cloud.m082a_report import (
+    build_lambda_m082a_report_from_paths,
+    write_lambda_m082a_report,
+)
+from decodilo.lambda_cloud.m083r_diloco_optimizer_authorization import (
+    build_lambda_m083r_diloco_optimizer_authorization_from_paths,
+    load_lambda_m083r_diloco_optimizer_authorization,
+    write_lambda_m083r_diloco_optimizer_authorization,
+)
+from decodilo.lambda_cloud.m083r_diloco_optimizer_runbook_preview import (
+    build_lambda_m083r_diloco_optimizer_runbook_preview_from_path,
+    write_lambda_m083r_diloco_optimizer_runbook_preview,
+)
+from decodilo.lambda_cloud.m084_report import (
+    build_lambda_m084_report_from_paths,
+    write_lambda_m084_report,
+)
+from decodilo.lambda_cloud.m084a_report import (
+    build_lambda_m084a_report_from_paths,
+    write_lambda_m084a_report,
+)
+from decodilo.lambda_cloud.m085r_integrated_diloco_authorization import (
+    build_lambda_m085r_integrated_diloco_authorization_from_paths,
+    load_lambda_m085r_integrated_diloco_authorization,
+    write_lambda_m085r_integrated_diloco_authorization,
+)
+from decodilo.lambda_cloud.m085r_integrated_diloco_runbook_preview import (
+    build_lambda_m085r_integrated_diloco_runbook_preview_from_path,
+    write_lambda_m085r_integrated_diloco_runbook_preview,
+)
+from decodilo.lambda_cloud.m086_report import (
+    build_lambda_m086_report_from_paths,
+    write_lambda_m086_report,
+)
+from decodilo.lambda_cloud.m086a_report import (
+    build_lambda_m086a_report_from_paths,
+    write_lambda_m086a_report,
+)
+from decodilo.lambda_cloud.m087r_parameter_fragment_authorization import (
+    build_lambda_m087r_parameter_fragment_authorization_from_paths,
+    load_lambda_m087r_parameter_fragment_authorization,
+    write_lambda_m087r_parameter_fragment_authorization,
+)
+from decodilo.lambda_cloud.m087r_parameter_fragment_runbook_preview import (
+    build_lambda_m087r_parameter_fragment_runbook_preview_from_path,
+    write_lambda_m087r_parameter_fragment_runbook_preview,
+)
+from decodilo.lambda_cloud.m088_report import (
+    build_lambda_m088_report_from_paths,
+    write_lambda_m088_report,
+)
+from decodilo.lambda_cloud.m088a_report import (
+    build_lambda_m088a_report_from_paths,
+    write_lambda_m088a_report,
+)
+from decodilo.lambda_cloud.m089r_bounded_diloco_experiment_authorization import (
+    build_lambda_m089r_bounded_diloco_experiment_authorization_from_paths,
+    load_lambda_m089r_bounded_diloco_experiment_authorization,
+    write_lambda_m089r_bounded_diloco_experiment_authorization,
+)
+from decodilo.lambda_cloud.m089r_bounded_diloco_experiment_runbook_preview import (
+    build_lambda_m089r_bounded_diloco_experiment_runbook_preview_from_path,
+    write_lambda_m089r_bounded_diloco_experiment_runbook_preview,
+)
+from decodilo.lambda_cloud.m090_report import (
+    build_lambda_m090_report_from_paths,
+    write_lambda_m090_report,
+)
+from decodilo.lambda_cloud.m091_report import (
+    build_lambda_m091_report_from_paths,
+    write_lambda_m091_report,
+)
+from decodilo.lambda_cloud.m092_report import (
+    build_lambda_m092_report_from_paths,
+    write_lambda_m092_report,
+)
+from decodilo.lambda_cloud.m093r_tiny_real_training_authorization import (
+    build_lambda_m093r_tiny_real_training_authorization_from_paths,
+    load_lambda_m093r_tiny_real_training_authorization,
+    write_lambda_m093r_tiny_real_training_authorization,
+)
+from decodilo.lambda_cloud.m093r_tiny_real_training_runbook_preview import (
+    build_lambda_m093r_tiny_real_training_runbook_preview_from_path,
+    write_lambda_m093r_tiny_real_training_runbook_preview,
+)
 from decodilo.lambda_cloud.metadata_bootstrap_closeout import (
     build_lambda_metadata_bootstrap_closeout_from_paths,
     write_lambda_metadata_bootstrap_closeout,
@@ -919,6 +1523,18 @@ from decodilo.lambda_cloud.mutation_transport_diagnostics import (
     build_lambda_mutation_transport_diagnostic_report,
     write_lambda_mutation_transport_diagnostic_report,
 )
+from decodilo.lambda_cloud.next_synthetic_experiment_discovery import (
+    discover_lambda_next_synthetic_experiment_command,
+    write_lambda_next_synthetic_experiment_discovery,
+)
+from decodilo.lambda_cloud.next_synthetic_experiment_policy import (
+    build_lambda_next_synthetic_experiment_policy_from_path,
+    write_lambda_next_synthetic_experiment_policy,
+)
+from decodilo.lambda_cloud.next_synthetic_experiment_readiness import (
+    build_lambda_next_synthetic_experiment_readiness_from_path,
+    write_lambda_next_synthetic_experiment_readiness,
+)
 from decodilo.lambda_cloud.no_remote_execution_attestation import (
     build_lambda_no_remote_execution_attestation_from_paths,
     write_lambda_no_remote_execution_attestation,
@@ -931,9 +1547,49 @@ from decodilo.lambda_cloud.package_install_policy import (
     build_lambda_package_install_policy,
     write_lambda_package_install_policy,
 )
+from decodilo.lambda_cloud.parameter_fragment_artifact_audit import (
+    build_lambda_parameter_fragment_artifact_audit_from_paths,
+    write_lambda_parameter_fragment_artifact_audit,
+)
+from decodilo.lambda_cloud.parameter_fragment_closeout import (
+    build_lambda_parameter_fragment_closeout_from_paths,
+    write_lambda_parameter_fragment_closeout,
+)
+from decodilo.lambda_cloud.parameter_fragment_command_discovery import (
+    discover_lambda_parameter_fragment_command,
+    write_lambda_parameter_fragment_command_discovery,
+)
+from decodilo.lambda_cloud.parameter_fragment_evidence_package import (
+    build_lambda_parameter_fragment_evidence_package_from_paths,
+    write_lambda_parameter_fragment_evidence_package,
+)
+from decodilo.lambda_cloud.parameter_fragment_policy import (
+    build_lambda_parameter_fragment_policy_from_path,
+    write_lambda_parameter_fragment_policy,
+)
+from decodilo.lambda_cloud.parameter_fragment_readiness import (
+    build_lambda_parameter_fragment_readiness_from_path,
+    write_lambda_parameter_fragment_readiness,
+)
+from decodilo.lambda_cloud.parameter_fragment_reconciliation import (
+    build_lambda_parameter_fragment_reconciliation_from_paths,
+    write_lambda_parameter_fragment_reconciliation,
+)
+from decodilo.lambda_cloud.parameter_fragment_success_record import (
+    build_lambda_parameter_fragment_success_record_from_paths,
+    write_lambda_parameter_fragment_success_record,
+)
 from decodilo.lambda_cloud.port_forwarding_prohibition_policy import (
     build_lambda_port_forwarding_prohibition_policy,
     write_lambda_port_forwarding_prohibition_policy,
+)
+from decodilo.lambda_cloud.post_m089_next_step_decision import (
+    build_lambda_post_m089_next_step_decision_from_paths,
+    write_lambda_post_m089_next_step_decision,
+)
+from decodilo.lambda_cloud.post_m090_next_branch_decision import (
+    build_lambda_post_m090_next_branch_decision_from_paths,
+    write_lambda_post_m090_next_branch_decision,
 )
 from decodilo.lambda_cloud.preflight import (
     run_lambda_preflight,
@@ -942,6 +1598,38 @@ from decodilo.lambda_cloud.preflight import (
 from decodilo.lambda_cloud.price_snapshot_import import (
     import_catalog_price_snapshot_from_html,
     import_manual_price_snapshot_from_json,
+)
+from decodilo.lambda_cloud.python_runtime_command_policy import (
+    build_lambda_python_runtime_command_policy,
+    load_lambda_python_runtime_command_policy,
+    write_lambda_python_runtime_command_policy,
+)
+from decodilo.lambda_cloud.python_runtime_command_review import (
+    build_lambda_python_runtime_command_review_from_paths,
+    load_lambda_python_runtime_command_review,
+    write_lambda_python_runtime_command_review,
+)
+from decodilo.lambda_cloud.python_runtime_m065_execution import (
+    M065_PYTHON_RUNTIME_COMMAND,
+    build_lambda_m065_one_shot_arming_from_paths,
+    build_lambda_m065_python_runtime_gate_check_from_paths,
+    build_lambda_m065_python_runtime_plan_from_paths,
+    build_lambda_m065_reviewer_bridge_from_path,
+    is_lambda_m065_one_shot_arming_expired,
+    load_lambda_m065_one_shot_arming,
+    load_lambda_m065_python_runtime_gate_check,
+    load_lambda_m065_python_runtime_plan,
+    load_lambda_m065_reviewer_bridge,
+    m065_plan_hash,
+    write_lambda_m065_one_shot_arming,
+    write_lambda_m065_python_runtime_gate_check,
+    write_lambda_m065_python_runtime_plan,
+    write_lambda_m065_reviewer_bridge,
+)
+from decodilo.lambda_cloud.python_runtime_output_policy import (
+    build_lambda_python_runtime_output_policy,
+    load_lambda_python_runtime_output_policy,
+    write_lambda_python_runtime_output_policy,
 )
 from decodilo.lambda_cloud.read_only_audit import (
     audit_lambda_read_only,
@@ -1038,9 +1726,17 @@ from decodilo.lambda_cloud.real_read_only_transport import (
 )
 from decodilo.lambda_cloud.real_terminate_client import LambdaM029RealTerminateClient
 from decodilo.lambda_cloud.real_termination_executor import LambdaM029TerminationExecutor
+from decodilo.lambda_cloud.remaining_gap_prioritization import (
+    build_lambda_remaining_gap_prioritization_from_paths,
+    write_lambda_remaining_gap_prioritization,
+)
 from decodilo.lambda_cloud.remote_access_policy import (
     build_lambda_remote_access_policy,
     write_lambda_remote_access_policy,
+)
+from decodilo.lambda_cloud.remote_artifact_audit import (
+    build_lambda_remote_artifact_audit_from_paths,
+    write_lambda_remote_artifact_audit,
 )
 from decodilo.lambda_cloud.remote_bootstrap_scope import (
     build_lambda_remote_bootstrap_scope,
@@ -1057,6 +1753,117 @@ from decodilo.lambda_cloud.remote_command_allowlist import (
 from decodilo.lambda_cloud.remote_command_prohibition_policy import (
     build_lambda_remote_command_prohibition_policy,
     write_lambda_remote_command_prohibition_policy,
+)
+from decodilo.lambda_cloud.remote_command_stage_policy import (
+    build_lambda_remote_command_stage_policy,
+    write_lambda_remote_command_stage_policy,
+)
+from decodilo.lambda_cloud.remote_decodilo_vslice_closeout import (
+    build_lambda_remote_decodilo_vslice_closeout_from_paths,
+    write_lambda_remote_decodilo_vslice_closeout,
+)
+from decodilo.lambda_cloud.remote_decodilo_vslice_evidence_package import (
+    build_lambda_remote_decodilo_vslice_evidence_package_from_paths,
+    write_lambda_remote_decodilo_vslice_evidence_package,
+)
+from decodilo.lambda_cloud.remote_decodilo_vslice_reconciliation import (
+    build_lambda_remote_decodilo_vslice_reconciliation_from_paths,
+    write_lambda_remote_decodilo_vslice_reconciliation,
+)
+from decodilo.lambda_cloud.remote_decodilo_vslice_success_record import (
+    build_lambda_remote_decodilo_vslice_success_record_from_paths,
+    write_lambda_remote_decodilo_vslice_success_record,
+)
+from decodilo.lambda_cloud.remote_dependency_bundle import (
+    build_lambda_dependency_bundle_from_paths,
+    build_lambda_m067r_dependency_failure_record_from_paths,
+    build_lambda_m068r_dependency_bundle_default_manifest,
+    build_lambda_runtime_dependency_inventory_from_paths,
+    load_lambda_dependency_bundle_validation,
+    validate_lambda_dependency_bundle_from_paths,
+    write_lambda_dependency_bundle_validation,
+    write_lambda_m067r_dependency_failure_record,
+    write_lambda_runtime_dependency_inventory,
+)
+from decodilo.lambda_cloud.remote_vertical_slice_closeout import (
+    build_lambda_remote_vertical_slice_closeout_from_paths,
+    write_lambda_remote_vertical_slice_closeout,
+)
+from decodilo.lambda_cloud.remote_vertical_slice_policy import (
+    build_lambda_remote_dependency_bundle_execution_plan_from_paths,
+    build_lambda_remote_dependency_bundle_gate_check_from_paths,
+    build_lambda_remote_dependency_bundle_one_shot_arming_from_paths,
+    build_lambda_remote_source_bundle,
+    build_lambda_remote_source_bundle_default_manifest,
+    build_lambda_remote_source_bundle_execution_plan_from_paths,
+    build_lambda_remote_source_bundle_gate_check_from_paths,
+    build_lambda_remote_source_bundle_one_shot_arming_from_paths,
+    build_lambda_remote_vertical_slice_default_manifest,
+    build_lambda_remote_vertical_slice_execution_plan_from_paths,
+    build_lambda_remote_vertical_slice_gate_check_from_paths,
+    build_lambda_remote_vertical_slice_one_shot_arming_from_paths,
+    build_lambda_remote_vertical_slice_policy,
+    build_lambda_remote_vertical_slice_reviewer_bridge_from_path,
+    is_lambda_remote_vertical_slice_one_shot_arming_expired,
+    load_lambda_remote_source_bundle_validation,
+    load_lambda_remote_vertical_slice_command_manifest,
+    load_lambda_remote_vertical_slice_execution_plan,
+    load_lambda_remote_vertical_slice_gate_check,
+    load_lambda_remote_vertical_slice_manifest_validation,
+    load_lambda_remote_vertical_slice_one_shot_arming,
+    load_lambda_remote_vertical_slice_policy,
+    load_lambda_remote_vertical_slice_reviewer_bridge,
+    run_lambda_remote_vertical_slice_manifest,
+    validate_lambda_remote_source_bundle_from_paths,
+    validate_lambda_remote_vertical_slice_manifest_from_paths,
+    write_lambda_remote_source_bundle_validation,
+    write_lambda_remote_vertical_slice_command_manifest,
+    write_lambda_remote_vertical_slice_evidence,
+    write_lambda_remote_vertical_slice_execution_plan,
+    write_lambda_remote_vertical_slice_gate_check,
+    write_lambda_remote_vertical_slice_manifest_validation,
+    write_lambda_remote_vertical_slice_one_shot_arming,
+    write_lambda_remote_vertical_slice_policy,
+    write_lambda_remote_vertical_slice_reviewer_bridge,
+)
+from decodilo.lambda_cloud.remote_vertical_slice_reconciliation import (
+    build_lambda_remote_vertical_slice_reconciliation_from_paths,
+    write_lambda_remote_vertical_slice_reconciliation,
+)
+from decodilo.lambda_cloud.remote_vslice_candidate_selector import (
+    build_lambda_remote_vslice_candidate_selection_from_paths,
+    write_lambda_remote_vslice_candidate_selection,
+)
+from decodilo.lambda_cloud.remote_vslice_declared_artifact_policy import (
+    build_lambda_remote_vslice_declared_artifact_policy_from_path,
+    load_lambda_remote_vslice_declared_artifact_policy,
+    write_lambda_remote_vslice_declared_artifact_policy,
+)
+from decodilo.lambda_cloud.remote_vslice_expected_artifact_policy import (
+    build_lambda_remote_vslice_expected_artifact_policy_from_path,
+    write_lambda_remote_vslice_expected_artifact_policy,
+)
+from decodilo.lambda_cloud.remote_vslice_failure_artifact_capture_policy import (
+    build_lambda_remote_vslice_failure_artifact_capture_policy_from_paths,
+    load_lambda_remote_vslice_failure_artifact_capture_policy,
+    write_lambda_remote_vslice_failure_artifact_capture_policy,
+)
+from decodilo.lambda_cloud.remote_vslice_manifest_artifact_capture import (
+    build_lambda_remote_vslice_manifest_artifact_policy_from_path,
+    load_lambda_remote_vslice_manifest_artifact_policy,
+    write_lambda_remote_vslice_manifest_artifact_policy,
+)
+from decodilo.lambda_cloud.remote_vslice_retry_authorization import (
+    build_lambda_remote_vslice_retry_authorization_from_path,
+    write_lambda_remote_vslice_retry_authorization,
+)
+from decodilo.lambda_cloud.remote_vslice_retry_decision import (
+    build_lambda_remote_vslice_retry_decision_from_path,
+    write_lambda_remote_vslice_retry_decision,
+)
+from decodilo.lambda_cloud.remote_vslice_upload_closeout import (
+    build_lambda_remote_vslice_upload_closeout_from_paths,
+    write_lambda_remote_vslice_upload_closeout,
 )
 from decodilo.lambda_cloud.repeated_response_loss_review import (
     build_lambda_repeated_response_loss_review_from_paths,
@@ -1091,9 +1898,94 @@ from decodilo.lambda_cloud.response_shape_evidence import (
     build_lambda_response_shape_evidence_from_path,
     write_lambda_response_shape_evidence,
 )
+from decodilo.lambda_cloud.runtime_protocol_smoke_discovery import (
+    discover_lambda_runtime_protocol_smoke_command,
+    write_lambda_runtime_protocol_smoke_discovery,
+)
+from decodilo.lambda_cloud.runtime_protocol_smoke_policy import (
+    build_lambda_runtime_protocol_smoke_policy_from_path,
+    write_lambda_runtime_protocol_smoke_policy,
+)
+from decodilo.lambda_cloud.runtime_protocol_smoke_readiness import (
+    build_lambda_runtime_protocol_smoke_readiness_from_path,
+    write_lambda_runtime_protocol_smoke_readiness,
+)
+from decodilo.lambda_cloud.runtime_smoke_artifact_audit import (
+    build_lambda_runtime_smoke_artifact_audit_from_paths,
+    write_lambda_runtime_smoke_artifact_audit,
+)
+from decodilo.lambda_cloud.runtime_smoke_artifact_body_policy import (
+    build_lambda_runtime_smoke_artifact_body_policy_from_path,
+    load_lambda_runtime_smoke_artifact_body_policy,
+    write_lambda_runtime_smoke_artifact_body_policy,
+)
+from decodilo.lambda_cloud.runtime_smoke_artifact_parser import (
+    parse_runtime_smoke_artifact_file,
+    write_runtime_smoke_artifact_parser_report,
+)
+from decodilo.lambda_cloud.runtime_smoke_attempt_closeout import (
+    build_lambda_runtime_smoke_attempt_closeout_from_paths,
+    write_lambda_runtime_smoke_attempt_closeout,
+)
+from decodilo.lambda_cloud.runtime_smoke_closeout import (
+    build_lambda_runtime_smoke_closeout_from_paths,
+    write_lambda_runtime_smoke_closeout,
+)
+from decodilo.lambda_cloud.runtime_smoke_evidence_package import (
+    build_lambda_runtime_smoke_evidence_package_from_paths,
+    write_lambda_runtime_smoke_evidence_package,
+)
+from decodilo.lambda_cloud.runtime_smoke_failure_closeout import (
+    build_lambda_runtime_smoke_failure_closeout_from_path,
+    write_lambda_runtime_smoke_failure_closeout,
+)
+from decodilo.lambda_cloud.runtime_smoke_failure_evidence_policy import (
+    build_lambda_runtime_smoke_failure_evidence_policy,
+    write_lambda_runtime_smoke_failure_evidence_policy,
+)
+from decodilo.lambda_cloud.runtime_smoke_failure_record import (
+    build_lambda_runtime_smoke_failure_record_from_paths,
+    write_lambda_runtime_smoke_failure_record,
+)
+from decodilo.lambda_cloud.runtime_smoke_reconciliation import (
+    build_lambda_runtime_smoke_reconciliation_from_paths,
+    write_lambda_runtime_smoke_reconciliation,
+)
+from decodilo.lambda_cloud.runtime_smoke_success_record import (
+    build_lambda_runtime_smoke_success_record_from_paths,
+    write_lambda_runtime_smoke_success_record,
+)
+from decodilo.lambda_cloud.runtime_smoke_update_stream_closeout import (
+    build_lambda_runtime_smoke_update_stream_closeout_from_path,
+    write_lambda_runtime_smoke_update_stream_closeout,
+)
+from decodilo.lambda_cloud.runtime_smoke_update_stream_diagnostic import (
+    build_lambda_runtime_smoke_update_stream_diagnostic_from_paths,
+    write_lambda_runtime_smoke_update_stream_diagnostic,
+)
+from decodilo.lambda_cloud.runtime_smoke_update_stream_failure_record import (
+    build_lambda_runtime_smoke_update_stream_failure_record_from_paths,
+    write_lambda_runtime_smoke_update_stream_failure_record,
+)
 from decodilo.lambda_cloud.same_shape_capacity_retry_acceptance import (
     build_lambda_same_shape_capacity_retry_acceptance,
     write_lambda_same_shape_capacity_retry_acceptance,
+)
+from decodilo.lambda_cloud.scaffold_complete_decision import (
+    build_lambda_scaffold_complete_decision_from_paths,
+    write_lambda_scaffold_complete_decision,
+)
+from decodilo.lambda_cloud.scaffold_completion_final_decision import (
+    build_lambda_scaffold_completion_final_decision_from_paths,
+    write_lambda_scaffold_completion_final_decision,
+)
+from decodilo.lambda_cloud.scientific_claim_boundaries import (
+    build_lambda_scientific_claim_boundaries_from_paths,
+    write_lambda_scientific_claim_boundaries,
+)
+from decodilo.lambda_cloud.scientific_gap_assessment import (
+    build_lambda_scientific_gap_assessment_from_path,
+    write_lambda_scientific_gap_assessment,
 )
 from decodilo.lambda_cloud.second_attempt_authorization import (
     build_lambda_second_attempt_authorization_from_paths,
@@ -1132,6 +2024,19 @@ from decodilo.lambda_cloud.shape_evidence import (
     LambdaShapeEvidence,
     build_lambda_shape_evidence_report,
     write_lambda_shape_evidence_report,
+)
+from decodilo.lambda_cloud.smallest_useful_command_review import (
+    build_lambda_smallest_useful_command_review_from_path,
+    write_lambda_smallest_useful_command_review,
+)
+from decodilo.lambda_cloud.source_bundle_upload_policy import (
+    build_lambda_source_dependency_upload_policy_from_path,
+    load_lambda_source_dependency_upload_policy,
+    write_lambda_source_dependency_upload_policy,
+)
+from decodilo.lambda_cloud.ssh_banner_readiness_policy import (
+    build_lambda_ssh_banner_readiness_policy,
+    write_lambda_ssh_banner_readiness_policy,
 )
 from decodilo.lambda_cloud.ssh_capacity_history import (
     build_lambda_ssh_capacity_history_from_paths,
@@ -1254,6 +2159,38 @@ from decodilo.lambda_cloud.ssh_host_key_policy import (
     build_lambda_ssh_host_key_policy,
     write_lambda_ssh_host_key_policy,
 )
+from decodilo.lambda_cloud.ssh_hostname_identity_closeout import (
+    build_lambda_ssh_hostname_identity_closeout_from_paths,
+    write_lambda_ssh_hostname_identity_closeout,
+)
+from decodilo.lambda_cloud.ssh_hostname_identity_evidence_package import (
+    build_lambda_ssh_hostname_identity_evidence_package_from_paths,
+    write_lambda_ssh_hostname_identity_evidence_package,
+)
+from decodilo.lambda_cloud.ssh_hostname_identity_reconciliation import (
+    build_lambda_ssh_hostname_identity_reconciliation_from_paths,
+    write_lambda_ssh_hostname_identity_reconciliation,
+)
+from decodilo.lambda_cloud.ssh_hostname_identity_success_record import (
+    build_lambda_ssh_hostname_identity_success_record_from_paths,
+    write_lambda_ssh_hostname_identity_success_record,
+)
+from decodilo.lambda_cloud.ssh_identity_command_m059 import (
+    build_lambda_m059_identity_command_gate_check_from_paths,
+    build_lambda_m059_identity_command_plan_from_paths,
+    build_lambda_m059_one_shot_arming_from_paths,
+    build_lambda_m059_reviewer_bridge_from_path,
+    is_lambda_m059_one_shot_arming_expired,
+    load_lambda_m059_identity_command_gate_check,
+    load_lambda_m059_identity_command_plan,
+    load_lambda_m059_one_shot_arming,
+    load_lambda_m059_reviewer_bridge,
+    m059_plan_hash,
+    write_lambda_m059_identity_command_gate_check,
+    write_lambda_m059_identity_command_plan,
+    write_lambda_m059_one_shot_arming,
+    write_lambda_m059_reviewer_bridge,
+)
 from decodilo.lambda_cloud.ssh_identity_policy import (
     build_lambda_ssh_identity_policy_from_path,
     write_lambda_ssh_identity_policy,
@@ -1261,6 +2198,41 @@ from decodilo.lambda_cloud.ssh_identity_policy import (
 from decodilo.lambda_cloud.ssh_live_candidate_selector import (
     build_lambda_ssh_live_candidate_selection_from_paths,
     write_lambda_ssh_live_candidate_selection,
+)
+from decodilo.lambda_cloud.ssh_minimal_remote_command_m057 import (
+    build_lambda_m057_gate_check_from_paths,
+    build_lambda_m057_minimal_remote_command_policy,
+    build_lambda_m057_one_shot_arming_from_paths,
+    build_lambda_m057_operator_approval,
+    build_lambda_m057_reviewer_bridge_from_path,
+    is_lambda_m057_one_shot_arming_expired,
+    load_lambda_m057_gate_check,
+    load_lambda_m057_minimal_remote_command_policy,
+    load_lambda_m057_one_shot_arming,
+    load_lambda_m057_operator_approval,
+    load_lambda_m057_reviewer_bridge,
+    run_lambda_m057_minimal_remote_command,
+    write_lambda_m057_gate_check,
+    write_lambda_m057_minimal_remote_command_policy,
+    write_lambda_m057_one_shot_arming,
+    write_lambda_m057_operator_approval,
+    write_lambda_m057_reviewer_bridge,
+)
+from decodilo.lambda_cloud.ssh_noop_command_closeout import (
+    build_lambda_ssh_noop_command_closeout_from_paths,
+    write_lambda_ssh_noop_command_closeout,
+)
+from decodilo.lambda_cloud.ssh_noop_command_evidence_package import (
+    build_lambda_ssh_noop_command_evidence_package_from_paths,
+    write_lambda_ssh_noop_command_evidence_package,
+)
+from decodilo.lambda_cloud.ssh_noop_command_reconciliation import (
+    build_lambda_ssh_noop_command_reconciliation_from_paths,
+    write_lambda_ssh_noop_command_reconciliation,
+)
+from decodilo.lambda_cloud.ssh_noop_command_success_record import (
+    build_lambda_ssh_noop_command_success_record_from_paths,
+    write_lambda_ssh_noop_command_success_record,
 )
 from decodilo.lambda_cloud.ssh_operator_approval import (
     build_lambda_ssh_operator_approval,
@@ -1282,9 +2254,22 @@ from decodilo.lambda_cloud.ssh_probe_retry_policy import (
     build_lambda_ssh_probe_retry_policy_from_path,
     write_lambda_ssh_probe_retry_policy,
 )
+from decodilo.lambda_cloud.ssh_proven_candidate_history_update import (
+    build_lambda_ssh_proven_candidate_history_update_from_paths,
+    load_lambda_ssh_proven_candidate_history_update,
+    write_lambda_ssh_proven_candidate_history_update,
+)
+from decodilo.lambda_cloud.ssh_proven_candidate_policy import (
+    build_lambda_ssh_proven_candidate_policy_from_path,
+    write_lambda_ssh_proven_candidate_policy,
+)
 from decodilo.lambda_cloud.ssh_provider_key_attachment_diagnostic import (
     build_lambda_ssh_provider_key_attachment_diagnostic_from_paths,
     write_lambda_ssh_provider_key_attachment_diagnostic,
+)
+from decodilo.lambda_cloud.ssh_readiness_history import (
+    build_lambda_ssh_readiness_history,
+    write_lambda_ssh_readiness_history,
 )
 from decodilo.lambda_cloud.ssh_retry_candidate_policy import (
     build_lambda_ssh_retry_candidate_policy_from_paths,
@@ -1312,6 +2297,22 @@ from decodilo.lambda_cloud.ssh_safe_client_command_builder import (
 from decodilo.lambda_cloud.ssh_username_policy import (
     build_lambda_ssh_username_policy,
     write_lambda_ssh_username_policy,
+)
+from decodilo.lambda_cloud.ssh_whoami_identity_command_m061 import (
+    build_lambda_m061_identity_command_gate_check_from_paths,
+    build_lambda_m061_identity_command_plan_from_paths,
+    build_lambda_m061_one_shot_arming_from_paths,
+    build_lambda_m061_reviewer_bridge_from_path,
+    is_lambda_m061_one_shot_arming_expired,
+    load_lambda_m061_identity_command_gate_check,
+    load_lambda_m061_identity_command_plan,
+    load_lambda_m061_one_shot_arming,
+    load_lambda_m061_reviewer_bridge,
+    m061_plan_hash,
+    write_lambda_m061_identity_command_gate_check,
+    write_lambda_m061_identity_command_plan,
+    write_lambda_m061_one_shot_arming,
+    write_lambda_m061_reviewer_bridge,
 )
 from decodilo.lambda_cloud.strand_cli_compatibility import (
     build_strand_cli_compatibility_report,
@@ -1374,6 +2375,26 @@ from decodilo.lambda_cloud.support_response_secret_scan import (
     scan_lambda_support_response_path,
     write_lambda_support_response_secret_scan_report,
 )
+from decodilo.lambda_cloud.synthetic_experiment_artifact_audit import (
+    build_lambda_synthetic_experiment_artifact_audit_from_paths,
+    write_lambda_synthetic_experiment_artifact_audit,
+)
+from decodilo.lambda_cloud.synthetic_experiment_closeout import (
+    build_lambda_synthetic_experiment_closeout_from_paths,
+    write_lambda_synthetic_experiment_closeout,
+)
+from decodilo.lambda_cloud.synthetic_experiment_evidence_package import (
+    build_lambda_synthetic_experiment_evidence_package_from_paths,
+    write_lambda_synthetic_experiment_evidence_package,
+)
+from decodilo.lambda_cloud.synthetic_experiment_reconciliation import (
+    build_lambda_synthetic_experiment_reconciliation_from_paths,
+    write_lambda_synthetic_experiment_reconciliation,
+)
+from decodilo.lambda_cloud.synthetic_experiment_success_record import (
+    build_lambda_synthetic_experiment_success_record_from_paths,
+    write_lambda_synthetic_experiment_success_record,
+)
 from decodilo.lambda_cloud.teardown_plan import (
     build_lambda_teardown_plan,
     write_lambda_teardown_plan,
@@ -1411,12 +2432,97 @@ from decodilo.lambda_cloud.third_attempt_risk_review import (
     load_lambda_third_attempt_risk_review,
     write_lambda_third_attempt_risk_review,
 )
+from decodilo.lambda_cloud.tiny_decodilo_smoke_discovery import (
+    discover_lambda_tiny_decodilo_smoke_command,
+    write_lambda_tiny_decodilo_smoke_discovery,
+)
+from decodilo.lambda_cloud.tiny_decodilo_smoke_policy import (
+    build_lambda_tiny_decodilo_smoke_policy_from_path,
+    write_lambda_tiny_decodilo_smoke_policy,
+)
+from decodilo.lambda_cloud.tiny_real_training_command_discovery import (
+    discover_lambda_tiny_real_training_command,
+    write_lambda_tiny_real_training_command_discovery,
+)
+from decodilo.lambda_cloud.tiny_real_training_policy import (
+    build_lambda_tiny_real_training_policy_from_path,
+    write_lambda_tiny_real_training_policy,
+)
+from decodilo.lambda_cloud.tiny_real_training_readiness import (
+    build_lambda_tiny_real_training_readiness_from_path,
+    write_lambda_tiny_real_training_readiness,
+)
+from decodilo.lambda_cloud.tiny_smoke_artifact_audit import (
+    build_lambda_tiny_smoke_artifact_audit_from_paths,
+    write_lambda_tiny_smoke_artifact_audit,
+)
+from decodilo.lambda_cloud.tiny_smoke_closeout import (
+    build_lambda_tiny_smoke_closeout_from_paths,
+    write_lambda_tiny_smoke_closeout,
+)
+from decodilo.lambda_cloud.tiny_smoke_evidence_package import (
+    build_lambda_tiny_smoke_evidence_package_from_paths,
+    write_lambda_tiny_smoke_evidence_package,
+)
+from decodilo.lambda_cloud.tiny_smoke_reconciliation import (
+    build_lambda_tiny_smoke_reconciliation_from_paths,
+    write_lambda_tiny_smoke_reconciliation,
+)
+from decodilo.lambda_cloud.tiny_smoke_success_record import (
+    build_lambda_tiny_smoke_success_record_from_paths,
+    write_lambda_tiny_smoke_success_record,
+)
 from decodilo.lambda_cloud.transport_error_persistence import (
     build_lambda_transport_error_persistence_record,
+)
+from decodilo.lambda_cloud.upload_failure_classifier import (
+    build_lambda_upload_failure_classification_from_workdir,
+    write_lambda_upload_failure_classification,
+)
+from decodilo.lambda_cloud.upload_readiness_policy import (
+    build_lambda_upload_readiness_gate_policy_from_path,
+    write_lambda_upload_readiness_gate_policy,
 )
 from decodilo.lambda_cloud.wait_for_live_availability_plan import (
     build_lambda_wait_for_live_availability_plan_from_path,
     write_lambda_wait_for_live_availability_plan,
+)
+from decodilo.lambda_cloud.wheelhouse_build_policy import (
+    build_lambda_wheelhouse_build_policy_from_paths,
+    write_lambda_wheelhouse_build_policy,
+)
+from decodilo.lambda_cloud.wheelhouse_candidate_audit import (
+    audit_existing_lambda_wheelhouse_candidates_from_paths,
+    write_lambda_wheelhouse_candidate_audit,
+)
+from decodilo.lambda_cloud.wheelhouse_compatibility_audit import (
+    audit_lambda_wheelhouse_compatibility_from_paths,
+    write_lambda_wheelhouse_compatibility_audit,
+)
+from decodilo.lambda_cloud.wheelhouse_manifest import (
+    build_lambda_m068w_dependency_bundle_from_paths,
+    build_lambda_wheelhouse_manifest_from_paths,
+    download_lambda_m068w_wheelhouse_from_paths,
+)
+from decodilo.lambda_cloud.wheelhouse_secret_scan import (
+    scan_lambda_wheelhouse_secrets_from_paths,
+    write_lambda_wheelhouse_secret_scan,
+)
+from decodilo.lambda_cloud.whoami_command_closeout import (
+    build_lambda_whoami_command_closeout_from_paths,
+    write_lambda_whoami_command_closeout,
+)
+from decodilo.lambda_cloud.whoami_command_evidence_package import (
+    build_lambda_whoami_command_evidence_package_from_paths,
+    write_lambda_whoami_command_evidence_package,
+)
+from decodilo.lambda_cloud.whoami_command_reconciliation import (
+    build_lambda_whoami_command_reconciliation_from_paths,
+    write_lambda_whoami_command_reconciliation,
+)
+from decodilo.lambda_cloud.whoami_command_success_record import (
+    build_lambda_whoami_command_success_record_from_paths,
+    write_lambda_whoami_command_success_record,
 )
 from decodilo.pricing.budget import (
     BudgetGuard,
@@ -2571,6 +3677,9 @@ def _cmd_lambda_preflight(args: argparse.Namespace) -> int:
         m053_report=args.m053_report,
         m054a_report=args.m054a_report,
         m055d_report=args.m055d_report,
+        m058_report=args.m058_report,
+        m060_report=args.m060_report,
+        m062_report=args.m062_report,
     )
     if args.out is not None:
         write_lambda_preflight_report(args.out, report)
@@ -3863,7 +4972,21 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
     workdir = args.workdir
     workdir.mkdir(parents=True, exist_ok=True)
     fake_mode = bool(args.fake_server_url or args.in_memory_fake)
-    m054b_ssh_attempt = _load_m056_ssh_retry_execution_gates(args)
+    m054b_ssh_attempt = _load_m067r_source_bundle_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m066r_remote_vertical_slice_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m065_python_runtime_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m063_gpu_visibility_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m061_identity_command_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m059_identity_command_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m057_minimal_remote_command_execution_gates(args)
+    if m054b_ssh_attempt is None:
+        m054b_ssh_attempt = _load_m056_ssh_retry_execution_gates(args)
     if m054b_ssh_attempt is None:
         m054b_ssh_attempt = _load_m054b_ssh_connectivity_execution_gates(args)
     if m054b_ssh_attempt is not None and (
@@ -4106,14 +5229,80 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             + "\n",
             encoding="utf-8",
         )
-        write_lambda_ssh_connectivity_m054b_plan(
-            workdir / (
-                "m056-plan.json"
-                if m054b_ssh_attempt.get("milestone") == "M056"
-                else "m054b-plan.json"
-            ),
-            m054b_ssh_attempt["plan"],
-        )
+        milestone = m054b_ssh_attempt.get("milestone")
+        ssh_plan_filename = {
+            "M056": "m056-plan.json",
+            "M057": "m057-plan.json",
+            "M059": "m059-plan.json",
+            "M061": "m061-plan.json",
+            "M063": "m063-plan.json",
+            "M065": "m065-plan.json",
+            "M066R": "m066r-plan.json",
+            "M067R": "m067r-plan.json",
+            "M071R": "m071r-plan.json",
+            "M073R": "m073r-plan.json",
+            "M075R": "m075r-plan.json",
+            "M077R": "m077r-plan.json",
+            "M079R": "m079r-plan.json",
+        }.get(milestone, "m054b-plan.json")
+        if milestone in {
+            "M066R",
+            "M067R",
+            "M071R",
+            "M073R",
+            "M075R",
+            "M077R",
+            "M079R",
+        }:
+            write_lambda_remote_vertical_slice_execution_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
+            write_lambda_remote_vertical_slice_command_manifest(
+                workdir
+                / (
+                    f"{str(milestone).lower()}-command-manifest.json"
+                    if milestone
+                    in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
+                    else "m066r-command-manifest.json"
+                ),
+                m054b_ssh_attempt["manifest"],
+            )
+            write_lambda_remote_vertical_slice_gate_check(
+                workdir
+                / (
+                    f"{str(milestone).lower()}-gate-check.json"
+                    if milestone
+                    in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
+                    else "m066r-gate-check.json"
+                ),
+                m054b_ssh_attempt["gate"],
+            )
+        elif milestone == "M065":
+            write_lambda_m065_python_runtime_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
+        elif milestone == "M063":
+            write_lambda_m063_gpu_visibility_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
+        elif milestone == "M061":
+            write_lambda_m061_identity_command_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
+        elif milestone == "M059":
+            write_lambda_m059_identity_command_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
+        else:
+            write_lambda_ssh_connectivity_m054b_plan(
+                workdir / ssh_plan_filename,
+                m054b_ssh_attempt["plan"],
+            )
     else:
         arming = arm_lambda_m029_from_package(
             run_id=run_id,
@@ -4263,16 +5452,59 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             if fake_mode
             else _m055_explicit_private_key_path(args.env_file)
         )
-        ssh_evidence = run_lambda_ssh_connectivity_probe(
-            owned_instance_id=launch_result.owned_instance_id,
-            instance_payload=instance_payload,
-            private_key_path=private_key_path,
-            safe_client_command=m054b_ssh_attempt["safe_client_command_path"],
-            ssh_username=m054b_ssh_attempt["plan"].ssh_username,
-            timeout_seconds=15,
-            fake_mode=fake_mode,
-            host_discovery_result=host_discovery,
-        )
+        if m054b_ssh_attempt.get("remote_vertical_slice"):
+            ssh_evidence = run_lambda_remote_vertical_slice_manifest(
+                owned_instance_id=launch_result.owned_instance_id,
+                instance_payload=instance_payload,
+                private_key_path=private_key_path,
+                manifest=m054b_ssh_attempt["manifest"],
+                manifest_hash=m054b_ssh_attempt["plan"].command_manifest_hash,
+                source_bundle_path=m054b_ssh_attempt.get("source_bundle"),
+                source_bundle_sha256=(
+                    m054b_ssh_attempt.get("source_bundle_validation").bundle_sha256
+                    if m054b_ssh_attempt.get("source_bundle_validation") is not None
+                    else None
+                ),
+                dependency_bundle_path=m054b_ssh_attempt.get("dependency_bundle"),
+                dependency_bundle_sha256=(
+                    m054b_ssh_attempt.get(
+                        "dependency_bundle_validation"
+                    ).bundle_sha256
+                    if m054b_ssh_attempt.get("dependency_bundle_validation")
+                    is not None
+                    else None
+                ),
+                ssh_username=m054b_ssh_attempt["plan"].ssh_username,
+                fake_mode=fake_mode,
+                host_discovery_result=host_discovery,
+            )
+            write_lambda_remote_vertical_slice_evidence(
+                workdir / "remote-vslice-evidence.json",
+                ssh_evidence,
+            )
+        elif m054b_ssh_attempt.get("minimal_remote_command"):
+            ssh_evidence = run_lambda_m057_minimal_remote_command(
+                owned_instance_id=launch_result.owned_instance_id,
+                instance_payload=instance_payload,
+                private_key_path=private_key_path,
+                ssh_username=m054b_ssh_attempt["plan"].ssh_username,
+                timeout_seconds=15,
+                fake_mode=fake_mode,
+                host_discovery_result=host_discovery,
+                approved_command=m054b_ssh_attempt.get("remote_command", "true"),
+                collect_stdout=bool(m054b_ssh_attempt.get("collect_stdout", False)),
+            )
+        else:
+            ssh_evidence = run_lambda_ssh_connectivity_probe(
+                owned_instance_id=launch_result.owned_instance_id,
+                instance_payload=instance_payload,
+                private_key_path=private_key_path,
+                safe_client_command=m054b_ssh_attempt["safe_client_command_path"],
+                ssh_username=m054b_ssh_attempt["plan"].ssh_username,
+                timeout_seconds=15,
+                fake_mode=fake_mode,
+                host_discovery_result=host_discovery,
+            )
         write_lambda_ssh_connectivity_probe_evidence(
             workdir / "ssh-connectivity-evidence.json",
             ssh_evidence,
@@ -4406,13 +5638,203 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             "ssh_stderr_secret_scan_passed": ssh_evidence.stderr_secret_scan_passed,
             "remote_command_attempted": ssh_evidence.remote_command_attempted,
             "remote_command_result": (
-                "not_attempted"
-                if not ssh_evidence.remote_command_attempted
-                else "forbidden"
+                getattr(ssh_evidence, "remote_command_result", None)
+                or (
+                    "not_attempted"
+                    if not ssh_evidence.remote_command_attempted
+                    else "forbidden"
+                )
+            ),
+            "remote_command": getattr(ssh_evidence, "approved_command", None),
+            "remote_command_stage_results": [
+                item.model_dump(mode="json") if hasattr(item, "model_dump") else dict(item)
+                for item in getattr(ssh_evidence, "stage_results", [])
+            ],
+            "command_manifest_hash": getattr(
+                ssh_evidence,
+                "command_manifest_hash",
+                None,
+            ),
+            "max_remote_commands": getattr(ssh_evidence, "command_count", None),
+            "stop_on_first_failure": getattr(
+                ssh_evidence,
+                "stop_on_first_failure",
+                None,
+            ),
+            "vertical_slice_status": getattr(
+                ssh_evidence,
+                "vertical_slice_status",
+                None,
+            ),
+            "failed_stage": getattr(ssh_evidence, "failed_stage", None),
+            "source_bundle_upload_attempted": getattr(
+                ssh_evidence,
+                "source_bundle_upload_attempted",
+                False,
+            ),
+            "source_bundle_upload_succeeded": getattr(
+                ssh_evidence,
+                "source_bundle_upload_succeeded",
+                False,
+            ),
+            "source_bundle_hash_verified": getattr(
+                ssh_evidence,
+                "source_bundle_hash_verified",
+                False,
+            ),
+            "source_bundle_sha256": getattr(
+                ssh_evidence,
+                "source_bundle_sha256",
+                None,
+            ),
+            "source_bundle_remote_path": getattr(
+                ssh_evidence,
+                "source_bundle_remote_path",
+                None,
+            ),
+            "dependency_bundle_upload_attempted": getattr(
+                ssh_evidence,
+                "dependency_bundle_upload_attempted",
+                False,
+            ),
+            "dependency_bundle_upload_succeeded": getattr(
+                ssh_evidence,
+                "dependency_bundle_upload_succeeded",
+                False,
+            ),
+            "dependency_bundle_hash_verified": getattr(
+                ssh_evidence,
+                "dependency_bundle_hash_verified",
+                False,
+            ),
+            "dependency_bundle_sha256": getattr(
+                ssh_evidence,
+                "dependency_bundle_sha256",
+                None,
+            ),
+            "dependency_bundle_remote_path": getattr(
+                ssh_evidence,
+                "dependency_bundle_remote_path",
+                None,
+            ),
+            "uploaded_bundles_count": getattr(
+                ssh_evidence,
+                "uploaded_bundles_count",
+                0,
+            ),
+            "local_dependency_install_attempted": getattr(
+                ssh_evidence,
+                "local_dependency_install_attempted",
+                False,
+            ),
+            "local_dependency_install_succeeded": getattr(
+                ssh_evidence,
+                "local_dependency_install_succeeded",
+                False,
+            ),
+            "experiment_output_artifact_capture_attempted": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_capture_attempted",
+                False,
+            ),
+            "experiment_output_artifact_capture_succeeded": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_capture_succeeded",
+                False,
+            ),
+            "experiment_output_artifact_path": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_path",
+                None,
+            ),
+            "experiment_output_artifact_exists": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_exists",
+                False,
+            ),
+            "experiment_output_artifact_bytes": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_bytes",
+                None,
+            ),
+            "experiment_output_artifact_sha256": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_sha256",
+                None,
+            ),
+            "experiment_output_artifact_secret_scan_passed": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_secret_scan_passed",
+                None,
+            ),
+            "experiment_output_artifact_body_capture_attempted": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_body_capture_attempted",
+                False,
+            ),
+            "experiment_output_artifact_body_capture_succeeded": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_body_capture_succeeded",
+                False,
+            ),
+            "experiment_output_artifact_body_persisted": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_body_persisted",
+                False,
+            ),
+            "experiment_output_artifact_body_json": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_body_json",
+                None,
+            ),
+            "experiment_output_artifact_parsed_summary_persisted": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_parsed_summary_persisted",
+                False,
+            ),
+            "experiment_output_artifact_parsed_summary": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_parsed_summary",
+                None,
+            ),
+            "experiment_output_artifact_parse_status": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_parse_status",
+                None,
+            ),
+            "experiment_output_artifact_content_capture_status": getattr(
+                ssh_evidence,
+                "experiment_output_artifact_content_capture_status",
+                None,
+            ),
+            "command_output_collected": getattr(
+                ssh_evidence,
+                "command_output_collected",
+                False,
+            ),
+            "stdout_capture_active": getattr(
+                ssh_evidence,
+                "stdout_capture_active",
+                False,
+            ),
+            "stdout_redacted_present": bool(
+                getattr(ssh_evidence, "stdout_redacted", None)
+            ),
+            "stdout_sha256_prefix": getattr(
+                ssh_evidence,
+                "stdout_sha256_prefix",
+                None,
+            ),
+            "stdout_truncated": getattr(ssh_evidence, "stdout_truncated", False),
+            "stdout_secret_scan_passed": getattr(
+                ssh_evidence,
+                "stdout_secret_scan_passed",
+                True,
             ),
             "file_transfer_attempted": ssh_evidence.file_transfer_attempted,
             "port_forwarding_attempted": ssh_evidence.port_forwarding_attempted,
             "package_install_attempted": ssh_evidence.package_install_attempted,
+            "downloads_attempted": ssh_evidence.downloads_attempted,
             "training_attempted": ssh_evidence.training_attempted,
         }
         if not ssh_evidence.probe_passed:
@@ -4786,6 +6208,1906 @@ def _has_m056_ssh_retry_run_flags(args: argparse.Namespace) -> bool:
         "m056_ssh_safe_client_command",
     ]
     return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m057_minimal_remote_command_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m057_operator_approval",
+        "m057_command_policy",
+        "m057_gate_check",
+        "m057_one_shot_arming",
+        "m057_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m059_identity_command_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m059_plan",
+        "m059_gate_check",
+        "m059_authorization",
+        "m059_one_shot_arming",
+        "m059_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m061_identity_command_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m061_plan",
+        "m061_gate_check",
+        "m061_authorization",
+        "m061_one_shot_arming",
+        "m061_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m065_python_runtime_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m065_plan",
+        "m065_gate_check",
+        "m065_authorization",
+        "m065_command_policy",
+        "m065_output_policy",
+        "m065_command_review",
+        "m065_one_shot_arming",
+        "m065_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m066r_remote_vertical_slice_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m066r_policy",
+        "m066r_command_manifest",
+        "m066r_manifest_validation",
+        "m066r_plan",
+        "m066r_gate_check",
+        "m066r_one_shot_arming",
+        "m066r_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m067r_source_bundle_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m067r_source_bundle",
+        "m067r_source_bundle_validation",
+        "m067r_command_manifest",
+        "m067r_manifest_validation",
+        "m067r_plan",
+        "m067r_gate_check",
+        "m067r_one_shot_arming",
+        "m067r_reviewer_bridge",
+        "m068r_dependency_bundle",
+        "m068r_dependency_bundle_validation",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _has_m063_gpu_visibility_run_flags(args: argparse.Namespace) -> bool:
+    names = [
+        "m063_plan",
+        "m063_gate_check",
+        "m063_authorization",
+        "m063_command_policy",
+        "m063_output_policy",
+        "m063_command_review",
+        "m063_one_shot_arming",
+        "m063_reviewer_bridge",
+    ]
+    return any(getattr(args, name, None) is not None for name in names)
+
+
+def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict | None:
+    if not _has_m067r_source_bundle_run_flags(args):
+        return None
+    if (
+        _has_m066r_remote_vertical_slice_run_flags(args)
+        or _has_m065_python_runtime_run_flags(args)
+        or _has_m063_gpu_visibility_run_flags(args)
+        or _has_m061_identity_command_run_flags(args)
+        or _has_m059_identity_command_run_flags(args)
+        or _has_m057_minimal_remote_command_run_flags(args)
+    ):
+        raise SystemExit(
+            "M067R source-bundle vertical-slice run cannot be combined with "
+            "M066R, M065, M063, M061, M059, or M057 gates"
+        )
+    m068r_requested = (
+        args.m068r_dependency_bundle is not None
+        or args.m068r_dependency_bundle_validation is not None
+    )
+    values = {
+        "m067r_source_bundle": args.m067r_source_bundle,
+        "m067r_source_bundle_validation": args.m067r_source_bundle_validation,
+        "m067r_command_manifest": args.m067r_command_manifest,
+        "m067r_manifest_validation": args.m067r_manifest_validation,
+        "m067r_plan": args.m067r_plan,
+        "m067r_gate_check": args.m067r_gate_check,
+        "m067r_one_shot_arming": args.m067r_one_shot_arming,
+        "m067r_reviewer_bridge": args.m067r_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    if m068r_requested:
+        values.update(
+            {
+                "m068r_dependency_bundle": args.m068r_dependency_bundle,
+                "m068r_dependency_bundle_validation": (
+                    args.m068r_dependency_bundle_validation
+                ),
+            }
+        )
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M067R/M068R source-bundle vertical-slice run requires all requested "
+            "artifacts; missing " + ", ".join(missing)
+        )
+    bundle_validation = load_lambda_remote_source_bundle_validation(
+        args.m067r_source_bundle_validation
+    )
+    dependency_validation = (
+        load_lambda_dependency_bundle_validation(args.m068r_dependency_bundle_validation)
+        if m068r_requested
+        else None
+    )
+    manifest = load_lambda_remote_vertical_slice_command_manifest(
+        args.m067r_command_manifest
+    )
+    validation = load_lambda_remote_vertical_slice_manifest_validation(
+        args.m067r_manifest_validation
+    )
+    plan = load_lambda_remote_vertical_slice_execution_plan(args.m067r_plan)
+    gate = load_lambda_remote_vertical_slice_gate_check(args.m067r_gate_check)
+    arming = load_lambda_remote_vertical_slice_one_shot_arming(
+        args.m067r_one_shot_arming
+    )
+    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(
+        args.m067r_reviewer_bridge
+    )
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    is_m071r = (
+        manifest.milestone == "M071R"
+        or plan.milestone == "M071R"
+        or gate.milestone == "M071R"
+    )
+    is_m073r = (
+        manifest.milestone == "M073R"
+        or plan.milestone == "M073R"
+        or gate.milestone == "M073R"
+    )
+    is_m075r = (
+        manifest.milestone == "M075R"
+        or plan.milestone == "M075R"
+        or gate.milestone == "M075R"
+    )
+    is_m077r = (
+        manifest.milestone == "M077R"
+        or plan.milestone == "M077R"
+        or gate.milestone == "M077R"
+    )
+    is_m079r = (
+        manifest.milestone == "M079R"
+        or plan.milestone == "M079R"
+        or gate.milestone == "M079R"
+    )
+    is_m081r = (
+        manifest.milestone == "M081R"
+        or plan.milestone == "M081R"
+        or gate.milestone == "M081R"
+    )
+    is_m083r = (
+        manifest.milestone == "M083R"
+        or plan.milestone == "M083R"
+        or gate.milestone == "M083R"
+    )
+    is_m085r = (
+        manifest.milestone == "M085R"
+        or plan.milestone == "M085R"
+        or gate.milestone == "M085R"
+    )
+    is_m087r = (
+        manifest.milestone == "M087R"
+        or plan.milestone == "M087R"
+        or gate.milestone == "M087R"
+    )
+    is_m089r = (
+        manifest.milestone == "M089R"
+        or plan.milestone == "M089R"
+        or gate.milestone == "M089R"
+    )
+    is_m093r = (
+        manifest.milestone == "M093R"
+        or plan.milestone == "M093R"
+        or gate.milestone == "M093R"
+    )
+    failure_artifact_capture_policy = None
+    failure_artifact_capture_policy_hash = None
+    if is_m075r and args.m075r_failure_artifact_capture_policy is not None:
+        failure_artifact_capture_policy = (
+            load_lambda_remote_vslice_failure_artifact_capture_policy(
+                args.m075r_failure_artifact_capture_policy
+            )
+        )
+        failure_artifact_capture_policy_hash = _sha256_file(
+            args.m075r_failure_artifact_capture_policy
+        )
+    artifact_body_policy = None
+    artifact_body_policy_hash = None
+    if is_m075r and args.m075r_artifact_body_policy is not None:
+        artifact_body_policy = load_lambda_runtime_smoke_artifact_body_policy(
+            args.m075r_artifact_body_policy
+        )
+        artifact_body_policy_hash = _sha256_file(args.m075r_artifact_body_policy)
+    declared_artifact_policy = None
+    declared_artifact_policy_hash = None
+    manifest_artifact_policy = None
+    manifest_artifact_policy_hash = None
+    if is_m093r and args.m093r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m093r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m093r_manifest_artifact_policy
+        )
+    elif is_m093r:
+        blockers.append("m093r_manifest_artifact_policy_required")
+    elif is_m089r and args.m089r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m089r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m089r_manifest_artifact_policy
+        )
+    elif is_m089r:
+        blockers.append("m089r_manifest_artifact_policy_required")
+    elif is_m087r and args.m087r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m087r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m087r_manifest_artifact_policy
+        )
+    elif is_m087r:
+        blockers.append("m087r_manifest_artifact_policy_required")
+    elif is_m085r and args.m085r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m085r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m085r_manifest_artifact_policy
+        )
+    elif is_m085r:
+        blockers.append("m085r_manifest_artifact_policy_required")
+    elif is_m083r and args.m083r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m083r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m083r_manifest_artifact_policy
+        )
+    elif is_m083r:
+        blockers.append("m083r_manifest_artifact_policy_required")
+    elif is_m081r and args.m081r_manifest_artifact_policy is not None:
+        manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
+            args.m081r_manifest_artifact_policy
+        )
+        manifest_artifact_policy_hash = _sha256_file(
+            args.m081r_manifest_artifact_policy
+        )
+    elif is_m081r:
+        blockers.append("m081r_manifest_artifact_policy_required")
+    elif is_m079r and args.m079r_declared_artifact_policy is not None:
+        declared_artifact_policy = load_lambda_remote_vslice_declared_artifact_policy(
+            args.m079r_declared_artifact_policy
+        )
+        declared_artifact_policy_hash = _sha256_file(
+            args.m079r_declared_artifact_policy
+        )
+    elif is_m079r:
+        blockers.append("m079r_declared_artifact_policy_required")
+    is_m068r = (
+        manifest.milestone == "M068R"
+        or plan.milestone == "M068R"
+        or gate.milestone == "M068R"
+        or is_m071r
+        or is_m073r
+        or is_m075r
+        or is_m077r
+        or is_m079r
+        or is_m081r
+        or is_m083r
+        or is_m085r
+        or is_m087r
+        or is_m089r
+        or is_m093r
+    )
+    uses_dependency_bundle = is_m068r
+    expected_milestone = (
+        "M093R"
+        if is_m093r
+        else "M089R"
+        if is_m089r
+        else "M087R"
+        if is_m087r
+        else "M085R"
+        if is_m085r
+        else "M083R"
+        if is_m083r
+        else "M081R"
+        if is_m081r
+        else "M079R"
+        if is_m079r
+        else "M077R"
+        if is_m077r
+        else "M075R"
+        if is_m075r
+        else "M073R"
+        if is_m073r
+        else "M071R"
+        if is_m071r
+        else "M068R"
+        if is_m068r
+        else "M067R"
+    )
+    expected_arming_status = (
+        "armed_for_one_shot_m093r_tiny_real_training_smoke"
+        if is_m093r
+        else "armed_for_one_shot_m089r_bounded_diloco_experiment"
+        if is_m089r
+        else "armed_for_one_shot_m087r_parameter_fragment_smoke"
+        if is_m087r
+        else "armed_for_one_shot_m085r_integrated_diloco_smoke"
+        if is_m085r
+        else "armed_for_one_shot_m083r_diloco_optimizer_smoke"
+        if is_m083r
+        else "armed_for_one_shot_m081r_diloco_synthetic_experiment"
+        if is_m081r
+        else "armed_for_one_shot_m079r_next_synthetic_experiment"
+        if is_m079r
+        else "armed_for_one_shot_m077r_first_synthetic_experiment"
+        if is_m077r
+        else "armed_for_one_shot_m075r_runtime_protocol_smoke"
+        if is_m075r
+        else "armed_for_one_shot_m073r_tiny_smoke"
+        if is_m073r
+        else "armed_for_one_shot_m071r_first_experiment"
+        if is_m071r
+        else "armed_for_one_shot_m068r_dependency_bundle_vertical_slice"
+        if is_m068r
+        else "armed_for_one_shot_m067r_source_bundle_vertical_slice"
+    )
+    expected_armed_for = (
+        "m093r_tiny_real_training_smoke_single_launch_attempt"
+        if is_m093r
+        else "m089r_bounded_diloco_experiment_single_launch_attempt"
+        if is_m089r
+        else "m087r_parameter_fragment_smoke_single_launch_attempt"
+        if is_m087r
+        else "m085r_integrated_diloco_smoke_single_launch_attempt"
+        if is_m085r
+        else "m083r_diloco_optimizer_smoke_single_launch_attempt"
+        if is_m083r
+        else "m081r_diloco_synthetic_experiment_single_launch_attempt"
+        if is_m081r
+        else "m079r_next_synthetic_experiment_single_launch_attempt"
+        if is_m079r
+        else "m077r_first_synthetic_experiment_single_launch_attempt"
+        if is_m077r
+        else "m075r_runtime_protocol_smoke_single_launch_attempt"
+        if is_m075r
+        else "m073r_tiny_smoke_single_launch_attempt"
+        if is_m073r
+        else "m071r_first_experiment_single_launch_attempt"
+        if is_m071r
+        else "m068r_dependency_bundle_vertical_slice_single_launch_attempt"
+        if is_m068r
+        else "m067r_source_bundle_vertical_slice_single_launch_attempt"
+    )
+    expected_uploaded_bundles = 2 if uses_dependency_bundle else 1
+    expected_run_id = (
+        "lambda-m093r-tiny-real-training-smoke"
+        if is_m093r
+        else "lambda-m089r-bounded-diloco-experiment"
+        if is_m089r
+        else "lambda-m087r-parameter-fragment-smoke"
+        if is_m087r
+        else "lambda-m085r-integrated-diloco-smoke"
+        if is_m085r
+        else "lambda-m083r-diloco-optimizer-smoke"
+        if is_m083r
+        else "lambda-m081r-diloco-synthetic-experiment"
+        if is_m081r
+        else "lambda-m079r-next-synthetic-experiment"
+        if is_m079r
+        else "lambda-m077r-first-synthetic-experiment"
+        if is_m077r
+        else "lambda-m075r-runtime-protocol-smoke"
+        if is_m075r
+        else "lambda-m073r-tiny-smoke"
+        if is_m073r
+        else "lambda-m071r-first-experiment"
+        if is_m071r
+        else "lambda-m068r2-dependency-bundle-vertical-slice"
+        if is_m068r
+        else "lambda-m067r-source-bundle-vertical-slice"
+    )
+    expected_remote_command = (
+        "m093r-tiny-real-training-command-manifest"
+        if is_m093r
+        else "m089r-bounded-diloco-experiment-command-manifest"
+        if is_m089r
+        else "m087r-parameter-fragment-command-manifest"
+        if is_m087r
+        else "m085r-integrated-diloco-command-manifest"
+        if is_m085r
+        else "m083r-diloco-optimizer-command-manifest"
+        if is_m083r
+        else "m081r-diloco-synthetic-command-manifest"
+        if is_m081r
+        else "m079r-next-synthetic-experiment-command-manifest"
+        if is_m079r
+        else "m077r-first-synthetic-experiment-command-manifest"
+        if is_m077r
+        else "m075r-runtime-protocol-smoke-command-manifest"
+        if is_m075r
+        else "m073r-tiny-smoke-command-manifest"
+        if is_m073r
+        else "m071r-first-experiment-command-manifest"
+        if is_m071r
+        else "m068r-dependency-bundle-command-manifest"
+        if is_m068r
+        else "m067r-source-bundle-command-manifest"
+    )
+    if not Path(args.m067r_source_bundle).is_file():
+        blockers.append("m067r_source_bundle_missing")
+    elif _sha256_file(args.m067r_source_bundle) != bundle_validation.bundle_sha256:
+        blockers.append("m067r_source_bundle_hash_mismatch")
+    if uses_dependency_bundle:
+        if not m068r_requested or dependency_validation is None:
+            blockers.append("m068r_dependency_bundle_artifacts_required")
+        elif not Path(args.m068r_dependency_bundle).is_file():
+            blockers.append("m068r_dependency_bundle_missing")
+        elif (
+            _sha256_file(args.m068r_dependency_bundle)
+            != dependency_validation.bundle_sha256
+        ):
+            blockers.append("m068r_dependency_bundle_hash_mismatch")
+        if dependency_validation is not None and not dependency_validation.validation_passed:
+            blockers.extend(
+                dependency_validation.blockers
+                or ["dependency_bundle_validation_failed"]
+            )
+    if not bundle_validation.validation_passed:
+        blockers.extend(bundle_validation.blockers or ["source_bundle_validation_failed"])
+    if manifest.milestone != expected_milestone:
+        blockers.append(f"{expected_milestone.lower()}_manifest_required")
+    if not validation.validation_passed:
+        blockers.extend(validation.blockers or ["m067r_manifest_validation_failed"])
+    if validation.manifest_hash != plan.command_manifest_hash:
+        blockers.append("m067r_plan_manifest_hash_mismatch")
+    if validation.manifest_hash != gate.command_manifest_hash:
+        blockers.append("m067r_gate_manifest_hash_mismatch")
+    if manifest.max_remote_commands != plan.max_remote_command_attempts:
+        blockers.append("m067r_manifest_plan_command_count_mismatch")
+    if plan.milestone != expected_milestone or plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m067r_plan_not_passed"])
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m067r_gate_not_passed"])
+    if gate.source_bundle_sha256 != bundle_validation.bundle_sha256:
+        blockers.append("m067r_gate_source_bundle_hash_mismatch")
+    if uses_dependency_bundle and dependency_validation is not None:
+        if gate.dependency_bundle_sha256 != dependency_validation.bundle_sha256:
+            blockers.append("m068r_gate_dependency_bundle_hash_mismatch")
+        if arming.dependency_bundle_sha256 != dependency_validation.bundle_sha256:
+            blockers.append("m068r_arming_dependency_bundle_hash_mismatch")
+        if bridge.dependency_bundle_sha256 != dependency_validation.bundle_sha256:
+            blockers.append("m068r_bridge_dependency_bundle_hash_mismatch")
+    if arming.arming_status != expected_arming_status:
+        blockers.extend(arming.blockers or ["m067r_one_shot_arming_not_armed"])
+    if arming.armed_for != expected_armed_for:
+        blockers.append(f"{expected_milestone.lower()}_arming_scope_mismatch")
+    if is_lambda_remote_vertical_slice_one_shot_arming_expired(arming):
+        blockers.append("m067r_source_bundle_one_shot_arming_expired")
+    if arming.source_bundle_sha256 != bundle_validation.bundle_sha256:
+        blockers.append("m067r_arming_source_bundle_hash_mismatch")
+    if failure_artifact_capture_policy is not None:
+        if not failure_artifact_capture_policy.policy_passed:
+            blockers.extend(
+                failure_artifact_capture_policy.blockers
+                or ["failure_artifact_capture_policy_not_passed"]
+            )
+        if not failure_artifact_capture_policy.capture_on_failure_allowed:
+            blockers.append("failure_artifact_capture_not_allowed")
+        if (
+            failure_artifact_capture_policy.capture_scope
+            != "predeclared_artifact_only"
+        ):
+            blockers.append("failure_artifact_capture_scope_not_predeclared_only")
+        if (
+            failure_artifact_capture_policy.expected_output_artifact_path
+            != "/tmp/decodilo-runtime-smoke.json"
+        ):
+            blockers.append("failure_artifact_capture_path_mismatch")
+        if not failure_artifact_capture_policy.no_arbitrary_file_read:
+            blockers.append("failure_artifact_policy_allows_arbitrary_file_read")
+        if (
+            arming.failure_artifact_capture_policy_hash
+            != failure_artifact_capture_policy_hash
+        ):
+            blockers.append("m075r_arming_failure_artifact_policy_hash_mismatch")
+    if artifact_body_policy is not None:
+        if artifact_body_policy.policy_status != "policy_defined":
+            blockers.extend(
+                artifact_body_policy.blockers or ["artifact_body_policy_not_defined"]
+            )
+        if not artifact_body_policy.content_capture_allowed:
+            blockers.append("artifact_body_capture_not_allowed")
+        if artifact_body_policy.declared_artifact_path != "/tmp/decodilo-runtime-smoke.json":
+            blockers.append("artifact_body_policy_path_mismatch")
+        if not artifact_body_policy.no_arbitrary_file_reads:
+            blockers.append("artifact_body_policy_allows_arbitrary_file_read")
+        if not artifact_body_policy.no_directory_reads:
+            blockers.append("artifact_body_policy_allows_directory_read")
+        if arming.artifact_body_policy_hash != artifact_body_policy_hash:
+            blockers.append("m075r_arming_artifact_body_policy_hash_mismatch")
+    if declared_artifact_policy is not None:
+        if declared_artifact_policy.policy_status != "policy_defined":
+            blockers.extend(
+                declared_artifact_policy.blockers
+                or ["declared_artifact_policy_not_defined"]
+            )
+        if (
+            declared_artifact_policy.declared_artifact_path
+            != "/tmp/decodilo-learner-syncer-smoke.json"
+        ):
+            blockers.append("declared_artifact_policy_path_mismatch")
+        if not declared_artifact_policy.no_arbitrary_file_reads:
+            blockers.append("declared_artifact_policy_allows_arbitrary_file_read")
+        if not declared_artifact_policy.reject_directories:
+            blockers.append("declared_artifact_policy_allows_directory_read")
+        if not declared_artifact_policy.reject_globs:
+            blockers.append("declared_artifact_policy_allows_globs")
+        if not declared_artifact_policy.reject_fallback_paths:
+            blockers.append("declared_artifact_policy_allows_fallback_paths")
+        if arming.declared_artifact_policy_hash != declared_artifact_policy_hash:
+            blockers.append("m079r_arming_declared_artifact_policy_hash_mismatch")
+    if manifest_artifact_policy is not None:
+        if manifest_artifact_policy.policy_status != "manifest_artifact_policy_defined":
+            blockers.extend(
+                manifest_artifact_policy.blockers
+                or ["manifest_artifact_policy_not_defined"]
+            )
+        expected_manifest_artifact_path = (
+            "/tmp/decodilo-tiny-real-training-smoke.json"
+            if is_m093r
+            else "/tmp/decodilo-bounded-diloco-experiment.json"
+            if is_m089r
+            else "/tmp/decodilo-parameter-fragment-smoke.json"
+            if is_m087r
+            else "/tmp/decodilo-integrated-diloco-smoke.json"
+            if is_m085r
+            else "/tmp/decodilo-diloco-optimizer-smoke.json"
+            if is_m083r
+            else "/tmp/decodilo-diloco-smoke.json"
+        )
+        if (
+            manifest_artifact_policy.declared_artifact_path
+            != expected_manifest_artifact_path
+        ):
+            blockers.append("manifest_artifact_policy_path_mismatch")
+        if is_m081r and not manifest_artifact_policy.diloco_smoke_declared_artifact_supported:
+            blockers.append("manifest_artifact_policy_diloco_path_missing")
+        if (
+            is_m083r
+            and not manifest_artifact_policy.diloco_optimizer_smoke_declared_artifact_supported
+        ):
+            blockers.append("manifest_artifact_policy_diloco_optimizer_path_missing")
+        if (
+            is_m085r
+            and not manifest_artifact_policy.integrated_diloco_smoke_declared_artifact_supported
+        ):
+            blockers.append("manifest_artifact_policy_integrated_diloco_path_missing")
+        if (
+            is_m087r
+            and not manifest_artifact_policy.parameter_fragment_smoke_declared_artifact_supported
+        ):
+            blockers.append("manifest_artifact_policy_parameter_fragment_path_missing")
+        if (
+            is_m089r
+            and not manifest_artifact_policy.bounded_diloco_experiment_declared_artifact_supported
+        ):
+            blockers.append("manifest_artifact_policy_bounded_diloco_path_missing")
+        if (
+            is_m093r
+            and not manifest_artifact_policy.tiny_real_training_smoke_declared_artifact_supported
+        ):
+            blockers.append("manifest_artifact_policy_tiny_real_training_path_missing")
+        if not manifest_artifact_policy.accept_only_manifest_declared_paths:
+            blockers.append("manifest_artifact_policy_not_manifest_driven")
+        if not manifest_artifact_policy.capture_on_success:
+            blockers.append("manifest_artifact_policy_disallows_success_capture")
+        if not manifest_artifact_policy.capture_on_failure:
+            blockers.append("manifest_artifact_policy_disallows_failure_capture")
+        if not manifest_artifact_policy.no_arbitrary_file_reads:
+            blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+        if not manifest_artifact_policy.reject_directories:
+            blockers.append("manifest_artifact_policy_allows_directory_read")
+        if not manifest_artifact_policy.reject_globs:
+            blockers.append("manifest_artifact_policy_allows_globs")
+        if not manifest_artifact_policy.reject_fallback_paths:
+            blockers.append("manifest_artifact_policy_allows_fallback_paths")
+        if not manifest_artifact_policy.reject_relative_paths:
+            blockers.append("manifest_artifact_policy_allows_relative_paths")
+        if not manifest_artifact_policy.reject_traversal:
+            blockers.append("manifest_artifact_policy_allows_traversal")
+        if not manifest_artifact_policy.reject_symlink_escapes:
+            blockers.append("manifest_artifact_policy_allows_symlink_escape")
+        if arming.declared_artifact_policy_hash != manifest_artifact_policy_hash:
+            blockers.append(
+                "m093r_arming_manifest_artifact_policy_hash_mismatch"
+                if is_m093r
+                else
+                "m089r_arming_manifest_artifact_policy_hash_mismatch"
+                if is_m089r
+                else
+                "m087r_arming_manifest_artifact_policy_hash_mismatch"
+                if is_m087r
+                else
+                "m085r_arming_manifest_artifact_policy_hash_mismatch"
+                if is_m085r
+                else "m083r_arming_manifest_artifact_policy_hash_mismatch"
+                if is_m083r
+                else "m081r_arming_manifest_artifact_policy_hash_mismatch"
+            )
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m067r_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m067r_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m067r_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_remote_vertical_slice_permitted:
+        blockers.append("m067r_bridge_vertical_slice_not_permitted")
+    if bridge.source_bundle_sha256 != bundle_validation.bundle_sha256:
+        blockers.append("m067r_bridge_source_bundle_hash_mismatch")
+    if failure_artifact_capture_policy is not None:
+        if (
+            bridge.failure_artifact_capture_policy_hash
+            != failure_artifact_capture_policy_hash
+        ):
+            blockers.append("m075r_bridge_failure_artifact_policy_hash_mismatch")
+    if artifact_body_policy is not None:
+        if bridge.artifact_body_policy_hash != artifact_body_policy_hash:
+            blockers.append("m075r_bridge_artifact_body_policy_hash_mismatch")
+    if declared_artifact_policy is not None:
+        if bridge.declared_artifact_policy_hash != declared_artifact_policy_hash:
+            blockers.append("m079r_bridge_declared_artifact_policy_hash_mismatch")
+    if manifest_artifact_policy is not None:
+        if bridge.declared_artifact_policy_hash != manifest_artifact_policy_hash:
+            blockers.append(
+                "m093r_bridge_manifest_artifact_policy_hash_mismatch"
+                if is_m093r
+                else
+                "m089r_bridge_manifest_artifact_policy_hash_mismatch"
+                if is_m089r
+                else
+                "m087r_bridge_manifest_artifact_policy_hash_mismatch"
+                if is_m087r
+                else
+                "m085r_bridge_manifest_artifact_policy_hash_mismatch"
+                if is_m085r
+                else "m083r_bridge_manifest_artifact_policy_hash_mismatch"
+                if is_m083r
+                else "m081r_bridge_manifest_artifact_policy_hash_mismatch"
+            )
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_uploaded_bundles != expected_uploaded_bundles
+        or bridge.max_remote_command_attempts != plan.max_remote_command_attempts
+        or not bridge.single_source_bundle_upload_allowed
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m067r_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_downloads
+        or not bridge.no_training
+    ):
+        blockers.append("m067r_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_ssh_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m067r_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m067r_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            f"{expected_milestone} source/dependency-bundle vertical-slice execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": expected_milestone,
+        "run_id": expected_run_id,
+        "plan": plan,
+        "plan_hash": plan.command_manifest_hash,
+        "manifest": manifest,
+        "manifest_validation": validation,
+        "source_bundle": Path(args.m067r_source_bundle),
+        "source_bundle_validation": bundle_validation,
+        "dependency_bundle": (
+            Path(args.m068r_dependency_bundle) if uses_dependency_bundle else None
+        ),
+        "dependency_bundle_validation": dependency_validation,
+        "gate": gate,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": expected_arming_status,
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_vertical_slice": True,
+        "source_bundle_vertical_slice": True,
+        "dependency_bundle_vertical_slice": uses_dependency_bundle,
+        "first_experiment_vertical_slice": is_m071r,
+        "tiny_smoke_vertical_slice": is_m073r,
+        "runtime_protocol_smoke_vertical_slice": is_m075r,
+        "first_synthetic_experiment_vertical_slice": is_m077r,
+        "next_synthetic_experiment_vertical_slice": is_m079r,
+        "diloco_synthetic_experiment_vertical_slice": is_m081r,
+        "diloco_optimizer_smoke_vertical_slice": is_m083r,
+        "integrated_diloco_smoke_vertical_slice": is_m085r,
+        "parameter_fragment_smoke_vertical_slice": is_m087r,
+        "bounded_diloco_experiment_vertical_slice": is_m089r,
+        "tiny_real_training_smoke_vertical_slice": is_m093r,
+        "remote_command": expected_remote_command,
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m067r_source_bundle_vertical_slice_path_used": not uses_dependency_bundle,
+            "m068r_dependency_bundle_vertical_slice_path_used": uses_dependency_bundle,
+            "m071r_first_experiment_path_used": is_m071r,
+            "m073r_tiny_smoke_path_used": is_m073r,
+            "m075r_runtime_protocol_smoke_path_used": is_m075r,
+            "m077r_first_synthetic_experiment_path_used": is_m077r,
+            "m079r_next_synthetic_experiment_path_used": is_m079r,
+            "m081r_diloco_synthetic_experiment_path_used": is_m081r,
+            "m083r_diloco_optimizer_smoke_path_used": is_m083r,
+            "m085r_integrated_diloco_smoke_path_used": is_m085r,
+            "m087r_parameter_fragment_smoke_path_used": is_m087r,
+            "m089r_bounded_diloco_experiment_path_used": is_m089r,
+            "m093r_tiny_real_training_smoke_path_used": is_m093r,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_remote_vertical_slice_permitted": (
+                bridge.one_shot_remote_vertical_slice_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "command_manifest_hash": plan.command_manifest_hash,
+            "source_bundle_sha256": bundle_validation.bundle_sha256,
+            "dependency_bundle_sha256": (
+                dependency_validation.bundle_sha256
+                if dependency_validation is not None
+                else None
+            ),
+            "failure_artifact_capture_policy_hash": (
+                failure_artifact_capture_policy_hash
+            ),
+            "artifact_body_policy_hash": artifact_body_policy_hash,
+            "declared_artifact_policy_hash": (
+                declared_artifact_policy_hash or manifest_artifact_policy_hash
+            ),
+            "max_uploaded_bundles": expected_uploaded_bundles,
+            "max_remote_commands": plan.max_remote_command_attempts,
+            "stop_on_first_failure": True,
+            "file_transfer_allowed": False,
+            "single_source_bundle_upload_allowed": True,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "downloads_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m066r_remote_vertical_slice_execution_gates(
+    args: argparse.Namespace,
+) -> dict | None:
+    if not _has_m066r_remote_vertical_slice_run_flags(args):
+        return None
+    if (
+        _has_m065_python_runtime_run_flags(args)
+        or _has_m063_gpu_visibility_run_flags(args)
+        or _has_m061_identity_command_run_flags(args)
+        or _has_m059_identity_command_run_flags(args)
+        or _has_m057_minimal_remote_command_run_flags(args)
+    ):
+        raise SystemExit(
+            "M066R remote vertical-slice run cannot be combined with M065, "
+            "M063, M061, M059, or M057 gates"
+        )
+    values = {
+        "m066r_policy": args.m066r_policy,
+        "m066r_command_manifest": args.m066r_command_manifest,
+        "m066r_manifest_validation": args.m066r_manifest_validation,
+        "m066r_plan": args.m066r_plan,
+        "m066r_gate_check": args.m066r_gate_check,
+        "m066r_one_shot_arming": args.m066r_one_shot_arming,
+        "m066r_reviewer_bridge": args.m066r_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M066R remote vertical-slice run requires all M066R/SSH artifacts; "
+            "missing " + ", ".join(missing)
+        )
+    policy = load_lambda_remote_vertical_slice_policy(args.m066r_policy)
+    manifest = load_lambda_remote_vertical_slice_command_manifest(
+        args.m066r_command_manifest
+    )
+    validation = load_lambda_remote_vertical_slice_manifest_validation(
+        args.m066r_manifest_validation
+    )
+    plan = load_lambda_remote_vertical_slice_execution_plan(args.m066r_plan)
+    gate = load_lambda_remote_vertical_slice_gate_check(args.m066r_gate_check)
+    arming = load_lambda_remote_vertical_slice_one_shot_arming(
+        args.m066r_one_shot_arming
+    )
+    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(
+        args.m066r_reviewer_bridge
+    )
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if policy.policy_status != "policy_defined":
+        blockers.extend(policy.blockers or ["m066r_policy_not_defined"])
+    if not validation.validation_passed:
+        blockers.extend(validation.blockers or ["m066r_manifest_validation_failed"])
+    if validation.manifest_hash != plan.command_manifest_hash:
+        blockers.append("m066r_plan_manifest_hash_mismatch")
+    if validation.manifest_hash != gate.command_manifest_hash:
+        blockers.append("m066r_gate_manifest_hash_mismatch")
+    if manifest.max_remote_commands != plan.max_remote_command_attempts:
+        blockers.append("m066r_manifest_plan_command_count_mismatch")
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m066r_plan_not_passed"])
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m066r_gate_not_passed"])
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m066r_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m066r_gate_region_mismatch")
+    if arming.arming_status != "armed_for_one_shot_m066r_remote_vertical_slice":
+        blockers.extend(arming.blockers or ["m066r_one_shot_arming_not_armed"])
+    if is_lambda_remote_vertical_slice_one_shot_arming_expired(arming):
+        blockers.append("m066r_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m066r_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m066r_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m066r_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_remote_vertical_slice_permitted:
+        blockers.append("m066r_bridge_vertical_slice_not_permitted")
+    if bridge.command_manifest_hash != plan.command_manifest_hash:
+        blockers.append("m066r_bridge_manifest_hash_mismatch")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != plan.max_remote_command_attempts
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m066r_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_downloads
+        or not bridge.no_training
+    ):
+        blockers.append("m066r_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_ssh_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m066r_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m066r_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            "M066R remote vertical-slice execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M066R",
+        "run_id": "lambda-m066r-remote-decodilo-vertical-slice",
+        "plan": plan,
+        "plan_hash": plan.command_manifest_hash,
+        "policy": policy,
+        "manifest": manifest,
+        "manifest_validation": validation,
+        "gate": gate,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m066r_remote_vertical_slice",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_vertical_slice": True,
+        "remote_command": "m066r-command-manifest",
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m066r_remote_vertical_slice_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_remote_vertical_slice_permitted": (
+                bridge.one_shot_remote_vertical_slice_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "command_manifest_hash": plan.command_manifest_hash,
+            "max_remote_commands": plan.max_remote_command_attempts,
+            "stop_on_first_failure": True,
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m065_python_runtime_execution_gates(args: argparse.Namespace) -> dict | None:
+    if not _has_m065_python_runtime_run_flags(args):
+        return None
+    if (
+        _has_m063_gpu_visibility_run_flags(args)
+        or _has_m061_identity_command_run_flags(args)
+        or _has_m059_identity_command_run_flags(args)
+        or _has_m057_minimal_remote_command_run_flags(args)
+    ):
+        raise SystemExit(
+            "M065 Python runtime version query run cannot be combined with M063, "
+            "M061, M059, or M057 gates"
+        )
+    values = {
+        "m065_plan": args.m065_plan,
+        "m065_gate_check": args.m065_gate_check,
+        "m065_authorization": args.m065_authorization,
+        "m065_command_policy": args.m065_command_policy,
+        "m065_output_policy": args.m065_output_policy,
+        "m065_command_review": args.m065_command_review,
+        "m065_one_shot_arming": args.m065_one_shot_arming,
+        "m065_reviewer_bridge": args.m065_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M065 Python runtime version query run requires all M065/SSH artifacts; "
+            "missing " + ", ".join(missing)
+        )
+    plan = load_lambda_m065_python_runtime_plan(args.m065_plan)
+    gate = load_lambda_m065_python_runtime_gate_check(args.m065_gate_check)
+    authorization = load_lambda_m065_python_runtime_authorization(args.m065_authorization)
+    command_policy = load_lambda_python_runtime_command_policy(args.m065_command_policy)
+    output_policy = load_lambda_python_runtime_output_policy(args.m065_output_policy)
+    command_review = load_lambda_python_runtime_command_review(args.m065_command_review)
+    arming = load_lambda_m065_one_shot_arming(args.m065_one_shot_arming)
+    bridge = load_lambda_m065_reviewer_bridge(args.m065_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m065_plan_not_passed"])
+    if plan.command != M065_PYTHON_RUNTIME_COMMAND or plan.command_argv != [
+        "python3",
+        "--version",
+    ]:
+        blockers.append("m065_plan_command_must_equal_exact_python_version_query")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m065_gate_not_passed"])
+    if gate.command != M065_PYTHON_RUNTIME_COMMAND:
+        blockers.append("m065_gate_command_must_equal_exact_python_version_query")
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m065_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m065_gate_region_mismatch")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m065_python_version_query_review"
+    ):
+        blockers.extend(authorization.blockers or ["m065_authorization_not_ready"])
+    if authorization.selected_future_command_set != [M065_PYTHON_RUNTIME_COMMAND]:
+        blockers.append("m065_authorization_must_select_python_version_only")
+    if command_policy.selected_future_command_set != [M065_PYTHON_RUNTIME_COMMAND]:
+        blockers.append("m065_command_policy_must_select_python_version_only")
+    if output_policy.output_policy_status != (
+        "python_runtime_output_policy_defined_future_only"
+    ):
+        blockers.extend(output_policy.blockers or ["m065_output_policy_not_ready"])
+    if command_review.selected_future_command_set != [M065_PYTHON_RUNTIME_COMMAND]:
+        blockers.append("m065_command_review_must_select_python_version_only")
+    if arming.arming_status != "armed_for_one_shot_m065_python_runtime_query":
+        blockers.extend(arming.blockers or ["m065_one_shot_arming_not_armed"])
+    if is_lambda_m065_one_shot_arming_expired(arming):
+        blockers.append("m065_python_runtime_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m065_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m065_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m065_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_minimal_remote_command_permitted:
+        blockers.append("m065_bridge_command_not_permitted")
+    if bridge.approved_command != M065_PYTHON_RUNTIME_COMMAND:
+        blockers.append("m065_bridge_must_permit_exact_python_version_query")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != 1
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m065_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+        or not bridge.no_python_inline_code
+        or not bridge.no_python_script_execution
+        or not bridge.no_python_module_execution
+        or not bridge.no_python_imports
+        or not bridge.no_nvidia_smi
+    ):
+        blockers.append("m065_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m065_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m065_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            "M065 Python runtime version query execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M065",
+        "run_id": "lambda-m065-python-runtime-version-query",
+        "plan": plan,
+        "plan_hash": m065_plan_hash(plan),
+        "gate": gate,
+        "authorization": authorization,
+        "command_policy": command_policy,
+        "output_policy": output_policy,
+        "command_review": command_review,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m065_python_runtime_query",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_command": M065_PYTHON_RUNTIME_COMMAND,
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m065_python_runtime_query_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_minimal_remote_command_permitted": (
+                bridge.one_shot_minimal_remote_command_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "remote_command_allowed": "exact_python3_version_only",
+            "remote_command": M065_PYTHON_RUNTIME_COMMAND,
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m063_gpu_visibility_execution_gates(args: argparse.Namespace) -> dict | None:
+    if not _has_m063_gpu_visibility_run_flags(args):
+        return None
+    if (
+        _has_m061_identity_command_run_flags(args)
+        or _has_m059_identity_command_run_flags(args)
+        or _has_m057_minimal_remote_command_run_flags(args)
+    ):
+        raise SystemExit(
+            "M063 GPU visibility query run cannot be combined with M061, M059, "
+            "or M057 gates"
+        )
+    values = {
+        "m063_plan": args.m063_plan,
+        "m063_gate_check": args.m063_gate_check,
+        "m063_authorization": args.m063_authorization,
+        "m063_command_policy": args.m063_command_policy,
+        "m063_output_policy": args.m063_output_policy,
+        "m063_command_review": args.m063_command_review,
+        "m063_one_shot_arming": args.m063_one_shot_arming,
+        "m063_reviewer_bridge": args.m063_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M063 GPU visibility query run requires all M063/SSH artifacts; missing "
+            + ", ".join(missing)
+        )
+    plan = load_lambda_m063_gpu_visibility_plan(args.m063_plan)
+    gate = load_lambda_m063_gpu_visibility_gate_check(args.m063_gate_check)
+    authorization = load_lambda_m063_gpu_visibility_authorization(args.m063_authorization)
+    command_policy = load_lambda_gpu_visibility_command_policy(args.m063_command_policy)
+    output_policy = load_lambda_gpu_visibility_output_policy(args.m063_output_policy)
+    command_review = load_lambda_gpu_visibility_command_review(args.m063_command_review)
+    arming = load_lambda_m063_one_shot_arming(args.m063_one_shot_arming)
+    bridge = load_lambda_m063_reviewer_bridge(args.m063_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m063_plan_not_passed"])
+    if (
+        plan.command != M063_GPU_VISIBILITY_COMMAND
+        or plan.command_argv
+        != [
+            "nvidia-smi",
+            "--query-gpu=name,memory.total,driver_version",
+            "--format=csv,noheader",
+        ]
+    ):
+        blockers.append("m063_plan_command_must_equal_exact_gpu_visibility_query")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m063_gate_not_passed"])
+    if gate.command != M063_GPU_VISIBILITY_COMMAND:
+        blockers.append("m063_gate_command_must_equal_exact_gpu_visibility_query")
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m063_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m063_gate_region_mismatch")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m063_gpu_visibility_query_review"
+    ):
+        blockers.extend(authorization.blockers or ["m063_authorization_not_ready"])
+    if authorization.selected_future_command_set != [M063_GPU_VISIBILITY_COMMAND]:
+        blockers.append("m063_authorization_must_select_gpu_query_only")
+    if command_policy.selected_future_command_set != [M063_GPU_VISIBILITY_COMMAND]:
+        blockers.append("m063_command_policy_must_select_gpu_query_only")
+    if output_policy.output_policy_status != (
+        "gpu_visibility_output_policy_defined_future_only"
+    ):
+        blockers.extend(output_policy.blockers or ["m063_output_policy_not_ready"])
+    if command_review.selected_future_command_set != [M063_GPU_VISIBILITY_COMMAND]:
+        blockers.append("m063_command_review_must_select_gpu_query_only")
+    if arming.arming_status != "armed_for_one_shot_m063_gpu_visibility_query":
+        blockers.extend(arming.blockers or ["m063_one_shot_arming_not_armed"])
+    if is_lambda_m063_one_shot_arming_expired(arming):
+        blockers.append("m063_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m063_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m063_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m063_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_minimal_remote_command_permitted:
+        blockers.append("m063_bridge_command_not_permitted")
+    if bridge.approved_command != M063_GPU_VISIBILITY_COMMAND:
+        blockers.append("m063_bridge_must_permit_exact_gpu_visibility_query")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != 1
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m063_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+        or not bridge.no_python
+        or not bridge.no_benchmark
+    ):
+        blockers.append("m063_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m063_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m063_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            "M063 GPU visibility query execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M063",
+        "run_id": "lambda-m063-gpu-visibility-query",
+        "plan": plan,
+        "plan_hash": m063_plan_hash(plan),
+        "gate": gate,
+        "authorization": authorization,
+        "command_policy": command_policy,
+        "output_policy": output_policy,
+        "command_review": command_review,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m063_gpu_visibility_query",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_command": M063_GPU_VISIBILITY_COMMAND,
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m063_gpu_visibility_query_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_minimal_remote_command_permitted": (
+                bridge.one_shot_minimal_remote_command_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "remote_command_allowed": "exact_gpu_visibility_query_only",
+            "remote_command": M063_GPU_VISIBILITY_COMMAND,
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m061_identity_command_execution_gates(args: argparse.Namespace) -> dict | None:
+    if not _has_m061_identity_command_run_flags(args):
+        return None
+    if _has_m059_identity_command_run_flags(args) or _has_m057_minimal_remote_command_run_flags(
+        args
+    ):
+        raise SystemExit(
+            "M061 whoami identity-command run cannot be combined with M059 or M057 gates"
+        )
+    values = {
+        "m061_plan": args.m061_plan,
+        "m061_gate_check": args.m061_gate_check,
+        "m061_authorization": args.m061_authorization,
+        "m061_one_shot_arming": args.m061_one_shot_arming,
+        "m061_reviewer_bridge": args.m061_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M061 whoami identity-command run requires all M061/SSH artifacts; missing "
+            + ", ".join(missing)
+        )
+    plan = load_lambda_m061_identity_command_plan(args.m061_plan)
+    gate = load_lambda_m061_identity_command_gate_check(args.m061_gate_check)
+    authorization = load_lambda_m061_whoami_authorization(args.m061_authorization)
+    arming = load_lambda_m061_one_shot_arming(args.m061_one_shot_arming)
+    bridge = load_lambda_m061_reviewer_bridge(args.m061_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m061_plan_not_passed"])
+    if plan.command != "whoami" or plan.command_argv != ["whoami"]:
+        blockers.append("m061_plan_command_must_equal_whoami")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m061_gate_not_passed"])
+    if gate.command != "whoami":
+        blockers.append("m061_gate_command_must_equal_whoami")
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m061_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m061_gate_region_mismatch")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m061_whoami_identity_command_review"
+    ):
+        blockers.extend(authorization.blockers or ["m061_authorization_not_ready"])
+    if authorization.selected_future_command_set != ["whoami"]:
+        blockers.append("m061_authorization_must_select_whoami_only")
+    if arming.arming_status != "armed_for_one_shot_m061_identity_command":
+        blockers.extend(arming.blockers or ["m061_one_shot_arming_not_armed"])
+    if is_lambda_m061_one_shot_arming_expired(arming):
+        blockers.append("m061_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m061_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m061_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m061_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_minimal_remote_command_permitted:
+        blockers.append("m061_bridge_command_not_permitted")
+    if bridge.approved_command != "whoami":
+        blockers.append("m061_bridge_must_permit_exact_whoami")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != 1
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m061_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+    ):
+        blockers.append("m061_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m061_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m061_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            "M061 whoami identity-command execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M061",
+        "run_id": "lambda-m061-whoami-identity-command",
+        "plan": plan,
+        "plan_hash": m061_plan_hash(plan),
+        "gate": gate,
+        "authorization": authorization,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m061_identity_command",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_command": "whoami",
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m061_whoami_identity_command_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_minimal_remote_command_permitted": (
+                bridge.one_shot_minimal_remote_command_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "remote_command_allowed": "exact_whoami_only",
+            "remote_command": "whoami",
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m059_identity_command_execution_gates(args: argparse.Namespace) -> dict | None:
+    if not _has_m059_identity_command_run_flags(args):
+        return None
+    values = {
+        "m059_plan": args.m059_plan,
+        "m059_gate_check": args.m059_gate_check,
+        "m059_authorization": args.m059_authorization,
+        "m059_one_shot_arming": args.m059_one_shot_arming,
+        "m059_reviewer_bridge": args.m059_reviewer_bridge,
+        "m056_ssh_static_validation": args.m056_ssh_static_validation,
+        "m056_ssh_no_exec_audit": args.m056_ssh_no_exec_audit,
+        "m056_ssh_safe_client_command": args.m056_ssh_safe_client_command,
+        "ssh_key_selection": args.ssh_key_selection,
+        "response_loss_controls": args.response_loss_controls,
+        "ssh_stderr_capture_policy": args.ssh_stderr_capture_policy,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M059 hostname identity-command run requires all M059/SSH artifacts; missing "
+            + ", ".join(missing)
+        )
+    plan = load_lambda_m059_identity_command_plan(args.m059_plan)
+    gate = load_lambda_m059_identity_command_gate_check(args.m059_gate_check)
+    authorization = load_lambda_m059_remote_command_authorization(args.m059_authorization)
+    arming = load_lambda_m059_one_shot_arming(args.m059_one_shot_arming)
+    bridge = load_lambda_m059_reviewer_bridge(args.m059_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(
+        args.m056_ssh_static_validation
+    )
+    audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
+    safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
+    safe_validation = validate_ssh_connectivity_command_preview(
+        safe_command.command_preview
+    )
+    ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
+    stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
+    blockers: list[str] = []
+    if plan.plan_status != "plan_passed":
+        blockers.extend(plan.blockers or ["m059_plan_not_passed"])
+    if plan.command != "hostname" or plan.command_argv != ["hostname"]:
+        blockers.append("m059_plan_command_must_equal_hostname")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m059_gate_not_passed"])
+    if gate.command != "hostname":
+        blockers.append("m059_gate_command_must_equal_hostname")
+    if gate.selected_candidate != plan.selected_candidate:
+        blockers.append("m059_gate_candidate_mismatch")
+    if gate.selected_region != plan.selected_region:
+        blockers.append("m059_gate_region_mismatch")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m059_identity_command_review"
+    ):
+        blockers.extend(authorization.blockers or ["m059_authorization_not_ready"])
+    if authorization.selected_future_command_set != ["hostname"]:
+        blockers.append("m059_authorization_must_select_hostname_only")
+    if arming.arming_status != "armed_for_one_shot_m059_identity_command":
+        blockers.extend(arming.blockers or ["m059_one_shot_arming_not_armed"])
+    if is_lambda_m059_one_shot_arming_expired(arming):
+        blockers.append("m059_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m059_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m059_bridge_request_send_not_permitted")
+    if not bridge.one_shot_ssh_connectivity_probe_permitted:
+        blockers.append("m059_bridge_ssh_probe_not_permitted")
+    if not bridge.one_shot_minimal_remote_command_permitted:
+        blockers.append("m059_bridge_command_not_permitted")
+    if bridge.approved_command != "hostname":
+        blockers.append("m059_bridge_must_permit_exact_hostname")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != 1
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m059_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+    ):
+        blockers.append("m059_bridge_allows_forbidden_remote_work")
+    if not static.static_validation_passed:
+        blockers.extend(static.blockers or ["m056_static_validation_failed"])
+    if not audit.audit_passed:
+        blockers.extend(audit.blockers or ["m056_no_exec_audit_failed"])
+    if safe_command.command_status != "safe_preview":
+        blockers.extend(safe_command.blockers or ["m056_safe_client_command_not_safe"])
+    blockers.extend(str(item) for item in safe_validation["blockers"])
+    if not ssh_selection.selection_passed:
+        blockers.extend(ssh_selection.errors or ["existing_ssh_key_selection_required"])
+    if not ssh_selection.selected_ssh_key_name_for_payload:
+        blockers.append("raw_existing_ssh_key_name_missing_from_private_artifact")
+    if ssh_selection.raw_public_key_material_present:
+        blockers.append("raw_public_key_material_present")
+    if plan.selected_ssh_key_hash != ssh_selection.selected_ssh_key_name_redacted_or_hash:
+        blockers.append("m059_plan_ssh_key_hash_mismatch")
+    if not controls.controls_passed or not controls.no_auto_launch_retry:
+        blockers.extend(controls.blockers or ["response_loss_controls_not_passed"])
+    if stderr_policy.capture_policy_status != "policy_defined":
+        blockers.extend(stderr_policy.blockers or ["stderr_capture_policy_not_defined"])
+    if not stderr_policy.secret_scan_passed:
+        blockers.append("stderr_capture_policy_secret_scan_failed")
+    if plan.quantity != 1:
+        blockers.append("quantity_must_equal_one")
+    if plan.max_budget > 50 or plan.max_runtime_minutes > 30:
+        blockers.append("m059_plan_exceeds_budget_or_runtime_limit")
+    if blockers:
+        raise SystemExit(
+            "M059 hostname identity-command execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return {
+        "milestone": "M059",
+        "run_id": "lambda-m059-hostname-identity-command",
+        "plan": plan,
+        "plan_hash": m059_plan_hash(plan),
+        "gate": gate,
+        "authorization": authorization,
+        "one_shot_arming": arming,
+        "reviewer_bridge": bridge,
+        "static_validation": static,
+        "no_exec_audit": audit,
+        "command_preview": None,
+        "safe_client_command": safe_command,
+        "safe_client_command_path": args.m056_ssh_safe_client_command,
+        "stderr_capture_policy": stderr_policy,
+        "ssh_key_selection": ssh_selection,
+        "response_loss_controls": controls,
+        "expected_arming_status": "armed_for_one_shot_m059_identity_command",
+        "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        "minimal_remote_command": True,
+        "remote_command": "hostname",
+        "collect_stdout": True,
+        "summary": {
+            "ssh_connectivity_path_used": True,
+            "m059_hostname_identity_command_path_used": True,
+            "gate_passed": True,
+            "one_shot_request_send_permitted": bridge.one_shot_request_send_permitted,
+            "one_shot_ssh_connectivity_probe_permitted": (
+                bridge.one_shot_ssh_connectivity_probe_permitted
+            ),
+            "one_shot_minimal_remote_command_permitted": (
+                bridge.one_shot_minimal_remote_command_permitted
+            ),
+            "selected_candidate": plan.selected_candidate,
+            "selected_region": plan.selected_region,
+            "selected_ssh_key_hash": plan.selected_ssh_key_hash,
+            "remote_command_allowed": "exact_hostname_only",
+            "remote_command": "hostname",
+            "file_transfer_allowed": False,
+            "port_forwarding_allowed": False,
+            "package_install_allowed": False,
+            "training_allowed": False,
+            "response_capture_active": plan.response_capture_active,
+            "status_before_parse": plan.status_before_parse,
+            "effective_launch_timeout_seconds": plan.effective_launch_timeout_seconds,
+            "no_auto_launch_retry": plan.no_auto_launch_retry,
+            "launch_ready": False,
+            "launch_allowed": False,
+        },
+    }
+
+
+def _load_m057_minimal_remote_command_execution_gates(
+    args: argparse.Namespace,
+) -> dict | None:
+    if not _has_m057_minimal_remote_command_run_flags(args):
+        return None
+    m056 = _load_m056_ssh_retry_execution_gates(args)
+    if m056 is None:
+        raise SystemExit(
+            "M057 minimal remote-command run requires M056 SSH retry artifacts"
+        )
+    values = {
+        "m057_operator_approval": args.m057_operator_approval,
+        "m057_command_policy": args.m057_command_policy,
+        "m057_gate_check": args.m057_gate_check,
+        "m057_one_shot_arming": args.m057_one_shot_arming,
+        "m057_reviewer_bridge": args.m057_reviewer_bridge,
+    }
+    missing = [name for name, value in values.items() if value is None]
+    if missing:
+        raise SystemExit(
+            "M057 minimal remote-command run requires all M057 artifacts; missing "
+            + ", ".join(missing)
+        )
+    approval = load_lambda_m057_operator_approval(args.m057_operator_approval)
+    command_policy = load_lambda_m057_minimal_remote_command_policy(
+        args.m057_command_policy
+    )
+    gate = load_lambda_m057_gate_check(args.m057_gate_check)
+    arming = load_lambda_m057_one_shot_arming(args.m057_one_shot_arming)
+    bridge = load_lambda_m057_reviewer_bridge(args.m057_reviewer_bridge)
+    blockers: list[str] = []
+    if approval.approval_status != "approved_for_m057_minimal_remote_command":
+        blockers.extend(approval.blockers or ["m057_operator_approval_missing"])
+    if approval.approved_command != "true":
+        blockers.append("m057_operator_approval_must_be_exact_true")
+    if command_policy.policy_status != "policy_defined":
+        blockers.extend(command_policy.blockers or ["m057_command_policy_not_defined"])
+    if command_policy.command != "true" or command_policy.command_argv != ["true"]:
+        blockers.append("m057_command_policy_must_be_exact_true")
+    if not gate.gate_passed:
+        blockers.extend(gate.blockers or ["m057_gate_not_passed"])
+    if gate.selected_candidate != m056["plan"].selected_candidate:
+        blockers.append("m057_gate_candidate_mismatch")
+    if gate.selected_region != m056["plan"].selected_region:
+        blockers.append("m057_gate_region_mismatch")
+    if arming.arming_status != "armed_for_one_shot_m057_minimal_remote_command":
+        blockers.extend(arming.blockers or ["m057_one_shot_arming_not_armed"])
+    if is_lambda_m057_one_shot_arming_expired(arming):
+        blockers.append("m057_one_shot_arming_expired")
+    if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
+        blockers.extend(bridge.blockers or ["m057_reviewer_bridge_not_ready"])
+    if not bridge.one_shot_request_send_permitted:
+        blockers.append("m057_bridge_request_send_not_permitted")
+    if not bridge.one_shot_minimal_remote_command_permitted:
+        blockers.append("m057_bridge_minimal_remote_command_not_permitted")
+    if bridge.approved_command != "true":
+        blockers.append("m057_bridge_must_permit_exact_true")
+    if (
+        bridge.max_launch_attempts != 1
+        or bridge.max_remote_command_attempts != 1
+        or not bridge.no_auto_retry
+    ):
+        blockers.append("m057_bridge_attempt_or_retry_policy_invalid")
+    if (
+        not bridge.no_remote_exec
+        or not bridge.no_file_transfer
+        or not bridge.no_port_forwarding
+        or not bridge.no_package_install
+        or not bridge.no_training
+    ):
+        blockers.append("m057_bridge_allows_forbidden_remote_work")
+    if blockers:
+        raise SystemExit(
+            "M057 minimal remote-command execution gate failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    m056.update(
+        {
+            "milestone": "M057",
+            "run_id": "lambda-m057-minimal-remote-command",
+            "minimal_remote_command": True,
+            "m057_operator_approval": approval,
+            "m057_command_policy": command_policy,
+            "m057_gate": gate,
+            "one_shot_arming": arming,
+            "reviewer_bridge": bridge,
+            "expected_arming_status": "armed_for_one_shot_m057_minimal_remote_command",
+            "expected_bridge_status": "reviewer_compatible_one_shot_ready",
+        }
+    )
+    m056["summary"].update(
+        {
+            "m057_minimal_remote_command_path_used": True,
+            "remote_command_allowed": "exact_true_only",
+            "remote_command": "true",
+            "one_shot_minimal_remote_command_permitted": (
+                bridge.one_shot_minimal_remote_command_permitted
+            ),
+        }
+    )
+    return m056
 
 
 def _load_m056_ssh_retry_execution_gates(args: argparse.Namespace) -> dict | None:
@@ -5946,6 +9268,23 @@ def _arm_m054b_ssh_connectivity_attempt(
         "armed_for_one_shot_m054_ssh_connectivity",
     )
     is_m056 = ssh_connectivity.get("milestone") == "M056"
+    is_m057 = ssh_connectivity.get("milestone") == "M057"
+    is_m059 = ssh_connectivity.get("milestone") == "M059"
+    is_m061 = ssh_connectivity.get("milestone") == "M061"
+    is_m063 = ssh_connectivity.get("milestone") == "M063"
+    is_m065 = ssh_connectivity.get("milestone") == "M065"
+    is_m066r = ssh_connectivity.get("milestone") == "M066R"
+    is_m067r = ssh_connectivity.get("milestone") == "M067R"
+    is_m071r = ssh_connectivity.get("milestone") == "M071R"
+    is_m073r = ssh_connectivity.get("milestone") == "M073R"
+    is_m075r = ssh_connectivity.get("milestone") == "M075R"
+    is_m077r = ssh_connectivity.get("milestone") == "M077R"
+    is_m079r = ssh_connectivity.get("milestone") == "M079R"
+    is_m081r = ssh_connectivity.get("milestone") == "M081R"
+    is_m083r = ssh_connectivity.get("milestone") == "M083R"
+    is_m085r = ssh_connectivity.get("milestone") == "M085R"
+    is_m087r = ssh_connectivity.get("milestone") == "M087R"
+    is_m089r = ssh_connectivity.get("milestone") == "M089R"
     if not execute_real_launch:
         blockers.append("missing --execute-real-launch")
     if confirm_billable_action != CONFIRM_BILLABLE_ACTION:
@@ -5968,7 +9307,56 @@ def _arm_m054b_ssh_connectivity_attempt(
         blockers.extend(arming.blockers or ["ssh_one_shot_arming_not_armed"])
     if is_m056 and is_lambda_ssh_connectivity_m056_one_shot_arming_expired(arming):
         blockers.append("m056_ssh_one_shot_arming_expired")
-    if not is_m056 and is_lambda_ssh_connectivity_one_shot_arming_expired(arming):
+    if is_m057 and is_lambda_m057_one_shot_arming_expired(arming):
+        blockers.append("m057_minimal_remote_command_one_shot_arming_expired")
+    if is_m059 and is_lambda_m059_one_shot_arming_expired(arming):
+        blockers.append("m059_identity_command_one_shot_arming_expired")
+    if is_m061 and is_lambda_m061_one_shot_arming_expired(arming):
+        blockers.append("m061_identity_command_one_shot_arming_expired")
+    if is_m063 and is_lambda_m063_one_shot_arming_expired(arming):
+        blockers.append("m063_gpu_visibility_one_shot_arming_expired")
+    if is_m065 and is_lambda_m065_one_shot_arming_expired(arming):
+        blockers.append("m065_python_runtime_one_shot_arming_expired")
+    if is_m066r and is_lambda_remote_vertical_slice_one_shot_arming_expired(arming):
+        blockers.append("m066r_remote_vertical_slice_one_shot_arming_expired")
+    if (
+        (
+            is_m067r
+            or is_m071r
+            or is_m073r
+            or is_m075r
+            or is_m077r
+            or is_m079r
+            or is_m081r
+            or is_m083r
+            or is_m085r
+            or is_m087r
+            or is_m089r
+        )
+        and is_lambda_remote_vertical_slice_one_shot_arming_expired(arming)
+    ):
+        blockers.append("remote_vertical_slice_one_shot_arming_expired")
+    if (
+        not is_m056
+        and not is_m057
+        and not is_m059
+        and not is_m061
+        and not is_m063
+        and not is_m065
+        and not is_m066r
+        and not is_m067r
+        and not is_m071r
+        and not is_m073r
+        and not is_m075r
+        and not is_m077r
+        and not is_m079r
+        and not is_m081r
+        and not is_m083r
+        and not is_m085r
+        and not is_m087r
+        and not is_m089r
+        and is_lambda_ssh_connectivity_one_shot_arming_expired(arming)
+    ):
         blockers.append("m054_ssh_one_shot_arming_expired")
     if bridge.bridge_status != "reviewer_compatible_one_shot_ready":
         blockers.extend(bridge.blockers or ["m054_ssh_reviewer_bridge_not_ready"])
@@ -7331,6 +10719,4425 @@ def _cmd_lambda_m053_decide(args: argparse.Namespace) -> int:
     return 0 if not report.blockers else 1
 
 
+def _cmd_lambda_ssh_noop_success_record(args: argparse.Namespace) -> int:
+    record = build_lambda_ssh_noop_command_success_record_from_paths(
+        workdir=args.workdir,
+        final_discovery=args.final_discovery,
+        secret_scan=args.secret_scan,
+    )
+    write_lambda_ssh_noop_command_success_record(args.out, record)
+    _print_json(record.model_dump(mode="json"))
+    return 0 if record.status == "ssh_noop_command_success" else 1
+
+
+def _cmd_lambda_ssh_noop_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_noop_command_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_ssh_noop_command_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_ssh_noop_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_noop_command_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        secret_scan=args.secret_scan,
+    )
+    write_lambda_ssh_noop_command_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_ssh_noop_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_noop_command_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_ssh_noop_command_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_remote_command_stage_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_command_stage_policy()
+    write_lambda_remote_command_stage_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_command_smallest_useful_review(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_smallest_useful_command_review_from_path(
+        stage_policy=args.stage_policy,
+    )
+    write_lambda_smallest_useful_command_review(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.review_status == "review_passed" else 1
+
+
+def _cmd_lambda_remote_command_authorize_m059(args: argparse.Namespace) -> int:
+    report = build_lambda_m059_remote_command_authorization_from_paths(
+        ssh_noop_closeout=args.ssh_noop_closeout,
+        stage_policy=args.stage_policy,
+        command_review=args.command_review,
+    )
+    write_lambda_m059_remote_command_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m059_identity_command_review"
+        else 1
+    )
+
+
+def _cmd_lambda_remote_command_m059_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m059_command_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m059_command_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m059_identity_command_review"
+        else 1
+    )
+
+
+def _cmd_lambda_remote_command_m059_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_m059_identity_command_plan_from_paths(
+        discovery_report=args.discovery_report,
+        authorization=args.authorization,
+        stage_policy=args.stage_policy,
+        command_review=args.command_review,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_m059_identity_command_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_remote_command_m059_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_m059_identity_command_gate_check_from_paths(
+        plan=args.plan,
+        authorization=args.authorization,
+    )
+    write_lambda_m059_identity_command_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_remote_command_m059_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_m059_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_m059_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.arming_status == "armed_for_one_shot_m059_identity_command" else 1
+
+
+def _cmd_lambda_remote_command_m059_reviewer_bridge(args: argparse.Namespace) -> int:
+    report = build_lambda_m059_reviewer_bridge_from_path(arming=args.arming)
+    write_lambda_m059_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
+def _cmd_lambda_identity_command_m061_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_identity_command_plan_from_paths(
+        discovery_report=args.discovery_report,
+        authorization=args.authorization,
+        hostname_closeout=args.hostname_closeout,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_m061_identity_command_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_identity_command_m061_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_identity_command_gate_check_from_paths(
+        plan=args.plan,
+        authorization=args.authorization,
+    )
+    write_lambda_m061_identity_command_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_identity_command_m061_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_m061_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.arming_status == "armed_for_one_shot_m061_identity_command" else 1
+
+
+def _cmd_lambda_identity_command_m061_reviewer_bridge(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_reviewer_bridge_from_path(arming=args.arming)
+    write_lambda_m061_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
+def _cmd_lambda_remote_command_hostname_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_hostname_identity_success_record_from_paths(
+        workdir=args.workdir,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_ssh_hostname_identity_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.status == "ssh_hostname_identity_success" else 1
+
+
+def _cmd_lambda_remote_command_hostname_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_hostname_identity_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_ssh_hostname_identity_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_remote_command_hostname_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_hostname_identity_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_ssh_hostname_identity_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_remote_command_hostname_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_hostname_identity_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_ssh_hostname_identity_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_m061_decide(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_next_step_decision_from_paths(
+        hostname_closeout=args.hostname_closeout,
+    )
+    write_lambda_m061_next_step_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.decision_status == "plan_whoami_identity_command_review" else 1
+
+
+def _cmd_lambda_m061_authorize(args: argparse.Namespace) -> int:
+    report = build_lambda_m061_whoami_authorization_from_paths(
+        m060_report=args.m060_report,
+        hostname_closeout=args.hostname_closeout,
+        decision=args.decision,
+    )
+    write_lambda_m061_whoami_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m061_whoami_identity_command_review"
+        else 1
+    )
+
+
+def _cmd_lambda_m060_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m060_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+        closeout=args.closeout,
+        decision=args.decision,
+        authorization=args.authorization,
+    )
+    write_lambda_m060_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_whoami_command_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_whoami_command_success_record_from_paths(
+        workdir=args.workdir,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_whoami_command_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.status == "whoami_command_success" else 1
+
+
+def _cmd_lambda_whoami_command_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_whoami_command_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_whoami_command_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_whoami_command_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_whoami_command_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_whoami_command_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_whoami_command_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_whoami_command_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_whoami_command_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_identity_command_stage_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_identity_command_stage_policy()
+    write_lambda_identity_command_stage_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.stage_policy_status == "identity_command_stage_closed_future_only" else 1
+
+
+def _cmd_lambda_gpu_visibility_command_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_command_policy()
+    write_lambda_gpu_visibility_command_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.command_policy_status
+        == "gpu_visibility_command_policy_defined_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_output_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_output_policy()
+    write_lambda_gpu_visibility_output_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.output_policy_status
+        == "gpu_visibility_output_policy_defined_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_command_review(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_command_review_from_paths(
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+    )
+    write_lambda_gpu_visibility_command_review(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.command_review_status
+        == "gpu_visibility_command_review_passed_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_authorize_m063(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_gpu_visibility_authorization_from_paths(
+        whoami_closeout=args.whoami_closeout,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+        command_review=args.command_review,
+    )
+    write_lambda_m063_gpu_visibility_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m063_gpu_visibility_query_review"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_m063_runbook_preview(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_gpu_visibility_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m063_gpu_visibility_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m063_gpu_visibility_query_review"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_m063_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_gpu_visibility_plan_from_paths(
+        discovery_report=args.discovery_report,
+        authorization=args.authorization,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+        command_review=args.command_review,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_m063_gpu_visibility_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_gpu_visibility_m063_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_gpu_visibility_gate_check_from_paths(
+        plan=args.plan,
+        authorization=args.authorization,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+    )
+    write_lambda_m063_gpu_visibility_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_gpu_visibility_m063_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_m063_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.arming_status == "armed_for_one_shot_m063_gpu_visibility_query"
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_m063_reviewer_bridge(args: argparse.Namespace) -> int:
+    report = build_lambda_m063_reviewer_bridge_from_path(arming=args.arming)
+    write_lambda_m063_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
+def _cmd_lambda_gpu_visibility_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_success_record_from_paths(
+        workdir=args.workdir,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_gpu_visibility_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.status
+        in {"gpu_visibility_query_success", "gpu_visibility_query_executed_output_hash_only"}
+        else 1
+    )
+
+
+def _cmd_lambda_gpu_visibility_parsed_output_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_gpu_visibility_parsed_output_audit_from_paths(
+        success_record=args.success_record,
+        output_policy=args.output_policy,
+    )
+    write_lambda_gpu_visibility_parsed_output_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.parsed_output_audit_status != "missing_output" else 1
+
+
+def _cmd_lambda_gpu_visibility_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+        final_discovery=args.final_discovery,
+    )
+    write_lambda_gpu_visibility_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_gpu_visibility_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        parsed_output_audit=args.parsed_output_audit,
+    )
+    write_lambda_gpu_visibility_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_gpu_visibility_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_gpu_visibility_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+        parsed_output_audit=args.parsed_output_audit,
+    )
+    write_lambda_gpu_visibility_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_python_runtime_command_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_python_runtime_command_policy()
+    write_lambda_python_runtime_command_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.policy_status == "python_runtime_command_policy_defined_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_output_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_python_runtime_output_policy()
+    write_lambda_python_runtime_output_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.output_policy_status == "python_runtime_output_policy_defined_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_command_review(args: argparse.Namespace) -> int:
+    report = build_lambda_python_runtime_command_review_from_paths(
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+    )
+    write_lambda_python_runtime_command_review(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.command_review_status == "python_runtime_command_review_passed_future_only"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_authorize_m065(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_python_runtime_authorization_from_paths(
+        gpu_visibility_closeout=args.gpu_visibility_closeout,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+        command_review=args.command_review,
+    )
+    write_lambda_m065_python_runtime_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m065_python_version_query_review"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_m065_runbook_preview(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_python_runtime_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m065_python_runtime_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m065_python_version_query_review"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_m065_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_python_runtime_plan_from_paths(
+        discovery_report=args.discovery_report,
+        authorization=args.authorization,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+        command_review=args.command_review,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_m065_python_runtime_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_python_runtime_m065_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_python_runtime_gate_check_from_paths(
+        plan=args.plan,
+        authorization=args.authorization,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+    )
+    write_lambda_m065_python_runtime_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_python_runtime_m065_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_m065_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.arming_status == "armed_for_one_shot_m065_python_runtime_query"
+        else 1
+    )
+
+
+def _cmd_lambda_python_runtime_m065_reviewer_bridge(args: argparse.Namespace) -> int:
+    report = build_lambda_m065_reviewer_bridge_from_path(arming=args.arming)
+    write_lambda_m065_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
+def _cmd_lambda_remote_vslice_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_policy()
+    write_lambda_remote_vertical_slice_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_manifest(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_default_manifest(
+        include_profile_summary=not args.no_profile_summary,
+    )
+    write_lambda_remote_vertical_slice_command_manifest(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_remote_vslice_source_bundle_manifest(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_source_bundle_default_manifest()
+    write_lambda_remote_vertical_slice_command_manifest(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_remote_vslice_build_source_bundle(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_source_bundle(
+        project_root=args.project_root,
+        bundle=args.bundle,
+        manifest_out=args.manifest_out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.secret_scan_passed and report.large_file_scan_passed else 1
+
+
+def _cmd_lambda_remote_vslice_validate_source_bundle(args: argparse.Namespace) -> int:
+    report = validate_lambda_remote_source_bundle_from_paths(
+        bundle=args.bundle,
+        manifest=args.manifest,
+    )
+    write_lambda_remote_source_bundle_validation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.validation_passed else 1
+
+
+def _cmd_lambda_remote_vslice_validate_manifest(args: argparse.Namespace) -> int:
+    report = validate_lambda_remote_vertical_slice_manifest_from_paths(
+        manifest=args.manifest,
+        policy=args.policy,
+    )
+    write_lambda_remote_vertical_slice_manifest_validation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.validation_passed else 1
+
+
+def _cmd_lambda_remote_vslice_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_remote_vslice_source_bundle_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_source_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        command_manifest=args.command_manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_remote_vslice_dependency_bundle_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.command_manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_remote_vslice_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_gate_check_from_paths(
+        plan=args.plan,
+        policy=args.policy,
+        manifest_validation=args.manifest_validation,
+    )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_remote_vslice_source_bundle_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_source_bundle_gate_check_from_paths(plan=args.plan)
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_remote_vslice_dependency_bundle_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(plan=args.plan)
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_remote_vslice_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        manifest=args.manifest,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_remote_vertical_slice_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.arming_status == "armed_for_one_shot_m066r_remote_vertical_slice" else 1
+
+
+def _cmd_lambda_remote_vslice_source_bundle_arm_one_shot(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_source_bundle_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        command_manifest=args.command_manifest,
+        source_bundle_validation=args.source_bundle_validation,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_remote_vertical_slice_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.arming_status
+        == "armed_for_one_shot_m067r_source_bundle_vertical_slice"
+        else 1
+    )
+
+
+def _cmd_lambda_remote_vslice_dependency_bundle_arm_one_shot(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        plan=args.plan,
+        command_manifest=args.command_manifest,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+        failure_artifact_capture_policy=args.failure_artifact_capture_policy,
+        artifact_body_policy=args.artifact_body_policy,
+        declared_artifact_policy=args.declared_artifact_policy,
+    )
+    write_lambda_remote_vertical_slice_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.arming_status
+        in {
+            "armed_for_one_shot_m068r_dependency_bundle_vertical_slice",
+            "armed_for_one_shot_m071r_first_experiment",
+            "armed_for_one_shot_m073r_tiny_smoke",
+            "armed_for_one_shot_m075r_runtime_protocol_smoke",
+            "armed_for_one_shot_m077r_first_synthetic_experiment",
+            "armed_for_one_shot_m079r_next_synthetic_experiment",
+            "armed_for_one_shot_m081r_diloco_synthetic_experiment",
+            "armed_for_one_shot_m083r_diloco_optimizer_smoke",
+            "armed_for_one_shot_m085r_integrated_diloco_smoke",
+            "armed_for_one_shot_m087r_parameter_fragment_smoke",
+            "armed_for_one_shot_m089r_bounded_diloco_experiment",
+            "armed_for_one_shot_m093r_tiny_real_training_smoke",
+        }
+        else 1
+    )
+
+
+def _cmd_lambda_remote_vslice_dependency_failure_record(args: argparse.Namespace) -> int:
+    report = build_lambda_m067r_dependency_failure_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_m067r_dependency_failure_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.failure_type == "missing_runtime_dependency" and not report.blockers else 1
+
+
+def _cmd_lambda_dependency_inventory(args: argparse.Namespace) -> int:
+    report = build_lambda_runtime_dependency_inventory_from_paths(
+        pyproject=args.pyproject,
+        failure_record=args.failure_record,
+    )
+    write_lambda_runtime_dependency_inventory(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.inventory_status == "inventory_built" else 1
+
+
+def _cmd_lambda_dependency_build_bundle(args: argparse.Namespace) -> int:
+    report = build_lambda_dependency_bundle_from_paths(
+        inventory=args.inventory,
+        bundle=args.bundle,
+        manifest_out=args.manifest_out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bundle_status == "bundle_created" else 1
+
+
+def _cmd_lambda_dependency_validate_bundle(args: argparse.Namespace) -> int:
+    report = validate_lambda_dependency_bundle_from_paths(
+        bundle=args.bundle,
+        manifest=args.manifest,
+        inventory=args.inventory,
+    )
+    write_lambda_dependency_bundle_validation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.validation_passed else 1
+
+
+def _cmd_lambda_dependency_wheelhouse_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_linux_python310_wheelhouse_plan_from_paths(
+        inventory=args.inventory,
+        target_python=args.target_python,
+        target_platform=args.target_platform,
+    )
+    write_lambda_linux_python310_wheelhouse_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_built" else 1
+
+
+def _cmd_lambda_dependency_audit_existing_wheelhouse(args: argparse.Namespace) -> int:
+    report = audit_existing_lambda_wheelhouse_candidates_from_paths(
+        plan=args.plan,
+        search_paths=args.search_paths,
+    )
+    write_lambda_wheelhouse_candidate_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.audit_status == "compatible_wheelhouse_found" else 1
+
+
+def _cmd_lambda_dependency_wheelhouse_build_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_wheelhouse_build_policy_from_paths(
+        plan=args.plan,
+        existing_audit=args.existing_audit,
+        approve_controlled_local_wheel_download=args.approve_controlled_local_wheel_download,
+    )
+    write_lambda_wheelhouse_build_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status in {
+        "use_existing_compatible_wheelhouse",
+        "approved_controlled_local_wheel_download",
+    } else 1
+
+
+def _cmd_lambda_dependency_download_wheelhouse(args: argparse.Namespace) -> int:
+    report = download_lambda_m068w_wheelhouse_from_paths(
+        policy=args.policy,
+        plan=args.plan,
+        wheelhouse_dir=args.wheelhouse_dir,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.manifest_status == "manifest_built" else 1
+
+
+def _cmd_lambda_dependency_wheelhouse_manifest(args: argparse.Namespace) -> int:
+    report = build_lambda_wheelhouse_manifest_from_paths(
+        wheelhouse_dir=args.wheelhouse_dir,
+        plan=args.plan,
+        out=args.out,
+        download_used=args.download_used,
+        internet_download_used=args.internet_download_used,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.manifest_status == "manifest_built" else 1
+
+
+def _cmd_lambda_dependency_wheelhouse_secret_scan(args: argparse.Namespace) -> int:
+    report = scan_lambda_wheelhouse_secrets_from_paths(
+        wheelhouse_dir=args.wheelhouse_dir,
+        manifest=args.manifest,
+    )
+    write_lambda_wheelhouse_secret_scan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.secret_scan_passed else 1
+
+
+def _cmd_lambda_dependency_wheelhouse_compatibility_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = audit_lambda_wheelhouse_compatibility_from_paths(
+        manifest=args.manifest,
+    )
+    write_lambda_wheelhouse_compatibility_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.compatibility_audit_passed else 1
+
+
+def _cmd_lambda_dependency_build_wheelhouse_bundle(args: argparse.Namespace) -> int:
+    report = build_lambda_m068w_dependency_bundle_from_paths(
+        wheelhouse_dir=args.wheelhouse_dir,
+        wheelhouse_manifest=args.wheelhouse_manifest,
+        secret_scan=args.secret_scan,
+        compatibility_audit=args.compatibility_audit,
+        bundle=args.bundle,
+        manifest_out=args.manifest_out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bundle_status == "bundle_created" else 1
+
+
+def _cmd_lambda_remote_vslice_dependency_bundle_manifest(args: argparse.Namespace) -> int:
+    report = build_lambda_m068r_dependency_bundle_default_manifest(
+        use_wheelhouse_install=not args.path_setup_only,
+        milestone=args.milestone,
+    )
+    write_lambda_remote_vertical_slice_command_manifest(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_remote_vslice_reviewer_bridge(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_reviewer_bridge_from_path(
+        arming=args.arming,
+    )
+    write_lambda_remote_vertical_slice_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
+def _cmd_lambda_remote_vslice_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_closeout_from_paths(
+        workdir=args.workdir,
+        evidence=args.evidence,
+        post_discovery=args.post_discovery,
+    )
+    write_lambda_remote_vertical_slice_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_status != "unresolved" else 1
+
+
+def _cmd_lambda_remote_vslice_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vertical_slice_reconciliation_from_paths(
+        workdir=args.workdir,
+        closeout=args.closeout,
+    )
+    write_lambda_remote_vertical_slice_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_ssh_readiness_history(args: argparse.Namespace) -> int:
+    report_paths = args.report if args.report else None
+    report = build_lambda_ssh_readiness_history(report_paths=report_paths)
+    write_lambda_ssh_readiness_history(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_ssh_readiness_update_history(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_proven_candidate_history_update_from_paths(
+        prior_history=args.prior_history,
+        workdir=args.workdir,
+    )
+    write_lambda_ssh_proven_candidate_history_update(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.update_status == "ssh_proven_candidate_history_updated"
+        else 1
+    )
+
+
+def _cmd_lambda_remote_vslice_ssh_proven_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_ssh_proven_candidate_policy_from_path(history=args.history)
+    write_lambda_ssh_proven_candidate_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_select_candidate(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vslice_candidate_selection_from_paths(
+        discovery_report=args.discovery_report,
+        ssh_readiness_history=args.ssh_readiness_history,
+        ssh_proven_policy=args.ssh_proven_policy,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vslice_candidate_selection(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.selection_status == "selected_ssh_proven_candidate" else 1
+
+
+def _cmd_lambda_remote_vslice_retry_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vslice_retry_decision_from_path(
+        candidate_selection=args.candidate_selection,
+    )
+    write_lambda_remote_vslice_retry_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_remote_vslice_authorize_retry(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vslice_retry_authorization_from_path(
+        decision=args.decision,
+    )
+    write_lambda_remote_vslice_retry_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m067r2_ssh_proven_candidate_review"
+        else 1
+    )
+
+
+def _cmd_lambda_m062_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m062_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+        closeout=args.closeout,
+        command_policy=args.command_policy,
+        output_policy=args.output_policy,
+        command_review=args.command_review,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m062_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m064_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m064_report_from_paths(
+        success_record=args.success_record,
+        parsed_output_audit=args.parsed_output_audit,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        python_command_policy=args.python_command_policy,
+        python_output_policy=args.python_output_policy,
+        python_command_review=args.python_command_review,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m064_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m067s_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m067s_report_from_paths(
+        closeout=args.closeout,
+        reconciliation=args.reconciliation,
+        ssh_readiness_history=args.ssh_readiness_history,
+        candidate_policy=args.candidate_policy,
+        candidate_selection=args.candidate_selection,
+        retry_decision=args.retry_decision,
+        authorization=args.authorization,
+    )
+    write_lambda_m067s_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m068w_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m068w_report_from_paths(
+        plan=args.plan,
+        existing_audit=args.existing_audit,
+        build_policy=args.build_policy,
+        wheelhouse_manifest=args.wheelhouse_manifest,
+        secret_scan=args.secret_scan,
+        compatibility_audit=args.compatibility_audit,
+        bundle_validation=args.bundle_validation,
+    )
+    write_lambda_m068w_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.m068r_retry_ready else 1
+
+
+def _cmd_lambda_remote_decodilo_vslice_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_decodilo_vslice_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_remote_decodilo_vslice_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.status == "remote_decodilo_vslice_success" else 1
+
+
+def _cmd_lambda_remote_decodilo_vslice_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_decodilo_vslice_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_remote_decodilo_vslice_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_remote_decodilo_vslice_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_decodilo_vslice_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_remote_decodilo_vslice_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_remote_decodilo_vslice_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_decodilo_vslice_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_remote_decodilo_vslice_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_first_experiment_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_first_experiment_readiness_from_path(
+        closeout=args.closeout,
+    )
+    write_lambda_first_experiment_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status == "ready_for_future_first_experiment_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_first_experiment_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_first_experiment_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_first_experiment_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.status == "first_experiment_runtime_success" else 1
+
+
+def _cmd_lambda_first_experiment_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_first_experiment_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_first_experiment_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_first_experiment_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_first_experiment_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_first_experiment_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_first_experiment_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_first_experiment_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_first_experiment_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_first_experiment_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_remote_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_first_experiment_discover_command(args: argparse.Namespace) -> int:
+    report = discover_lambda_first_experiment_command(source_root=args.source_root)
+    write_lambda_first_experiment_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.discovery_status == "safe_experiment_command_found" else 1
+
+
+def _cmd_lambda_first_experiment_build_manifest(args: argparse.Namespace) -> int:
+    report = build_lambda_first_experiment_manifest_from_paths(
+        command_discovery=args.command_discovery,
+        source_bundle=args.source_bundle,
+        dependency_bundle=args.dependency_bundle,
+    )
+    write_lambda_first_experiment_manifest(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.manifest_status == "manifest_ready_for_future_review" else 1
+
+
+def _cmd_lambda_first_experiment_plan(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_first_experiment_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(plan=args.plan)
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_first_experiment_authorize_m071r(args: argparse.Namespace) -> int:
+    report = build_lambda_m071r_first_experiment_authorization_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        manifest=args.manifest,
+    )
+    write_lambda_m071r_first_experiment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m071r_first_experiment_attempt"
+        else 1
+    )
+
+
+def _cmd_lambda_first_experiment_m071r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m071r_first_experiment_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m071r_first_experiment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m071r_first_experiment_review"
+        else 1
+    )
+
+
+def _cmd_lambda_m070_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m070_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m070_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_tiny_smoke_discover_command(args: argparse.Namespace) -> int:
+    report = discover_lambda_tiny_decodilo_smoke_command(source_root=args.source_root)
+    write_lambda_tiny_decodilo_smoke_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.discovery_status
+        in {"found_safe_tiny_smoke_command", "safe_tiny_smoke_command_found"}
+        else 1
+    )
+
+
+def _cmd_lambda_tiny_smoke_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_decodilo_smoke_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_tiny_decodilo_smoke_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_passed" else 1
+
+
+def _cmd_lambda_tiny_smoke_authorize_m073r(args: argparse.Namespace) -> int:
+    report = build_lambda_m073r_tiny_smoke_authorization_from_paths(
+        first_experiment_closeout=args.first_experiment_closeout,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m073r_tiny_smoke_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m073r_tiny_decodilo_smoke"
+        else 1
+    )
+
+
+def _cmd_lambda_tiny_smoke_m073r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m073r_tiny_smoke_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m073r_tiny_smoke_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m073r_tiny_smoke_review"
+        else 1
+    )
+
+
+def _cmd_lambda_tiny_smoke_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_smoke_success_record_from_paths(workdir=args.workdir)
+    write_lambda_tiny_smoke_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.status == "tiny_smoke_success" else 1
+
+
+def _cmd_lambda_tiny_smoke_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_smoke_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_tiny_smoke_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_tiny_smoke_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_smoke_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_tiny_smoke_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_tiny_smoke_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_smoke_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_tiny_smoke_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_tiny_smoke_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_smoke_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_tiny_smoke_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_runtime_protocol_smoke_readiness_from_path(
+        tiny_smoke_closeout=args.tiny_smoke_closeout,
+    )
+    write_lambda_runtime_protocol_smoke_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status
+        == "ready_for_future_runtime_protocol_smoke_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_runtime_protocol_smoke_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_runtime_protocol_smoke_command(source_root=args.source_root)
+    write_lambda_runtime_protocol_smoke_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # A closed "no safe command found" result is a valid M074 planning artifact.
+    return 0
+
+
+def _cmd_lambda_runtime_protocol_smoke_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_runtime_protocol_smoke_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_runtime_protocol_smoke_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_runtime_protocol_smoke_authorize_m075r(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r_runtime_protocol_smoke_authorization_from_paths(
+        tiny_smoke_closeout=args.tiny_smoke_closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m075r_runtime_protocol_smoke_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M074 discovery.
+    return 0
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r_runtime_protocol_smoke_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m075r_runtime_protocol_smoke_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r_plan(args: argparse.Namespace) -> int:
+    upload_policy = load_lambda_source_dependency_upload_policy(args.upload_policy)
+    authorization = load_lambda_m075r_runtime_protocol_smoke_authorization(
+        args.authorization
+    )
+    if (
+        upload_policy.upload_policy_status != "policy_defined"
+        or not upload_policy.upload_only_after_ssh_banner_readiness
+    ):
+        raise SystemExit("M075R plan requires SSH-banner-gated upload policy")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m075r_runtime_protocol_smoke"
+    ):
+        raise SystemExit("M075R plan requires future M075R authorization")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    upload_policy = load_lambda_source_dependency_upload_policy(args.upload_policy)
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if upload_policy.upload_policy_status != "policy_defined":
+        blockers.append("upload_policy_not_defined")
+    if not upload_policy.upload_only_after_ssh_banner_readiness:
+        blockers.append("upload_policy_does_not_require_ssh_banner_readiness")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r2_plan(args: argparse.Namespace) -> int:
+    upload_policy = load_lambda_source_dependency_upload_policy(args.upload_policy)
+    capture_policy = load_lambda_remote_vslice_failure_artifact_capture_policy(
+        args.failure_artifact_policy
+    )
+    authorization = load_lambda_m075r2_runtime_smoke_retry_authorization(
+        args.authorization
+    )
+    if (
+        upload_policy.upload_policy_status != "policy_defined"
+        or not upload_policy.upload_only_after_ssh_banner_readiness
+    ):
+        raise SystemExit("M075R2 plan requires SSH-banner-gated upload policy")
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m075r2_runtime_smoke_retry"
+    ):
+        raise SystemExit("M075R2 plan requires future M075R2 authorization")
+    blockers: list[str] = []
+    if not capture_policy.policy_passed:
+        blockers.extend(
+            capture_policy.blockers or ["failure_artifact_capture_policy_failed"]
+        )
+    if not capture_policy.capture_on_failure_allowed:
+        blockers.append("failure_artifact_capture_not_allowed")
+    if capture_policy.capture_scope != "predeclared_artifact_only":
+        blockers.append("failure_artifact_capture_scope_not_predeclared_only")
+    if capture_policy.expected_output_artifact_path != "/tmp/decodilo-runtime-smoke.json":
+        blockers.append("runtime_smoke_expected_artifact_path_mismatch")
+    if not capture_policy.no_arbitrary_file_read:
+        blockers.append("failure_artifact_policy_allows_arbitrary_file_read")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    if blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted({*report.blockers, *blockers}),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r2_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    capture_policy = load_lambda_remote_vslice_failure_artifact_capture_policy(
+        args.failure_artifact_policy
+    )
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if not capture_policy.policy_passed:
+        blockers.extend(
+            capture_policy.blockers or ["failure_artifact_capture_policy_failed"]
+        )
+    if not capture_policy.capture_on_failure_allowed:
+        blockers.append("failure_artifact_capture_not_allowed")
+    if capture_policy.capture_scope != "predeclared_artifact_only":
+        blockers.append("failure_artifact_capture_scope_not_predeclared_only")
+    if capture_policy.expected_output_artifact_path != "/tmp/decodilo-runtime-smoke.json":
+        blockers.append("runtime_smoke_expected_artifact_path_mismatch")
+    if not capture_policy.no_arbitrary_file_read:
+        blockers.append("failure_artifact_policy_allows_arbitrary_file_read")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r3_plan(args: argparse.Namespace) -> int:
+    body_policy = load_lambda_runtime_smoke_artifact_body_policy(
+        args.artifact_body_policy
+    )
+    authorization = load_lambda_m075r3_runtime_smoke_retry_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m075r3_runtime_smoke_retry"
+    ):
+        raise SystemExit("M075R3 plan requires future M075R3 authorization")
+    blockers: list[str] = []
+    if body_policy.policy_status != "policy_defined":
+        blockers.extend(body_policy.blockers or ["artifact_body_policy_not_defined"])
+    if not body_policy.content_capture_allowed:
+        blockers.append("artifact_body_capture_not_allowed")
+    if body_policy.declared_artifact_path != "/tmp/decodilo-runtime-smoke.json":
+        blockers.append("runtime_smoke_expected_artifact_path_mismatch")
+    if not body_policy.no_arbitrary_file_reads:
+        blockers.append("artifact_body_policy_allows_arbitrary_file_read")
+    if not body_policy.no_directory_reads:
+        blockers.append("artifact_body_policy_allows_directory_read")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    if blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted({*report.blockers, *blockers}),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r3_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M075R":
+        blockers.append("m075r3_requires_m075r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r4_plan(args: argparse.Namespace) -> int:
+    body_policy = load_lambda_runtime_smoke_artifact_body_policy(
+        args.artifact_body_policy
+    )
+    authorization = load_lambda_m075r4_runtime_smoke_retry_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m075r4_runtime_smoke_retry"
+    ):
+        raise SystemExit("M075R4 plan requires future M075R4 authorization")
+    blockers: list[str] = []
+    if body_policy.policy_status != "policy_defined":
+        blockers.extend(body_policy.blockers or ["artifact_body_policy_not_defined"])
+    if not body_policy.content_capture_allowed:
+        blockers.append("artifact_body_capture_not_allowed")
+    if body_policy.declared_artifact_path != "/tmp/decodilo-runtime-smoke.json":
+        blockers.append("runtime_smoke_expected_artifact_path_mismatch")
+    if not body_policy.no_arbitrary_file_reads:
+        blockers.append("artifact_body_policy_allows_arbitrary_file_read")
+    if not body_policy.no_directory_reads:
+        blockers.append("artifact_body_policy_allows_directory_read")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    if blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted({*report.blockers, *blockers}),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r4_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M075R":
+        blockers.append("m075r4_requires_m075r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_failure_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_failure_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_runtime_smoke_failure_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.failure_status == "runtime_smoke_command_failed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_failure_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_failure_closeout_from_path(
+        failure_record=args.failure_record,
+    )
+    write_lambda_runtime_smoke_failure_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_failure_evidence_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_failure_evidence_policy()
+    write_lambda_runtime_smoke_failure_evidence_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_authorize_m075r2(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r2_runtime_smoke_retry_authorization_from_paths(
+        failure_closeout=args.failure_closeout,
+        failure_artifact_policy=args.failure_artifact_policy,
+        runtime_authorization=args.runtime_authorization,
+    )
+    write_lambda_m075r2_runtime_smoke_retry_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.authorization_status != "not_authorized" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r2_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r2_runtime_smoke_runbook_preview_from_paths(
+        authorization=args.authorization,
+        failure_artifact_policy=args.failure_artifact_policy,
+    )
+    write_lambda_m075r2_runtime_smoke_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.preview_status != "blocked" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_attempt_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_attempt_closeout_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_runtime_smoke_attempt_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_artifact_body_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_artifact_body_policy_from_path(
+        expected_artifact_policy=args.expected_artifact_policy,
+    )
+    write_lambda_runtime_smoke_artifact_body_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_parse_artifact_fixture(
+    args: argparse.Namespace,
+) -> int:
+    from decodilo.lambda_cloud.runtime_smoke_artifact_body_policy import (
+        load_lambda_runtime_smoke_artifact_body_policy,
+    )
+
+    policy = load_lambda_runtime_smoke_artifact_body_policy(args.policy)
+    report = parse_runtime_smoke_artifact_file(
+        artifact_path=args.fixture,
+        policy=policy,
+    )
+    write_runtime_smoke_artifact_parser_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.json_parse_succeeded
+        or report.parse_status == "metadata_only_oversized"
+        else 1
+    )
+
+
+def _cmd_lambda_runtime_protocol_smoke_authorize_m075r3(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r3_runtime_smoke_retry_authorization_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        artifact_body_policy=args.artifact_body_policy,
+        previous_authorization=args.previous_authorization,
+    )
+    write_lambda_m075r3_runtime_smoke_retry_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.authorization_status != "not_authorized" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r3_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r3_runtime_smoke_runbook_preview_from_paths(
+        authorization=args.authorization,
+        artifact_body_policy=args.artifact_body_policy,
+    )
+    write_lambda_m075r3_runtime_smoke_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.preview_status != "blocked" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_update_stream_failure_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_update_stream_failure_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_runtime_smoke_update_stream_failure_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.failure_status == "runtime_smoke_update_stream_failed" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_update_stream_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_update_stream_closeout_from_path(
+        failure_record=args.failure_record,
+    )
+    write_lambda_runtime_smoke_update_stream_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_update_stream_diagnostic(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_update_stream_diagnostic_from_paths(
+        failure_record=args.failure_record,
+        source_root=args.source_root,
+    )
+    write_lambda_runtime_smoke_update_stream_diagnostic(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.diagnostic_status != "blocked" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_authorize_m075r4(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r4_runtime_smoke_retry_authorization_from_paths(
+        update_stream_closeout=args.update_stream_closeout,
+        diagnostic=args.diagnostic,
+        local_after_report=args.local_after_report,
+    )
+    write_lambda_m075r4_runtime_smoke_retry_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.authorization_status != "not_authorized" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_m075r4_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m075r4_runtime_smoke_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m075r4_runtime_smoke_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.preview_status != "blocked" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_runtime_smoke_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.success_status == "runtime_protocol_smoke_success" else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_runtime_smoke_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_runtime_smoke_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_runtime_smoke_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_runtime_smoke_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_runtime_smoke_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_runtime_protocol_smoke_artifact_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_runtime_smoke_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_runtime_smoke_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_first_synthetic_experiment_readiness(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_first_synthetic_experiment_readiness_from_path(
+        runtime_smoke_closeout=args.runtime_smoke_closeout,
+    )
+    write_lambda_first_synthetic_experiment_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status
+        == "ready_for_future_first_synthetic_experiment_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_first_synthetic_experiment_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_first_synthetic_experiment_command(
+        source_root=args.source_root,
+    )
+    write_lambda_first_synthetic_experiment_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # A closed "no safe command found" result is a valid M076 planning artifact.
+    return 0
+
+
+def _cmd_lambda_first_synthetic_experiment_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_first_synthetic_experiment_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_first_synthetic_experiment_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_first_synthetic_experiment_authorize_m077r(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m077r_first_synthetic_experiment_authorization_from_paths(
+        runtime_smoke_closeout=args.runtime_smoke_closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m077r_first_synthetic_experiment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M076 discovery.
+    return 0
+
+
+def _cmd_lambda_first_synthetic_experiment_m077r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m077r_first_synthetic_experiment_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m077r_first_synthetic_experiment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_first_synthetic_experiment_m077r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m077r_first_synthetic_experiment_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m077r_first_synthetic_experiment"
+    ):
+        raise SystemExit("M077R plan requires future M077R authorization")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M077R":
+        blockers.append("m077r_requires_m077r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_first_synthetic_experiment_m077r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M077R":
+        blockers.append("m077r_requires_m077r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_synthetic_experiment_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_synthetic_experiment_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_synthetic_experiment_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status == "first_remote_synthetic_experiment_success"
+        else 1
+    )
+
+
+def _cmd_lambda_synthetic_experiment_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_synthetic_experiment_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_synthetic_experiment_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_synthetic_experiment_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_synthetic_experiment_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_synthetic_experiment_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_synthetic_experiment_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_synthetic_experiment_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_synthetic_experiment_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_synthetic_experiment_artifact_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_synthetic_experiment_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_synthetic_experiment_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_learner_syncer_smoke_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_learner_syncer_smoke_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_learner_syncer_smoke_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status == "remote_learner_syncer_smoke_success"
+        else 1
+    )
+
+
+def _cmd_lambda_learner_syncer_smoke_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_learner_syncer_smoke_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_learner_syncer_smoke_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_learner_syncer_smoke_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_learner_syncer_smoke_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_learner_syncer_smoke_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_learner_syncer_smoke_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_learner_syncer_smoke_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_learner_syncer_smoke_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_learner_syncer_smoke_artifact_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_learner_syncer_smoke_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_learner_syncer_smoke_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_next_synthetic_experiment_readiness(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_next_synthetic_experiment_readiness_from_path(
+        synthetic_experiment_closeout=args.synthetic_experiment_closeout,
+    )
+    write_lambda_next_synthetic_experiment_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status
+        == "ready_for_future_next_synthetic_experiment_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_next_synthetic_experiment_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_next_synthetic_experiment_command(
+        source_root=args.source_root,
+    )
+    write_lambda_next_synthetic_experiment_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # A closed "no safe command found" result is a valid M078 planning artifact.
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_next_synthetic_experiment_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_next_synthetic_experiment_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_authorize_m079r(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m079r_next_synthetic_experiment_authorization_from_paths(
+        synthetic_experiment_closeout=args.synthetic_experiment_closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m079r_next_synthetic_experiment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M078 discovery.
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m079r_next_synthetic_experiment_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m079r_next_synthetic_experiment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_attempt_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_learner_syncer_smoke_attempt_closeout_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_learner_syncer_smoke_attempt_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_next_synthetic_experiment_parse_artifact_fixture(
+    args: argparse.Namespace,
+) -> int:
+    report = parse_learner_syncer_artifact_file(
+        artifact_path=args.fixture,
+        policy=args.policy,
+    )
+    write_learner_syncer_artifact_parser_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.parse_status
+        in {
+            "parsed_safe_learner_syncer_smoke_artifact",
+            "parsed_redacted_learner_syncer_smoke_artifact",
+            "metadata_only_oversized",
+        }
+        else 1
+    )
+
+
+def _cmd_lambda_next_synthetic_experiment_authorize_m079r2(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m079r2_next_synthetic_experiment_authorization_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        declared_artifact_policy=args.declared_artifact_policy,
+        previous_authorization=args.previous_authorization,
+    )
+    write_lambda_m079r2_next_synthetic_experiment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r2_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m079r2_next_synthetic_experiment_runbook_preview_from_paths(
+        authorization=args.authorization,
+        declared_artifact_policy=args.declared_artifact_policy,
+    )
+    write_lambda_m079r2_next_synthetic_experiment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m079r_next_synthetic_experiment_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m079r_next_synthetic_experiment"
+    ):
+        raise SystemExit("M079R plan requires future M079R authorization")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M079R":
+        blockers.append("m079r_requires_m079r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M079R":
+        blockers.append("m079r_requires_m079r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m079r2_declared_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_declared_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "policy_defined":
+        blockers.append("declared_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-learner-syncer-smoke.json":
+        blockers.append("declared_artifact_policy_path_mismatch")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("declared_artifact_policy_must_capture_success_and_failure")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("declared_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("declared_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("declared_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("declared_artifact_policy_allows_fallback_paths")
+    if blockers:
+        raise SystemExit(
+            "M079R2 declared artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r2_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m079r2_next_synthetic_experiment_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m079r2_next_synthetic_experiment_retry"
+    ):
+        raise SystemExit("M079R2 plan requires future M079R2 retry authorization")
+    declared_artifact_policy_hash = _validate_m079r2_declared_artifact_policy(
+        args.declared_artifact_policy
+    )
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M079R":
+        blockers.append("m079r2_requires_m079r_manifest_milestone")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": declared_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M079R2 retry binds manifest-declared learner/syncer artifact policy",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_next_synthetic_experiment_m079r2_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M079R":
+        blockers.append("m079r2_requires_m079r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m079r2_declared_artifact_policy_hash_required")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_diloco_synthetic_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_readiness_from_path(
+        learner_syncer_closeout=args.learner_syncer_closeout,
+    )
+    write_lambda_diloco_synthetic_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status == "ready_for_future_diloco_synthetic_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_diloco_synthetic_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_diloco_synthetic_command(
+        source_root=args.source_root,
+    )
+    write_lambda_diloco_synthetic_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # No safe command is a valid fail-closed M080 planning artifact.
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_diloco_synthetic_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_authorize_m081r(args: argparse.Namespace) -> int:
+    report = build_lambda_m081r_diloco_synthetic_authorization_from_paths(
+        learner_syncer_closeout=args.learner_syncer_closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m081r_diloco_synthetic_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M080 discovery.
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_m081r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m081r_diloco_synthetic_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m081r_diloco_synthetic_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_attempt_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_diloco_smoke_attempt_closeout_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_diloco_smoke_attempt_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_diloco_synthetic_parse_artifact_fixture(
+    args: argparse.Namespace,
+) -> int:
+    report = parse_diloco_artifact_file(
+        artifact_path=args.fixture,
+        policy=args.policy,
+    )
+    write_diloco_artifact_parser_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.parse_status
+        in {
+            "parsed_safe_diloco_smoke_artifact",
+            "parsed_redacted_diloco_smoke_artifact",
+            "metadata_only_oversized",
+        }
+        else 1
+    )
+
+
+def _cmd_lambda_diloco_synthetic_authorize_m081r2(args: argparse.Namespace) -> int:
+    report = build_lambda_m081r2_diloco_synthetic_authorization_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        manifest_artifact_policy=args.manifest_artifact_policy,
+        previous_authorization=args.previous_authorization,
+    )
+    write_lambda_m081r2_diloco_synthetic_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_m081r2_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m081r2_diloco_synthetic_runbook_preview_from_paths(
+        authorization=args.authorization,
+        manifest_artifact_policy=args.manifest_artifact_policy,
+    )
+    write_lambda_m081r2_diloco_synthetic_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_diloco_synthetic_m081r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m081r_diloco_synthetic_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m081r_diloco_synthetic_experiment"
+    ):
+        raise SystemExit("M081R plan requires future M081R authorization")
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M081R":
+        blockers.append("m081r_requires_m081r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "plan_status": "blocked",
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_diloco_synthetic_m081r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M081R":
+        blockers.append("m081r_requires_m081r_manifest_milestone")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m081r2_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-diloco-smoke.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.diloco_smoke_declared_artifact_supported:
+        blockers.append("diloco_smoke_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M081R2 manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_diloco_synthetic_m081r2_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m081r2_diloco_synthetic_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m081r2_diloco_synthetic_retry"
+    ):
+        raise SystemExit("M081R2 plan requires future M081R2 retry authorization")
+    manifest_artifact_policy_hash = _validate_m081r2_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M081R":
+        blockers.append("m081r2_requires_m081r_manifest_milestone")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M081R2 retry binds manifest-declared DiLoCo artifact policy",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_diloco_synthetic_m081r2_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M081R":
+        blockers.append("m081r2_requires_m081r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m081r2_manifest_artifact_policy_hash_required")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_diloco_synthetic_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_diloco_synthetic_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status == "remote_diloco_shaped_synthetic_success"
+        else 1
+    )
+
+
+def _cmd_lambda_diloco_synthetic_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_diloco_synthetic_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_diloco_synthetic_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_diloco_synthetic_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_diloco_synthetic_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_diloco_synthetic_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_diloco_synthetic_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_synthetic_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_diloco_synthetic_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_diloco_optimizer_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_diloco_optimizer_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.success_status == "remote_diloco_optimizer_smoke_success" else 1
+
+
+def _cmd_lambda_diloco_optimizer_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_diloco_optimizer_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_diloco_optimizer_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_diloco_optimizer_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_diloco_optimizer_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_diloco_optimizer_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_diloco_optimizer_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_diloco_optimizer_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_diloco_optimizer_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_readiness_from_path(
+        diloco_synthetic_closeout=args.diloco_synthetic_closeout,
+    )
+    write_lambda_diloco_optimizer_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status == "ready_for_future_diloco_optimizer_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_diloco_optimizer_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_diloco_optimizer_command(
+        source_root=args.source_root,
+    )
+    write_lambda_diloco_optimizer_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # No safe command is a valid fail-closed M082 planning artifact.
+    return 0
+
+
+def _cmd_lambda_diloco_optimizer_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_diloco_optimizer_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_diloco_optimizer_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_diloco_optimizer_authorize_m083r(args: argparse.Namespace) -> int:
+    report = build_lambda_m083r_diloco_optimizer_authorization_from_paths(
+        diloco_synthetic_closeout=args.diloco_synthetic_closeout,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m083r_diloco_optimizer_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M082 discovery.
+    return 0
+
+
+def _cmd_lambda_diloco_optimizer_m083r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m083r_diloco_optimizer_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m083r_diloco_optimizer_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_integrated_diloco_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_synthetic_readiness_from_paths(
+        diloco_synthetic_closeout=args.diloco_synthetic_closeout,
+        optimizer_closeout=args.optimizer_closeout,
+        learner_syncer_closeout=args.learner_syncer_closeout,
+    )
+    write_lambda_integrated_diloco_synthetic_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status
+        == "ready_for_future_integrated_diloco_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_integrated_diloco_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_integrated_diloco_command(
+        source_root=args.source_root,
+    )
+    write_lambda_integrated_diloco_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # No safe command is a valid fail-closed M084 planning artifact.
+    return 0
+
+
+def _cmd_lambda_integrated_diloco_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_integrated_diloco_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_integrated_diloco_authorize_m085r(args: argparse.Namespace) -> int:
+    report = build_lambda_m085r_integrated_diloco_authorization_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m085r_integrated_diloco_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M084 discovery.
+    return 0
+
+
+def _cmd_lambda_integrated_diloco_m085r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m085r_integrated_diloco_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m085r_integrated_diloco_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_integrated_diloco_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_integrated_diloco_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status == "remote_integrated_diloco_synthetic_success"
+        else 1
+    )
+
+
+def _cmd_lambda_integrated_diloco_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_integrated_diloco_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_integrated_diloco_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_integrated_diloco_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_integrated_diloco_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_integrated_diloco_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_integrated_diloco_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_integrated_diloco_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_integrated_diloco_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_parameter_fragment_success_record(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_parameter_fragment_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status == "remote_parameter_fragment_smoke_success"
+        else 1
+    )
+
+
+def _cmd_lambda_parameter_fragment_reconcile(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_parameter_fragment_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_parameter_fragment_evidence_package(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_parameter_fragment_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_parameter_fragment_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_parameter_fragment_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_parameter_fragment_artifact_audit(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_parameter_fragment_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_parameter_fragment_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_readiness_from_path(
+        integrated_diloco_closeout=args.integrated_diloco_closeout,
+    )
+    write_lambda_parameter_fragment_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status == "ready_for_future_parameter_fragment_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_parameter_fragment_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_parameter_fragment_command(
+        source_root=args.source_root,
+    )
+    write_lambda_parameter_fragment_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # No safe command is a valid fail-closed M086 planning artifact.
+    return 0
+
+
+def _cmd_lambda_parameter_fragment_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_parameter_fragment_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_parameter_fragment_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is still a valid future-only planning artifact.
+    return 0
+
+
+def _cmd_lambda_parameter_fragment_authorize_m087r(args: argparse.Namespace) -> int:
+    report = build_lambda_m087r_parameter_fragment_authorization_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m087r_parameter_fragment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is an accepted fail-closed outcome for M086 discovery.
+    return 0
+
+
+def _cmd_lambda_parameter_fragment_m087r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m087r_parameter_fragment_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m087r_parameter_fragment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_scaffold_complete_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_scaffold_complete_decision_from_paths(
+        runtime_smoke_closeout=args.runtime_smoke_closeout,
+        learner_syncer_closeout=args.learner_syncer_closeout,
+        diloco_synthetic_closeout=args.diloco_synthetic_closeout,
+        optimizer_closeout=args.optimizer_closeout,
+        integrated_closeout=args.integrated_closeout,
+        parameter_fragment_closeout=args.parameter_fragment_closeout,
+    )
+    write_lambda_scaffold_complete_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.scaffold_status == "scaffold_validation_complete" else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_readiness(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_readiness_from_path(
+        scaffold_decision=args.scaffold_decision,
+    )
+    write_lambda_bounded_diloco_experiment_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status
+        == "ready_for_first_bounded_synthetic_diloco_experiment_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_bounded_diloco_experiment_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_bounded_diloco_experiment_command(
+        source_root=args.source_root,
+    )
+    write_lambda_bounded_diloco_experiment_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # No safe command is an accepted fail-closed M088 planning artifact.
+    return 0
+
+
+def _cmd_lambda_bounded_diloco_experiment_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_bounded_diloco_experiment_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # Blocked policy is a valid future-only artifact when discovery finds no command.
+    return 0
+
+
+def _cmd_lambda_bounded_diloco_experiment_authorize_m089r(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m089r_bounded_diloco_experiment_authorization_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m089r_bounded_diloco_experiment_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    # not_authorized is accepted until a safe bounded experiment command exists.
+    return 0
+
+
+def _cmd_lambda_bounded_diloco_experiment_m089r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m089r_bounded_diloco_experiment_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m089r_bounded_diloco_experiment_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_bounded_diloco_experiment_success_record(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_success_record_from_paths(
+        workdir=args.workdir,
+    )
+    write_lambda_bounded_diloco_experiment_success_record(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.success_status
+        == "remote_bounded_synthetic_diloco_experiment_success"
+        else 1
+    )
+
+
+def _cmd_lambda_bounded_diloco_experiment_reconcile(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_reconciliation_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_bounded_diloco_experiment_reconciliation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.reconciliation_passed else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_evidence_package(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_evidence_package_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+    )
+    write_lambda_bounded_diloco_experiment_evidence_package(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.evidence_complete else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_closeout(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_closeout_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        evidence_package=args.evidence_package,
+    )
+    write_lambda_bounded_diloco_experiment_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_artifact_audit(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_diloco_experiment_artifact_audit_from_paths(
+        workdir=args.workdir,
+        success_record=args.success_record,
+    )
+    write_lambda_bounded_diloco_experiment_artifact_audit(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.artifact_audit_passed else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_result_summary(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_experiment_result_summary_from_paths(
+        success_record=args.success_record,
+        artifact_audit=args.artifact_audit,
+        m090_report=args.m090_report,
+    )
+    write_lambda_bounded_experiment_result_summary(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.summary_status
+        == "bounded_synthetic_diloco_experiment_summarized"
+        else 1
+    )
+
+
+def _cmd_lambda_bounded_diloco_experiment_evidence_interpretation(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_bounded_experiment_evidence_interpretation_from_paths(
+        result_summary=args.result_summary,
+        closeout=args.closeout,
+        scaffold_final_decision=args.scaffold_final_decision,
+    )
+    write_lambda_bounded_experiment_evidence_interpretation(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.interpretation_status == "evidence_interpreted" else 1
+
+
+def _cmd_lambda_scaffold_complete_final_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_scaffold_completion_final_decision_from_paths(
+        bounded_closeout=args.bounded_closeout,
+        scaffold_decision=args.scaffold_decision,
+    )
+    write_lambda_scaffold_completion_final_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.scaffold_final_status == "complete" else 1
+
+
+def _cmd_lambda_scientific_gap_assessment(args: argparse.Namespace) -> int:
+    report = build_lambda_scientific_gap_assessment_from_path(
+        bounded_artifact_audit=args.bounded_artifact_audit,
+    )
+    write_lambda_scientific_gap_assessment(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.assessment_status == "scientific_gaps_assessed" else 1
+
+
+def _cmd_lambda_scientific_claim_boundaries(args: argparse.Namespace) -> int:
+    report = build_lambda_scientific_claim_boundaries_from_paths(
+        evidence_interpretation=args.evidence_interpretation,
+        artifact_audit=args.artifact_audit,
+    )
+    write_lambda_scientific_claim_boundaries(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.boundary_status == "claim_boundaries_defined" else 1
+
+
+def _cmd_lambda_remaining_gap_prioritization(args: argparse.Namespace) -> int:
+    report = build_lambda_remaining_gap_prioritization_from_paths(
+        scientific_gap_assessment=args.scientific_gap_assessment,
+        claim_boundaries=args.claim_boundaries,
+    )
+    write_lambda_remaining_gap_prioritization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.prioritization_status == "remaining_gaps_prioritized" else 1
+
+
+def _cmd_lambda_post_m089_next_step_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_post_m089_next_step_decision_from_paths(
+        scaffold_final_decision=args.scaffold_final_decision,
+        scientific_gap_assessment=args.scientific_gap_assessment,
+    )
+    write_lambda_post_m089_next_step_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.decision_status == "next_step_decided" else 1
+
+
+def _cmd_lambda_post_m090_next_branch_decision(args: argparse.Namespace) -> int:
+    report = build_lambda_post_m090_next_branch_decision_from_paths(
+        gap_prioritization=args.gap_prioritization,
+        evidence_interpretation=args.evidence_interpretation,
+    )
+    write_lambda_post_m090_next_branch_decision(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.decision_status == "next_branch_selected" else 1
+
+
+def _validate_m085r_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-integrated-diloco-smoke.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.integrated_diloco_smoke_declared_artifact_supported:
+        blockers.append("integrated_diloco_smoke_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M085R manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_integrated_diloco_m085r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m085r_integrated_diloco_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m085r_integrated_diloco_smoke"
+    ):
+        raise SystemExit("M085R plan requires future M085R authorization")
+    manifest_artifact_policy_hash = _validate_m085r_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    discovery = load_lambda_live_discovery_report(args.discovery_report)
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M085R":
+        blockers.append("m085r_requires_m085r_manifest_milestone")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("m085r_candidate_region_not_authorized")
+    if len(discovery.instances) != 0 or discovery.summary.unmanaged_instances != 0:
+        blockers.append("m085r_requires_existing_and_unmanaged_count_zero")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M085R binds manifest-declared integrated DiLoCo artifact policy",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_integrated_diloco_m085r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M085R":
+        blockers.append("m085r_requires_m085r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m085r_manifest_artifact_policy_hash_required")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("m085r_candidate_region_not_authorized")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m087r_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-parameter-fragment-smoke.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.parameter_fragment_smoke_declared_artifact_supported:
+        blockers.append("parameter_fragment_smoke_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M087R manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _ssh_history_proves_candidate_region(
+    *,
+    history_path: Path,
+    selected_candidate: str | None,
+    selected_region: str | None,
+) -> bool:
+    history = load_lambda_ssh_proven_candidate_history_update(history_path)
+    for item in history.proven_candidate_regions:
+        if (
+            item.get("selected_candidate") == selected_candidate
+            and item.get("selected_region") == selected_region
+        ):
+            proven_for = item.get("proven_for")
+            if not isinstance(proven_for, dict):
+                return False
+            required = {
+                "launch",
+                "host_discovery",
+                "tcp_22_readiness",
+                "ssh_banner_readiness",
+                "decodilo_command_execution",
+                "owned_instance_termination_verification",
+            }
+            return all(bool(proven_for.get(name)) for name in required)
+    for item in history.candidate_region_summaries:
+        if (
+            item.get("selected_candidate") == selected_candidate
+            and item.get("selected_region") == selected_region
+            and int(item.get("ssh_ready_success_count", 0)) > 0
+        ):
+            return True
+    return False
+
+
+def _cmd_lambda_parameter_fragment_m087r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m087r_parameter_fragment_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m087r_parameter_fragment_smoke"
+    ):
+        raise SystemExit("M087R plan requires future M087R authorization")
+    manifest_artifact_policy_hash = _validate_m087r_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    discovery = load_lambda_live_discovery_report(args.discovery_report)
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M087R":
+        blockers.append("m087r_requires_m087r_manifest_milestone")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("approved_ssh_ready_candidate_not_live")
+    if not _ssh_history_proves_candidate_region(
+        history_path=args.ssh_readiness_history,
+        selected_candidate=report.selected_candidate,
+        selected_region=report.selected_region,
+    ):
+        blockers.append("selected_candidate_region_not_ssh_proven")
+    if len(discovery.instances) != 0 or discovery.summary.unmanaged_instances != 0:
+        blockers.append("m087r_requires_existing_and_unmanaged_count_zero")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M087R binds manifest-declared parameter-fragment artifact policy",
+                "M087R selected candidate/region must be SSH-proven in M086 history",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_parameter_fragment_m087r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M087R":
+        blockers.append("m087r_requires_m087r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m087r_manifest_artifact_policy_hash_required")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("m087r_candidate_region_not_authorized")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m089r_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-bounded-diloco-experiment.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.bounded_diloco_experiment_declared_artifact_supported:
+        blockers.append("bounded_diloco_experiment_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M089R manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_bounded_diloco_experiment_m089r_plan(
+    args: argparse.Namespace,
+) -> int:
+    authorization = load_lambda_m089r_bounded_diloco_experiment_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m089r_bounded_diloco_experiment"
+    ):
+        raise SystemExit("M089R plan requires future M089R authorization")
+    manifest_artifact_policy_hash = _validate_m089r_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    discovery = load_lambda_live_discovery_report(args.discovery_report)
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M089R":
+        blockers.append("m089r_requires_m089r_manifest_milestone")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("approved_ssh_ready_candidate_not_live")
+    if not _ssh_history_proves_candidate_region(
+        history_path=args.ssh_readiness_history,
+        selected_candidate=report.selected_candidate,
+        selected_region=report.selected_region,
+    ):
+        blockers.append("selected_candidate_region_not_ssh_proven")
+    if len(discovery.instances) != 0 or discovery.summary.unmanaged_instances != 0:
+        blockers.append("m089r_requires_existing_and_unmanaged_count_zero")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M089R binds manifest-declared bounded DiLoCo artifact policy",
+                "M089R selected candidate/region must be SSH-proven in M088 history",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_bounded_diloco_experiment_m089r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M089R":
+        blockers.append("m089r_requires_m089r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m089r_manifest_artifact_policy_hash_required")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("m089r_candidate_region_not_authorized")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m093r_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-tiny-real-training-smoke.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.tiny_real_training_smoke_declared_artifact_supported:
+        blockers.append("tiny_real_training_smoke_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M093R manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_tiny_real_training_m093r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m093r_tiny_real_training_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m093r_tiny_real_training_smoke"
+    ):
+        raise SystemExit("M093R plan requires future M093R authorization")
+    manifest_artifact_policy_hash = _validate_m093r_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    discovery = load_lambda_live_discovery_report(args.discovery_report)
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M093R":
+        blockers.append("m093r_requires_m093r_manifest_milestone")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("approved_ssh_ready_candidate_not_live")
+    if not _ssh_history_proves_candidate_region(
+        history_path=args.ssh_readiness_history,
+        selected_candidate=report.selected_candidate,
+        selected_region=report.selected_region,
+    ):
+        blockers.append("selected_candidate_region_not_ssh_proven")
+    if len(discovery.instances) != 0 or discovery.summary.unmanaged_instances != 0:
+        blockers.append("m093r_requires_existing_and_unmanaged_count_zero")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M093R binds manifest-declared tiny real-training artifact policy",
+                "M093R selected candidate/region must be SSH-proven in M088 history",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_tiny_real_training_m093r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M093R":
+        blockers.append("m093r_requires_m093r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m093r_manifest_artifact_policy_hash_required")
+    if report.selected_candidate != "gpu_1x_a10" or report.selected_region not in {
+        "us-east-1",
+        "us-west-1",
+    }:
+        blockers.append("m093r_candidate_region_not_authorized")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _validate_m083r_manifest_artifact_policy(path: Path) -> str:
+    policy = load_lambda_remote_vslice_manifest_artifact_policy(path)
+    blockers = list(policy.blockers)
+    if policy.policy_status != "manifest_artifact_policy_defined":
+        blockers.append("manifest_artifact_policy_not_defined")
+    if policy.declared_artifact_path != "/tmp/decodilo-diloco-optimizer-smoke.json":
+        blockers.append("manifest_artifact_policy_path_mismatch")
+    if not policy.diloco_optimizer_smoke_declared_artifact_supported:
+        blockers.append("diloco_optimizer_smoke_artifact_not_supported")
+    if not policy.capture_on_success or not policy.capture_on_failure:
+        blockers.append("manifest_artifact_policy_must_capture_success_and_failure")
+    if not policy.accept_only_manifest_declared_paths:
+        blockers.append("manifest_artifact_policy_not_manifest_driven")
+    if not policy.no_arbitrary_file_reads:
+        blockers.append("manifest_artifact_policy_allows_arbitrary_file_read")
+    if not policy.reject_directories:
+        blockers.append("manifest_artifact_policy_allows_directory_read")
+    if not policy.reject_globs:
+        blockers.append("manifest_artifact_policy_allows_globs")
+    if not policy.reject_fallback_paths:
+        blockers.append("manifest_artifact_policy_allows_fallback_paths")
+    if not policy.reject_relative_paths:
+        blockers.append("manifest_artifact_policy_allows_relative_paths")
+    if not policy.reject_traversal:
+        blockers.append("manifest_artifact_policy_allows_traversal")
+    if not policy.reject_symlink_escapes:
+        blockers.append("manifest_artifact_policy_allows_symlink_escapes")
+    if blockers:
+        raise SystemExit(
+            "M083R manifest artifact policy failed: "
+            + ", ".join(sorted(set(blockers)))
+        )
+    return _sha256_file(path)
+
+
+def _cmd_lambda_diloco_optimizer_m083r_plan(args: argparse.Namespace) -> int:
+    authorization = load_lambda_m083r_diloco_optimizer_authorization(
+        args.authorization
+    )
+    if (
+        authorization.authorization_status
+        != "authorized_for_future_m083r_diloco_optimizer_smoke"
+    ):
+        raise SystemExit("M083R plan requires future M083R authorization")
+    manifest_artifact_policy_hash = _validate_m083r_manifest_artifact_policy(
+        args.manifest_artifact_policy
+    )
+    report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
+        discovery_report=args.discovery_report,
+        source_bundle_validation=args.source_bundle_validation,
+        dependency_bundle_validation=args.dependency_bundle_validation,
+        command_manifest=args.manifest,
+        manifest_validation=args.manifest_validation,
+        ssh_key_selection=args.ssh_key_selection,
+        price_snapshot=args.price_snapshot,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M083R":
+        blockers.append("m083r_requires_m083r_manifest_milestone")
+    report = report.model_copy(
+        update={
+            "plan_status": "plan_passed" if not blockers else "blocked",
+            "declared_artifact_policy_hash": manifest_artifact_policy_hash,
+            "blockers": sorted(set(blockers)),
+            "warnings": [
+                *report.warnings,
+                "M083R binds manifest-declared optimizer-fidelity artifact policy",
+            ],
+        }
+    )
+    write_lambda_remote_vertical_slice_execution_plan(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.plan_status == "plan_passed" else 1
+
+
+def _cmd_lambda_diloco_optimizer_m083r_gate_check(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_dependency_bundle_gate_check_from_paths(
+        plan=args.plan,
+    )
+    blockers = list(report.blockers)
+    if report.milestone != "M083R":
+        blockers.append("m083r_requires_m083r_manifest_milestone")
+    if not report.declared_artifact_policy_hash:
+        blockers.append("m083r_manifest_artifact_policy_hash_required")
+    if blockers != report.blockers:
+        report = report.model_copy(
+            update={
+                "gate_passed": False,
+                "blockers": sorted(set(blockers)),
+            }
+        )
+    write_lambda_remote_vertical_slice_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_remote_vslice_classify_upload_failure(args: argparse.Namespace) -> int:
+    report = build_lambda_upload_failure_classification_from_workdir(
+        workdir=args.workdir,
+    )
+    write_lambda_upload_failure_classification(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.classification_status == "classified" else 1
+
+
+def _cmd_lambda_remote_vslice_upload_closeout(args: argparse.Namespace) -> int:
+    report = build_lambda_remote_vslice_upload_closeout_from_paths(
+        classification=args.classification,
+        post_discovery=args.post_discovery,
+    )
+    write_lambda_remote_vslice_upload_closeout(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.closeout_succeeded else 1
+
+
+def _cmd_lambda_remote_vslice_expected_artifact_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_vslice_expected_artifact_policy_from_path(
+        manifest=args.manifest,
+    )
+    write_lambda_remote_vslice_expected_artifact_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_declared_artifact_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_vslice_declared_artifact_policy_from_path(
+        manifest=args.manifest,
+    )
+    write_lambda_remote_vslice_declared_artifact_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_manifest_artifact_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_vslice_manifest_artifact_policy_from_path(
+        manifest=args.manifest,
+    )
+    write_lambda_remote_vslice_manifest_artifact_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "manifest_artifact_policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_failure_artifact_capture_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_remote_vslice_failure_artifact_capture_policy_from_paths(
+        expected_artifact_policy=args.expected_artifact_policy,
+        failure_evidence_policy=args.failure_evidence_policy,
+    )
+    write_lambda_remote_vslice_failure_artifact_capture_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_passed else 1
+
+
+def _cmd_lambda_remote_vslice_ssh_banner_readiness_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_ssh_banner_readiness_policy()
+    write_lambda_ssh_banner_readiness_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_upload_readiness_gate_policy(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_upload_readiness_gate_policy_from_path(
+        banner_policy=args.banner_policy,
+    )
+    write_lambda_upload_readiness_gate_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_upload_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_source_dependency_upload_policy_from_path(
+        upload_readiness_gate=args.upload_readiness_gate,
+    )
+    write_lambda_source_dependency_upload_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.upload_policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_remote_vslice_authorize_m073r2(args: argparse.Namespace) -> int:
+    report = build_lambda_m073r2_retry_authorization_from_paths(
+        upload_closeout=args.upload_closeout,
+        upload_policy=args.upload_policy,
+        tiny_smoke_authorization=args.tiny_smoke_authorization,
+    )
+    write_lambda_m073r2_retry_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.authorization_status
+        == "authorized_for_future_m073r2_tiny_smoke_retry"
+        else 1
+    )
+
+
+def _cmd_lambda_remote_vslice_m073r2_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m073r2_runbook_preview_from_paths(
+        authorization=args.authorization,
+        upload_policy=args.upload_policy,
+    )
+    write_lambda_m073r2_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.preview_status == "ready_for_future_m073r2_tiny_smoke_retry_review"
+        else 1
+    )
+
+
+def _cmd_lambda_m072_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m072_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        smoke_discovery=args.smoke_discovery,
+        smoke_policy=args.smoke_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m072_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m072a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m072a_report_from_paths(
+        smoke_discovery=args.smoke_discovery,
+        smoke_policy=args.smoke_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m072a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m073s_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m073s_report_from_paths(
+        classification=args.classification,
+        closeout=args.closeout,
+        banner_policy=args.banner_policy,
+        upload_policy=args.upload_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m073s_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m074_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m074_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        runtime_readiness=args.runtime_readiness,
+        runtime_discovery=args.runtime_discovery,
+        runtime_policy=args.runtime_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m074_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m074a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m074a_report_from_paths(
+        runtime_discovery=args.runtime_discovery,
+        runtime_policy=args.runtime_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m074a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m075s_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m075s_report_from_paths(
+        failure_record=args.failure_record,
+        failure_closeout=args.failure_closeout,
+        failure_evidence_policy=args.failure_evidence_policy,
+        artifact_policy=args.artifact_policy,
+        capture_policy=args.capture_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m075s_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m075t_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m075t_report_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        artifact_body_policy=args.artifact_body_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m075t_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m075u_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m075u_report_from_paths(
+        failure_record=args.failure_record,
+        closeout=args.closeout,
+        diagnostic=args.diagnostic,
+        local_before_report=args.local_before_report,
+        local_after_report=args.local_after_report,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m075u_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m076_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m076_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m076_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m076a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m076a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m076a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m078_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m078_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m078_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m078a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m078a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m078a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m079s_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m079s_report_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        declared_artifact_policy=args.declared_artifact_policy,
+        parser_fixture_report=args.parser_fixture_report,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m079s_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m080_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m080_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m080_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m080a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m080a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m080a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m081s_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m081s_report_from_paths(
+        attempt_closeout=args.attempt_closeout,
+        manifest_artifact_policy=args.manifest_artifact_policy,
+        parser_fixture_report=args.parser_fixture_report,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m081s_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m082_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m082_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        optimizer_readiness=args.optimizer_readiness,
+        optimizer_discovery=args.optimizer_discovery,
+        optimizer_policy=args.optimizer_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m082_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m082a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m082a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m082a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m084_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m084_report_from_paths(
+        optimizer_success_record=args.optimizer_success_record,
+        optimizer_closeout=args.optimizer_closeout,
+        optimizer_artifact_audit=args.optimizer_artifact_audit,
+        ssh_readiness_history=args.ssh_readiness_history,
+        integrated_readiness=args.integrated_readiness,
+        integrated_discovery=args.integrated_discovery,
+        integrated_policy=args.integrated_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m084_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m084a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m084a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m084a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m086_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m086_report_from_paths(
+        success_record=args.success_record,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        ssh_readiness_history=args.ssh_readiness_history,
+        fragment_readiness=args.fragment_readiness,
+        fragment_discovery=args.fragment_discovery,
+        fragment_policy=args.fragment_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m086_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m086a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m086a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m086a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m088_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m088_report_from_paths(
+        parameter_fragment_success_record=args.parameter_fragment_success_record,
+        parameter_fragment_closeout=args.parameter_fragment_closeout,
+        parameter_fragment_artifact_audit=args.parameter_fragment_artifact_audit,
+        ssh_readiness_history=args.ssh_readiness_history,
+        scaffold_decision=args.scaffold_decision,
+        bounded_readiness=args.bounded_readiness,
+        bounded_discovery=args.bounded_discovery,
+        bounded_policy=args.bounded_policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m088_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m088a_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m088a_report_from_paths(
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m088a_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
 def _cmd_lambda_ssh_connectivity_scope(args: argparse.Namespace) -> int:
     report = build_lambda_ssh_connectivity_scope()
     write_lambda_ssh_connectivity_scope(args.out, report)
@@ -7775,6 +15582,65 @@ def _cmd_lambda_ssh_connectivity_m056_reviewer_bridge(
     return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
 
 
+def _cmd_lambda_ssh_connectivity_m057_operator_approval(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m057_operator_approval(
+        acknowledge_all=args.acknowledge_all,
+    )
+    write_lambda_m057_operator_approval(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.approval_status == "approved_for_m057_minimal_remote_command"
+        else 1
+    )
+
+
+def _cmd_lambda_ssh_connectivity_m057_command_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_m057_minimal_remote_command_policy()
+    write_lambda_m057_minimal_remote_command_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.policy_status == "policy_defined" else 1
+
+
+def _cmd_lambda_ssh_connectivity_m057_gate_check(args: argparse.Namespace) -> int:
+    report = build_lambda_m057_gate_check_from_paths(
+        m056_plan=args.m056_plan,
+        m056_gate_check=args.m056_gate_check,
+        operator_approval=args.operator_approval,
+        command_policy=args.command_policy,
+        stderr_capture_policy=args.stderr_capture_policy,
+    )
+    write_lambda_m057_gate_check(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.gate_passed else 1
+
+
+def _cmd_lambda_ssh_connectivity_m057_arm_one_shot(args: argparse.Namespace) -> int:
+    report = build_lambda_m057_one_shot_arming_from_paths(
+        gate_check=args.gate_check,
+        response_loss_controls=args.response_loss_controls,
+        expires_minutes=args.expires_minutes,
+    )
+    write_lambda_m057_one_shot_arming(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.arming_status == "armed_for_one_shot_m057_minimal_remote_command"
+        else 1
+    )
+
+
+def _cmd_lambda_ssh_connectivity_m057_reviewer_bridge(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m057_reviewer_bridge_from_path(arming=args.arming)
+    write_lambda_m057_reviewer_bridge(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
+
+
 def _cmd_lambda_m053_report(args: argparse.Namespace) -> int:
     report = build_lambda_m053_report_from_paths(
         scope=args.scope,
@@ -7864,6 +15730,104 @@ def _cmd_lambda_m055d_report(args: argparse.Namespace) -> int:
     return 0 if report.report_passed else 1
 
 
+def _cmd_lambda_m090_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m090_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        artifact_audit=args.artifact_audit,
+        scaffold_final_decision=args.scaffold_final_decision,
+        scientific_gap_assessment=args.scientific_gap_assessment,
+        next_step_decision=args.next_step_decision,
+    )
+    write_lambda_m090_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m091_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m091_report_from_paths(
+        result_summary=args.result_summary,
+        evidence_interpretation=args.evidence_interpretation,
+        claim_boundaries=args.claim_boundaries,
+        gap_prioritization=args.gap_prioritization,
+        next_branch_decision=args.next_branch_decision,
+    )
+    write_lambda_m091_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_tiny_real_training_readiness(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_real_training_readiness_from_path(
+        m091_report=args.m091_report,
+    )
+    write_lambda_tiny_real_training_readiness(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return (
+        0
+        if report.readiness_status == "ready_for_future_tiny_real_training_planning"
+        else 1
+    )
+
+
+def _cmd_lambda_tiny_real_training_discover_command(
+    args: argparse.Namespace,
+) -> int:
+    report = discover_lambda_tiny_real_training_command(
+        source_root=args.source_root,
+    )
+    write_lambda_tiny_real_training_command_discovery(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_tiny_real_training_policy(args: argparse.Namespace) -> int:
+    report = build_lambda_tiny_real_training_policy_from_path(
+        command_discovery=args.command_discovery,
+    )
+    write_lambda_tiny_real_training_policy(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_tiny_real_training_authorize_m093r(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m093r_tiny_real_training_authorization_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+    )
+    write_lambda_m093r_tiny_real_training_authorization(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_tiny_real_training_m093r_runbook_preview(
+    args: argparse.Namespace,
+) -> int:
+    report = build_lambda_m093r_tiny_real_training_runbook_preview_from_path(
+        authorization=args.authorization,
+    )
+    write_lambda_m093r_tiny_real_training_runbook_preview(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0
+
+
+def _cmd_lambda_m092_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m092_report_from_paths(
+        readiness=args.readiness,
+        command_discovery=args.command_discovery,
+        policy=args.policy,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m092_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
 def _cmd_lambda_m052_report(args: argparse.Namespace) -> int:
     report = build_lambda_m052_report_from_paths(
         success_record=args.success_record,
@@ -7875,6 +15839,21 @@ def _cmd_lambda_m052_report(args: argparse.Namespace) -> int:
         decision=args.decision,
     )
     write_lambda_m052_report(args.out, report)
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.report_passed else 1
+
+
+def _cmd_lambda_m058_report(args: argparse.Namespace) -> int:
+    report = build_lambda_m058_report_from_paths(
+        success_record=args.success_record,
+        reconciliation=args.reconciliation,
+        closeout=args.closeout,
+        stage_policy=args.stage_policy,
+        command_review=args.command_review,
+        authorization=args.authorization,
+        runbook_preview=args.runbook_preview,
+    )
+    write_lambda_m058_report(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0 if report.report_passed else 1
 
@@ -9559,6 +17538,122 @@ def _cmd_dev_ci_profile_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_dev_tiny_smoke(args: argparse.Namespace) -> int:
+    report = run_tiny_smoke(
+        synthetic=args.synthetic,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.smoke_status == "passed" else 1
+
+
+def _cmd_dev_runtime_smoke(args: argparse.Namespace) -> int:
+    report = run_runtime_smoke(
+        synthetic=args.synthetic,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.runtime_smoke_status == "passed" else 1
+
+
+def _cmd_dev_synthetic_experiment(args: argparse.Namespace) -> int:
+    report = run_synthetic_experiment(
+        synthetic=args.synthetic,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.synthetic_experiment_status == "passed" else 1
+
+
+def _cmd_dev_learner_syncer_smoke(args: argparse.Namespace) -> int:
+    report = run_learner_syncer_smoke(
+        synthetic=args.synthetic,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.learner_syncer_smoke_status == "passed" else 1
+
+
+def _cmd_dev_diloco_smoke(args: argparse.Namespace) -> int:
+    report = run_diloco_smoke(
+        synthetic=args.synthetic,
+        learners=args.learners,
+        sync_rounds=args.sync_rounds,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.diloco_smoke_status == "passed" else 1
+
+
+def _cmd_dev_diloco_optimizer_smoke(args: argparse.Namespace) -> int:
+    report = run_diloco_optimizer_smoke(
+        synthetic=args.synthetic,
+        inner_optimizer=args.inner_optimizer,
+        outer_optimizer=args.outer_optimizer,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.diloco_optimizer_smoke_status == "passed" else 1
+
+
+def _cmd_dev_integrated_diloco_smoke(args: argparse.Namespace) -> int:
+    report = run_integrated_diloco_smoke(
+        synthetic=args.synthetic,
+        learners=args.learners,
+        sync_rounds=args.sync_rounds,
+        inner_optimizer=args.inner_optimizer,
+        outer_optimizer=args.outer_optimizer,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.integrated_diloco_smoke_status == "passed" else 1
+
+
+def _cmd_dev_parameter_fragment_smoke(args: argparse.Namespace) -> int:
+    report = run_parameter_fragment_smoke(
+        synthetic=args.synthetic,
+        fragments=args.fragments,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.parameter_fragment_smoke_status == "passed" else 1
+
+
+def _cmd_dev_bounded_diloco_experiment(args: argparse.Namespace) -> int:
+    report = run_bounded_diloco_experiment(
+        synthetic=args.synthetic,
+        learners=args.learners,
+        sync_rounds=args.sync_rounds,
+        fragments=args.fragments,
+        inner_optimizer=args.inner_optimizer,
+        outer_optimizer=args.outer_optimizer,
+        max_steps=args.max_steps,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.bounded_diloco_experiment_status == "passed" else 1
+
+
+def _cmd_dev_tiny_real_training_smoke(args: argparse.Namespace) -> int:
+    report = run_tiny_real_training_smoke(
+        synthetic=args.synthetic,
+        model=args.model,
+        steps=args.steps,
+        optimizer=args.optimizer,
+        out=args.out,
+    )
+    _print_json(report.model_dump(mode="json"))
+    return 0 if report.tiny_real_training_smoke_status == "passed" else 1
+
+
 def _cmd_hardware_probe(args: argparse.Namespace) -> int:
     payload = probe_hardware(requested_device=args.device)
     if args.out is not None:
@@ -10267,6 +18362,12 @@ def build_parser() -> argparse.ArgumentParser:
     local_run.add_argument("--max-staleness", type=int, default=1)
     local_run.add_argument("--learner-lr", type=float, default=0.05)
     local_run.add_argument("--outer-lr", type=float, default=1.0)
+    local_run.add_argument(
+        "--outer-optimizer",
+        choices=["sgd", "nesterov"],
+        default="sgd",
+    )
+    local_run.add_argument("--outer-momentum", type=float, default=0.9)
     local_run.add_argument("--trainer-type", default="numpy_convex")
     local_run.add_argument("--trainer", default=None)
     local_run.add_argument("--trainer-config-json", default="{}")
@@ -10853,6 +18954,9 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_preflight.add_argument("--m053-report", type=Path, default=None)
     lambda_preflight.add_argument("--m054a-report", type=Path, default=None)
     lambda_preflight.add_argument("--m055d-report", type=Path, default=None)
+    lambda_preflight.add_argument("--m058-report", type=Path, default=None)
+    lambda_preflight.add_argument("--m060-report", type=Path, default=None)
+    lambda_preflight.add_argument("--m062-report", type=Path, default=None)
     lambda_preflight.add_argument("--out", type=Path, default=None)
     lambda_preflight.set_defaults(func=_cmd_lambda_preflight)
     lambda_live = lambda_sub.add_parser("live-discover", allow_abbrev=False)
@@ -11611,6 +19715,107 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m029_run.add_argument("--m056-ssh-static-validation", type=Path, default=None)
     lambda_m029_run.add_argument("--m056-ssh-no-exec-audit", type=Path, default=None)
     lambda_m029_run.add_argument("--m056-ssh-safe-client-command", type=Path, default=None)
+    lambda_m029_run.add_argument("--m057-operator-approval", type=Path, default=None)
+    lambda_m029_run.add_argument("--m057-command-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m057-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m057-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m057-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m059-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m059-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m059-authorization", type=Path, default=None)
+    lambda_m029_run.add_argument("--m059-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m059-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m061-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m061-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m061-authorization", type=Path, default=None)
+    lambda_m029_run.add_argument("--m061-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m061-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-authorization", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-command-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-output-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-command-review", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m063-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-authorization", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-command-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-output-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-command-review", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m065-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-policy", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-command-manifest", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-manifest-validation", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m066r-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-source-bundle", type=Path, default=None)
+    lambda_m029_run.add_argument(
+        "--m067r-source-bundle-validation",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument("--m067r-command-manifest", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-manifest-validation", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-plan", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-gate-check", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-one-shot-arming", type=Path, default=None)
+    lambda_m029_run.add_argument("--m067r-reviewer-bridge", type=Path, default=None)
+    lambda_m029_run.add_argument("--m068r-dependency-bundle", type=Path, default=None)
+    lambda_m029_run.add_argument(
+        "--m068r-dependency-bundle-validation",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m075r-failure-artifact-capture-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m075r-artifact-body-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m079r-declared-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m081r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m083r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m085r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m087r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m089r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_m029_run.add_argument(
+        "--m093r-manifest-artifact-policy",
+        type=Path,
+        default=None,
+    )
     lambda_m029_run.set_defaults(func=_cmd_lambda_m029_run)
     lambda_m029_verify = lambda_m029_sub.add_parser("verify")
     lambda_m029_verify.add_argument("--workdir", type=Path, required=True)
@@ -14257,6 +22462,62 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_m056_bridge.set_defaults(
         func=_cmd_lambda_ssh_connectivity_m056_reviewer_bridge
     )
+    lambda_ssh_m057_operator = lambda_ssh_connectivity_sub.add_parser(
+        "m057-operator-approval"
+    )
+    lambda_ssh_m057_operator.add_argument(
+        "--acknowledge-all",
+        action="store_true",
+    )
+    lambda_ssh_m057_operator.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m057_operator.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m057_operator_approval
+    )
+    lambda_ssh_m057_policy = lambda_ssh_connectivity_sub.add_parser(
+        "m057-command-policy"
+    )
+    lambda_ssh_m057_policy.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m057_policy.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m057_command_policy
+    )
+    lambda_ssh_m057_gate = lambda_ssh_connectivity_sub.add_parser("m057-gate-check")
+    lambda_ssh_m057_gate.add_argument("--m056-plan", type=Path, required=True)
+    lambda_ssh_m057_gate.add_argument("--m056-gate-check", type=Path, required=True)
+    lambda_ssh_m057_gate.add_argument(
+        "--operator-approval",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m057_gate.add_argument("--command-policy", type=Path, required=True)
+    lambda_ssh_m057_gate.add_argument(
+        "--stderr-capture-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m057_gate.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m057_gate.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m057_gate_check
+    )
+    lambda_ssh_m057_arm = lambda_ssh_connectivity_sub.add_parser("m057-arm-one-shot")
+    lambda_ssh_m057_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_ssh_m057_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_m057_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_ssh_m057_arm.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m057_arm.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m057_arm_one_shot
+    )
+    lambda_ssh_m057_bridge = lambda_ssh_connectivity_sub.add_parser(
+        "m057-reviewer-bridge"
+    )
+    lambda_ssh_m057_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_ssh_m057_bridge.add_argument("--out", type=Path, required=True)
+    lambda_ssh_m057_bridge.set_defaults(
+        func=_cmd_lambda_ssh_connectivity_m057_reviewer_bridge
+    )
     lambda_m050 = lambda_sub.add_parser("m050")
     lambda_m050_sub = lambda_m050.add_subparsers(
         dest="lambda_m050_command",
@@ -14393,6 +22654,4994 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m055d_report.add_argument("--command-preview", type=Path, required=True)
     lambda_m055d_report.add_argument("--out", type=Path, required=True)
     lambda_m055d_report.set_defaults(func=_cmd_lambda_m055d_report)
+    lambda_ssh_noop = lambda_sub.add_parser("ssh-noop")
+    lambda_ssh_noop_sub = lambda_ssh_noop.add_subparsers(
+        dest="lambda_ssh_noop_command",
+        required=True,
+    )
+    lambda_ssh_noop_success = lambda_ssh_noop_sub.add_parser("success-record")
+    lambda_ssh_noop_success.add_argument("--workdir", type=Path, required=True)
+    lambda_ssh_noop_success.add_argument("--final-discovery", type=Path, default=None)
+    lambda_ssh_noop_success.add_argument(
+        "--secret-scan",
+        type=Path,
+        default=Path("/tmp/decodilo-lambda-m057-secret-scan.txt"),
+    )
+    lambda_ssh_noop_success.add_argument("--out", type=Path, required=True)
+    lambda_ssh_noop_success.set_defaults(func=_cmd_lambda_ssh_noop_success_record)
+    lambda_ssh_noop_reconcile = lambda_ssh_noop_sub.add_parser("reconcile")
+    lambda_ssh_noop_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_ssh_noop_reconcile.add_argument("--success-record", type=Path, required=True)
+    lambda_ssh_noop_reconcile.add_argument("--final-discovery", type=Path, default=None)
+    lambda_ssh_noop_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_ssh_noop_reconcile.set_defaults(func=_cmd_lambda_ssh_noop_reconcile)
+    lambda_ssh_noop_evidence = lambda_ssh_noop_sub.add_parser("evidence-package")
+    lambda_ssh_noop_evidence.add_argument("--success-record", type=Path, required=True)
+    lambda_ssh_noop_evidence.add_argument("--reconciliation", type=Path, required=True)
+    lambda_ssh_noop_evidence.add_argument(
+        "--secret-scan",
+        type=Path,
+        default=Path("/tmp/decodilo-lambda-m057-secret-scan.txt"),
+    )
+    lambda_ssh_noop_evidence.add_argument("--out", type=Path, required=True)
+    lambda_ssh_noop_evidence.set_defaults(func=_cmd_lambda_ssh_noop_evidence_package)
+    lambda_ssh_noop_closeout = lambda_ssh_noop_sub.add_parser("closeout")
+    lambda_ssh_noop_closeout.add_argument("--success-record", type=Path, required=True)
+    lambda_ssh_noop_closeout.add_argument("--reconciliation", type=Path, required=True)
+    lambda_ssh_noop_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_noop_closeout.add_argument("--out", type=Path, required=True)
+    lambda_ssh_noop_closeout.set_defaults(func=_cmd_lambda_ssh_noop_closeout)
+    lambda_remote_command = lambda_sub.add_parser("remote-command")
+    lambda_remote_command_sub = lambda_remote_command.add_subparsers(
+        dest="lambda_remote_command_command",
+        required=True,
+    )
+    lambda_remote_stage = lambda_remote_command_sub.add_parser("stage-policy")
+    lambda_remote_stage.add_argument("--out", type=Path, required=True)
+    lambda_remote_stage.set_defaults(func=_cmd_lambda_remote_command_stage_policy)
+    lambda_remote_review = lambda_remote_command_sub.add_parser(
+        "smallest-useful-review"
+    )
+    lambda_remote_review.add_argument("--stage-policy", type=Path, required=True)
+    lambda_remote_review.add_argument("--out", type=Path, required=True)
+    lambda_remote_review.set_defaults(
+        func=_cmd_lambda_remote_command_smallest_useful_review
+    )
+    lambda_remote_authorize = lambda_remote_command_sub.add_parser("authorize-m059")
+    lambda_remote_authorize.add_argument(
+        "--ssh-noop-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_authorize.add_argument("--stage-policy", type=Path, required=True)
+    lambda_remote_authorize.add_argument("--command-review", type=Path, required=True)
+    lambda_remote_authorize.add_argument("--out", type=Path, required=True)
+    lambda_remote_authorize.set_defaults(func=_cmd_lambda_remote_command_authorize_m059)
+    lambda_remote_preview = lambda_remote_command_sub.add_parser("m059-runbook-preview")
+    lambda_remote_preview.add_argument("--authorization", type=Path, required=True)
+    lambda_remote_preview.add_argument("--out", type=Path, required=True)
+    lambda_remote_preview.set_defaults(
+        func=_cmd_lambda_remote_command_m059_runbook_preview
+    )
+    lambda_remote_m059_plan = lambda_remote_command_sub.add_parser("m059-plan")
+    lambda_remote_m059_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--stage-policy", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--command-review", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_remote_m059_plan.add_argument("--out", type=Path, required=True)
+    lambda_remote_m059_plan.set_defaults(func=_cmd_lambda_remote_command_m059_plan)
+    lambda_remote_m059_gate = lambda_remote_command_sub.add_parser("m059-gate-check")
+    lambda_remote_m059_gate.add_argument("--plan", type=Path, required=True)
+    lambda_remote_m059_gate.add_argument("--authorization", type=Path, required=True)
+    lambda_remote_m059_gate.add_argument("--out", type=Path, required=True)
+    lambda_remote_m059_gate.set_defaults(
+        func=_cmd_lambda_remote_command_m059_gate_check
+    )
+    lambda_remote_m059_arm = lambda_remote_command_sub.add_parser("m059-arm-one-shot")
+    lambda_remote_m059_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_remote_m059_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m059_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_remote_m059_arm.add_argument("--out", type=Path, required=True)
+    lambda_remote_m059_arm.set_defaults(
+        func=_cmd_lambda_remote_command_m059_arm_one_shot
+    )
+    lambda_remote_m059_bridge = lambda_remote_command_sub.add_parser(
+        "m059-reviewer-bridge"
+    )
+    lambda_remote_m059_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_remote_m059_bridge.add_argument("--out", type=Path, required=True)
+    lambda_remote_m059_bridge.set_defaults(
+        func=_cmd_lambda_remote_command_m059_reviewer_bridge
+    )
+    lambda_remote_hostname_success = lambda_remote_command_sub.add_parser(
+        "hostname-success-record"
+    )
+    lambda_remote_hostname_success.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_hostname_success.add_argument(
+        "--final-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_success.add_argument("--out", type=Path, required=True)
+    lambda_remote_hostname_success.set_defaults(
+        func=_cmd_lambda_remote_command_hostname_success_record
+    )
+    lambda_remote_hostname_reconcile = lambda_remote_command_sub.add_parser(
+        "hostname-reconcile"
+    )
+    lambda_remote_hostname_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_hostname_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_reconcile.add_argument(
+        "--final-discovery",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_hostname_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_remote_hostname_reconcile.set_defaults(
+        func=_cmd_lambda_remote_command_hostname_reconcile
+    )
+    lambda_remote_hostname_evidence = lambda_remote_command_sub.add_parser(
+        "hostname-evidence-package"
+    )
+    lambda_remote_hostname_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_evidence.add_argument("--out", type=Path, required=True)
+    lambda_remote_hostname_evidence.set_defaults(
+        func=_cmd_lambda_remote_command_hostname_evidence_package
+    )
+    lambda_remote_hostname_closeout = lambda_remote_command_sub.add_parser(
+        "hostname-closeout"
+    )
+    lambda_remote_hostname_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_hostname_closeout.add_argument("--out", type=Path, required=True)
+    lambda_remote_hostname_closeout.set_defaults(
+        func=_cmd_lambda_remote_command_hostname_closeout
+    )
+    lambda_identity_command = lambda_sub.add_parser("identity-command")
+    lambda_identity_command_sub = lambda_identity_command.add_subparsers(
+        dest="lambda_identity_command_command",
+        required=True,
+    )
+    lambda_identity_stage_policy = lambda_identity_command_sub.add_parser(
+        "stage-policy"
+    )
+    lambda_identity_stage_policy.add_argument("--out", type=Path, required=True)
+    lambda_identity_stage_policy.set_defaults(
+        func=_cmd_lambda_identity_command_stage_policy
+    )
+    lambda_identity_m061_plan = lambda_identity_command_sub.add_parser("m061-plan")
+    lambda_identity_m061_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_identity_m061_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_identity_m061_plan.add_argument(
+        "--hostname-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_identity_m061_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_identity_m061_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_identity_m061_plan.add_argument("--out", type=Path, required=True)
+    lambda_identity_m061_plan.set_defaults(
+        func=_cmd_lambda_identity_command_m061_plan
+    )
+    lambda_identity_m061_gate = lambda_identity_command_sub.add_parser(
+        "m061-gate-check"
+    )
+    lambda_identity_m061_gate.add_argument("--plan", type=Path, required=True)
+    lambda_identity_m061_gate.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_identity_m061_gate.add_argument("--out", type=Path, required=True)
+    lambda_identity_m061_gate.set_defaults(
+        func=_cmd_lambda_identity_command_m061_gate_check
+    )
+    lambda_identity_m061_arm = lambda_identity_command_sub.add_parser(
+        "m061-arm-one-shot"
+    )
+    lambda_identity_m061_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_identity_m061_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_identity_m061_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_identity_m061_arm.add_argument("--out", type=Path, required=True)
+    lambda_identity_m061_arm.set_defaults(
+        func=_cmd_lambda_identity_command_m061_arm_one_shot
+    )
+    lambda_identity_m061_bridge = lambda_identity_command_sub.add_parser(
+        "m061-reviewer-bridge"
+    )
+    lambda_identity_m061_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_identity_m061_bridge.add_argument("--out", type=Path, required=True)
+    lambda_identity_m061_bridge.set_defaults(
+        func=_cmd_lambda_identity_command_m061_reviewer_bridge
+    )
+    lambda_m061 = lambda_sub.add_parser("m061")
+    lambda_m061_sub = lambda_m061.add_subparsers(
+        dest="lambda_m061_command",
+        required=True,
+    )
+    lambda_m061_decide = lambda_m061_sub.add_parser("decide")
+    lambda_m061_decide.add_argument(
+        "--hostname-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_m061_decide.add_argument("--out", type=Path, required=True)
+    lambda_m061_decide.set_defaults(func=_cmd_lambda_m061_decide)
+    lambda_m061_authorize = lambda_m061_sub.add_parser("authorize")
+    lambda_m061_authorize.add_argument("--m060-report", type=Path, required=True)
+    lambda_m061_authorize.add_argument(
+        "--hostname-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_m061_authorize.add_argument("--decision", type=Path, required=True)
+    lambda_m061_authorize.add_argument("--out", type=Path, required=True)
+    lambda_m061_authorize.set_defaults(func=_cmd_lambda_m061_authorize)
+    lambda_m060 = lambda_sub.add_parser("m060")
+    lambda_m060_sub = lambda_m060.add_subparsers(
+        dest="lambda_m060_command",
+        required=True,
+    )
+    lambda_m060_report = lambda_m060_sub.add_parser("report")
+    lambda_m060_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m060_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m060_report.add_argument("--evidence-package", type=Path, required=True)
+    lambda_m060_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m060_report.add_argument("--decision", type=Path, required=True)
+    lambda_m060_report.add_argument("--authorization", type=Path, default=None)
+    lambda_m060_report.add_argument("--out", type=Path, required=True)
+    lambda_m060_report.set_defaults(func=_cmd_lambda_m060_report)
+    lambda_whoami_command = lambda_sub.add_parser("whoami-command")
+    lambda_whoami_command_sub = lambda_whoami_command.add_subparsers(
+        dest="lambda_whoami_command_command",
+        required=True,
+    )
+    lambda_whoami_success = lambda_whoami_command_sub.add_parser("success-record")
+    lambda_whoami_success.add_argument("--workdir", type=Path, required=True)
+    lambda_whoami_success.add_argument(
+        "--final-discovery",
+        type=Path,
+        default=None,
+    )
+    lambda_whoami_success.add_argument("--out", type=Path, required=True)
+    lambda_whoami_success.set_defaults(
+        func=_cmd_lambda_whoami_command_success_record
+    )
+    lambda_whoami_reconcile = lambda_whoami_command_sub.add_parser("reconcile")
+    lambda_whoami_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_whoami_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_whoami_reconcile.add_argument(
+        "--final-discovery",
+        type=Path,
+        default=None,
+    )
+    lambda_whoami_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_whoami_reconcile.set_defaults(func=_cmd_lambda_whoami_command_reconcile)
+    lambda_whoami_evidence = lambda_whoami_command_sub.add_parser("evidence-package")
+    lambda_whoami_evidence.add_argument("--success-record", type=Path, required=True)
+    lambda_whoami_evidence.add_argument("--reconciliation", type=Path, required=True)
+    lambda_whoami_evidence.add_argument("--out", type=Path, required=True)
+    lambda_whoami_evidence.set_defaults(
+        func=_cmd_lambda_whoami_command_evidence_package
+    )
+    lambda_whoami_closeout = lambda_whoami_command_sub.add_parser("closeout")
+    lambda_whoami_closeout.add_argument("--success-record", type=Path, required=True)
+    lambda_whoami_closeout.add_argument("--reconciliation", type=Path, required=True)
+    lambda_whoami_closeout.add_argument("--evidence-package", type=Path, required=True)
+    lambda_whoami_closeout.add_argument("--out", type=Path, required=True)
+    lambda_whoami_closeout.set_defaults(func=_cmd_lambda_whoami_command_closeout)
+    lambda_gpu_visibility = lambda_sub.add_parser("gpu-visibility")
+    lambda_gpu_visibility_sub = lambda_gpu_visibility.add_subparsers(
+        dest="lambda_gpu_visibility_command",
+        required=True,
+    )
+    lambda_gpu_command_policy = lambda_gpu_visibility_sub.add_parser("command-policy")
+    lambda_gpu_command_policy.add_argument("--out", type=Path, required=True)
+    lambda_gpu_command_policy.set_defaults(
+        func=_cmd_lambda_gpu_visibility_command_policy
+    )
+    lambda_gpu_output_policy = lambda_gpu_visibility_sub.add_parser("output-policy")
+    lambda_gpu_output_policy.add_argument("--out", type=Path, required=True)
+    lambda_gpu_output_policy.set_defaults(
+        func=_cmd_lambda_gpu_visibility_output_policy
+    )
+    lambda_gpu_command_review = lambda_gpu_visibility_sub.add_parser("command-review")
+    lambda_gpu_command_review.add_argument(
+        "--command-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_gpu_command_review.add_argument(
+        "--output-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_gpu_command_review.add_argument("--out", type=Path, required=True)
+    lambda_gpu_command_review.set_defaults(
+        func=_cmd_lambda_gpu_visibility_command_review
+    )
+    lambda_gpu_authorize = lambda_gpu_visibility_sub.add_parser("authorize-m063")
+    lambda_gpu_authorize.add_argument(
+        "--whoami-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_gpu_authorize.add_argument("--command-policy", type=Path, required=True)
+    lambda_gpu_authorize.add_argument("--output-policy", type=Path, required=True)
+    lambda_gpu_authorize.add_argument("--command-review", type=Path, required=True)
+    lambda_gpu_authorize.add_argument("--out", type=Path, required=True)
+    lambda_gpu_authorize.set_defaults(func=_cmd_lambda_gpu_visibility_authorize_m063)
+    lambda_gpu_preview = lambda_gpu_visibility_sub.add_parser(
+        "m063-runbook-preview"
+    )
+    lambda_gpu_preview.add_argument("--authorization", type=Path, required=True)
+    lambda_gpu_preview.add_argument("--out", type=Path, required=True)
+    lambda_gpu_preview.set_defaults(
+        func=_cmd_lambda_gpu_visibility_m063_runbook_preview
+    )
+    lambda_gpu_m063_plan = lambda_gpu_visibility_sub.add_parser("m063-plan")
+    lambda_gpu_m063_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--command-policy", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--output-policy", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--command-review", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_gpu_m063_plan.add_argument("--out", type=Path, required=True)
+    lambda_gpu_m063_plan.set_defaults(func=_cmd_lambda_gpu_visibility_m063_plan)
+    lambda_gpu_m063_gate = lambda_gpu_visibility_sub.add_parser("m063-gate-check")
+    lambda_gpu_m063_gate.add_argument("--plan", type=Path, required=True)
+    lambda_gpu_m063_gate.add_argument("--authorization", type=Path, required=True)
+    lambda_gpu_m063_gate.add_argument("--command-policy", type=Path, required=True)
+    lambda_gpu_m063_gate.add_argument("--output-policy", type=Path, required=True)
+    lambda_gpu_m063_gate.add_argument("--out", type=Path, required=True)
+    lambda_gpu_m063_gate.set_defaults(func=_cmd_lambda_gpu_visibility_m063_gate_check)
+    lambda_gpu_m063_arm = lambda_gpu_visibility_sub.add_parser("m063-arm-one-shot")
+    lambda_gpu_m063_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_gpu_m063_arm.add_argument("--response-loss-controls", type=Path, required=True)
+    lambda_gpu_m063_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_gpu_m063_arm.add_argument("--out", type=Path, required=True)
+    lambda_gpu_m063_arm.set_defaults(func=_cmd_lambda_gpu_visibility_m063_arm_one_shot)
+    lambda_gpu_m063_bridge = lambda_gpu_visibility_sub.add_parser("m063-reviewer-bridge")
+    lambda_gpu_m063_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_gpu_m063_bridge.add_argument("--out", type=Path, required=True)
+    lambda_gpu_m063_bridge.set_defaults(
+        func=_cmd_lambda_gpu_visibility_m063_reviewer_bridge
+    )
+    lambda_gpu_success = lambda_gpu_visibility_sub.add_parser("success-record")
+    lambda_gpu_success.add_argument("--workdir", type=Path, required=True)
+    lambda_gpu_success.add_argument(
+        "--final-discovery",
+        type=Path,
+        default=None,
+    )
+    lambda_gpu_success.add_argument("--out", type=Path, required=True)
+    lambda_gpu_success.set_defaults(func=_cmd_lambda_gpu_visibility_success_record)
+    lambda_gpu_parsed_audit = lambda_gpu_visibility_sub.add_parser(
+        "parsed-output-audit"
+    )
+    lambda_gpu_parsed_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_gpu_parsed_audit.add_argument(
+        "--output-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_gpu_parsed_audit.add_argument("--out", type=Path, required=True)
+    lambda_gpu_parsed_audit.set_defaults(
+        func=_cmd_lambda_gpu_visibility_parsed_output_audit
+    )
+    lambda_gpu_reconcile = lambda_gpu_visibility_sub.add_parser("reconcile")
+    lambda_gpu_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_gpu_reconcile.add_argument("--success-record", type=Path, required=True)
+    lambda_gpu_reconcile.add_argument(
+        "--final-discovery",
+        type=Path,
+        default=None,
+    )
+    lambda_gpu_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_gpu_reconcile.set_defaults(func=_cmd_lambda_gpu_visibility_reconcile)
+    lambda_gpu_evidence = lambda_gpu_visibility_sub.add_parser("evidence-package")
+    lambda_gpu_evidence.add_argument("--success-record", type=Path, required=True)
+    lambda_gpu_evidence.add_argument("--reconciliation", type=Path, required=True)
+    lambda_gpu_evidence.add_argument("--parsed-output-audit", type=Path, required=True)
+    lambda_gpu_evidence.add_argument("--out", type=Path, required=True)
+    lambda_gpu_evidence.set_defaults(func=_cmd_lambda_gpu_visibility_evidence_package)
+    lambda_gpu_closeout = lambda_gpu_visibility_sub.add_parser("closeout")
+    lambda_gpu_closeout.add_argument("--success-record", type=Path, required=True)
+    lambda_gpu_closeout.add_argument("--reconciliation", type=Path, required=True)
+    lambda_gpu_closeout.add_argument("--evidence-package", type=Path, required=True)
+    lambda_gpu_closeout.add_argument("--parsed-output-audit", type=Path, required=True)
+    lambda_gpu_closeout.add_argument("--out", type=Path, required=True)
+    lambda_gpu_closeout.set_defaults(func=_cmd_lambda_gpu_visibility_closeout)
+    lambda_python_runtime = lambda_sub.add_parser("python-runtime")
+    lambda_python_runtime_sub = lambda_python_runtime.add_subparsers(
+        dest="lambda_python_runtime_command",
+        required=True,
+    )
+    lambda_python_command_policy = lambda_python_runtime_sub.add_parser(
+        "command-policy"
+    )
+    lambda_python_command_policy.add_argument("--out", type=Path, required=True)
+    lambda_python_command_policy.set_defaults(
+        func=_cmd_lambda_python_runtime_command_policy
+    )
+    lambda_python_output_policy = lambda_python_runtime_sub.add_parser("output-policy")
+    lambda_python_output_policy.add_argument("--out", type=Path, required=True)
+    lambda_python_output_policy.set_defaults(
+        func=_cmd_lambda_python_runtime_output_policy
+    )
+    lambda_python_command_review = lambda_python_runtime_sub.add_parser(
+        "command-review"
+    )
+    lambda_python_command_review.add_argument(
+        "--command-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_python_command_review.add_argument(
+        "--output-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_python_command_review.add_argument("--out", type=Path, required=True)
+    lambda_python_command_review.set_defaults(
+        func=_cmd_lambda_python_runtime_command_review
+    )
+    lambda_python_authorize = lambda_python_runtime_sub.add_parser("authorize-m065")
+    lambda_python_authorize.add_argument(
+        "--gpu-visibility-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_python_authorize.add_argument("--command-policy", type=Path, required=True)
+    lambda_python_authorize.add_argument("--output-policy", type=Path, required=True)
+    lambda_python_authorize.add_argument("--command-review", type=Path, required=True)
+    lambda_python_authorize.add_argument("--out", type=Path, required=True)
+    lambda_python_authorize.set_defaults(
+        func=_cmd_lambda_python_runtime_authorize_m065
+    )
+    lambda_python_preview = lambda_python_runtime_sub.add_parser(
+        "m065-runbook-preview"
+    )
+    lambda_python_preview.add_argument("--authorization", type=Path, required=True)
+    lambda_python_preview.add_argument("--out", type=Path, required=True)
+    lambda_python_preview.set_defaults(
+        func=_cmd_lambda_python_runtime_m065_runbook_preview
+    )
+    lambda_python_m065_plan = lambda_python_runtime_sub.add_parser("m065-plan")
+    lambda_python_m065_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--command-policy", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--output-policy", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--command-review", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_python_m065_plan.add_argument("--out", type=Path, required=True)
+    lambda_python_m065_plan.set_defaults(func=_cmd_lambda_python_runtime_m065_plan)
+    lambda_python_m065_gate = lambda_python_runtime_sub.add_parser("m065-gate-check")
+    lambda_python_m065_gate.add_argument("--plan", type=Path, required=True)
+    lambda_python_m065_gate.add_argument("--authorization", type=Path, required=True)
+    lambda_python_m065_gate.add_argument("--command-policy", type=Path, required=True)
+    lambda_python_m065_gate.add_argument("--output-policy", type=Path, required=True)
+    lambda_python_m065_gate.add_argument("--out", type=Path, required=True)
+    lambda_python_m065_gate.set_defaults(
+        func=_cmd_lambda_python_runtime_m065_gate_check
+    )
+    lambda_python_m065_arm = lambda_python_runtime_sub.add_parser("m065-arm-one-shot")
+    lambda_python_m065_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_python_m065_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_python_m065_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_python_m065_arm.add_argument("--out", type=Path, required=True)
+    lambda_python_m065_arm.set_defaults(
+        func=_cmd_lambda_python_runtime_m065_arm_one_shot
+    )
+    lambda_python_m065_bridge = lambda_python_runtime_sub.add_parser(
+        "m065-reviewer-bridge"
+    )
+    lambda_python_m065_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_python_m065_bridge.add_argument("--out", type=Path, required=True)
+    lambda_python_m065_bridge.set_defaults(
+        func=_cmd_lambda_python_runtime_m065_reviewer_bridge
+    )
+    lambda_dependency = lambda_sub.add_parser("dependency")
+    lambda_dependency_sub = lambda_dependency.add_subparsers(
+        dest="lambda_dependency_command",
+        required=True,
+    )
+    lambda_dependency_inventory = lambda_dependency_sub.add_parser("inventory")
+    lambda_dependency_inventory.add_argument("--pyproject", type=Path, required=True)
+    lambda_dependency_inventory.add_argument(
+        "--failure-record",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_inventory.add_argument("--out", type=Path, required=True)
+    lambda_dependency_inventory.set_defaults(func=_cmd_lambda_dependency_inventory)
+    lambda_dependency_build = lambda_dependency_sub.add_parser("build-bundle")
+    lambda_dependency_build.add_argument("--inventory", type=Path, required=True)
+    lambda_dependency_build.add_argument("--bundle", type=Path, required=True)
+    lambda_dependency_build.add_argument("--manifest-out", type=Path, required=True)
+    lambda_dependency_build.set_defaults(func=_cmd_lambda_dependency_build_bundle)
+    lambda_dependency_validate = lambda_dependency_sub.add_parser("validate-bundle")
+    lambda_dependency_validate.add_argument("--bundle", type=Path, required=True)
+    lambda_dependency_validate.add_argument("--manifest", type=Path, required=True)
+    lambda_dependency_validate.add_argument("--inventory", type=Path, required=True)
+    lambda_dependency_validate.add_argument("--out", type=Path, required=True)
+    lambda_dependency_validate.set_defaults(func=_cmd_lambda_dependency_validate_bundle)
+    lambda_dependency_wheelhouse_plan = lambda_dependency_sub.add_parser("wheelhouse-plan")
+    lambda_dependency_wheelhouse_plan.add_argument("--inventory", type=Path, required=True)
+    lambda_dependency_wheelhouse_plan.add_argument("--target-python", default="3.10")
+    lambda_dependency_wheelhouse_plan.add_argument(
+        "--target-platform",
+        default="manylinux2014_x86_64",
+    )
+    lambda_dependency_wheelhouse_plan.add_argument("--out", type=Path, required=True)
+    lambda_dependency_wheelhouse_plan.set_defaults(
+        func=_cmd_lambda_dependency_wheelhouse_plan
+    )
+    lambda_dependency_audit_wheelhouse = lambda_dependency_sub.add_parser(
+        "audit-existing-wheelhouse"
+    )
+    lambda_dependency_audit_wheelhouse.add_argument("--plan", type=Path, required=True)
+    lambda_dependency_audit_wheelhouse.add_argument(
+        "--search-paths",
+        type=Path,
+        nargs="+",
+        required=True,
+    )
+    lambda_dependency_audit_wheelhouse.add_argument("--out", type=Path, required=True)
+    lambda_dependency_audit_wheelhouse.set_defaults(
+        func=_cmd_lambda_dependency_audit_existing_wheelhouse
+    )
+    lambda_dependency_build_policy = lambda_dependency_sub.add_parser(
+        "wheelhouse-build-policy"
+    )
+    lambda_dependency_build_policy.add_argument("--plan", type=Path, required=True)
+    lambda_dependency_build_policy.add_argument(
+        "--existing-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_policy.add_argument(
+        "--approve-controlled-local-wheel-download",
+        action="store_true",
+    )
+    lambda_dependency_build_policy.add_argument("--out", type=Path, required=True)
+    lambda_dependency_build_policy.set_defaults(
+        func=_cmd_lambda_dependency_wheelhouse_build_policy
+    )
+    lambda_dependency_download_wheelhouse = lambda_dependency_sub.add_parser(
+        "download-wheelhouse"
+    )
+    lambda_dependency_download_wheelhouse.add_argument("--policy", type=Path, required=True)
+    lambda_dependency_download_wheelhouse.add_argument("--plan", type=Path, required=True)
+    lambda_dependency_download_wheelhouse.add_argument(
+        "--wheelhouse-dir",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_download_wheelhouse.add_argument("--out", type=Path, required=True)
+    lambda_dependency_download_wheelhouse.set_defaults(
+        func=_cmd_lambda_dependency_download_wheelhouse
+    )
+    lambda_dependency_wheelhouse_manifest = lambda_dependency_sub.add_parser(
+        "wheelhouse-manifest"
+    )
+    lambda_dependency_wheelhouse_manifest.add_argument(
+        "--wheelhouse-dir",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_wheelhouse_manifest.add_argument("--plan", type=Path, required=True)
+    lambda_dependency_wheelhouse_manifest.add_argument(
+        "--download-used",
+        action="store_true",
+    )
+    lambda_dependency_wheelhouse_manifest.add_argument(
+        "--internet-download-used",
+        action="store_true",
+    )
+    lambda_dependency_wheelhouse_manifest.add_argument("--out", type=Path, required=True)
+    lambda_dependency_wheelhouse_manifest.set_defaults(
+        func=_cmd_lambda_dependency_wheelhouse_manifest
+    )
+    lambda_dependency_wheelhouse_secret = lambda_dependency_sub.add_parser(
+        "wheelhouse-secret-scan"
+    )
+    lambda_dependency_wheelhouse_secret.add_argument(
+        "--wheelhouse-dir",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_wheelhouse_secret.add_argument("--manifest", type=Path, required=True)
+    lambda_dependency_wheelhouse_secret.add_argument("--out", type=Path, required=True)
+    lambda_dependency_wheelhouse_secret.set_defaults(
+        func=_cmd_lambda_dependency_wheelhouse_secret_scan
+    )
+    lambda_dependency_wheelhouse_compat = lambda_dependency_sub.add_parser(
+        "wheelhouse-compatibility-audit"
+    )
+    lambda_dependency_wheelhouse_compat.add_argument("--manifest", type=Path, required=True)
+    lambda_dependency_wheelhouse_compat.add_argument("--out", type=Path, required=True)
+    lambda_dependency_wheelhouse_compat.set_defaults(
+        func=_cmd_lambda_dependency_wheelhouse_compatibility_audit
+    )
+    lambda_dependency_build_wheelhouse_bundle = lambda_dependency_sub.add_parser(
+        "build-wheelhouse-bundle"
+    )
+    lambda_dependency_build_wheelhouse_bundle.add_argument(
+        "--wheelhouse-dir",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_wheelhouse_bundle.add_argument(
+        "--wheelhouse-manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_wheelhouse_bundle.add_argument(
+        "--secret-scan",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_wheelhouse_bundle.add_argument(
+        "--compatibility-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_wheelhouse_bundle.add_argument("--bundle", type=Path, required=True)
+    lambda_dependency_build_wheelhouse_bundle.add_argument(
+        "--manifest-out",
+        type=Path,
+        required=True,
+    )
+    lambda_dependency_build_wheelhouse_bundle.set_defaults(
+        func=_cmd_lambda_dependency_build_wheelhouse_bundle
+    )
+
+    lambda_remote_vslice = lambda_sub.add_parser("remote-vslice")
+    lambda_remote_vslice_sub = lambda_remote_vslice.add_subparsers(
+        dest="lambda_remote_vslice_command",
+        required=True,
+    )
+    lambda_remote_vslice_policy = lambda_remote_vslice_sub.add_parser("policy")
+    lambda_remote_vslice_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_policy.set_defaults(func=_cmd_lambda_remote_vslice_policy)
+    lambda_remote_vslice_manifest = lambda_remote_vslice_sub.add_parser(
+        "default-manifest"
+    )
+    lambda_remote_vslice_manifest.add_argument(
+        "--no-profile-summary",
+        action="store_true",
+    )
+    lambda_remote_vslice_manifest.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_manifest.set_defaults(func=_cmd_lambda_remote_vslice_manifest)
+    lambda_remote_source_manifest = lambda_remote_vslice_sub.add_parser(
+        "source-bundle-manifest"
+    )
+    lambda_remote_source_manifest.add_argument("--out", type=Path, required=True)
+    lambda_remote_source_manifest.set_defaults(
+        func=_cmd_lambda_remote_vslice_source_bundle_manifest
+    )
+    lambda_remote_build_source = lambda_remote_vslice_sub.add_parser(
+        "build-source-bundle"
+    )
+    lambda_remote_build_source.add_argument(
+        "--project-root",
+        type=Path,
+        default=Path("."),
+    )
+    lambda_remote_build_source.add_argument("--bundle", type=Path, required=True)
+    lambda_remote_build_source.add_argument("--manifest-out", type=Path, required=True)
+    lambda_remote_build_source.set_defaults(
+        func=_cmd_lambda_remote_vslice_build_source_bundle
+    )
+    lambda_remote_validate_source = lambda_remote_vslice_sub.add_parser(
+        "validate-source-bundle"
+    )
+    lambda_remote_validate_source.add_argument("--bundle", type=Path, required=True)
+    lambda_remote_validate_source.add_argument("--manifest", type=Path, required=True)
+    lambda_remote_validate_source.add_argument("--out", type=Path, required=True)
+    lambda_remote_validate_source.set_defaults(
+        func=_cmd_lambda_remote_vslice_validate_source_bundle
+    )
+    lambda_remote_classify_upload = lambda_remote_vslice_sub.add_parser(
+        "classify-upload-failure"
+    )
+    lambda_remote_classify_upload.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_classify_upload.add_argument("--out", type=Path, required=True)
+    lambda_remote_classify_upload.set_defaults(
+        func=_cmd_lambda_remote_vslice_classify_upload_failure
+    )
+    lambda_remote_upload_closeout = lambda_remote_vslice_sub.add_parser(
+        "upload-closeout"
+    )
+    lambda_remote_upload_closeout.add_argument(
+        "--classification",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_upload_closeout.add_argument(
+        "--post-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_upload_closeout.add_argument("--out", type=Path, required=True)
+    lambda_remote_upload_closeout.set_defaults(
+        func=_cmd_lambda_remote_vslice_upload_closeout
+    )
+    lambda_remote_banner_policy = lambda_remote_vslice_sub.add_parser(
+        "ssh-banner-readiness-policy"
+    )
+    lambda_remote_banner_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_banner_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_ssh_banner_readiness_policy
+    )
+    lambda_remote_upload_gate_policy = lambda_remote_vslice_sub.add_parser(
+        "upload-readiness-gate-policy"
+    )
+    lambda_remote_upload_gate_policy.add_argument(
+        "--banner-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_upload_gate_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_upload_gate_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_upload_readiness_gate_policy
+    )
+    lambda_remote_upload_policy = lambda_remote_vslice_sub.add_parser("upload-policy")
+    lambda_remote_upload_policy.add_argument(
+        "--upload-readiness-gate",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_upload_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_upload_policy.set_defaults(func=_cmd_lambda_remote_vslice_upload_policy)
+    lambda_remote_m073r2_authorize = lambda_remote_vslice_sub.add_parser(
+        "authorize-m073r2"
+    )
+    lambda_remote_m073r2_authorize.add_argument(
+        "--upload-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m073r2_authorize.add_argument(
+        "--upload-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m073r2_authorize.add_argument(
+        "--tiny-smoke-authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m073r2_authorize.add_argument("--out", type=Path, required=True)
+    lambda_remote_m073r2_authorize.set_defaults(
+        func=_cmd_lambda_remote_vslice_authorize_m073r2
+    )
+    lambda_remote_m073r2_runbook = lambda_remote_vslice_sub.add_parser(
+        "m073r2-runbook-preview"
+    )
+    lambda_remote_m073r2_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m073r2_runbook.add_argument(
+        "--upload-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_m073r2_runbook.add_argument("--out", type=Path, required=True)
+    lambda_remote_m073r2_runbook.set_defaults(
+        func=_cmd_lambda_remote_vslice_m073r2_runbook_preview
+    )
+    lambda_remote_expected_artifact_policy = lambda_remote_vslice_sub.add_parser(
+        "expected-artifact-policy"
+    )
+    lambda_remote_expected_artifact_policy.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_expected_artifact_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_expected_artifact_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_expected_artifact_policy
+    )
+    lambda_remote_declared_artifact_policy = lambda_remote_vslice_sub.add_parser(
+        "declared-artifact-policy"
+    )
+    lambda_remote_declared_artifact_policy.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_declared_artifact_policy.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_declared_artifact_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_declared_artifact_policy
+    )
+    lambda_remote_manifest_artifact_policy = lambda_remote_vslice_sub.add_parser(
+        "manifest-artifact-policy"
+    )
+    lambda_remote_manifest_artifact_policy.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_manifest_artifact_policy.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_manifest_artifact_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_manifest_artifact_policy
+    )
+    lambda_remote_failure_artifact_capture_policy = lambda_remote_vslice_sub.add_parser(
+        "failure-artifact-capture-policy"
+    )
+    lambda_remote_failure_artifact_capture_policy.add_argument(
+        "--expected-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_failure_artifact_capture_policy.add_argument(
+        "--failure-evidence-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_failure_artifact_capture_policy.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_failure_artifact_capture_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_failure_artifact_capture_policy
+    )
+    lambda_remote_dependency_failure = lambda_remote_vslice_sub.add_parser(
+        "dependency-failure-record"
+    )
+    lambda_remote_dependency_failure.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_dependency_failure.add_argument("--out", type=Path, required=True)
+    lambda_remote_dependency_failure.set_defaults(
+        func=_cmd_lambda_remote_vslice_dependency_failure_record
+    )
+    lambda_remote_dependency_manifest = lambda_remote_vslice_sub.add_parser(
+        "dependency-bundle-manifest"
+    )
+    lambda_remote_dependency_manifest.add_argument(
+        "--path-setup-only",
+        action="store_true",
+    )
+    lambda_remote_dependency_manifest.add_argument(
+        "--milestone",
+        choices=["M068R", "M081R", "M083R", "M085R", "M087R", "M089R", "M093R"],
+        default="M068R",
+    )
+    lambda_remote_dependency_manifest.add_argument("--out", type=Path, required=True)
+    lambda_remote_dependency_manifest.set_defaults(
+        func=_cmd_lambda_remote_vslice_dependency_bundle_manifest
+    )
+    lambda_remote_vslice_validate = lambda_remote_vslice_sub.add_parser(
+        "validate-manifest"
+    )
+    lambda_remote_vslice_validate.add_argument("--manifest", type=Path, required=True)
+    lambda_remote_vslice_validate.add_argument("--policy", type=Path, default=None)
+    lambda_remote_vslice_validate.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_validate.set_defaults(
+        func=_cmd_lambda_remote_vslice_validate_manifest
+    )
+    lambda_remote_vslice_plan = lambda_remote_vslice_sub.add_parser("plan")
+    lambda_remote_vslice_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_remote_vslice_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_remote_vslice_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_remote_vslice_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_remote_vslice_plan.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_plan.set_defaults(func=_cmd_lambda_remote_vslice_plan)
+    lambda_remote_source_plan = lambda_remote_vslice_sub.add_parser(
+        "source-bundle-plan"
+    )
+    lambda_remote_source_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_remote_source_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_plan.add_argument(
+        "--command-manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_remote_source_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_remote_source_plan.add_argument("--out", type=Path, required=True)
+    lambda_remote_source_plan.set_defaults(
+        func=_cmd_lambda_remote_vslice_source_bundle_plan
+    )
+    lambda_remote_dependency_plan = lambda_remote_vslice_sub.add_parser(
+        "dependency-bundle-plan"
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--command-manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_plan.add_argument("--out", type=Path, required=True)
+    lambda_remote_dependency_plan.set_defaults(
+        func=_cmd_lambda_remote_vslice_dependency_bundle_plan
+    )
+    lambda_remote_vslice_gate = lambda_remote_vslice_sub.add_parser("gate-check")
+    lambda_remote_vslice_gate.add_argument("--plan", type=Path, required=True)
+    lambda_remote_vslice_gate.add_argument("--policy", type=Path, required=True)
+    lambda_remote_vslice_gate.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_gate.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_gate.set_defaults(func=_cmd_lambda_remote_vslice_gate_check)
+    lambda_remote_source_gate = lambda_remote_vslice_sub.add_parser(
+        "source-bundle-gate-check"
+    )
+    lambda_remote_source_gate.add_argument("--plan", type=Path, required=True)
+    lambda_remote_source_gate.add_argument("--out", type=Path, required=True)
+    lambda_remote_source_gate.set_defaults(
+        func=_cmd_lambda_remote_vslice_source_bundle_gate_check
+    )
+    lambda_remote_dependency_gate = lambda_remote_vslice_sub.add_parser(
+        "dependency-bundle-gate-check"
+    )
+    lambda_remote_dependency_gate.add_argument("--plan", type=Path, required=True)
+    lambda_remote_dependency_gate.add_argument("--out", type=Path, required=True)
+    lambda_remote_dependency_gate.set_defaults(
+        func=_cmd_lambda_remote_vslice_dependency_bundle_gate_check
+    )
+    lambda_remote_vslice_arm = lambda_remote_vslice_sub.add_parser("arm-one-shot")
+    lambda_remote_vslice_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_remote_vslice_arm.add_argument("--manifest", type=Path, required=True)
+    lambda_remote_vslice_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_remote_vslice_arm.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_arm.set_defaults(func=_cmd_lambda_remote_vslice_arm_one_shot)
+    lambda_remote_source_arm = lambda_remote_vslice_sub.add_parser(
+        "source-bundle-arm-one-shot"
+    )
+    lambda_remote_source_arm.add_argument("--gate-check", type=Path, required=True)
+    lambda_remote_source_arm.add_argument(
+        "--command-manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_arm.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_source_arm.add_argument("--expires-minutes", type=int, default=15)
+    lambda_remote_source_arm.add_argument("--out", type=Path, required=True)
+    lambda_remote_source_arm.set_defaults(
+        func=_cmd_lambda_remote_vslice_source_bundle_arm_one_shot
+    )
+    lambda_remote_dependency_arm = lambda_remote_vslice_sub.add_parser(
+        "dependency-bundle-arm-one-shot"
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--gate-check",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--plan",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--command-manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--response-loss-controls",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--failure-artifact-capture-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--declared-artifact-policy",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_dependency_arm.add_argument(
+        "--expires-minutes",
+        type=int,
+        default=15,
+    )
+    lambda_remote_dependency_arm.add_argument("--out", type=Path, required=True)
+    lambda_remote_dependency_arm.set_defaults(
+        func=_cmd_lambda_remote_vslice_dependency_bundle_arm_one_shot
+    )
+    lambda_remote_vslice_bridge = lambda_remote_vslice_sub.add_parser(
+        "reviewer-bridge"
+    )
+    lambda_remote_vslice_bridge.add_argument("--arming", type=Path, required=True)
+    lambda_remote_vslice_bridge.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_bridge.set_defaults(
+        func=_cmd_lambda_remote_vslice_reviewer_bridge
+    )
+    lambda_remote_vslice_closeout = lambda_remote_vslice_sub.add_parser("closeout")
+    lambda_remote_vslice_closeout.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_vslice_closeout.add_argument("--evidence", type=Path, required=True)
+    lambda_remote_vslice_closeout.add_argument(
+        "--post-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_closeout.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_closeout.set_defaults(func=_cmd_lambda_remote_vslice_closeout)
+    lambda_remote_vslice_reconcile = lambda_remote_vslice_sub.add_parser("reconcile")
+    lambda_remote_vslice_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_vslice_reconcile.add_argument("--closeout", type=Path, required=True)
+    lambda_remote_vslice_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_reconcile.set_defaults(func=_cmd_lambda_remote_vslice_reconcile)
+    lambda_remote_vslice_ssh_policy = lambda_remote_vslice_sub.add_parser(
+        "ssh-proven-policy"
+    )
+    lambda_remote_vslice_ssh_policy.add_argument("--history", type=Path, required=True)
+    lambda_remote_vslice_ssh_policy.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_ssh_policy.set_defaults(
+        func=_cmd_lambda_remote_vslice_ssh_proven_policy
+    )
+    lambda_remote_vslice_selector = lambda_remote_vslice_sub.add_parser(
+        "select-candidate"
+    )
+    lambda_remote_vslice_selector.add_argument(
+        "--discovery-report",
+        type=Path,
+        default=None,
+    )
+    lambda_remote_vslice_selector.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_selector.add_argument(
+        "--ssh-proven-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_selector.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_selector.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_selector.set_defaults(
+        func=_cmd_lambda_remote_vslice_select_candidate
+    )
+    lambda_remote_vslice_retry_decision = lambda_remote_vslice_sub.add_parser(
+        "retry-decision"
+    )
+    lambda_remote_vslice_retry_decision.add_argument(
+        "--candidate-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_retry_decision.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_retry_decision.set_defaults(
+        func=_cmd_lambda_remote_vslice_retry_decision
+    )
+    lambda_remote_vslice_authorize_retry = lambda_remote_vslice_sub.add_parser(
+        "authorize-retry"
+    )
+    lambda_remote_vslice_authorize_retry.add_argument(
+        "--decision",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_vslice_authorize_retry.add_argument("--out", type=Path, required=True)
+    lambda_remote_vslice_authorize_retry.set_defaults(
+        func=_cmd_lambda_remote_vslice_authorize_retry
+    )
+    lambda_ssh_readiness = lambda_sub.add_parser("ssh-readiness")
+    lambda_ssh_readiness_sub = lambda_ssh_readiness.add_subparsers(
+        dest="lambda_ssh_readiness_command",
+        required=True,
+    )
+    lambda_ssh_readiness_history = lambda_ssh_readiness_sub.add_parser("history")
+    lambda_ssh_readiness_history.add_argument(
+        "--report",
+        type=Path,
+        action="append",
+        default=None,
+    )
+    lambda_ssh_readiness_history.add_argument("--out", type=Path, required=True)
+    lambda_ssh_readiness_history.set_defaults(func=_cmd_lambda_ssh_readiness_history)
+    lambda_ssh_readiness_update = lambda_ssh_readiness_sub.add_parser("update-history")
+    lambda_ssh_readiness_update.add_argument(
+        "--prior-history",
+        type=Path,
+        required=True,
+    )
+    lambda_ssh_readiness_update.add_argument("--workdir", type=Path, required=True)
+    lambda_ssh_readiness_update.add_argument("--out", type=Path, required=True)
+    lambda_ssh_readiness_update.set_defaults(
+        func=_cmd_lambda_ssh_readiness_update_history
+    )
+    lambda_m062 = lambda_sub.add_parser("m062")
+    lambda_m062_sub = lambda_m062.add_subparsers(
+        dest="lambda_m062_command",
+        required=True,
+    )
+    lambda_m062_report = lambda_m062_sub.add_parser("report")
+    lambda_m062_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m062_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m062_report.add_argument("--evidence-package", type=Path, required=True)
+    lambda_m062_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m062_report.add_argument("--command-policy", type=Path, required=True)
+    lambda_m062_report.add_argument("--output-policy", type=Path, required=True)
+    lambda_m062_report.add_argument("--command-review", type=Path, required=True)
+    lambda_m062_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m062_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m062_report.add_argument("--out", type=Path, required=True)
+    lambda_m062_report.set_defaults(func=_cmd_lambda_m062_report)
+    lambda_m064 = lambda_sub.add_parser("m064")
+    lambda_m064_sub = lambda_m064.add_subparsers(
+        dest="lambda_m064_command",
+        required=True,
+    )
+    lambda_m064_report = lambda_m064_sub.add_parser("report")
+    lambda_m064_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m064_report.add_argument("--parsed-output-audit", type=Path, required=True)
+    lambda_m064_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m064_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m064_report.add_argument(
+        "--python-command-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m064_report.add_argument(
+        "--python-output-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m064_report.add_argument(
+        "--python-command-review",
+        type=Path,
+        required=True,
+    )
+    lambda_m064_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m064_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m064_report.add_argument("--out", type=Path, required=True)
+    lambda_m064_report.set_defaults(func=_cmd_lambda_m064_report)
+    lambda_m067s = lambda_sub.add_parser("m067s")
+    lambda_m067s_sub = lambda_m067s.add_subparsers(
+        dest="lambda_m067s_command",
+        required=True,
+    )
+    lambda_m067s_report = lambda_m067s_sub.add_parser("report")
+    lambda_m067s_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m067s_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m067s_report.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_m067s_report.add_argument("--candidate-policy", type=Path, required=True)
+    lambda_m067s_report.add_argument(
+        "--candidate-selection",
+        type=Path,
+        default=None,
+    )
+    lambda_m067s_report.add_argument("--retry-decision", type=Path, required=True)
+    lambda_m067s_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m067s_report.add_argument("--out", type=Path, required=True)
+    lambda_m067s_report.set_defaults(func=_cmd_lambda_m067s_report)
+    lambda_m068w = lambda_sub.add_parser("m068w")
+    lambda_m068w_sub = lambda_m068w.add_subparsers(
+        dest="lambda_m068w_command",
+        required=True,
+    )
+    lambda_m068w_report = lambda_m068w_sub.add_parser("report")
+    lambda_m068w_report.add_argument("--plan", type=Path, required=True)
+    lambda_m068w_report.add_argument("--existing-audit", type=Path, required=True)
+    lambda_m068w_report.add_argument("--build-policy", type=Path, required=True)
+    lambda_m068w_report.add_argument("--wheelhouse-manifest", type=Path, required=True)
+    lambda_m068w_report.add_argument("--secret-scan", type=Path, required=True)
+    lambda_m068w_report.add_argument("--compatibility-audit", type=Path, required=True)
+    lambda_m068w_report.add_argument("--bundle-validation", type=Path, required=True)
+    lambda_m068w_report.add_argument("--out", type=Path, required=True)
+    lambda_m068w_report.set_defaults(func=_cmd_lambda_m068w_report)
+
+    lambda_remote_decodilo = lambda_sub.add_parser("remote-decodilo-vslice")
+    lambda_remote_decodilo_sub = lambda_remote_decodilo.add_subparsers(
+        dest="lambda_remote_decodilo_vslice_command",
+        required=True,
+    )
+    lambda_remote_decodilo_success = lambda_remote_decodilo_sub.add_parser(
+        "success-record"
+    )
+    lambda_remote_decodilo_success.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_decodilo_success.add_argument("--out", type=Path, required=True)
+    lambda_remote_decodilo_success.set_defaults(
+        func=_cmd_lambda_remote_decodilo_vslice_success_record
+    )
+    lambda_remote_decodilo_reconcile = lambda_remote_decodilo_sub.add_parser(
+        "reconcile"
+    )
+    lambda_remote_decodilo_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_remote_decodilo_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_remote_decodilo_reconcile.set_defaults(
+        func=_cmd_lambda_remote_decodilo_vslice_reconcile
+    )
+    lambda_remote_decodilo_evidence = lambda_remote_decodilo_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_remote_decodilo_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_evidence.add_argument("--out", type=Path, required=True)
+    lambda_remote_decodilo_evidence.set_defaults(
+        func=_cmd_lambda_remote_decodilo_vslice_evidence_package
+    )
+    lambda_remote_decodilo_closeout = lambda_remote_decodilo_sub.add_parser("closeout")
+    lambda_remote_decodilo_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_remote_decodilo_closeout.add_argument("--out", type=Path, required=True)
+    lambda_remote_decodilo_closeout.set_defaults(
+        func=_cmd_lambda_remote_decodilo_vslice_closeout
+    )
+
+    lambda_first_experiment = lambda_sub.add_parser("first-experiment")
+    lambda_first_experiment_sub = lambda_first_experiment.add_subparsers(
+        dest="lambda_first_experiment_command",
+        required=True,
+    )
+    lambda_first_readiness = lambda_first_experiment_sub.add_parser("readiness")
+    lambda_first_readiness.add_argument("--closeout", type=Path, required=True)
+    lambda_first_readiness.add_argument("--out", type=Path, required=True)
+    lambda_first_readiness.set_defaults(func=_cmd_lambda_first_experiment_readiness)
+    lambda_first_success = lambda_first_experiment_sub.add_parser("success-record")
+    lambda_first_success.add_argument("--workdir", type=Path, required=True)
+    lambda_first_success.add_argument("--out", type=Path, required=True)
+    lambda_first_success.set_defaults(func=_cmd_lambda_first_experiment_success_record)
+    lambda_first_reconcile = lambda_first_experiment_sub.add_parser("reconcile")
+    lambda_first_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_first_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_first_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_first_reconcile.set_defaults(func=_cmd_lambda_first_experiment_reconcile)
+    lambda_first_evidence = lambda_first_experiment_sub.add_parser("evidence-package")
+    lambda_first_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_first_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_evidence.add_argument("--out", type=Path, required=True)
+    lambda_first_evidence.set_defaults(
+        func=_cmd_lambda_first_experiment_evidence_package
+    )
+    lambda_first_closeout = lambda_first_experiment_sub.add_parser("closeout")
+    lambda_first_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_first_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_first_closeout.add_argument("--out", type=Path, required=True)
+    lambda_first_closeout.set_defaults(func=_cmd_lambda_first_experiment_closeout)
+    lambda_first_artifact_audit = lambda_first_experiment_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_first_artifact_audit.add_argument("--workdir", type=Path, required=True)
+    lambda_first_artifact_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_first_artifact_audit.add_argument("--out", type=Path, required=True)
+    lambda_first_artifact_audit.set_defaults(
+        func=_cmd_lambda_first_experiment_artifact_audit
+    )
+    lambda_first_discover = lambda_first_experiment_sub.add_parser("discover-command")
+    lambda_first_discover.add_argument("--source-root", type=Path, required=True)
+    lambda_first_discover.add_argument("--out", type=Path, required=True)
+    lambda_first_discover.set_defaults(
+        func=_cmd_lambda_first_experiment_discover_command
+    )
+    lambda_first_manifest = lambda_first_experiment_sub.add_parser("build-manifest")
+    lambda_first_manifest.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_first_manifest.add_argument("--source-bundle", type=Path, required=True)
+    lambda_first_manifest.add_argument("--dependency-bundle", type=Path, required=True)
+    lambda_first_manifest.add_argument("--out", type=Path, required=True)
+    lambda_first_manifest.set_defaults(func=_cmd_lambda_first_experiment_build_manifest)
+    lambda_first_plan = lambda_first_experiment_sub.add_parser("plan")
+    lambda_first_plan.add_argument("--discovery-report", type=Path, required=True)
+    lambda_first_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_first_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_plan.add_argument("--authorization", type=Path, required=True)
+    lambda_first_plan.add_argument("--ssh-key-selection", type=Path, required=True)
+    lambda_first_plan.add_argument("--price-snapshot", type=Path, required=True)
+    lambda_first_plan.add_argument("--out", type=Path, required=True)
+    lambda_first_plan.set_defaults(func=_cmd_lambda_first_experiment_plan)
+    lambda_first_gate = lambda_first_experiment_sub.add_parser("gate-check")
+    lambda_first_gate.add_argument("--plan", type=Path, required=True)
+    lambda_first_gate.add_argument("--out", type=Path, required=True)
+    lambda_first_gate.set_defaults(func=_cmd_lambda_first_experiment_gate_check)
+    lambda_first_authorize = lambda_first_experiment_sub.add_parser("authorize-m071r")
+    lambda_first_authorize.add_argument("--readiness", type=Path, required=True)
+    lambda_first_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_first_authorize.add_argument("--manifest", type=Path, required=True)
+    lambda_first_authorize.add_argument("--out", type=Path, required=True)
+    lambda_first_authorize.set_defaults(
+        func=_cmd_lambda_first_experiment_authorize_m071r
+    )
+    lambda_first_runbook = lambda_first_experiment_sub.add_parser(
+        "m071r-runbook-preview"
+    )
+    lambda_first_runbook.add_argument("--authorization", type=Path, required=True)
+    lambda_first_runbook.add_argument("--out", type=Path, required=True)
+    lambda_first_runbook.set_defaults(
+        func=_cmd_lambda_first_experiment_m071r_runbook_preview
+    )
+
+    lambda_m070 = lambda_sub.add_parser("m070")
+    lambda_m070_sub = lambda_m070.add_subparsers(
+        dest="lambda_m070_command",
+        required=True,
+    )
+    lambda_m070_report = lambda_m070_sub.add_parser("report")
+    lambda_m070_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m070_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m070_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m070_report.add_argument("--readiness", type=Path, required=True)
+    lambda_m070_report.add_argument("--command-discovery", type=Path, required=True)
+    lambda_m070_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m070_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m070_report.add_argument("--out", type=Path, required=True)
+    lambda_m070_report.set_defaults(func=_cmd_lambda_m070_report)
+    lambda_tiny_smoke = lambda_sub.add_parser("tiny-smoke")
+    lambda_tiny_smoke_sub = lambda_tiny_smoke.add_subparsers(
+        dest="lambda_tiny_smoke_command",
+        required=True,
+    )
+    lambda_tiny_smoke_discover = lambda_tiny_smoke_sub.add_parser("discover-command")
+    lambda_tiny_smoke_discover.add_argument("--source-root", type=Path, required=True)
+    lambda_tiny_smoke_discover.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_discover.set_defaults(
+        func=_cmd_lambda_tiny_smoke_discover_command
+    )
+    lambda_tiny_smoke_policy = lambda_tiny_smoke_sub.add_parser("policy")
+    lambda_tiny_smoke_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_policy.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_policy.set_defaults(func=_cmd_lambda_tiny_smoke_policy)
+    lambda_tiny_smoke_authorize = lambda_tiny_smoke_sub.add_parser("authorize-m073r")
+    lambda_tiny_smoke_authorize.add_argument(
+        "--first-experiment-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_authorize.add_argument("--policy", type=Path, required=True)
+    lambda_tiny_smoke_authorize.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_authorize.set_defaults(
+        func=_cmd_lambda_tiny_smoke_authorize_m073r
+    )
+    lambda_tiny_smoke_runbook = lambda_tiny_smoke_sub.add_parser(
+        "m073r-runbook-preview"
+    )
+    lambda_tiny_smoke_runbook.add_argument("--authorization", type=Path, required=True)
+    lambda_tiny_smoke_runbook.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_runbook.set_defaults(
+        func=_cmd_lambda_tiny_smoke_m073r_runbook_preview
+    )
+    lambda_tiny_smoke_success = lambda_tiny_smoke_sub.add_parser("success-record")
+    lambda_tiny_smoke_success.add_argument("--workdir", type=Path, required=True)
+    lambda_tiny_smoke_success.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_success.set_defaults(func=_cmd_lambda_tiny_smoke_success_record)
+    lambda_tiny_smoke_reconcile = lambda_tiny_smoke_sub.add_parser("reconcile")
+    lambda_tiny_smoke_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_tiny_smoke_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_reconcile.set_defaults(func=_cmd_lambda_tiny_smoke_reconcile)
+    lambda_tiny_smoke_evidence = lambda_tiny_smoke_sub.add_parser("evidence-package")
+    lambda_tiny_smoke_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_evidence.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_evidence.set_defaults(
+        func=_cmd_lambda_tiny_smoke_evidence_package
+    )
+    lambda_tiny_smoke_closeout = lambda_tiny_smoke_sub.add_parser("closeout")
+    lambda_tiny_smoke_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_closeout.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_closeout.set_defaults(func=_cmd_lambda_tiny_smoke_closeout)
+    lambda_tiny_smoke_artifact_audit = lambda_tiny_smoke_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_tiny_smoke_artifact_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_artifact_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_smoke_artifact_audit.add_argument("--out", type=Path, required=True)
+    lambda_tiny_smoke_artifact_audit.set_defaults(
+        func=_cmd_lambda_tiny_smoke_artifact_audit
+    )
+    lambda_runtime_protocol = lambda_sub.add_parser("runtime-protocol-smoke")
+    lambda_runtime_protocol_sub = lambda_runtime_protocol.add_subparsers(
+        dest="lambda_runtime_protocol_smoke_command",
+        required=True,
+    )
+    lambda_runtime_protocol_readiness = lambda_runtime_protocol_sub.add_parser(
+        "readiness"
+    )
+    lambda_runtime_protocol_readiness.add_argument(
+        "--tiny-smoke-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_readiness.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_readiness.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_readiness
+    )
+    lambda_runtime_protocol_discover = lambda_runtime_protocol_sub.add_parser(
+        "discover-command"
+    )
+    lambda_runtime_protocol_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_discover.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_discover.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_discover_command
+    )
+    lambda_runtime_protocol_policy = lambda_runtime_protocol_sub.add_parser("policy")
+    lambda_runtime_protocol_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_policy.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_policy.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_policy
+    )
+    lambda_runtime_protocol_authorize = lambda_runtime_protocol_sub.add_parser(
+        "authorize-m075r"
+    )
+    lambda_runtime_protocol_authorize.add_argument(
+        "--tiny-smoke-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_authorize.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_authorize_m075r
+    )
+    lambda_runtime_protocol_runbook = lambda_runtime_protocol_sub.add_parser(
+        "m075r-runbook-preview"
+    )
+    lambda_runtime_protocol_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_runbook.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_runbook.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r_runbook_preview
+    )
+    lambda_runtime_protocol_plan = lambda_runtime_protocol_sub.add_parser("m075r-plan")
+    lambda_runtime_protocol_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_runtime_protocol_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--upload-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_plan.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_plan.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r_plan
+    )
+    lambda_runtime_protocol_gate = lambda_runtime_protocol_sub.add_parser(
+        "m075r-gate-check"
+    )
+    lambda_runtime_protocol_gate.add_argument("--plan", type=Path, required=True)
+    lambda_runtime_protocol_gate.add_argument(
+        "--upload-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_gate.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_gate.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r_gate_check
+    )
+    lambda_runtime_protocol_m075r2_plan = lambda_runtime_protocol_sub.add_parser(
+        "m075r2-plan"
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--upload-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--failure-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_plan.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r2_plan.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r2_plan
+    )
+    lambda_runtime_protocol_m075r2_gate = lambda_runtime_protocol_sub.add_parser(
+        "m075r2-gate-check"
+    )
+    lambda_runtime_protocol_m075r2_gate.add_argument(
+        "--plan",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_gate.add_argument(
+        "--failure-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_gate.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r2_gate.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r2_gate_check
+    )
+    lambda_runtime_protocol_m075r3_plan = lambda_runtime_protocol_sub.add_parser(
+        "m075r3-plan"
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_plan.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r3_plan.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r3_plan
+    )
+    lambda_runtime_protocol_m075r3_gate = lambda_runtime_protocol_sub.add_parser(
+        "m075r3-gate-check"
+    )
+    lambda_runtime_protocol_m075r3_gate.add_argument(
+        "--plan",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_gate.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r3_gate.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r3_gate_check
+    )
+    lambda_runtime_protocol_m075r4_plan = lambda_runtime_protocol_sub.add_parser(
+        "m075r4-plan"
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_plan.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r4_plan.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r4_plan
+    )
+    lambda_runtime_protocol_m075r4_gate = lambda_runtime_protocol_sub.add_parser(
+        "m075r4-gate-check"
+    )
+    lambda_runtime_protocol_m075r4_gate.add_argument(
+        "--plan",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_gate.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r4_gate.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r4_gate_check
+    )
+    lambda_runtime_protocol_failure_record = lambda_runtime_protocol_sub.add_parser(
+        "failure-record"
+    )
+    lambda_runtime_protocol_failure_record.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_failure_record.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_failure_record.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_failure_record
+    )
+    lambda_runtime_protocol_failure_closeout = lambda_runtime_protocol_sub.add_parser(
+        "failure-closeout"
+    )
+    lambda_runtime_protocol_failure_closeout.add_argument(
+        "--failure-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_failure_closeout.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_failure_closeout.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_failure_closeout
+    )
+    lambda_runtime_protocol_failure_evidence = lambda_runtime_protocol_sub.add_parser(
+        "failure-evidence-policy"
+    )
+    lambda_runtime_protocol_failure_evidence.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_failure_evidence.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_failure_evidence_policy
+    )
+    lambda_runtime_protocol_authorize_m075r2 = lambda_runtime_protocol_sub.add_parser(
+        "authorize-m075r2"
+    )
+    lambda_runtime_protocol_authorize_m075r2.add_argument(
+        "--failure-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r2.add_argument(
+        "--failure-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r2.add_argument(
+        "--runtime-authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r2.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r2.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_authorize_m075r2
+    )
+    lambda_runtime_protocol_m075r2_runbook = lambda_runtime_protocol_sub.add_parser(
+        "m075r2-runbook-preview"
+    )
+    lambda_runtime_protocol_m075r2_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_runbook.add_argument(
+        "--failure-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r2_runbook.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r2_runbook.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r2_runbook_preview
+    )
+    lambda_runtime_protocol_attempt_closeout = lambda_runtime_protocol_sub.add_parser(
+        "attempt-closeout"
+    )
+    lambda_runtime_protocol_attempt_closeout.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_attempt_closeout.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_attempt_closeout.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_attempt_closeout
+    )
+    lambda_runtime_protocol_artifact_body_policy = (
+        lambda_runtime_protocol_sub.add_parser("artifact-body-policy")
+    )
+    lambda_runtime_protocol_artifact_body_policy.add_argument(
+        "--expected-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_artifact_body_policy.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_artifact_body_policy.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_artifact_body_policy
+    )
+    lambda_runtime_protocol_parse_artifact = lambda_runtime_protocol_sub.add_parser(
+        "parse-artifact-fixture"
+    )
+    lambda_runtime_protocol_parse_artifact.add_argument(
+        "--fixture",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_parse_artifact.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_parse_artifact.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_parse_artifact.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_parse_artifact_fixture
+    )
+    lambda_runtime_protocol_authorize_m075r3 = lambda_runtime_protocol_sub.add_parser(
+        "authorize-m075r3"
+    )
+    lambda_runtime_protocol_authorize_m075r3.add_argument(
+        "--attempt-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r3.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r3.add_argument(
+        "--previous-authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r3.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r3.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_authorize_m075r3
+    )
+    lambda_runtime_protocol_m075r3_runbook = lambda_runtime_protocol_sub.add_parser(
+        "m075r3-runbook-preview"
+    )
+    lambda_runtime_protocol_m075r3_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_runbook.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r3_runbook.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r3_runbook.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r3_runbook_preview
+    )
+    lambda_runtime_protocol_update_stream_failure = (
+        lambda_runtime_protocol_sub.add_parser("update-stream-failure-record")
+    )
+    lambda_runtime_protocol_update_stream_failure.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_failure.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_failure.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_update_stream_failure_record
+    )
+    lambda_runtime_protocol_update_stream_closeout = (
+        lambda_runtime_protocol_sub.add_parser("update-stream-closeout")
+    )
+    lambda_runtime_protocol_update_stream_closeout.add_argument(
+        "--failure-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_closeout.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_closeout.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_update_stream_closeout
+    )
+    lambda_runtime_protocol_update_stream_diagnostic = (
+        lambda_runtime_protocol_sub.add_parser("update-stream-diagnostic")
+    )
+    lambda_runtime_protocol_update_stream_diagnostic.add_argument(
+        "--failure-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_diagnostic.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_diagnostic.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_update_stream_diagnostic.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_update_stream_diagnostic
+    )
+    lambda_runtime_protocol_authorize_m075r4 = lambda_runtime_protocol_sub.add_parser(
+        "authorize-m075r4"
+    )
+    lambda_runtime_protocol_authorize_m075r4.add_argument(
+        "--update-stream-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r4.add_argument(
+        "--diagnostic",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r4.add_argument(
+        "--local-after-report",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r4.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_authorize_m075r4.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_authorize_m075r4
+    )
+    lambda_runtime_protocol_m075r4_runbook = lambda_runtime_protocol_sub.add_parser(
+        "m075r4-runbook-preview"
+    )
+    lambda_runtime_protocol_m075r4_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_m075r4_runbook.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_m075r4_runbook.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_m075r4_runbook_preview
+    )
+    lambda_runtime_protocol_success = lambda_runtime_protocol_sub.add_parser(
+        "success-record"
+    )
+    lambda_runtime_protocol_success.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_success.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_success.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_success_record
+    )
+    lambda_runtime_protocol_reconcile = lambda_runtime_protocol_sub.add_parser(
+        "reconcile"
+    )
+    lambda_runtime_protocol_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_reconcile.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_reconcile
+    )
+    lambda_runtime_protocol_evidence = lambda_runtime_protocol_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_runtime_protocol_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_evidence.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_evidence.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_evidence_package
+    )
+    lambda_runtime_protocol_closeout = lambda_runtime_protocol_sub.add_parser(
+        "closeout"
+    )
+    lambda_runtime_protocol_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_closeout.add_argument("--out", type=Path, required=True)
+    lambda_runtime_protocol_closeout.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_closeout
+    )
+    lambda_runtime_protocol_artifact_audit = lambda_runtime_protocol_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_runtime_protocol_artifact_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_artifact_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_artifact_audit.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_runtime_protocol_artifact_audit.set_defaults(
+        func=_cmd_lambda_runtime_protocol_smoke_artifact_audit
+    )
+    lambda_first_synthetic = lambda_sub.add_parser("first-synthetic-experiment")
+    lambda_first_synthetic_sub = lambda_first_synthetic.add_subparsers(
+        dest="lambda_first_synthetic_experiment_command",
+        required=True,
+    )
+    lambda_first_synthetic_readiness = lambda_first_synthetic_sub.add_parser(
+        "readiness"
+    )
+    lambda_first_synthetic_readiness.add_argument(
+        "--runtime-smoke-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_readiness.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_readiness.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_readiness
+    )
+    lambda_first_synthetic_discover = lambda_first_synthetic_sub.add_parser(
+        "discover-command"
+    )
+    lambda_first_synthetic_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_discover.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_discover.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_discover_command
+    )
+    lambda_first_synthetic_policy = lambda_first_synthetic_sub.add_parser("policy")
+    lambda_first_synthetic_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_policy.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_policy.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_policy
+    )
+    lambda_first_synthetic_authorize = lambda_first_synthetic_sub.add_parser(
+        "authorize-m077r"
+    )
+    lambda_first_synthetic_authorize.add_argument(
+        "--runtime-smoke-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_authorize.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_authorize.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_authorize_m077r
+    )
+    lambda_first_synthetic_runbook = lambda_first_synthetic_sub.add_parser(
+        "m077r-runbook-preview"
+    )
+    lambda_first_synthetic_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_runbook.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_runbook.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_m077r_runbook_preview
+    )
+    lambda_first_synthetic_plan = lambda_first_synthetic_sub.add_parser("m077r-plan")
+    lambda_first_synthetic_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_first_synthetic_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_first_synthetic_plan.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_plan.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_m077r_plan
+    )
+    lambda_first_synthetic_gate = lambda_first_synthetic_sub.add_parser(
+        "m077r-gate-check"
+    )
+    lambda_first_synthetic_gate.add_argument("--plan", type=Path, required=True)
+    lambda_first_synthetic_gate.add_argument("--out", type=Path, required=True)
+    lambda_first_synthetic_gate.set_defaults(
+        func=_cmd_lambda_first_synthetic_experiment_m077r_gate_check
+    )
+    lambda_synthetic = lambda_sub.add_parser("synthetic-experiment")
+    lambda_synthetic_sub = lambda_synthetic.add_subparsers(
+        dest="lambda_synthetic_experiment_command",
+        required=True,
+    )
+    lambda_synthetic_success = lambda_synthetic_sub.add_parser("success-record")
+    lambda_synthetic_success.add_argument("--workdir", type=Path, required=True)
+    lambda_synthetic_success.add_argument("--out", type=Path, required=True)
+    lambda_synthetic_success.set_defaults(
+        func=_cmd_lambda_synthetic_experiment_success_record
+    )
+    lambda_synthetic_reconcile = lambda_synthetic_sub.add_parser("reconcile")
+    lambda_synthetic_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_synthetic_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_synthetic_reconcile.set_defaults(
+        func=_cmd_lambda_synthetic_experiment_reconcile
+    )
+    lambda_synthetic_evidence = lambda_synthetic_sub.add_parser("evidence-package")
+    lambda_synthetic_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_evidence.add_argument("--out", type=Path, required=True)
+    lambda_synthetic_evidence.set_defaults(
+        func=_cmd_lambda_synthetic_experiment_evidence_package
+    )
+    lambda_synthetic_closeout = lambda_synthetic_sub.add_parser("closeout")
+    lambda_synthetic_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_closeout.add_argument("--out", type=Path, required=True)
+    lambda_synthetic_closeout.set_defaults(
+        func=_cmd_lambda_synthetic_experiment_closeout
+    )
+    lambda_synthetic_audit = lambda_synthetic_sub.add_parser("artifact-audit")
+    lambda_synthetic_audit.add_argument("--workdir", type=Path, required=True)
+    lambda_synthetic_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_synthetic_audit.add_argument("--out", type=Path, required=True)
+    lambda_synthetic_audit.set_defaults(
+        func=_cmd_lambda_synthetic_experiment_artifact_audit
+    )
+    lambda_learner_syncer_smoke = lambda_sub.add_parser("learner-syncer-smoke")
+    lambda_learner_syncer_smoke_sub = lambda_learner_syncer_smoke.add_subparsers(
+        dest="lambda_learner_syncer_smoke_command",
+        required=True,
+    )
+    lambda_learner_syncer_success = lambda_learner_syncer_smoke_sub.add_parser(
+        "success-record"
+    )
+    lambda_learner_syncer_success.add_argument("--workdir", type=Path, required=True)
+    lambda_learner_syncer_success.add_argument("--out", type=Path, required=True)
+    lambda_learner_syncer_success.set_defaults(
+        func=_cmd_lambda_learner_syncer_smoke_success_record
+    )
+    lambda_learner_syncer_reconcile = lambda_learner_syncer_smoke_sub.add_parser(
+        "reconcile"
+    )
+    lambda_learner_syncer_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_learner_syncer_reconcile.set_defaults(
+        func=_cmd_lambda_learner_syncer_smoke_reconcile
+    )
+    lambda_learner_syncer_evidence = lambda_learner_syncer_smoke_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_learner_syncer_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_evidence.add_argument("--out", type=Path, required=True)
+    lambda_learner_syncer_evidence.set_defaults(
+        func=_cmd_lambda_learner_syncer_smoke_evidence_package
+    )
+    lambda_learner_syncer_closeout = lambda_learner_syncer_smoke_sub.add_parser(
+        "closeout"
+    )
+    lambda_learner_syncer_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_closeout.add_argument("--out", type=Path, required=True)
+    lambda_learner_syncer_closeout.set_defaults(
+        func=_cmd_lambda_learner_syncer_smoke_closeout
+    )
+    lambda_learner_syncer_audit = lambda_learner_syncer_smoke_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_learner_syncer_audit.add_argument("--workdir", type=Path, required=True)
+    lambda_learner_syncer_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_learner_syncer_audit.add_argument("--out", type=Path, required=True)
+    lambda_learner_syncer_audit.set_defaults(
+        func=_cmd_lambda_learner_syncer_smoke_artifact_audit
+    )
+    lambda_next_synthetic = lambda_sub.add_parser("next-synthetic-experiment")
+    lambda_next_synthetic_sub = lambda_next_synthetic.add_subparsers(
+        dest="lambda_next_synthetic_experiment_command",
+        required=True,
+    )
+    lambda_next_synthetic_readiness = lambda_next_synthetic_sub.add_parser(
+        "readiness"
+    )
+    lambda_next_synthetic_readiness.add_argument(
+        "--synthetic-experiment-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_readiness.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_readiness.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_readiness
+    )
+    lambda_next_synthetic_discover = lambda_next_synthetic_sub.add_parser(
+        "discover-command"
+    )
+    lambda_next_synthetic_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_discover.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_discover.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_discover_command
+    )
+    lambda_next_synthetic_policy = lambda_next_synthetic_sub.add_parser("policy")
+    lambda_next_synthetic_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_policy.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_policy.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_policy
+    )
+    lambda_next_synthetic_authorize = lambda_next_synthetic_sub.add_parser(
+        "authorize-m079r"
+    )
+    lambda_next_synthetic_authorize.add_argument(
+        "--synthetic-experiment-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_authorize.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_authorize_m079r
+    )
+    lambda_next_synthetic_runbook = lambda_next_synthetic_sub.add_parser(
+        "m079r-runbook-preview"
+    )
+    lambda_next_synthetic_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_runbook.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_runbook.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r_runbook_preview
+    )
+    lambda_next_synthetic_attempt_closeout = lambda_next_synthetic_sub.add_parser(
+        "attempt-closeout"
+    )
+    lambda_next_synthetic_attempt_closeout.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_attempt_closeout.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_attempt_closeout.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_attempt_closeout
+    )
+    lambda_next_synthetic_parse_artifact = lambda_next_synthetic_sub.add_parser(
+        "parse-artifact-fixture"
+    )
+    lambda_next_synthetic_parse_artifact.add_argument(
+        "--fixture",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_parse_artifact.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_parse_artifact.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_parse_artifact.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_parse_artifact_fixture
+    )
+    lambda_next_synthetic_authorize_m079r2 = lambda_next_synthetic_sub.add_parser(
+        "authorize-m079r2"
+    )
+    lambda_next_synthetic_authorize_m079r2.add_argument(
+        "--attempt-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize_m079r2.add_argument(
+        "--declared-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize_m079r2.add_argument(
+        "--previous-authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize_m079r2.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_authorize_m079r2.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_authorize_m079r2
+    )
+    lambda_next_synthetic_m079r2_runbook = lambda_next_synthetic_sub.add_parser(
+        "m079r2-runbook-preview"
+    )
+    lambda_next_synthetic_m079r2_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_runbook.add_argument(
+        "--declared-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_runbook.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_runbook.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r2_runbook_preview
+    )
+    lambda_next_synthetic_m079r2_plan = lambda_next_synthetic_sub.add_parser(
+        "m079r2-plan"
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--declared-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_plan.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_m079r2_plan.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r2_plan
+    )
+    lambda_next_synthetic_m079r2_gate = lambda_next_synthetic_sub.add_parser(
+        "m079r2-gate-check"
+    )
+    lambda_next_synthetic_m079r2_gate.add_argument(
+        "--plan",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_gate.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_m079r2_gate.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r2_gate_check
+    )
+    lambda_next_synthetic_plan = lambda_next_synthetic_sub.add_parser("m079r-plan")
+    lambda_next_synthetic_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_next_synthetic_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_next_synthetic_plan.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_plan.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r_plan
+    )
+    lambda_next_synthetic_gate = lambda_next_synthetic_sub.add_parser(
+        "m079r-gate-check"
+    )
+    lambda_next_synthetic_gate.add_argument("--plan", type=Path, required=True)
+    lambda_next_synthetic_gate.add_argument("--out", type=Path, required=True)
+    lambda_next_synthetic_gate.set_defaults(
+        func=_cmd_lambda_next_synthetic_experiment_m079r_gate_check
+    )
+    lambda_diloco_synthetic = lambda_sub.add_parser("diloco-synthetic")
+    lambda_diloco_synthetic_sub = lambda_diloco_synthetic.add_subparsers(
+        dest="lambda_diloco_synthetic_command",
+        required=True,
+    )
+    lambda_diloco_success = lambda_diloco_synthetic_sub.add_parser("success-record")
+    lambda_diloco_success.add_argument("--workdir", type=Path, required=True)
+    lambda_diloco_success.add_argument("--out", type=Path, required=True)
+    lambda_diloco_success.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_success_record
+    )
+    lambda_diloco_reconcile = lambda_diloco_synthetic_sub.add_parser("reconcile")
+    lambda_diloco_reconcile.add_argument("--workdir", type=Path, required=True)
+    lambda_diloco_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_diloco_reconcile.set_defaults(func=_cmd_lambda_diloco_synthetic_reconcile)
+    lambda_diloco_evidence = lambda_diloco_synthetic_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_diloco_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_evidence.add_argument("--out", type=Path, required=True)
+    lambda_diloco_evidence.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_evidence_package
+    )
+    lambda_diloco_closeout = lambda_diloco_synthetic_sub.add_parser("closeout")
+    lambda_diloco_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_closeout.add_argument("--out", type=Path, required=True)
+    lambda_diloco_closeout.set_defaults(func=_cmd_lambda_diloco_synthetic_closeout)
+    lambda_diloco_artifact_audit = lambda_diloco_synthetic_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_diloco_artifact_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_artifact_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_artifact_audit.add_argument("--out", type=Path, required=True)
+    lambda_diloco_artifact_audit.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_artifact_audit
+    )
+    lambda_diloco_readiness = lambda_diloco_synthetic_sub.add_parser("readiness")
+    lambda_diloco_readiness.add_argument(
+        "--learner-syncer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_readiness.add_argument("--out", type=Path, required=True)
+    lambda_diloco_readiness.set_defaults(func=_cmd_lambda_diloco_synthetic_readiness)
+    lambda_diloco_discover = lambda_diloco_synthetic_sub.add_parser(
+        "discover-command"
+    )
+    lambda_diloco_discover.add_argument("--source-root", type=Path, required=True)
+    lambda_diloco_discover.add_argument("--out", type=Path, required=True)
+    lambda_diloco_discover.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_discover_command
+    )
+    lambda_diloco_policy = lambda_diloco_synthetic_sub.add_parser("policy")
+    lambda_diloco_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_policy.add_argument("--out", type=Path, required=True)
+    lambda_diloco_policy.set_defaults(func=_cmd_lambda_diloco_synthetic_policy)
+    lambda_diloco_authorize = lambda_diloco_synthetic_sub.add_parser(
+        "authorize-m081r"
+    )
+    lambda_diloco_authorize.add_argument(
+        "--learner-syncer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_authorize.add_argument("--readiness", type=Path, required=True)
+    lambda_diloco_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_authorize.add_argument("--policy", type=Path, required=True)
+    lambda_diloco_authorize.add_argument("--out", type=Path, required=True)
+    lambda_diloco_authorize.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_authorize_m081r
+    )
+    lambda_diloco_runbook = lambda_diloco_synthetic_sub.add_parser(
+        "m081r-runbook-preview"
+    )
+    lambda_diloco_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_runbook.add_argument("--out", type=Path, required=True)
+    lambda_diloco_runbook.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r_runbook_preview
+    )
+    lambda_diloco_attempt_closeout = lambda_diloco_synthetic_sub.add_parser(
+        "attempt-closeout"
+    )
+    lambda_diloco_attempt_closeout.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_attempt_closeout.add_argument("--out", type=Path, required=True)
+    lambda_diloco_attempt_closeout.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_attempt_closeout
+    )
+    lambda_diloco_parse_artifact = lambda_diloco_synthetic_sub.add_parser(
+        "parse-artifact-fixture"
+    )
+    lambda_diloco_parse_artifact.add_argument("--fixture", type=Path, required=True)
+    lambda_diloco_parse_artifact.add_argument("--policy", type=Path, required=True)
+    lambda_diloco_parse_artifact.add_argument("--out", type=Path, required=True)
+    lambda_diloco_parse_artifact.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_parse_artifact_fixture
+    )
+    lambda_diloco_authorize_m081r2 = lambda_diloco_synthetic_sub.add_parser(
+        "authorize-m081r2"
+    )
+    lambda_diloco_authorize_m081r2.add_argument(
+        "--attempt-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_authorize_m081r2.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_authorize_m081r2.add_argument(
+        "--previous-authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_authorize_m081r2.add_argument("--out", type=Path, required=True)
+    lambda_diloco_authorize_m081r2.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_authorize_m081r2
+    )
+    lambda_diloco_m081r2_runbook = lambda_diloco_synthetic_sub.add_parser(
+        "m081r2-runbook-preview"
+    )
+    lambda_diloco_m081r2_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_runbook.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_runbook.add_argument("--out", type=Path, required=True)
+    lambda_diloco_m081r2_runbook.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r2_runbook_preview
+    )
+    lambda_diloco_m081r_plan = lambda_diloco_synthetic_sub.add_parser("m081r-plan")
+    lambda_diloco_m081r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_diloco_m081r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r_plan.add_argument("--out", type=Path, required=True)
+    lambda_diloco_m081r_plan.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r_plan
+    )
+    lambda_diloco_m081r_gate = lambda_diloco_synthetic_sub.add_parser(
+        "m081r-gate-check"
+    )
+    lambda_diloco_m081r_gate.add_argument("--plan", type=Path, required=True)
+    lambda_diloco_m081r_gate.add_argument("--out", type=Path, required=True)
+    lambda_diloco_m081r_gate.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r_gate_check
+    )
+    lambda_diloco_m081r2_plan = lambda_diloco_synthetic_sub.add_parser("m081r2-plan")
+    lambda_diloco_m081r2_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument("--manifest", type=Path, required=True)
+    lambda_diloco_m081r2_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_m081r2_plan.add_argument("--out", type=Path, required=True)
+    lambda_diloco_m081r2_plan.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r2_plan
+    )
+    lambda_diloco_m081r2_gate = lambda_diloco_synthetic_sub.add_parser(
+        "m081r2-gate-check"
+    )
+    lambda_diloco_m081r2_gate.add_argument("--plan", type=Path, required=True)
+    lambda_diloco_m081r2_gate.add_argument("--out", type=Path, required=True)
+    lambda_diloco_m081r2_gate.set_defaults(
+        func=_cmd_lambda_diloco_synthetic_m081r2_gate_check
+    )
+    lambda_diloco_optimizer = lambda_sub.add_parser("diloco-optimizer")
+    lambda_diloco_optimizer_sub = lambda_diloco_optimizer.add_subparsers(
+        dest="lambda_diloco_optimizer_command",
+        required=True,
+    )
+    lambda_diloco_optimizer_success = lambda_diloco_optimizer_sub.add_parser(
+        "success-record"
+    )
+    lambda_diloco_optimizer_success.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_success.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_success.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_success_record
+    )
+    lambda_diloco_optimizer_reconcile = lambda_diloco_optimizer_sub.add_parser(
+        "reconcile"
+    )
+    lambda_diloco_optimizer_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_reconcile.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_reconcile
+    )
+    lambda_diloco_optimizer_evidence = lambda_diloco_optimizer_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_diloco_optimizer_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_evidence.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_evidence.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_evidence_package
+    )
+    lambda_diloco_optimizer_closeout = lambda_diloco_optimizer_sub.add_parser(
+        "closeout"
+    )
+    lambda_diloco_optimizer_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_closeout.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_closeout.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_closeout
+    )
+    lambda_diloco_optimizer_audit = lambda_diloco_optimizer_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_diloco_optimizer_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_audit.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_audit.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_artifact_audit
+    )
+    lambda_diloco_optimizer_readiness = lambda_diloco_optimizer_sub.add_parser(
+        "readiness"
+    )
+    lambda_diloco_optimizer_readiness.add_argument(
+        "--diloco-synthetic-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_readiness.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_readiness.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_readiness
+    )
+    lambda_diloco_optimizer_discover = lambda_diloco_optimizer_sub.add_parser(
+        "discover-command"
+    )
+    lambda_diloco_optimizer_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_discover.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_discover.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_discover_command
+    )
+    lambda_diloco_optimizer_policy = lambda_diloco_optimizer_sub.add_parser("policy")
+    lambda_diloco_optimizer_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_policy.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_policy.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_policy
+    )
+    lambda_diloco_optimizer_authorize = lambda_diloco_optimizer_sub.add_parser(
+        "authorize-m083r"
+    )
+    lambda_diloco_optimizer_authorize.add_argument(
+        "--diloco-synthetic-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_authorize.add_argument("--policy", type=Path, required=True)
+    lambda_diloco_optimizer_authorize.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_authorize.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_authorize_m083r
+    )
+    lambda_diloco_optimizer_runbook = lambda_diloco_optimizer_sub.add_parser(
+        "m083r-runbook-preview"
+    )
+    lambda_diloco_optimizer_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_runbook.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_runbook.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_m083r_runbook_preview
+    )
+    lambda_diloco_optimizer_m083r_plan = lambda_diloco_optimizer_sub.add_parser(
+        "m083r-plan"
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_diloco_optimizer_m083r_plan.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_m083r_plan.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_m083r_plan
+    )
+    lambda_diloco_optimizer_m083r_gate = lambda_diloco_optimizer_sub.add_parser(
+        "m083r-gate-check"
+    )
+    lambda_diloco_optimizer_m083r_gate.add_argument("--plan", type=Path, required=True)
+    lambda_diloco_optimizer_m083r_gate.add_argument("--out", type=Path, required=True)
+    lambda_diloco_optimizer_m083r_gate.set_defaults(
+        func=_cmd_lambda_diloco_optimizer_m083r_gate_check
+    )
+    lambda_integrated_diloco = lambda_sub.add_parser("integrated-diloco")
+    lambda_integrated_diloco_sub = lambda_integrated_diloco.add_subparsers(
+        dest="lambda_integrated_diloco_command",
+        required=True,
+    )
+    lambda_integrated_diloco_success = lambda_integrated_diloco_sub.add_parser(
+        "success-record"
+    )
+    lambda_integrated_diloco_success.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_success.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_success.set_defaults(
+        func=_cmd_lambda_integrated_diloco_success_record
+    )
+    lambda_integrated_diloco_reconcile = lambda_integrated_diloco_sub.add_parser(
+        "reconcile"
+    )
+    lambda_integrated_diloco_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_reconcile.set_defaults(
+        func=_cmd_lambda_integrated_diloco_reconcile
+    )
+    lambda_integrated_diloco_evidence = lambda_integrated_diloco_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_integrated_diloco_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_evidence.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_evidence.set_defaults(
+        func=_cmd_lambda_integrated_diloco_evidence_package
+    )
+    lambda_integrated_diloco_closeout = lambda_integrated_diloco_sub.add_parser(
+        "closeout"
+    )
+    lambda_integrated_diloco_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_closeout.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_closeout.set_defaults(
+        func=_cmd_lambda_integrated_diloco_closeout
+    )
+    lambda_integrated_diloco_audit = lambda_integrated_diloco_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_integrated_diloco_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_audit.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_audit.set_defaults(
+        func=_cmd_lambda_integrated_diloco_artifact_audit
+    )
+    lambda_integrated_diloco_readiness = lambda_integrated_diloco_sub.add_parser(
+        "readiness"
+    )
+    lambda_integrated_diloco_readiness.add_argument(
+        "--diloco-synthetic-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_readiness.add_argument(
+        "--optimizer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_readiness.add_argument(
+        "--learner-syncer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_readiness.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_readiness.set_defaults(
+        func=_cmd_lambda_integrated_diloco_readiness
+    )
+    lambda_integrated_diloco_discover = lambda_integrated_diloco_sub.add_parser(
+        "discover-command"
+    )
+    lambda_integrated_diloco_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_discover.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_discover.set_defaults(
+        func=_cmd_lambda_integrated_diloco_discover_command
+    )
+    lambda_integrated_diloco_policy = lambda_integrated_diloco_sub.add_parser("policy")
+    lambda_integrated_diloco_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_policy.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_policy.set_defaults(
+        func=_cmd_lambda_integrated_diloco_policy
+    )
+    lambda_integrated_diloco_authorize = lambda_integrated_diloco_sub.add_parser(
+        "authorize-m085r"
+    )
+    lambda_integrated_diloco_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_authorize.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_authorize.set_defaults(
+        func=_cmd_lambda_integrated_diloco_authorize_m085r
+    )
+    lambda_integrated_diloco_runbook = lambda_integrated_diloco_sub.add_parser(
+        "m085r-runbook-preview"
+    )
+    lambda_integrated_diloco_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_runbook.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_runbook.set_defaults(
+        func=_cmd_lambda_integrated_diloco_m085r_runbook_preview
+    )
+    lambda_integrated_diloco_m085r_plan = lambda_integrated_diloco_sub.add_parser(
+        "m085r-plan"
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_integrated_diloco_m085r_plan.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_m085r_plan.set_defaults(
+        func=_cmd_lambda_integrated_diloco_m085r_plan
+    )
+    lambda_integrated_diloco_m085r_gate = lambda_integrated_diloco_sub.add_parser(
+        "m085r-gate-check"
+    )
+    lambda_integrated_diloco_m085r_gate.add_argument("--plan", type=Path, required=True)
+    lambda_integrated_diloco_m085r_gate.add_argument("--out", type=Path, required=True)
+    lambda_integrated_diloco_m085r_gate.set_defaults(
+        func=_cmd_lambda_integrated_diloco_m085r_gate_check
+    )
+    lambda_parameter_fragment = lambda_sub.add_parser("parameter-fragment")
+    lambda_parameter_fragment_sub = lambda_parameter_fragment.add_subparsers(
+        dest="lambda_parameter_fragment_command",
+        required=True,
+    )
+    lambda_parameter_fragment_success = lambda_parameter_fragment_sub.add_parser(
+        "success-record"
+    )
+    lambda_parameter_fragment_success.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_success.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_success.set_defaults(
+        func=_cmd_lambda_parameter_fragment_success_record
+    )
+    lambda_parameter_fragment_reconcile = lambda_parameter_fragment_sub.add_parser(
+        "reconcile"
+    )
+    lambda_parameter_fragment_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_reconcile.set_defaults(
+        func=_cmd_lambda_parameter_fragment_reconcile
+    )
+    lambda_parameter_fragment_evidence = lambda_parameter_fragment_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_parameter_fragment_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_evidence.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_evidence.set_defaults(
+        func=_cmd_lambda_parameter_fragment_evidence_package
+    )
+    lambda_parameter_fragment_closeout = lambda_parameter_fragment_sub.add_parser(
+        "closeout"
+    )
+    lambda_parameter_fragment_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_closeout.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_closeout.set_defaults(
+        func=_cmd_lambda_parameter_fragment_closeout
+    )
+    lambda_parameter_fragment_audit = lambda_parameter_fragment_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_parameter_fragment_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_audit.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_audit.set_defaults(
+        func=_cmd_lambda_parameter_fragment_artifact_audit
+    )
+    lambda_parameter_fragment_readiness = lambda_parameter_fragment_sub.add_parser(
+        "readiness"
+    )
+    lambda_parameter_fragment_readiness.add_argument(
+        "--integrated-diloco-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_readiness.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_readiness.set_defaults(
+        func=_cmd_lambda_parameter_fragment_readiness
+    )
+    lambda_parameter_fragment_discover = lambda_parameter_fragment_sub.add_parser(
+        "discover-command"
+    )
+    lambda_parameter_fragment_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_discover.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_discover.set_defaults(
+        func=_cmd_lambda_parameter_fragment_discover_command
+    )
+    lambda_parameter_fragment_policy = lambda_parameter_fragment_sub.add_parser(
+        "policy"
+    )
+    lambda_parameter_fragment_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_policy.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_policy.set_defaults(
+        func=_cmd_lambda_parameter_fragment_policy
+    )
+    lambda_parameter_fragment_authorize = lambda_parameter_fragment_sub.add_parser(
+        "authorize-m087r"
+    )
+    lambda_parameter_fragment_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_authorize.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_authorize.set_defaults(
+        func=_cmd_lambda_parameter_fragment_authorize_m087r
+    )
+    lambda_parameter_fragment_runbook = lambda_parameter_fragment_sub.add_parser(
+        "m087r-runbook-preview"
+    )
+    lambda_parameter_fragment_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_runbook.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_runbook.set_defaults(
+        func=_cmd_lambda_parameter_fragment_m087r_runbook_preview
+    )
+    lambda_parameter_fragment_m087r_plan = lambda_parameter_fragment_sub.add_parser(
+        "m087r-plan"
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_parameter_fragment_m087r_plan.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_m087r_plan.set_defaults(
+        func=_cmd_lambda_parameter_fragment_m087r_plan
+    )
+    lambda_parameter_fragment_m087r_gate = lambda_parameter_fragment_sub.add_parser(
+        "m087r-gate-check"
+    )
+    lambda_parameter_fragment_m087r_gate.add_argument("--plan", type=Path, required=True)
+    lambda_parameter_fragment_m087r_gate.add_argument("--out", type=Path, required=True)
+    lambda_parameter_fragment_m087r_gate.set_defaults(
+        func=_cmd_lambda_parameter_fragment_m087r_gate_check
+    )
+    lambda_scaffold_complete = lambda_sub.add_parser("scaffold-complete")
+    lambda_scaffold_complete_sub = lambda_scaffold_complete.add_subparsers(
+        dest="lambda_scaffold_complete_command",
+        required=True,
+    )
+    lambda_scaffold_complete_decision = lambda_scaffold_complete_sub.add_parser(
+        "decision"
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--runtime-smoke-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--learner-syncer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--diloco-synthetic-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--optimizer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--integrated-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument(
+        "--parameter-fragment-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_decision.add_argument("--out", type=Path, required=True)
+    lambda_scaffold_complete_decision.set_defaults(
+        func=_cmd_lambda_scaffold_complete_decision
+    )
+    lambda_scaffold_complete_final = lambda_scaffold_complete_sub.add_parser(
+        "final-decision"
+    )
+    lambda_scaffold_complete_final.add_argument(
+        "--bounded-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_final.add_argument(
+        "--scaffold-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_scaffold_complete_final.add_argument("--out", type=Path, required=True)
+    lambda_scaffold_complete_final.set_defaults(
+        func=_cmd_lambda_scaffold_complete_final_decision
+    )
+    lambda_bounded_diloco = lambda_sub.add_parser("bounded-diloco-experiment")
+    lambda_bounded_diloco_sub = lambda_bounded_diloco.add_subparsers(
+        dest="lambda_bounded_diloco_experiment_command",
+        required=True,
+    )
+    lambda_bounded_diloco_success = lambda_bounded_diloco_sub.add_parser(
+        "success-record"
+    )
+    lambda_bounded_diloco_success.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_success.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_success.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_success_record
+    )
+    lambda_bounded_diloco_reconcile = lambda_bounded_diloco_sub.add_parser(
+        "reconcile"
+    )
+    lambda_bounded_diloco_reconcile.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_reconcile.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_reconcile.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_reconcile.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_reconcile
+    )
+    lambda_bounded_diloco_evidence = lambda_bounded_diloco_sub.add_parser(
+        "evidence-package"
+    )
+    lambda_bounded_diloco_evidence.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_evidence.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_evidence.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_evidence.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_evidence_package
+    )
+    lambda_bounded_diloco_closeout = lambda_bounded_diloco_sub.add_parser("closeout")
+    lambda_bounded_diloco_closeout.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_closeout.add_argument(
+        "--reconciliation",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_closeout.add_argument(
+        "--evidence-package",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_closeout.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_closeout.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_closeout
+    )
+    lambda_bounded_diloco_audit = lambda_bounded_diloco_sub.add_parser(
+        "artifact-audit"
+    )
+    lambda_bounded_diloco_audit.add_argument(
+        "--workdir",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_audit.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_audit.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_audit.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_artifact_audit
+    )
+    lambda_bounded_diloco_result_summary = lambda_bounded_diloco_sub.add_parser(
+        "result-summary"
+    )
+    lambda_bounded_diloco_result_summary.add_argument(
+        "--success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_result_summary.add_argument(
+        "--artifact-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_result_summary.add_argument(
+        "--m090-report",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_result_summary.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_result_summary.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_result_summary
+    )
+    lambda_bounded_diloco_interpretation = lambda_bounded_diloco_sub.add_parser(
+        "evidence-interpretation"
+    )
+    lambda_bounded_diloco_interpretation.add_argument(
+        "--result-summary",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_interpretation.add_argument(
+        "--closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_interpretation.add_argument(
+        "--scaffold-final-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_interpretation.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_interpretation.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_evidence_interpretation
+    )
+    lambda_bounded_diloco_readiness = lambda_bounded_diloco_sub.add_parser(
+        "readiness"
+    )
+    lambda_bounded_diloco_readiness.add_argument(
+        "--scaffold-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_readiness.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_readiness.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_readiness
+    )
+    lambda_bounded_diloco_discover = lambda_bounded_diloco_sub.add_parser(
+        "discover-command"
+    )
+    lambda_bounded_diloco_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_discover.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_discover.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_discover_command
+    )
+    lambda_bounded_diloco_policy = lambda_bounded_diloco_sub.add_parser("policy")
+    lambda_bounded_diloco_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_policy.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_policy.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_policy
+    )
+    lambda_bounded_diloco_authorize = lambda_bounded_diloco_sub.add_parser(
+        "authorize-m089r"
+    )
+    lambda_bounded_diloco_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_authorize.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_authorize.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_authorize_m089r
+    )
+    lambda_bounded_diloco_runbook = lambda_bounded_diloco_sub.add_parser(
+        "m089r-runbook-preview"
+    )
+    lambda_bounded_diloco_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_runbook.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_runbook.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_m089r_runbook_preview
+    )
+    lambda_bounded_diloco_m089r_plan = lambda_bounded_diloco_sub.add_parser(
+        "m089r-plan"
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_bounded_diloco_m089r_plan.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_m089r_plan.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_m089r_plan
+    )
+    lambda_bounded_diloco_m089r_gate = lambda_bounded_diloco_sub.add_parser(
+        "m089r-gate-check"
+    )
+    lambda_bounded_diloco_m089r_gate.add_argument("--plan", type=Path, required=True)
+    lambda_bounded_diloco_m089r_gate.add_argument("--out", type=Path, required=True)
+    lambda_bounded_diloco_m089r_gate.set_defaults(
+        func=_cmd_lambda_bounded_diloco_experiment_m089r_gate_check
+    )
+    lambda_scientific_gap = lambda_sub.add_parser("scientific-gap")
+    lambda_scientific_gap_sub = lambda_scientific_gap.add_subparsers(
+        dest="lambda_scientific_gap_command",
+        required=True,
+    )
+    lambda_scientific_gap_assessment = lambda_scientific_gap_sub.add_parser(
+        "assessment"
+    )
+    lambda_scientific_gap_assessment.add_argument(
+        "--bounded-artifact-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_scientific_gap_assessment.add_argument("--out", type=Path, required=True)
+    lambda_scientific_gap_assessment.set_defaults(
+        func=_cmd_lambda_scientific_gap_assessment
+    )
+    lambda_scientific_claim = lambda_sub.add_parser("scientific-claim")
+    lambda_scientific_claim_sub = lambda_scientific_claim.add_subparsers(
+        dest="lambda_scientific_claim_command",
+        required=True,
+    )
+    lambda_scientific_claim_boundaries = lambda_scientific_claim_sub.add_parser(
+        "boundaries"
+    )
+    lambda_scientific_claim_boundaries.add_argument(
+        "--evidence-interpretation",
+        type=Path,
+        required=True,
+    )
+    lambda_scientific_claim_boundaries.add_argument(
+        "--artifact-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_scientific_claim_boundaries.add_argument("--out", type=Path, required=True)
+    lambda_scientific_claim_boundaries.set_defaults(
+        func=_cmd_lambda_scientific_claim_boundaries
+    )
+    lambda_remaining_gap = lambda_sub.add_parser("remaining-gap")
+    lambda_remaining_gap_sub = lambda_remaining_gap.add_subparsers(
+        dest="lambda_remaining_gap_command",
+        required=True,
+    )
+    lambda_remaining_gap_prioritization = lambda_remaining_gap_sub.add_parser(
+        "prioritization"
+    )
+    lambda_remaining_gap_prioritization.add_argument(
+        "--scientific-gap-assessment",
+        type=Path,
+        required=True,
+    )
+    lambda_remaining_gap_prioritization.add_argument(
+        "--claim-boundaries",
+        type=Path,
+        required=True,
+    )
+    lambda_remaining_gap_prioritization.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+    )
+    lambda_remaining_gap_prioritization.set_defaults(
+        func=_cmd_lambda_remaining_gap_prioritization
+    )
+    lambda_post_m089 = lambda_sub.add_parser("post-m089")
+    lambda_post_m089_sub = lambda_post_m089.add_subparsers(
+        dest="lambda_post_m089_command",
+        required=True,
+    )
+    lambda_post_m089_next = lambda_post_m089_sub.add_parser("next-step-decision")
+    lambda_post_m089_next.add_argument(
+        "--scaffold-final-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_post_m089_next.add_argument(
+        "--scientific-gap-assessment",
+        type=Path,
+        required=True,
+    )
+    lambda_post_m089_next.add_argument("--out", type=Path, required=True)
+    lambda_post_m089_next.set_defaults(
+        func=_cmd_lambda_post_m089_next_step_decision
+    )
+    lambda_post_m090 = lambda_sub.add_parser("post-m090")
+    lambda_post_m090_sub = lambda_post_m090.add_subparsers(
+        dest="lambda_post_m090_command",
+        required=True,
+    )
+    lambda_post_m090_next = lambda_post_m090_sub.add_parser(
+        "next-branch-decision"
+    )
+    lambda_post_m090_next.add_argument(
+        "--gap-prioritization",
+        type=Path,
+        required=True,
+    )
+    lambda_post_m090_next.add_argument(
+        "--evidence-interpretation",
+        type=Path,
+        required=True,
+    )
+    lambda_post_m090_next.add_argument("--out", type=Path, required=True)
+    lambda_post_m090_next.set_defaults(
+        func=_cmd_lambda_post_m090_next_branch_decision
+    )
+    lambda_tiny_real_training = lambda_sub.add_parser("tiny-real-training")
+    lambda_tiny_real_training_sub = lambda_tiny_real_training.add_subparsers(
+        dest="lambda_tiny_real_training_command",
+        required=True,
+    )
+    lambda_tiny_real_training_readiness = lambda_tiny_real_training_sub.add_parser(
+        "readiness"
+    )
+    lambda_tiny_real_training_readiness.add_argument(
+        "--m091-report",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_readiness.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_readiness.set_defaults(
+        func=_cmd_lambda_tiny_real_training_readiness
+    )
+    lambda_tiny_real_training_discover = lambda_tiny_real_training_sub.add_parser(
+        "discover-command"
+    )
+    lambda_tiny_real_training_discover.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_discover.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_discover.set_defaults(
+        func=_cmd_lambda_tiny_real_training_discover_command
+    )
+    lambda_tiny_real_training_policy = lambda_tiny_real_training_sub.add_parser(
+        "policy"
+    )
+    lambda_tiny_real_training_policy.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_policy.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_policy.set_defaults(
+        func=_cmd_lambda_tiny_real_training_policy
+    )
+    lambda_tiny_real_training_authorize = lambda_tiny_real_training_sub.add_parser(
+        "authorize-m093r"
+    )
+    lambda_tiny_real_training_authorize.add_argument(
+        "--readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_authorize.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_authorize.add_argument(
+        "--policy",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_authorize.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_authorize.set_defaults(
+        func=_cmd_lambda_tiny_real_training_authorize_m093r
+    )
+    lambda_tiny_real_training_runbook = lambda_tiny_real_training_sub.add_parser(
+        "m093r-runbook-preview"
+    )
+    lambda_tiny_real_training_runbook.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_runbook.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_runbook.set_defaults(
+        func=_cmd_lambda_tiny_real_training_m093r_runbook_preview
+    )
+    lambda_tiny_real_training_m093r_plan = lambda_tiny_real_training_sub.add_parser(
+        "m093r-plan"
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--discovery-report",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--source-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--dependency-bundle-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--manifest-validation",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--authorization",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--ssh-key-selection",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument(
+        "--price-snapshot",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_plan.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_m093r_plan.set_defaults(
+        func=_cmd_lambda_tiny_real_training_m093r_plan
+    )
+    lambda_tiny_real_training_m093r_gate = lambda_tiny_real_training_sub.add_parser(
+        "m093r-gate-check"
+    )
+    lambda_tiny_real_training_m093r_gate.add_argument(
+        "--plan",
+        type=Path,
+        required=True,
+    )
+    lambda_tiny_real_training_m093r_gate.add_argument("--out", type=Path, required=True)
+    lambda_tiny_real_training_m093r_gate.set_defaults(
+        func=_cmd_lambda_tiny_real_training_m093r_gate_check
+    )
+    lambda_m072 = lambda_sub.add_parser("m072")
+    lambda_m072_sub = lambda_m072.add_subparsers(
+        dest="lambda_m072_command",
+        required=True,
+    )
+    lambda_m072_report = lambda_m072_sub.add_parser("report")
+    lambda_m072_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m072_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m072_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m072_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m072_report.add_argument("--smoke-discovery", type=Path, required=True)
+    lambda_m072_report.add_argument("--smoke-policy", type=Path, required=True)
+    lambda_m072_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m072_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m072_report.add_argument("--out", type=Path, required=True)
+    lambda_m072_report.set_defaults(func=_cmd_lambda_m072_report)
+    lambda_m072a = lambda_sub.add_parser("m072a")
+    lambda_m072a_sub = lambda_m072a.add_subparsers(
+        dest="lambda_m072a_command",
+        required=True,
+    )
+    lambda_m072a_report = lambda_m072a_sub.add_parser("report")
+    lambda_m072a_report.add_argument("--smoke-discovery", type=Path, required=True)
+    lambda_m072a_report.add_argument("--smoke-policy", type=Path, required=True)
+    lambda_m072a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m072a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m072a_report.add_argument("--out", type=Path, required=True)
+    lambda_m072a_report.set_defaults(func=_cmd_lambda_m072a_report)
+    lambda_m073s = lambda_sub.add_parser("m073s")
+    lambda_m073s_sub = lambda_m073s.add_subparsers(
+        dest="lambda_m073s_command",
+        required=True,
+    )
+    lambda_m073s_report = lambda_m073s_sub.add_parser("report")
+    lambda_m073s_report.add_argument("--classification", type=Path, required=True)
+    lambda_m073s_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m073s_report.add_argument("--banner-policy", type=Path, required=True)
+    lambda_m073s_report.add_argument("--upload-policy", type=Path, required=True)
+    lambda_m073s_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m073s_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m073s_report.add_argument("--out", type=Path, required=True)
+    lambda_m073s_report.set_defaults(func=_cmd_lambda_m073s_report)
+    lambda_m074 = lambda_sub.add_parser("m074")
+    lambda_m074_sub = lambda_m074.add_subparsers(
+        dest="lambda_m074_command",
+        required=True,
+    )
+    lambda_m074_report = lambda_m074_sub.add_parser("report")
+    lambda_m074_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m074_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m074_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m074_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m074_report.add_argument("--runtime-readiness", type=Path, required=True)
+    lambda_m074_report.add_argument("--runtime-discovery", type=Path, required=True)
+    lambda_m074_report.add_argument("--runtime-policy", type=Path, required=True)
+    lambda_m074_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m074_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m074_report.add_argument("--out", type=Path, required=True)
+    lambda_m074_report.set_defaults(func=_cmd_lambda_m074_report)
+    lambda_m074a = lambda_sub.add_parser("m074a")
+    lambda_m074a_sub = lambda_m074a.add_subparsers(
+        dest="lambda_m074a_command",
+        required=True,
+    )
+    lambda_m074a_report = lambda_m074a_sub.add_parser("report")
+    lambda_m074a_report.add_argument("--runtime-discovery", type=Path, required=True)
+    lambda_m074a_report.add_argument("--runtime-policy", type=Path, required=True)
+    lambda_m074a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m074a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m074a_report.add_argument("--out", type=Path, required=True)
+    lambda_m074a_report.set_defaults(func=_cmd_lambda_m074a_report)
+    lambda_m075s = lambda_sub.add_parser("m075s")
+    lambda_m075s_sub = lambda_m075s.add_subparsers(
+        dest="lambda_m075s_command",
+        required=True,
+    )
+    lambda_m075s_report = lambda_m075s_sub.add_parser("report")
+    lambda_m075s_report.add_argument("--failure-record", type=Path, required=True)
+    lambda_m075s_report.add_argument("--failure-closeout", type=Path, required=True)
+    lambda_m075s_report.add_argument(
+        "--failure-evidence-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m075s_report.add_argument("--artifact-policy", type=Path, required=True)
+    lambda_m075s_report.add_argument("--capture-policy", type=Path, required=True)
+    lambda_m075s_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m075s_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m075s_report.add_argument("--out", type=Path, required=True)
+    lambda_m075s_report.set_defaults(func=_cmd_lambda_m075s_report)
+    lambda_m075t = lambda_sub.add_parser("m075t")
+    lambda_m075t_sub = lambda_m075t.add_subparsers(
+        dest="lambda_m075t_command",
+        required=True,
+    )
+    lambda_m075t_report = lambda_m075t_sub.add_parser("report")
+    lambda_m075t_report.add_argument("--attempt-closeout", type=Path, required=True)
+    lambda_m075t_report.add_argument(
+        "--artifact-body-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m075t_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m075t_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m075t_report.add_argument("--out", type=Path, required=True)
+    lambda_m075t_report.set_defaults(func=_cmd_lambda_m075t_report)
+    lambda_m075u = lambda_sub.add_parser("m075u")
+    lambda_m075u_sub = lambda_m075u.add_subparsers(
+        dest="lambda_m075u_command",
+        required=True,
+    )
+    lambda_m075u_report = lambda_m075u_sub.add_parser("report")
+    lambda_m075u_report.add_argument("--failure-record", type=Path, required=True)
+    lambda_m075u_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m075u_report.add_argument("--diagnostic", type=Path, required=True)
+    lambda_m075u_report.add_argument(
+        "--local-before-report",
+        type=Path,
+        required=True,
+    )
+    lambda_m075u_report.add_argument(
+        "--local-after-report",
+        type=Path,
+        required=True,
+    )
+    lambda_m075u_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m075u_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m075u_report.add_argument("--out", type=Path, required=True)
+    lambda_m075u_report.set_defaults(func=_cmd_lambda_m075u_report)
+    lambda_m076 = lambda_sub.add_parser("m076")
+    lambda_m076_sub = lambda_m076.add_subparsers(
+        dest="lambda_m076_command",
+        required=True,
+    )
+    lambda_m076_report = lambda_m076_sub.add_parser("report")
+    lambda_m076_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m076_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m076_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m076_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m076_report.add_argument("--readiness", type=Path, required=True)
+    lambda_m076_report.add_argument("--command-discovery", type=Path, required=True)
+    lambda_m076_report.add_argument("--policy", type=Path, required=True)
+    lambda_m076_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m076_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m076_report.add_argument("--out", type=Path, required=True)
+    lambda_m076_report.set_defaults(func=_cmd_lambda_m076_report)
+    lambda_m076a = lambda_sub.add_parser("m076a")
+    lambda_m076a_sub = lambda_m076a.add_subparsers(
+        dest="lambda_m076a_command",
+        required=True,
+    )
+    lambda_m076a_report = lambda_m076a_sub.add_parser("report")
+    lambda_m076a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m076a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m076a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m076a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m076a_report.add_argument("--out", type=Path, required=True)
+    lambda_m076a_report.set_defaults(func=_cmd_lambda_m076a_report)
+    lambda_m078 = lambda_sub.add_parser("m078")
+    lambda_m078_sub = lambda_m078.add_subparsers(
+        dest="lambda_m078_command",
+        required=True,
+    )
+    lambda_m078_report = lambda_m078_sub.add_parser("report")
+    lambda_m078_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m078_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m078_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m078_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m078_report.add_argument("--readiness", type=Path, required=True)
+    lambda_m078_report.add_argument("--command-discovery", type=Path, required=True)
+    lambda_m078_report.add_argument("--policy", type=Path, required=True)
+    lambda_m078_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m078_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m078_report.add_argument("--out", type=Path, required=True)
+    lambda_m078_report.set_defaults(func=_cmd_lambda_m078_report)
+    lambda_m078a = lambda_sub.add_parser("m078a")
+    lambda_m078a_sub = lambda_m078a.add_subparsers(
+        dest="lambda_m078a_command",
+        required=True,
+    )
+    lambda_m078a_report = lambda_m078a_sub.add_parser("report")
+    lambda_m078a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m078a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m078a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m078a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m078a_report.add_argument("--out", type=Path, required=True)
+    lambda_m078a_report.set_defaults(func=_cmd_lambda_m078a_report)
+    lambda_m079s = lambda_sub.add_parser("m079s")
+    lambda_m079s_sub = lambda_m079s.add_subparsers(
+        dest="lambda_m079s_command",
+        required=True,
+    )
+    lambda_m079s_report = lambda_m079s_sub.add_parser("report")
+    lambda_m079s_report.add_argument("--attempt-closeout", type=Path, required=True)
+    lambda_m079s_report.add_argument(
+        "--declared-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m079s_report.add_argument(
+        "--parser-fixture-report",
+        type=Path,
+        required=True,
+    )
+    lambda_m079s_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m079s_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m079s_report.add_argument("--out", type=Path, required=True)
+    lambda_m079s_report.set_defaults(func=_cmd_lambda_m079s_report)
+    lambda_m080 = lambda_sub.add_parser("m080")
+    lambda_m080_sub = lambda_m080.add_subparsers(
+        dest="lambda_m080_command",
+        required=True,
+    )
+    lambda_m080_report = lambda_m080_sub.add_parser("report")
+    lambda_m080_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m080_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m080_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m080_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m080_report.add_argument("--readiness", type=Path, required=True)
+    lambda_m080_report.add_argument("--command-discovery", type=Path, required=True)
+    lambda_m080_report.add_argument("--policy", type=Path, required=True)
+    lambda_m080_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m080_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m080_report.add_argument("--out", type=Path, required=True)
+    lambda_m080_report.set_defaults(func=_cmd_lambda_m080_report)
+    lambda_m080a = lambda_sub.add_parser("m080a")
+    lambda_m080a_sub = lambda_m080a.add_subparsers(
+        dest="lambda_m080a_command",
+        required=True,
+    )
+    lambda_m080a_report = lambda_m080a_sub.add_parser("report")
+    lambda_m080a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m080a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m080a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m080a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m080a_report.add_argument("--out", type=Path, required=True)
+    lambda_m080a_report.set_defaults(func=_cmd_lambda_m080a_report)
+    lambda_m081s = lambda_sub.add_parser("m081s")
+    lambda_m081s_sub = lambda_m081s.add_subparsers(
+        dest="lambda_m081s_command",
+        required=True,
+    )
+    lambda_m081s_report = lambda_m081s_sub.add_parser("report")
+    lambda_m081s_report.add_argument("--attempt-closeout", type=Path, required=True)
+    lambda_m081s_report.add_argument(
+        "--manifest-artifact-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m081s_report.add_argument(
+        "--parser-fixture-report",
+        type=Path,
+        required=True,
+    )
+    lambda_m081s_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m081s_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m081s_report.add_argument("--out", type=Path, required=True)
+    lambda_m081s_report.set_defaults(func=_cmd_lambda_m081s_report)
+    lambda_m082 = lambda_sub.add_parser("m082")
+    lambda_m082_sub = lambda_m082.add_subparsers(
+        dest="lambda_m082_command",
+        required=True,
+    )
+    lambda_m082_report = lambda_m082_sub.add_parser("report")
+    lambda_m082_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m082_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m082_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m082_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m082_report.add_argument(
+        "--optimizer-readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_m082_report.add_argument(
+        "--optimizer-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m082_report.add_argument("--optimizer-policy", type=Path, required=True)
+    lambda_m082_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m082_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m082_report.add_argument("--out", type=Path, required=True)
+    lambda_m082_report.set_defaults(func=_cmd_lambda_m082_report)
+    lambda_m082a = lambda_sub.add_parser("m082a")
+    lambda_m082a_sub = lambda_m082a.add_subparsers(
+        dest="lambda_m082a_command",
+        required=True,
+    )
+    lambda_m082a_report = lambda_m082a_sub.add_parser("report")
+    lambda_m082a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m082a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m082a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m082a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m082a_report.add_argument("--out", type=Path, required=True)
+    lambda_m082a_report.set_defaults(func=_cmd_lambda_m082a_report)
+    lambda_m084 = lambda_sub.add_parser("m084")
+    lambda_m084_sub = lambda_m084.add_subparsers(
+        dest="lambda_m084_command",
+        required=True,
+    )
+    lambda_m084_report = lambda_m084_sub.add_parser("report")
+    lambda_m084_report.add_argument(
+        "--optimizer-success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument(
+        "--optimizer-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument(
+        "--optimizer-artifact-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument(
+        "--integrated-readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument(
+        "--integrated-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m084_report.add_argument("--integrated-policy", type=Path, required=True)
+    lambda_m084_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m084_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m084_report.add_argument("--out", type=Path, required=True)
+    lambda_m084_report.set_defaults(func=_cmd_lambda_m084_report)
+    lambda_m084a = lambda_sub.add_parser("m084a")
+    lambda_m084a_sub = lambda_m084a.add_subparsers(
+        dest="lambda_m084a_command",
+        required=True,
+    )
+    lambda_m084a_report = lambda_m084a_sub.add_parser("report")
+    lambda_m084a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m084a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m084a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m084a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m084a_report.add_argument("--out", type=Path, required=True)
+    lambda_m084a_report.set_defaults(func=_cmd_lambda_m084a_report)
+    lambda_m086 = lambda_sub.add_parser("m086")
+    lambda_m086_sub = lambda_m086.add_subparsers(
+        dest="lambda_m086_command",
+        required=True,
+    )
+    lambda_m086_report = lambda_m086_sub.add_parser("report")
+    lambda_m086_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m086_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m086_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m086_report.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_m086_report.add_argument(
+        "--fragment-readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_m086_report.add_argument(
+        "--fragment-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m086_report.add_argument("--fragment-policy", type=Path, required=True)
+    lambda_m086_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m086_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m086_report.add_argument("--out", type=Path, required=True)
+    lambda_m086_report.set_defaults(func=_cmd_lambda_m086_report)
+    lambda_m086a = lambda_sub.add_parser("m086a")
+    lambda_m086a_sub = lambda_m086a.add_subparsers(
+        dest="lambda_m086a_command",
+        required=True,
+    )
+    lambda_m086a_report = lambda_m086a_sub.add_parser("report")
+    lambda_m086a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m086a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m086a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m086a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m086a_report.add_argument("--out", type=Path, required=True)
+    lambda_m086a_report.set_defaults(func=_cmd_lambda_m086a_report)
+    lambda_m088 = lambda_sub.add_parser("m088")
+    lambda_m088_sub = lambda_m088.add_subparsers(
+        dest="lambda_m088_command",
+        required=True,
+    )
+    lambda_m088_report = lambda_m088_sub.add_parser("report")
+    lambda_m088_report.add_argument(
+        "--parameter-fragment-success-record",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--parameter-fragment-closeout",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--parameter-fragment-artifact-audit",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--ssh-readiness-history",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--scaffold-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--bounded-readiness",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--bounded-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument(
+        "--bounded-policy",
+        type=Path,
+        required=True,
+    )
+    lambda_m088_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m088_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m088_report.add_argument("--out", type=Path, required=True)
+    lambda_m088_report.set_defaults(func=_cmd_lambda_m088_report)
+    lambda_m088a = lambda_sub.add_parser("m088a")
+    lambda_m088a_sub = lambda_m088a.add_subparsers(
+        dest="lambda_m088a_command",
+        required=True,
+    )
+    lambda_m088a_report = lambda_m088a_sub.add_parser("report")
+    lambda_m088a_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m088a_report.add_argument("--policy", type=Path, required=True)
+    lambda_m088a_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m088a_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m088a_report.add_argument("--out", type=Path, required=True)
+    lambda_m088a_report.set_defaults(func=_cmd_lambda_m088a_report)
+    lambda_m090 = lambda_sub.add_parser("m090")
+    lambda_m090_sub = lambda_m090.add_subparsers(
+        dest="lambda_m090_command",
+        required=True,
+    )
+    lambda_m090_report = lambda_m090_sub.add_parser("report")
+    lambda_m090_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m090_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m090_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m090_report.add_argument("--artifact-audit", type=Path, required=True)
+    lambda_m090_report.add_argument(
+        "--scaffold-final-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_m090_report.add_argument(
+        "--scientific-gap-assessment",
+        type=Path,
+        required=True,
+    )
+    lambda_m090_report.add_argument(
+        "--next-step-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_m090_report.add_argument("--out", type=Path, required=True)
+    lambda_m090_report.set_defaults(func=_cmd_lambda_m090_report)
+    lambda_m091 = lambda_sub.add_parser("m091")
+    lambda_m091_sub = lambda_m091.add_subparsers(
+        dest="lambda_m091_command",
+        required=True,
+    )
+    lambda_m091_report = lambda_m091_sub.add_parser("report")
+    lambda_m091_report.add_argument("--result-summary", type=Path, required=True)
+    lambda_m091_report.add_argument(
+        "--evidence-interpretation",
+        type=Path,
+        required=True,
+    )
+    lambda_m091_report.add_argument("--claim-boundaries", type=Path, required=True)
+    lambda_m091_report.add_argument("--gap-prioritization", type=Path, required=True)
+    lambda_m091_report.add_argument(
+        "--next-branch-decision",
+        type=Path,
+        required=True,
+    )
+    lambda_m091_report.add_argument("--out", type=Path, required=True)
+    lambda_m091_report.set_defaults(func=_cmd_lambda_m091_report)
+    lambda_m092 = lambda_sub.add_parser("m092")
+    lambda_m092_sub = lambda_m092.add_subparsers(
+        dest="lambda_m092_command",
+        required=True,
+    )
+    lambda_m092_report = lambda_m092_sub.add_parser("report")
+    lambda_m092_report.add_argument("--readiness", type=Path, required=True)
+    lambda_m092_report.add_argument(
+        "--command-discovery",
+        type=Path,
+        required=True,
+    )
+    lambda_m092_report.add_argument("--policy", type=Path, required=True)
+    lambda_m092_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m092_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m092_report.add_argument("--out", type=Path, required=True)
+    lambda_m092_report.set_defaults(func=_cmd_lambda_m092_report)
     lambda_m052 = lambda_sub.add_parser("m052")
     lambda_m052_sub = lambda_m052.add_subparsers(
         dest="lambda_m052_command",
@@ -14412,6 +27661,21 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m052_report.add_argument("--decision", type=Path, required=True)
     lambda_m052_report.add_argument("--out", type=Path, required=True)
     lambda_m052_report.set_defaults(func=_cmd_lambda_m052_report)
+    lambda_m058 = lambda_sub.add_parser("m058")
+    lambda_m058_sub = lambda_m058.add_subparsers(
+        dest="lambda_m058_command",
+        required=True,
+    )
+    lambda_m058_report = lambda_m058_sub.add_parser("report")
+    lambda_m058_report.add_argument("--success-record", type=Path, required=True)
+    lambda_m058_report.add_argument("--reconciliation", type=Path, required=True)
+    lambda_m058_report.add_argument("--closeout", type=Path, required=True)
+    lambda_m058_report.add_argument("--stage-policy", type=Path, required=True)
+    lambda_m058_report.add_argument("--command-review", type=Path, required=True)
+    lambda_m058_report.add_argument("--authorization", type=Path, required=True)
+    lambda_m058_report.add_argument("--runbook-preview", type=Path, required=True)
+    lambda_m058_report.add_argument("--out", type=Path, required=True)
+    lambda_m058_report.set_defaults(func=_cmd_lambda_m058_report)
     lambda_second = lambda_sub.add_parser("second-attempt")
     lambda_second_sub = lambda_second.add_subparsers(
         dest="lambda_second_attempt_command",
@@ -14581,6 +27845,72 @@ def build_parser() -> argparse.ArgumentParser:
     ci_profile_report = dev_sub.add_parser("ci-profile-report")
     ci_profile_report.add_argument("--out", type=Path, default=None)
     ci_profile_report.set_defaults(func=_cmd_dev_ci_profile_report)
+    tiny_smoke = dev_sub.add_parser("tiny-smoke")
+    tiny_smoke.add_argument("--synthetic", action="store_true")
+    tiny_smoke.add_argument("--max-steps", type=int, required=True)
+    tiny_smoke.add_argument("--out", type=Path, required=True)
+    tiny_smoke.set_defaults(func=_cmd_dev_tiny_smoke)
+    runtime_smoke = dev_sub.add_parser("runtime-smoke")
+    runtime_smoke.add_argument("--synthetic", action="store_true")
+    runtime_smoke.add_argument("--max-steps", type=int, required=True)
+    runtime_smoke.add_argument("--out", type=Path, required=True)
+    runtime_smoke.set_defaults(func=_cmd_dev_runtime_smoke)
+    synthetic_experiment = dev_sub.add_parser("synthetic-experiment")
+    synthetic_experiment.add_argument("--synthetic", action="store_true")
+    synthetic_experiment.add_argument("--max-steps", type=int, required=True)
+    synthetic_experiment.add_argument("--out", type=Path, required=True)
+    synthetic_experiment.set_defaults(func=_cmd_dev_synthetic_experiment)
+    learner_syncer_smoke = dev_sub.add_parser("learner-syncer-smoke")
+    learner_syncer_smoke.add_argument("--synthetic", action="store_true")
+    learner_syncer_smoke.add_argument("--max-steps", type=int, required=True)
+    learner_syncer_smoke.add_argument("--out", type=Path, required=True)
+    learner_syncer_smoke.set_defaults(func=_cmd_dev_learner_syncer_smoke)
+    diloco_smoke = dev_sub.add_parser("diloco-smoke")
+    diloco_smoke.add_argument("--synthetic", action="store_true")
+    diloco_smoke.add_argument("--learners", type=int, required=True)
+    diloco_smoke.add_argument("--sync-rounds", type=int, required=True)
+    diloco_smoke.add_argument("--max-steps", type=int, required=True)
+    diloco_smoke.add_argument("--out", type=Path, required=True)
+    diloco_smoke.set_defaults(func=_cmd_dev_diloco_smoke)
+    diloco_optimizer_smoke = dev_sub.add_parser("diloco-optimizer-smoke")
+    diloco_optimizer_smoke.add_argument("--synthetic", action="store_true")
+    diloco_optimizer_smoke.add_argument("--inner-optimizer", required=True)
+    diloco_optimizer_smoke.add_argument("--outer-optimizer", required=True)
+    diloco_optimizer_smoke.add_argument("--max-steps", type=int, required=True)
+    diloco_optimizer_smoke.add_argument("--out", type=Path, required=True)
+    diloco_optimizer_smoke.set_defaults(func=_cmd_dev_diloco_optimizer_smoke)
+    integrated_diloco_smoke = dev_sub.add_parser("integrated-diloco-smoke")
+    integrated_diloco_smoke.add_argument("--synthetic", action="store_true")
+    integrated_diloco_smoke.add_argument("--learners", type=int, required=True)
+    integrated_diloco_smoke.add_argument("--sync-rounds", type=int, required=True)
+    integrated_diloco_smoke.add_argument("--inner-optimizer", required=True)
+    integrated_diloco_smoke.add_argument("--outer-optimizer", required=True)
+    integrated_diloco_smoke.add_argument("--max-steps", type=int, required=True)
+    integrated_diloco_smoke.add_argument("--out", type=Path, required=True)
+    integrated_diloco_smoke.set_defaults(func=_cmd_dev_integrated_diloco_smoke)
+    parameter_fragment_smoke = dev_sub.add_parser("parameter-fragment-smoke")
+    parameter_fragment_smoke.add_argument("--synthetic", action="store_true")
+    parameter_fragment_smoke.add_argument("--fragments", type=int, required=True)
+    parameter_fragment_smoke.add_argument("--max-steps", type=int, required=True)
+    parameter_fragment_smoke.add_argument("--out", type=Path, required=True)
+    parameter_fragment_smoke.set_defaults(func=_cmd_dev_parameter_fragment_smoke)
+    bounded_diloco_experiment = dev_sub.add_parser("bounded-diloco-experiment")
+    bounded_diloco_experiment.add_argument("--synthetic", action="store_true")
+    bounded_diloco_experiment.add_argument("--learners", type=int, required=True)
+    bounded_diloco_experiment.add_argument("--sync-rounds", type=int, required=True)
+    bounded_diloco_experiment.add_argument("--fragments", type=int, required=True)
+    bounded_diloco_experiment.add_argument("--inner-optimizer", required=True)
+    bounded_diloco_experiment.add_argument("--outer-optimizer", required=True)
+    bounded_diloco_experiment.add_argument("--max-steps", type=int, required=True)
+    bounded_diloco_experiment.add_argument("--out", type=Path, required=True)
+    bounded_diloco_experiment.set_defaults(func=_cmd_dev_bounded_diloco_experiment)
+    tiny_real_training_smoke = dev_sub.add_parser("tiny-real-training-smoke")
+    tiny_real_training_smoke.add_argument("--synthetic", action="store_true")
+    tiny_real_training_smoke.add_argument("--model", required=True)
+    tiny_real_training_smoke.add_argument("--steps", type=int, required=True)
+    tiny_real_training_smoke.add_argument("--optimizer", required=True)
+    tiny_real_training_smoke.add_argument("--out", type=Path, required=True)
+    tiny_real_training_smoke.set_defaults(func=_cmd_dev_tiny_real_training_smoke)
     flake_audit = dev_sub.add_parser("flake-audit")
     flake_audit.add_argument("--tests", required=True)
     flake_audit.add_argument("--repeat", type=int, default=3)
@@ -14766,6 +28096,8 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--seed", type=int, default=123)
     serve.add_argument("--learner-lr", type=float, default=0.05)
     serve.add_argument("--outer-lr", type=float, default=1.0)
+    serve.add_argument("--outer-optimizer", choices=["sgd", "nesterov"], default="sgd")
+    serve.add_argument("--outer-momentum", type=float, default=0.9)
     serve.add_argument("--heartbeat-timeout-seconds", type=float, default=0.5)
     serve.add_argument("--heartbeat-check-interval-seconds", type=float, default=0.05)
     serve.add_argument("--update-long-poll-timeout-seconds", type=float, default=0.005)

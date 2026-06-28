@@ -9,9 +9,11 @@ import subprocess
 import sys
 import time
 from dataclasses import asdict, dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+import numpy as np
 
 from decodilo import __version__
 from decodilo.pricing.budget import (
@@ -48,7 +50,10 @@ from decodilo.runtime.run_spec import (
 from decodilo.sim.fake_model import convex_loss, make_target_vector
 from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.codec_registry import validate_artifact_codec
+from decodilo.syncer.event_log import EventType, read_event_log
+from decodilo.syncer.outer_optimizer import create_outer_optimizer
 from decodilo.syncer.replay import replay_event_log
+from decodilo.time_compat import UTC
 from decodilo.transport.envelope import MessageType, make_envelope
 from decodilo.transport.tcp_client import JsonlTcpClient
 
@@ -67,7 +72,9 @@ class LocalRunConfig:
     grace_window: int = 0
     max_staleness: int = 1
     learner_lr: float = 0.05
+    outer_optimizer: str = "sgd"
     outer_lr: float = 1.0
+    outer_momentum: float = 0.9
     trainer_type: str = "numpy_convex"
     trainer_config: dict[str, Any] | None = None
     heartbeat_interval_seconds: float = 0.05
@@ -234,6 +241,10 @@ class LocalRunner:
             str(self.config.learner_lr),
             "--outer-lr",
             str(self.config.outer_lr),
+            "--outer-optimizer",
+            self.config.outer_optimizer,
+            "--outer-momentum",
+            str(self.config.outer_momentum),
             "--heartbeat-timeout-seconds",
             str(self.config.heartbeat_timeout_seconds),
             "--update-long-poll-timeout-seconds",
@@ -556,6 +567,61 @@ class LocalRunner:
             "warnings": [reason],
         }
 
+    def _verify_pseudo_gradient_numeric(self, event_log_path: Path) -> dict[str, Any]:
+        """Numerically re-derive logged outer optimizer steps from inline commit events.
+
+        The syncer can cheaply report that the Nesterov path was exercised, but
+        that is not a mathematical pseudo-gradient check. This verifier is run
+        while building the final local report and independently reapplies the
+        declared outer optimizer to each committed round's logged
+        old_global_vector + weighted_delta. It then compares the recomputed
+        vector to the logged new_global_vector.
+
+        Returns passed=None when the event payloads are not inline-vector
+        payloads (for example artifact-ref/chunked modes).
+        """
+        optimizer = None
+        optimizer_name: str | None = None
+        rounds_checked = 0
+        try:
+            events = read_event_log(event_log_path)
+            for event in events:
+                if event.event_type != EventType.SYNC_ROUND_COMMITTED:
+                    continue
+                payload = event.payload
+                required = {"old_global_vector", "weighted_delta", "new_global_vector"}
+                if not required.issubset(payload):
+                    return {
+                        "passed": None,
+                        "rounds_checked": rounds_checked,
+                        "reason": "inline_vectors_unavailable",
+                    }
+                name = str(payload.get("outer_optimizer", "sgd"))
+                if optimizer is None or optimizer_name != name:
+                    outer_momentum = payload.get("outer_momentum", 0.9)
+                    optimizer = create_outer_optimizer(
+                        name,
+                        outer_lr=float(payload["outer_lr"]),
+                        momentum=0.9 if outer_momentum is None else float(outer_momentum),
+                    )
+                    optimizer_name = name
+                old_vector = np.asarray(payload["old_global_vector"], dtype=np.float64)
+                weighted_delta = np.asarray(payload["weighted_delta"], dtype=np.float64)
+                logged_new = np.asarray(payload["new_global_vector"], dtype=np.float64)
+                recomputed = optimizer.apply(old_vector, weighted_delta)
+                if not np.allclose(recomputed, logged_new, rtol=0.0, atol=1e-12):
+                    return {
+                        "passed": False,
+                        "rounds_checked": rounds_checked + 1,
+                        "reason": "recomputed_new_global_vector_mismatch",
+                    }
+                rounds_checked += 1
+        except Exception as exc:  # noqa: BLE001 - report verifier failure verbatim
+            return {"passed": False, "rounds_checked": rounds_checked, "reason": str(exc)}
+        if rounds_checked == 0:
+            return {"passed": False, "rounds_checked": 0, "reason": "no_committed_rounds"}
+        return {"passed": True, "rounds_checked": rounds_checked, "reason": None}
+
     def _build_report(
         self,
         syncer_summary: dict[str, Any],
@@ -649,6 +715,17 @@ class LocalRunner:
                 resource_limits.max_in_memory_fragment_bytes,
             ),
         )
+        metrics_payload = dict(syncer_summary["metrics"])
+        numeric_pseudo = self._verify_pseudo_gradient_numeric(event_log_path)
+        metrics_payload["pseudo_gradient_numeric_check_passed"] = numeric_pseudo["passed"]
+        metrics_payload["pseudo_gradient_numeric_rounds_checked"] = numeric_pseudo[
+            "rounds_checked"
+        ]
+        metrics_payload["pseudo_gradient_numeric_check_reason"] = numeric_pseudo["reason"]
+        # Backward-compatible alias, now backed by numeric event-log re-derivation
+        # whenever the local runtime can read inline vectors from commit events.
+        metrics_payload["pseudo_gradient_check_passed"] = numeric_pseudo["passed"]
+
         report = LocalRuntimeReport(
             run_id=self.run_id,
             config=config_dict,
@@ -678,9 +755,9 @@ class LocalRunner:
                 str(path) for path in sorted(self.config.workdir.glob("learner-*.checkpoint.json"))
             ],
             perf_counters=perf_counters.model_dump(mode="json"),
-            metrics=syncer_summary["metrics"],
+            metrics=metrics_payload,
             metric_validation=validate_metrics(
-                syncer_summary["metrics"],
+                metrics_payload,
                 final_global_version=int(syncer_summary["final_global_version"]),
             ).model_dump(mode="json"),
             replay_validation=replay_report,
@@ -954,7 +1031,11 @@ def build_config_from_args(args: argparse.Namespace) -> LocalRunConfig:
             grace_window=spec.grace_window,
             max_staleness=spec.max_staleness_versions,
             learner_lr=float(spec.trainer_config.get("learner_lr", args.learner_lr)),
+            outer_optimizer=str(spec.trainer_config.get("outer_optimizer", args.outer_optimizer)),
             outer_lr=float(spec.trainer_config.get("outer_lr", args.outer_lr)),
+            outer_momentum=float(
+                spec.trainer_config.get("outer_momentum", args.outer_momentum)
+            ),
             trainer_type=spec.trainer_type,
             trainer_config=trainer_config,
             heartbeat_interval_seconds=float(
@@ -1042,7 +1123,9 @@ def build_config_from_args(args: argparse.Namespace) -> LocalRunConfig:
         grace_window=args.grace_window,
         max_staleness=args.max_staleness,
         learner_lr=args.learner_lr,
+        outer_optimizer=args.outer_optimizer,
         outer_lr=args.outer_lr,
+        outer_momentum=args.outer_momentum,
         trainer_type=trainer_type,
         trainer_config=trainer_config,
         heartbeat_interval_seconds=args.heartbeat_interval_seconds,

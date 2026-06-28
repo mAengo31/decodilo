@@ -1,0 +1,43 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/asyncio/streams.py", line 524, in readline
+    line = await self.readuntil(sep)
+  File "/usr/lib/python3.10/asyncio/streams.py", line 602, in readuntil
+    raise exceptions.LimitOverrunError(
+asyncio.exceptions.LimitOverrunError: Separator is not found, and chunk exceed the limit
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28281, in <module>
+    raise SystemExit(main())
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28277, in main
+    return int(args.func(args))
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 17712, in _cmd_learner_run
+    return learner_worker.main(args)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 599, in main
+    return asyncio.run(async_main(args))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 595, in async_main
+    return await worker.run()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 123, in run
+    await self._register()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 163, in _register
+    response = await self._request(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 133, in _request
+    return await self.client.request(envelope)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/tcp_client.py", line 47, in request
+    return await read_envelope(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/jsonl.py", line 52, in read_envelope
+    line = await asyncio.wait_for(
+  File "/usr/lib/python3.10/asyncio/tasks.py", line 445, in wait_for
+    return fut.result()
+  File "/usr/lib/python3.10/asyncio/streams.py", line 533, in readline
+    raise ValueError(e.args[0])
+ValueError: Separator is not found, and chunk exceed the limit

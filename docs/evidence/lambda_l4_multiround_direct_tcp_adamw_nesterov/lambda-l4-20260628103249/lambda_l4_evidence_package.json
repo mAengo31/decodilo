@@ -1,0 +1,60 @@
+{
+  "accepted_updates": 376,
+  "artifact_hashes": {
+    "firewall_audit.json": "3197e96917147bff08a0ecb6af3db654ed98a7655e46354c9d774adf0db9b779",
+    "layout.json": "93f8fa4b977f2160ac1292a06fc42d8c715a7aec76c738bac48772ad011b7cc2",
+    "learner-0/learner-0.checkpoint.json": "bf4ae6dbdcc4c717999caed4136652c378da44817f624e9330dce90afaa23916",
+    "learner-0/learner-0.log": "d8fae93448ffdee7103c7cf57ece39e1f367af42eca0586b37b850a5e2f25d84",
+    "learner-1/learner-1.checkpoint.json": "e0dabd7aefe82f4fefba5773cfe878109b16f3b05a864be69ba896f56560cb87",
+    "learner-1/learner-1.log": "c08ca8d6917dafec70234422a965a189c3f4a3348681d648b814b5da25822920",
+    "network_probe.json": "9db9be55fd4394e2d3fc702d07ed182e3bbdcb1579e9c47f24961d219ee2bbb0",
+    "syncer/events.jsonl": "52433b1793f7f8cea6423371645f528aa55bfcddabd54fe44f47801e5b5b258f",
+    "syncer/syncer_checkpoint.json": "b50c978195b3d78fea770c3135f47b00d62a3eed4ebb92b8872c5bfe46cb43d2",
+    "syncer/syncer_summary.json": "84694ef29933515da77319aed6c5efcc3c0de5bb470ea7107850fa8931495ae8",
+    "termination_safety.json": "029f557ee9c6649b580dbc0ee2e0f950036624afb18e41e78bcb307e8baad517"
+  },
+  "billable_action_performed": true,
+  "blockers": [],
+  "checkpoint_outer_optimizer_step": 188,
+  "checkpoint_velocity_max_abs_error": 0.0,
+  "committed_sync_rounds": 188,
+  "direct_tcp_probe_passed": true,
+  "distinct_role_instances": true,
+  "evidence_complete": true,
+  "evidence_package_builder_billable_action_performed": false,
+  "final_global_version": 188,
+  "final_instance_count": 0,
+  "firewall_rules_restored": true,
+  "independent_nesterov_max_abs_error": 0.0,
+  "inner_optimizer_semantics": "adamw",
+  "lambda_l4_multiround_direct_tcp_runtime_passed": true,
+  "launch_allowed": false,
+  "launch_ready": false,
+  "learner_artifacts_present": [
+    "learner-0",
+    "learner-1"
+  ],
+  "milestone": "Lambda-L4",
+  "missing_items": [],
+  "network_path": "lambda_firewall_direct_tcp",
+  "outer_optimizer_semantics": "nesterov",
+  "pathway_operation_layer_ready": false,
+  "production_scale_ready": false,
+  "pseudo_gradient_numeric_check_passed": true,
+  "pseudo_gradient_numeric_rounds_checked": 188,
+  "remote_instance_count": 3,
+  "remote_process_roles": [
+    "learner-0",
+    "learner-1",
+    "syncer"
+  ],
+  "report_schema_version": 1,
+  "run_id": "lambda-l4-20260628103249",
+  "secret_scan_findings": [],
+  "secret_scan_passed": true,
+  "useful_tokens_accepted": 39480,
+  "warnings": [
+    "Lambda L4 proof uses real billable Lambda instances historically; parser is offline.",
+    "L4 proves direct TCP remote process/instance split, not production scale or Pathway readiness."
+  ]
+}

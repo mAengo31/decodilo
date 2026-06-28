@@ -167,6 +167,9 @@ class TinyTorchCausalLMTrainer:
         self.learning_rate = 0.05
         self.gradient_clip_norm: float | None = None
         self.device = "cpu"
+        self.requested_device = "cpu"
+        self.actual_device = "cpu"
+        self.cuda_available = False
         self.dtype = "float32"
         self.last_loss: float | None = None
         self.last_eval_loss: float | None = None
@@ -196,6 +199,8 @@ class TinyTorchCausalLMTrainer:
         self.learning_rate = config.learning_rate
         self.gradient_clip_norm = config.gradient_clip_norm
         self.device = config.device
+        self.requested_device = config.device
+        self.cuda_available = bool(torch.cuda.is_available())
         self.dtype = config.dtype
         self.optimizer_policy = make_optimizer_policy(config.optimizer)
         if self.device.startswith("cuda") and not torch.cuda.is_available():
@@ -211,6 +216,7 @@ class TinyTorchCausalLMTrainer:
             dtype=self.dtype,
             device=self.device,
         )
+        self.actual_device = str(next(self.module.parameters()).device)
         self._reset_optimizer()
         if initial_state is not None:
             self.set_full_state(initial_state, global_version=initial_state.global_version)
@@ -353,7 +359,12 @@ class TinyTorchCausalLMTrainer:
                 "trainer_state_kind": "named_tensors",
                 "flat_state_checksum": flat_state.checksum,
                 "named_state_checksum": named_state.checksum,
+                "optimizer": self.optimizer_policy.optimizer_name,
                 "optimizer_policy": self.optimizer_policy.model_dump(mode="json"),
+                "optimizer_state": {"present": self.optimizer_obj is not None},
+                "real_training_mechanics_exercised": self.local_step > 0,
+                "real_model_training_claimed": True,
+                "paper_scale_training_claimed": False,
             },
             trainer_state_kind="named_tensors",
             flat_fragment=flat_fragment.model_dump(mode="json"),
@@ -403,12 +414,20 @@ class TinyTorchCausalLMTrainer:
             "learning_rate": self.learning_rate,
             "gradient_clip_norm": self.gradient_clip_norm,
             "device": self.device,
+            "requested_device": self.requested_device,
+            "actual_device": self.actual_device,
+            "cuda_available": self.cuda_available,
             "dtype": self.dtype,
             "seed": self.seed,
             "last_loss": self.last_loss,
             "last_eval_loss": self.last_eval_loss,
             "last_applied_global_version": self.last_applied_global_version,
+            "optimizer": self.optimizer_policy.optimizer_name,
             "optimizer_policy": self.optimizer_policy.model_dump(mode="json"),
+            "optimizer_state": {"present": self.optimizer_obj is not None},
+            "real_training_mechanics_exercised": self.local_step > 0,
+            "real_model_training_claimed": True,
+            "paper_scale_training_claimed": False,
             "num_parameters": self.num_parameters,
         }
 
@@ -445,6 +464,9 @@ class TinyTorchCausalLMTrainer:
         self.learning_rate = float(metadata.get("learning_rate", self.learning_rate))
         self.gradient_clip_norm = metadata.get("gradient_clip_norm", self.gradient_clip_norm)
         self.device = str(metadata.get("device", self.device))
+        self.requested_device = str(metadata.get("requested_device", self.device))
+        self.actual_device = str(metadata.get("actual_device", self.device))
+        self.cuda_available = bool(metadata.get("cuda_available", False))
         self.dtype = str(metadata.get("dtype", self.dtype))
         self.seed = int(metadata.get("seed", self.seed))
         optimizer_policy = metadata.get("optimizer_policy")
@@ -464,6 +486,8 @@ class TinyTorchCausalLMTrainer:
             dtype=self.dtype,
             device=self.device,
         )
+        self.cuda_available = bool(torch.cuda.is_available())
+        self.actual_device = str(next(self.module.parameters()).device)
         named = flat_vector_to_named_state_for_module(
             self.module,
             values=[float(value) for value in state.parameters],

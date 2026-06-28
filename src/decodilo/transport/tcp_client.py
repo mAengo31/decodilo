@@ -28,7 +28,11 @@ class JsonlTcpClient:
         self.writer: asyncio.StreamWriter | None = None
 
     async def connect(self) -> JsonlTcpClient:
-        self.reader, self.writer = await asyncio.open_connection(self.host, self.port)
+        self.reader, self.writer = await asyncio.open_connection(
+            self.host,
+            self.port,
+            limit=self.max_message_bytes + 1,
+        )
         return self
 
     async def close(self) -> None:

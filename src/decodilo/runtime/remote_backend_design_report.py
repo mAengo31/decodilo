@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Literal
 
@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from decodilo.storage.remote_backend_requirements import RemoteBackendRequirementSet
 from decodilo.storage.remote_backend_simulator import RemoteBackendSimulationReport
 from decodilo.storage.remote_backend_validation import validate_remote_backend_design
+from decodilo.time_compat import UTC
 
 
 class RemoteBackendRecommendation(BaseModel):
@@ -115,4 +116,3 @@ def load_remote_backend_design_report(path: str | Path) -> RemoteBackendDesignVa
     return RemoteBackendDesignValidationReport.model_validate_json(
         Path(path).read_text(encoding="utf-8")
     )
-

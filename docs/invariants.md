@@ -1334,3 +1334,350 @@ M029B never launches, terminates, mutates, or spends.
 - M055D may authorize only a future M056 review. It must keep
   `launch_ready=false`, `launch_allowed=false`, `billable_action_performed=false`,
   and `real_mutation_enabled=false`.
+
+## M057 Minimal Remote Command Run
+
+- M057 may execute only the explicitly approved no-op command `true`, exactly
+  once, after a gated one-instance launch and host/TCP readiness.
+- M057 must not open an interactive shell, collect stdout, run `nvidia-smi`, run
+  remote `python`, chain commands, use pipes or redirects, transfer files,
+  forward ports, install packages, run setup scripts, use cloud-init, download
+  data/models, or train.
+- M057 must terminate the owned instance in the same supervised run and verify
+  termination through Lambda read-only discovery/list/get.
+- M057 reports may preserve only bounded redacted diagnostics. Private key
+  material, raw provider tokens, and raw sensitive host details must not be
+  serialized in public artifacts.
+- Historical M057 artifacts may record `billable_action_performed=true`, but
+  follow-up offline milestones must keep their own `billable_action_performed=false`.
+
+## M058 SSH No-Op Command Closeout
+
+- M058 must not launch, terminate, mutate Lambda resources, call live Lambda
+  APIs, use credentials, SSH, open network connections, run remote commands,
+  transfer files, forward ports, install packages, train, or spend.
+- M058 may classify M057 as `ssh_noop_command_success` only when launch,
+  running verification, host discovery, TCP/22 readiness, command `true` exit
+  code 0, owned termination, clean final discovery, no stdout storage, no
+  forbidden remote activity, and secret scan evidence all pass.
+- M058 establishes `noop_command_only` as the current accepted remote-command
+  stage and may authorize only a future M059 identity-command review.
+- M058's selected future command set is limited to identity commands such as
+  `hostname` or `hostname` plus `whoami`. It must not authorize `nvidia-smi`,
+  remote Python, shell exploration, package installation, file transfer, port
+  forwarding, or training.
+- M058 and M059 preview artifacts must keep `launch_ready=false`,
+  `launch_allowed=false`, `billable_action_performed=false`, and
+  `real_mutation_enabled=false`.
+- M060 may close M059 as `ssh_hostname_identity_success` only when the exact
+  command was `hostname`, stdout was redacted rather than stored raw, exit code
+  was 0, termination was verified, final discovery is clean, and no file
+  transfer, port forwarding, package installation, or training occurred.
+- M060 may decide only a future M061 `whoami` identity-command review. It must
+  not authorize immediate launch, SSH, command execution, GPU visibility,
+  Python, package installation, or training.
+- M062 may close M061 as `whoami_command_success` only when the exact command
+  was `whoami`, stdout was redacted rather than stored raw, exit code was 0,
+  termination was verified, final discovery is clean, and no file transfer, port
+  forwarding, package installation, or training occurred.
+- M062 may authorize only a future M063 GPU visibility query review using exactly
+  `nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader`.
+  It must not authorize immediate launch, immediate SSH, arbitrary command
+  execution, raw `nvidia-smi`, loops, shell wrappers, benchmarks, Python, package
+  installation, file transfer, port forwarding, or training.
+- M064 may close M063 as full GPU visibility success when parsed GPU fields are
+  present, or as hash-only success-with-warning when the exact query succeeded
+  and teardown was clean but persisted stdout is redacted/hash-only. It must not
+  call Lambda, SSH, run commands, or spend.
+- M064 may authorize only a future M065 `python3 --version` runtime query review.
+  It must not authorize immediate launch, immediate SSH, arbitrary Python,
+  inline code, imports, scripts, package installation, file transfer, port
+  forwarding, or training.
+## M067S Remote Vertical Slice Invariants
+
+- M067S is offline only: no Lambda launch, no termination, no live read-only Lambda call, no SSH, no upload, and no remote command.
+- A pre-manifest TCP/22 failure must not be reported as a Decodilo, source-bundle, package, or training failure.
+- Future Decodilo vertical-slice attempts must prefer SSH-proven candidate/region pairs over cheapest live candidates.
+- Candidate/region pairs with recent `ssh_port_not_reachable` are excluded by default.
+- `launch_ready=false`, `launch_allowed=false`, and `billable_action_performed=false` remain mandatory for M067S artifacts.
+
+## M068W Dependency Wheelhouse Invariants
+
+- M068W is offline/local-only: no Lambda launch, termination, read-only API call,
+  SSH, upload, remote command, Lambda-side package install, training, or spend.
+- Existing local site-packages copies with macOS artifacts or Python 3.13 ABI
+  extensions must be rejected for Linux/Python 3.10 Lambda use.
+- Controlled local wheel downloads require explicit operator approval and must
+  use binary wheels only. Source distributions and local source builds remain
+  forbidden.
+- Future Lambda dependency installation must use the uploaded local wheelhouse
+  with `--no-index` or equivalent local-only behavior.
+- `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false` remain mandatory for M068W artifacts.
+
+## M071R First Remote Decodilo Runtime Baseline
+
+- M071R may run only the authorized first-experiment Decodilo command:
+  `env PYTHONPATH=/tmp/decodilo-runtime:/tmp/decodilo-src/src python3 -m decodilo.cli dev ci-profile-report --out /tmp/decodilo-first-experiment-ci-profile-report.json`.
+- M071R must upload at most one sanitized source bundle and one sanitized
+  dependency wheelhouse bundle, install dependencies only from the local
+  wheelhouse, stop on first failure, terminate the owned instance, and verify
+  termination through Lambda read-only discovery/list/get.
+- M071R must not train, download data or models, install from the internet, run
+  arbitrary shell commands, transfer unapproved files, forward ports, or launch
+  more than one instance.
+- Follow-up offline milestones may record historical M071R billable evidence,
+  but their own `billable_action_performed` value must remain false.
+
+## M072A Tiny Smoke Invariants
+
+- M072A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download,
+  training, or spend.
+- The local `dev tiny-smoke --synthetic --max-steps 1` command must use only
+  synthetic in-memory data, require no network, require no torch or GPU, start
+  no background process, and write a bounded JSON report.
+- Tiny smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `torch_required=false`, `gpu_required=false`,
+  `launch_ready=false`, and `launch_allowed=false`.
+- M072A may authorize only a future M073R tiny-smoke review. It must keep
+  `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+- Future M073R execution must use the structured argv-token tiny-smoke command
+  discovered offline, preserve local-wheelhouse-only dependency installation,
+  stop on first failure, avoid network/download/training behavior, terminate the
+  owned instance, and verify termination.
+
+## M074A Runtime/Protocol Smoke Invariants
+
+- M074A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download,
+  training, or spend.
+- The local `dev runtime-smoke --synthetic --max-steps 1` command must use only
+  synthetic/local in-memory or temporary data, require no network, require no
+  torch or GPU, start no background process, and write a bounded JSON report.
+- Runtime smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- M074A may authorize only a future M075R runtime/protocol smoke review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+- Future M075R execution must use the structured argv-token runtime-smoke
+  command discovered offline, preserve local-wheelhouse-only dependency
+  installation, stop on first failure, avoid network/download/training behavior,
+  terminate the owned instance, and verify termination.
+
+## M076A Synthetic Experiment Invariants
+
+- M076A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local `dev synthetic-experiment --synthetic --max-steps 1` command must
+  use only synthetic in-memory runtime/protocol data, require no network,
+  require no torch or GPU, start no background process, and write a bounded JSON
+  report.
+- Synthetic experiment reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing synthetic experiment must exercise a deterministic one-step
+  runtime/protocol path beyond CLI help: synthetic update delivery, synthetic
+  commit/replay validation, and bounded artifact reporting.
+- M076A may authorize only a future M077R first synthetic experiment review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+
+## M078A Learner/Syncer Smoke Invariants
+
+- M078A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local `dev learner-syncer-smoke --synthetic --max-steps 1` command must
+  use only synthetic in-memory learner/syncer/protocol data, require no network,
+  require no torch or GPU, start no background process, and write a bounded JSON
+  report.
+- Learner/syncer smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing learner/syncer smoke must exercise a deterministic one-step
+  synthetic exchange beyond the first synthetic experiment: learner update
+  construction, syncer merge/commit, update acknowledgement, replay validation,
+  and bounded artifact reporting.
+- M078A may authorize only a future M079R next synthetic experiment review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+
+## M080A DiLoCo-Shaped Smoke Invariants
+
+- M080A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local
+  `dev diloco-smoke --synthetic --learners 1 --sync-rounds 1 --max-steps 1`
+  command must use only synthetic in-memory DiLoCo-shaped learner/syncer
+  protocol data, require no network, require no torch or GPU, start no
+  background process, and write a bounded JSON report.
+- DiLoCo smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- The command must not claim full DiLoCo optimizer fidelity unless the active
+  path actually runs true inner AdamW and outer Nesterov semantics. The current
+  bounded command reports `optimization_fidelity=diloco_shaped_protocol_only`.
+- A passing DiLoCo smoke must exercise one deterministic synthetic
+  learner/syncer update round: learner-side synthetic update construction,
+  syncer token-weighted merge, global version transition, update acknowledgement,
+  replay validation, and bounded artifact reporting.
+- M080A may authorize only a future M081R DiLoCo-shaped synthetic experiment
+  review. It must keep `run_now=false`, `launch_ready=false`,
+  `launch_allowed=false`, and `billable_action_performed=false`.
+
+## M082A DiLoCo Optimizer-Fidelity Smoke Invariants
+
+- M082A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local
+  `dev diloco-optimizer-smoke --synthetic --inner-optimizer adamw --outer-optimizer nesterov --max-steps 1`
+  command must use only deterministic synthetic vector data, require no
+  network, require no torch or GPU, start no background process, and write a
+  bounded JSON report.
+- DiLoCo optimizer smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing optimizer smoke must verify one tiny deterministic AdamW inner step,
+  pseudo-gradient construction, one Nesterov outer update, optimizer state
+  roundtrip, and strict reference-value comparison.
+- The command must not claim full DiLoCo training or parameter-fragment
+  semantics. The current bounded command reports
+  `optimization_fidelity=optimizer_semantics_smoke` and
+  `parameter_fragment_semantics=not_exercised`.
+- M082A may authorize only a future M083R optimizer-fidelity smoke review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+
+## M084A Integrated DiLoCo Smoke Invariants
+
+- M084A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local
+  `dev integrated-diloco-smoke --synthetic --learners 1 --sync-rounds 1 --inner-optimizer adamw --outer-optimizer nesterov --max-steps 1`
+  command must use only deterministic synthetic in-memory data, require no
+  network, require no torch or GPU, start no background process, and write a
+  bounded JSON report.
+- Integrated DiLoCo smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing integrated smoke must verify one tiny learner/syncer protocol
+  exchange, global version transition, replay/metric validation, AdamW inner
+  semantics, pseudo-gradient construction, Nesterov outer semantics, optimizer
+  state roundtrip, and strict reference-value comparison.
+- The command must not claim full DiLoCo training, parameter-fragment
+  synchronization, communication overlap, or quantized communication. The
+  current bounded command reports
+  `optimization_fidelity=integrated_optimizer_protocol_smoke` and
+  `parameter_fragment_semantics=not_exercised`.
+- M084A may authorize only a future M085R integrated DiLoCo smoke review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+
+## M086A Parameter-Fragment Smoke Invariants
+
+- M086A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local
+  `dev parameter-fragment-smoke --synthetic --fragments 2 --max-steps 1`
+  command must use only deterministic synthetic in-memory vector data, require
+  no network, require no torch or GPU, start no background process, and write a
+  bounded JSON report.
+- Parameter-fragment smoke reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing parameter-fragment smoke must verify one tiny vector split into two
+  fragments, one deterministic fragment update, fragment schedule validation,
+  per-fragment version/state roundtrip, reconstruction, and strict reference
+  value comparison.
+- The command may report
+  `parameter_fragment_semantics=synthetic_vector_fragments`; it must not claim
+  true model/layer fragmentation, communication/computation overlap, quantized
+  communication, real model training, or full Streaming DiLoCo.
+- M086A may authorize only a future M087R parameter-fragment smoke review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.
+
+## M088A Bounded Synthetic DiLoCo Experiment Invariants
+
+- M088A is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, real training, or spend.
+- The local
+  `dev bounded-diloco-experiment --synthetic --learners 1 --sync-rounds 1 --fragments 2 --inner-optimizer adamw --outer-optimizer nesterov --max-steps 1`
+  command must use only deterministic synthetic in-memory vector data, require
+  no network, require no torch or GPU, start no background process, and write a
+  bounded JSON report.
+- Bounded DiLoCo experiment reports must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `training_attempted=false`, `real_model_training_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing bounded experiment must verify one learner/syncer exchange, one
+  synthetic accepted update, AdamW inner semantics, pseudo-gradient
+  construction, Nesterov outer semantics, optimizer state roundtrip, two
+  synthetic vector fragments, fragment reconstruction, replay/metric
+  validation, integration links, and strict reference-value comparison.
+- The command may report
+  `optimization_fidelity=bounded_synthetic_diloco_experiment` and
+  `parameter_fragment_semantics=synthetic_vector_fragments`; it must not claim
+  paper-scale DiLoCo, real model training, true model/layer fragmentation,
+  communication/computation overlap, or quantized communication.
+- M088A may authorize only a future M089R bounded synthetic DiLoCo experiment
+  review. It must keep `run_now=false`, `launch_ready=false`,
+  `launch_allowed=false`, and `billable_action_performed=false`.
+
+## M092 Tiny Real Training Smoke Invariants
+
+- M092 is offline only: no Lambda launch, termination, live Lambda call,
+  credential use, SSH, upload, remote command, package install, download, model
+  or data download, GPU requirement, long-running training, background process,
+  or spend.
+- The local
+  `dev tiny-real-training-smoke --synthetic --model tiny-linear --steps 1 --optimizer adamw`
+  command must use deterministic synthetic in-memory data, create a tiny linear
+  model locally, run one forward/loss/gradient/update step, and write one
+  bounded JSON report.
+- The command must keep `network_used=false`,
+  `package_install_attempted=false`, `download_attempted=false`,
+  `dataset_download_attempted=false`, `model_download_attempted=false`,
+  `torch_required=false`, `gpu_required=false`,
+  `background_process_started=false`, `launch_ready=false`, and
+  `launch_allowed=false`.
+- A passing report must verify finite loss, parameter update, gradient check,
+  AdamW optimizer state, and deterministic replay.
+- The command may claim tiny real training mechanics only. It must not claim
+  real model-scale training, dataset pipeline validation, distributed DiLoCo
+  training, or paper-scale DiLoCo.
+- M092 may authorize only a future M093R tiny real-training smoke review. It
+  must keep `run_now=false`, `launch_ready=false`, `launch_allowed=false`, and
+  `billable_action_performed=false`.

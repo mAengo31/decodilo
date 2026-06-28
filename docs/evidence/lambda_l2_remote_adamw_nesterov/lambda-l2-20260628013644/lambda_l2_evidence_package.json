@@ -1,0 +1,56 @@
+{
+  "accepted_updates": 2,
+  "artifact_hashes": {
+    "layout.json": "ff87f0acba0e4d5b55e5026e7acaf1bb9f87e5b17fb60b1fed511dbc99fe31f6",
+    "learner-0/learner-0.checkpoint.json": "42e4259695d429447900cfb66476078c396993435306176a4704fbcaf5b79a89",
+    "learner-0/learner-0.log": "80758c63c96ed62fea97fc3be58cc38bfac103905531b76ef71d0dceaf8571c0",
+    "learner-1/learner-1.checkpoint.json": "03589e793ae567295fba1a3dd080c7044aba6770122af1678d7d4f77a87f9b39",
+    "learner-1/learner-1.log": "bc8dab66c2024f20432cf98ede636afe1fc349437200ffccb8683cf2359c16ec",
+    "syncer/events.jsonl": "8cdaefd98d0da9863e410272a9238e0973bd2920f798571f4204b5ce4410c302",
+    "syncer/syncer_checkpoint.json": "347d2328b502d7285160986f6d8ee59dc8fabfad4edb54bf56db0d3fc33616f0",
+    "syncer/syncer_summary.json": "242c00ff31fc335d9ee26e189c0ee4f46a2b7db565261e29ea2316998db0c9ee",
+    "termination_safety.json": "5b03e0a3b3a9103369d80a3e4f3a52a30fed17a92304e914cc24e3bba4e0ecf5"
+  },
+  "billable_action_performed": true,
+  "blockers": [],
+  "checkpoint_outer_optimizer_step": 1,
+  "checkpoint_velocity_max_abs_error": 0.0,
+  "committed_sync_rounds": 1,
+  "distinct_role_instances": true,
+  "evidence_complete": true,
+  "evidence_package_builder_billable_action_performed": false,
+  "final_global_version": 1,
+  "final_instance_count": 0,
+  "independent_nesterov_max_abs_error": 0.0,
+  "inner_optimizer_semantics": "adamw",
+  "lambda_l2_remote_runtime_passed": true,
+  "launch_allowed": false,
+  "launch_ready": false,
+  "learner_artifacts_present": [
+    "learner-0",
+    "learner-1"
+  ],
+  "milestone": "Lambda-L2",
+  "missing_items": [],
+  "network_path": "ssh_reverse_tunnel_via_operator",
+  "outer_optimizer_semantics": "nesterov",
+  "pathway_operation_layer_ready": false,
+  "production_scale_ready": false,
+  "pseudo_gradient_numeric_check_passed": true,
+  "pseudo_gradient_numeric_rounds_checked": 1,
+  "remote_instance_count": 3,
+  "remote_process_roles": [
+    "learner-0",
+    "learner-1",
+    "syncer"
+  ],
+  "report_schema_version": 1,
+  "run_id": "lambda-l2-20260628013644",
+  "secret_scan_findings": [],
+  "secret_scan_passed": true,
+  "useful_tokens_accepted": 210,
+  "warnings": [
+    "Lambda L2 proof uses real billable Lambda instances historically; parser is offline.",
+    "L2 proves remote process/instance split, not production scale or Pathway readiness."
+  ]
+}

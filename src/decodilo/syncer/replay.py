@@ -13,7 +13,7 @@ from decodilo.errors import ReplayMismatchError
 from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
 from decodilo.syncer.event_log import EventType, LogEvent, make_event_id, read_event_log
 from decodilo.syncer.global_state_store import read_global_vector_artifact
-from decodilo.syncer.outer_optimizer import SGDOuterOptimizer
+from decodilo.syncer.outer_optimizer import create_outer_optimizer
 from decodilo.syncer.token_weighted_merge import LearnerDelta, token_weighted_merge
 from decodilo.trainer.fragment_artifacts import read_fragment_artifact
 
@@ -142,6 +142,8 @@ def replay_events(
     current_version = initial_global_version
     previous_logical_time = -1
     run_id: str | None = None
+    replay_outer_optimizer = None
+    replay_outer_optimizer_name: str | None = None
 
     for event in events:
         if event.event_id != make_event_id(event.run_id, event.sequence, event.event_type):
@@ -301,6 +303,15 @@ def replay_events(
             if int(payload["useful_tokens"]) != useful_tokens:
                 raise ReplayMismatchError("useful token count does not match accepted fragments")
 
+            optimizer_name = str(payload.get("outer_optimizer", "sgd"))
+            if replay_outer_optimizer is None or replay_outer_optimizer_name != optimizer_name:
+                outer_momentum = payload.get("outer_momentum", 0.9)
+                replay_outer_optimizer = create_outer_optimizer(
+                    optimizer_name,
+                    outer_lr=float(payload["outer_lr"]),
+                    momentum=0.9 if outer_momentum is None else float(outer_momentum),
+                )
+                replay_outer_optimizer_name = optimizer_name
             merge = token_weighted_merge(
                 current_global_vector,
                 [
@@ -312,7 +323,7 @@ def replay_events(
                     )
                     for submission in submissions
                 ],
-                optimizer=SGDOuterOptimizer(outer_lr=float(payload["outer_lr"])),
+                optimizer=replay_outer_optimizer,
             )
             _assert_vectors_close(
                 logged_delta,
