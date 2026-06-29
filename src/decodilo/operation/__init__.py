@@ -22,6 +22,11 @@ from decodilo.operation.lambda_backend import (
     LambdaOperationBackendConfig,
 )
 from decodilo.operation.local_backend import LocalOperationBackend
+from decodilo.operation.pathway import (
+    PathwayManagedExperimentPlan,
+    build_next_lambda_gpu_chunked_experiment,
+    compile_pathway_managed_experiment,
+)
 from decodilo.operation.result import OperationResult
 from decodilo.operation.runner import run_operation
 from decodilo.operation.spec import (
@@ -35,6 +40,9 @@ __all__ = [
     "LambdaOperationBackend",
     "LambdaOperationBackendConfig",
     "LocalOperationBackend",
+    "PathwayManagedExperimentPlan",
+    "build_next_lambda_gpu_chunked_experiment",
+    "compile_pathway_managed_experiment",
     "OperationSafetyEnvelope",
     "OperationSpec",
     "OperationResult",

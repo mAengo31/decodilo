@@ -37,9 +37,18 @@ class LocalOperationBackend:
             outer_momentum=spec.outer_momentum,
             trainer_type=spec.trainer_type,
             trainer_config=dict(spec.trainer_config),
-            heartbeat_timeout_seconds=2.0,
+            heartbeat_timeout_seconds=10.0,
             syncer_checkpoint_interval_rounds=spec.syncer_checkpoint_interval_rounds,
             restart_syncer_after_round=spec.restart_syncer_after_round,
+            payload_storage_mode=spec.payload_storage_mode,
+            checkpoint_storage_mode=spec.checkpoint_storage_mode,
+            merge_mode=spec.merge_mode,
+            global_update_storage_mode=spec.global_update_storage_mode,
+            inline_payload_max_bytes=spec.inline_payload_max_bytes,
+            chunk_size_bytes=spec.chunk_size_bytes,
+            memory_budget_mb=(1 if spec.merge_mode == "streaming_chunked" else None),
+            allow_spill_to_disk=spec.merge_mode == "streaming_chunked",
+            chunked_checkpoints=spec.checkpoint_storage_mode in {"chunked", "dual"},
         )
         report = LocalRunner(config).run()
         report_dict = report.model_dump(mode="json")
