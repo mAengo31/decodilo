@@ -73,6 +73,9 @@ def main() -> int:
     parser.add_argument("--global-update-storage-mode", default="inline")
     parser.add_argument("--inline-payload-max-bytes", type=int, default=1_000_000)
     parser.add_argument("--chunk-size-mb", type=int, default=1)
+    parser.add_argument("--tensor-artifact-codec", default="binary_v1")
+    parser.add_argument("--fragment-artifact-codec", default="binary_v1")
+    parser.add_argument("--checkpoint-artifact-codec", default="binary_v1")
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
 
@@ -383,8 +386,18 @@ def _runtime_mode_args(args: argparse.Namespace, *, include_syncer_only: bool) -
                 str(getattr(args, "checkpoint_storage_mode", "inline")),
                 "--merge-mode",
                 str(getattr(args, "merge_mode", "in_memory")),
+                "--checkpoint-artifact-codec",
+                str(getattr(args, "checkpoint_artifact_codec", "binary_v1")),
             ]
         )
+    values.extend(
+        [
+            "--tensor-artifact-codec",
+            str(getattr(args, "tensor_artifact_codec", "binary_v1")),
+            "--fragment-artifact-codec",
+            str(getattr(args, "fragment_artifact_codec", "binary_v1")),
+        ]
+    )
     return values
 
 
@@ -430,7 +443,7 @@ def _syncer_command(args: argparse.Namespace, *, recover: bool = False) -> str:
         "--outer-momentum",
         "0.9",
         "--heartbeat-timeout-seconds",
-        "10",
+        "60",
         "--heartbeat-check-interval-seconds",
         "0.1",
         "--update-long-poll-timeout-seconds",
@@ -875,6 +888,27 @@ def _collect_evidence(owned: list[Instance], args: argparse.Namespace, evidence_
                 stderr=subprocess.DEVNULL,
                 check=False,
             )
+        if inst.role == "syncer":
+            for dirname in ["artifacts", "live_checkpoints"]:
+                remote = f"{REMOTE_RUN}/{dirname}"
+                subprocess.run(
+                    [
+                        "scp",
+                        "-r",
+                        "-i",
+                        str(args.ssh_private_key),
+                        "-o",
+                        "StrictHostKeyChecking=no",
+                        "-o",
+                        "UserKnownHostsFile=/dev/null",
+                        f"ubuntu@{inst.ip}:{remote}",
+                        str(role_dir / dirname),
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                    timeout=180,
+                )
 
 
 def _write_layout(owned: list[Instance], args: argparse.Namespace, evidence_dir: Path) -> None:

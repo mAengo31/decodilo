@@ -23,6 +23,10 @@ from decodilo.runtime.artifact_transport import (
 from decodilo.runtime.backpressure import BackpressureConfig, BackpressureState
 from decodilo.runtime.chunked_payloads import default_artifact_root, default_chunk_store_root
 from decodilo.runtime.chunked_runtime_modes import validate_runtime_modes
+from decodilo.runtime.remote_artifact_fetch import (
+    artifact_bundle_from_ref,
+    materialize_artifact_bundle,
+)
 from decodilo.runtime.syncer_checkpoint import (
     load_chunked_syncer_checkpoint,
     load_syncer_checkpoint,
@@ -288,6 +292,8 @@ class SyncerService:
                 return await self._handle_subscribe_updates(envelope)
             if envelope.message_type == MessageType.GLOBAL_UPDATE_ACK:
                 return self._handle_global_update_ack(envelope)
+            if envelope.message_type == MessageType.FETCH_ARTIFACT:
+                return self._handle_fetch_artifact(envelope)
             if envelope.message_type == MessageType.SUBMIT_FRAGMENT:
                 return self._handle_submit_fragment(envelope)
             if envelope.message_type == MessageType.LEARNER_SHUTDOWN:
@@ -427,6 +433,18 @@ class SyncerService:
             payload=self._global_state_payload({"last_commit": self.last_commit_payload}),
         )
 
+
+    def _handle_fetch_artifact(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        artifact_ref = envelope.payload.get("artifact_ref")
+        if artifact_ref is None:
+            raise InvariantViolation("fetch_artifact requires artifact_ref")
+        bundle = artifact_bundle_from_ref(artifact_ref, transport=self.artifact_transport)
+        return self._envelope(
+            message_type=MessageType.FETCH_ARTIFACT_RESPONSE,
+            recipient_id=envelope.sender_id,
+            payload=bundle,
+        )
+
     def _handle_global_update_ack(self, envelope: TransportEnvelope) -> TransportEnvelope:
         version = int(envelope.payload["global_version"])
         self.update_stream.ack(
@@ -546,6 +564,7 @@ class SyncerService:
         self._record_trainer_metrics(learner_id, payload)
         trainer_fragment_payload = payload.get("trainer_fragment")
         artifact_ref_payload = payload.get("trainer_fragment_artifact_ref")
+        artifact_bundle_payload = payload.get("trainer_fragment_artifact_bundle")
         self.trainer_state_kind = str(payload.get("trainer_state_kind", self.trainer_state_kind))
         trainer_fragment: TrainerFragment | None = None
         artifact_ref_for_event: dict[str, Any] | None = None
@@ -553,11 +572,22 @@ class SyncerService:
             validation_started = time.perf_counter()
             self.store.metrics.artifact_ref_validations += 1
             try:
+                if artifact_bundle_payload is not None:
+                    materialize_artifact_bundle(
+                        artifact_bundle_payload,
+                        transport=self.artifact_transport,
+                    )
                 artifact_manifest = self.artifact_transport.validate_ref(artifact_ref_payload)
                 trainer_fragment = read_fragment_artifact(
                     ref=artifact_ref_payload,
                     transport=self.artifact_transport,
                 )
+                if not isinstance(trainer_fragment.data, np.ndarray):
+                    trainer_fragment = trainer_fragment.model_copy(
+                        update={
+                            "data": np.asarray(trainer_fragment.data, dtype=np.float64),
+                        }
+                    )
                 self.store.metrics.artifact_validation_seconds += (
                     time.perf_counter() - validation_started
                 )
@@ -1080,6 +1110,9 @@ class SyncerService:
                 self.store.global_version,
             )
             payload["global_vector_artifact_ref"] = ref
+            payload["global_vector_artifact_bundle"] = artifact_bundle_from_ref(
+                ref, transport=self.artifact_transport
+            )
             payload["global_update_storage_mode"] = "chunked"
         else:
             payload["global_vector"] = self.store.global_vector.tolist()

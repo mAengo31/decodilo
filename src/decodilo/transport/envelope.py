@@ -30,6 +30,8 @@ class MessageType(str, Enum):
     GLOBAL_UPDATE_AVAILABLE = "global_update_available"
     GLOBAL_UPDATE_PAYLOAD = "global_update_payload"
     GLOBAL_UPDATE_ACK = "global_update_ack"
+    FETCH_ARTIFACT = "fetch_artifact"
+    FETCH_ARTIFACT_RESPONSE = "fetch_artifact_response"
     BACKPRESSURE_WARNING = "backpressure_warning"
     BACKPRESSURE_REJECT = "backpressure_reject"
     LEARNER_SHUTDOWN = "learner_shutdown"

@@ -1,0 +1,69 @@
+{
+  "accepted_updates": 12,
+  "artifact_hashes": {
+    "firewall_audit.json": "3197e96917147bff08a0ecb6af3db654ed98a7655e46354c9d774adf0db9b779",
+    "layout.json": "f3b795c2561cd003b421914f35829a736ea654b75eda6232e5aeb5425874aa88",
+    "learner-0/learner-0.checkpoint.json": "0858dff154527dc7e93f2d67eea9afbabab437533aa1d533f55e89178ccd719b",
+    "learner-0/learner-0.log": "191d68078a2aa0149920dc510cf6931a6bd8429d45f93ef6f242377f4a586d50",
+    "learner-1/learner-1.checkpoint.json": "bc9011fe1d02d343b90c2f75c717e4ada2103474cf59a017dac43487ab7fb1ac",
+    "learner-1/learner-1.log": "057e4d39ffa4c907611db91b4e407e77345f536dc79f5e5bc5914322fed6b2f0",
+    "network_probe.json": "5d74a847e5badb51835e5142cfa3ded936c0a0c72de446134b5733f50f8999ff",
+    "restart_audit.json": "e3b095b21c5c925109a327b75c5280528ef4c179c07095123750f59534230f51",
+    "syncer/events.jsonl": "39cc090e02a1b7740b958a65990294ad40e96b178785c8506526885b21b8425e",
+    "syncer/syncer_summary.json": "8dd09e237cfa53e0d2544b65d75a543ad6ebaa04b83962355947c944b1523c0e",
+    "termination_safety.json": "42f0a8b5ee55e529ef7dfee9dfc4b24f1d8c5fbcbd57535d107df70f65c95bc5"
+  },
+  "billable_action_performed": true,
+  "blockers": [
+    "missing_evidence:syncer/syncer_checkpoint.json",
+    "pseudo_gradient_numeric_check_failed"
+  ],
+  "checkpoint_outer_optimizer_step": null,
+  "checkpoint_velocity_max_abs_error": 0.0,
+  "committed_sync_rounds": 6,
+  "direct_tcp_probe_passed": true,
+  "distinct_role_instances": true,
+  "evidence_complete": false,
+  "evidence_package_builder_billable_action_performed": false,
+  "final_global_version": 6,
+  "final_instance_count": 0,
+  "firewall_rules_restored": true,
+  "independent_nesterov_max_abs_error": 0.0,
+  "inner_optimizer_semantics": "adamw",
+  "lambda_l5_restart_recovery_direct_tcp_passed": false,
+  "launch_allowed": false,
+  "launch_ready": false,
+  "learner_artifacts_present": [
+    "learner-0",
+    "learner-1"
+  ],
+  "milestone": "Lambda-L5",
+  "missing_items": [
+    "syncer/syncer_checkpoint.json"
+  ],
+  "network_path": "lambda_firewall_direct_tcp",
+  "outer_optimizer_semantics": "nesterov",
+  "pathway_operation_layer_ready": false,
+  "production_scale_ready": false,
+  "pseudo_gradient_numeric_check_passed": false,
+  "pseudo_gradient_numeric_rounds_checked": 6,
+  "remote_instance_count": 3,
+  "remote_process_roles": [
+    "learner-0",
+    "learner-1",
+    "syncer"
+  ],
+  "report_schema_version": 1,
+  "restart_attempted": true,
+  "restart_recovered": true,
+  "restart_round": 4,
+  "rounds_after_restart": 2,
+  "run_id": "lambda-pathway-chunked-gpu-20260701011135",
+  "secret_scan_findings": [],
+  "secret_scan_passed": true,
+  "useful_tokens_accepted": 928,
+  "warnings": [
+    "Lambda L5 proof uses real billable Lambda instances historically; parser is offline.",
+    "L5 proves direct TCP remote process/instance split, not production scale or Pathway readiness."
+  ]
+}

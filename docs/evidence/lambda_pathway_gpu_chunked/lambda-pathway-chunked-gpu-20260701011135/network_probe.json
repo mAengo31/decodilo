@@ -1,0 +1,10 @@
+{
+  "direct_tcp_probe_passed": true,
+  "errors": {},
+  "results": {
+    "learner-0": true,
+    "learner-1": true
+  },
+  "syncer_ip": "193.122.205.141",
+  "syncer_port": 28080
+}

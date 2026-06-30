@@ -20,6 +20,10 @@ from decodilo.runtime.learner_checkpoint import (
     make_checkpoint,
     write_checkpoint_atomic,
 )
+from decodilo.runtime.remote_artifact_fetch import (
+    artifact_bundle_from_ref,
+    materialize_artifact_bundle,
+)
 from decodilo.trainer.fragment_artifacts import write_fragment_artifact
 from decodilo.trainer.interface import TrainerAdapter
 from decodilo.trainer.registry import create_trainer
@@ -91,7 +95,14 @@ class LearnerWorker:
         self.log_path = workdir / f"{learner_id}.log"
         self.checkpoint_path = workdir / f"{learner_id}.checkpoint.json"
         self.control_path = workdir / f"{learner_id}.control.json"
-        self.client = JsonlTcpClient(host=host, port=port, timeout_seconds=2.0)
+        self.request_timeout_seconds = (
+            60.0
+            if payload_storage_mode == "chunked" or global_update_storage_mode == "chunked"
+            else 2.0
+        )
+        self.client = JsonlTcpClient(
+            host=host, port=port, timeout_seconds=self.request_timeout_seconds
+        )
         self.trainer: TrainerAdapter | None = None
         self.baseline_throughput_tokens_per_step = (
             100 + int(self.learner_id.rsplit("-", 1)[-1]) * 10
@@ -147,7 +158,11 @@ class LearnerWorker:
                 ready = json.loads(ready_path.read_text(encoding="utf-8"))
                 self.host = str(ready["host"])
                 self.port = int(ready["port"])
-            self.client = JsonlTcpClient(host=self.host, port=self.port, timeout_seconds=2.0)
+            self.client = JsonlTcpClient(
+                host=self.host,
+                port=self.port,
+                timeout_seconds=self.request_timeout_seconds,
+            )
             try:
                 await self.client.connect()
                 break
@@ -173,9 +188,8 @@ class LearnerWorker:
         if response.message_type != MessageType.REGISTER_LEARNER_ACK:
             raise RuntimeError(f"registration failed: {response.payload}")
         if "global_vector_artifact_ref" in response.payload:
-            global_vector, response_version = apply_update_ref_to_vector(
-                ref=response.payload["global_vector_artifact_ref"],
-                transport=self.artifact_transport,
+            global_vector, response_version = await self._apply_update_ref_to_vector(
+                response.payload["global_vector_artifact_ref"]
             )
         else:
             global_vector = np.asarray(response.payload["global_vector"], dtype=np.float64)
@@ -307,7 +321,7 @@ class LearnerWorker:
                 payload=payload,
             )
         )
-        self._handle_global_payload(response.payload)
+        await self._handle_global_payload(response.payload)
         await self._ack_update_if_needed()
         await self._poll_update(timeout_expected=True)
         self._write_checkpoint()
@@ -383,6 +397,9 @@ class LearnerWorker:
                 "trainer_state_checksum": state.checksum,
                 "trainer_state_kind": state.trainer_state_kind,
                 "trainer_fragment_artifact_ref": ref.model_dump(mode="json"),
+                "trainer_fragment_artifact_bundle": artifact_bundle_from_ref(
+                    ref, transport=self.artifact_transport
+                ),
                 "storage_kind": "artifact_ref",
                 "payload_bytes": ref.total_bytes,
                 "checksum": fragment.checksum,
@@ -407,7 +424,7 @@ class LearnerWorker:
         )
         if response.message_type == MessageType.SUBMIT_FRAGMENT_REJECTED:
             self.in_flight_idempotency_key = None
-        self._handle_global_payload(response.payload)
+        await self._handle_global_payload(response.payload)
         await self._ack_update_if_needed()
         self._write_checkpoint()
         self._log(
@@ -416,6 +433,7 @@ class LearnerWorker:
                 "idempotency_key": key,
                 "response_type": response.message_type.value,
                 "outcome": response.payload.get("outcome"),
+                "response_payload": response.payload,
             },
         )
 
@@ -434,7 +452,7 @@ class LearnerWorker:
             )
         )
         if response.message_type == MessageType.GLOBAL_UPDATE_PAYLOAD:
-            self._handle_global_payload(response.payload)
+            await self._handle_global_payload(response.payload)
             await self._ack_update_if_needed()
             self._write_checkpoint()
 
@@ -498,7 +516,25 @@ class LearnerWorker:
         )
         write_checkpoint_atomic(self.checkpoint_path, checkpoint)
 
-    def _handle_global_payload(self, payload: dict[str, Any]) -> None:
+    async def _apply_update_ref_to_vector(self, ref: dict[str, Any]) -> tuple[np.ndarray, int]:
+        try:
+            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+        except Exception as exc:
+            response = await self._request(
+                make_envelope(
+                    run_id=self.run_id,
+                    sender_id=self.learner_id,
+                    recipient_id="syncer",
+                    message_type=MessageType.FETCH_ARTIFACT,
+                    payload={"artifact_ref": ref},
+                )
+            )
+            if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
+                raise RuntimeError(f"artifact fetch failed: {response.payload}") from exc
+            materialize_artifact_bundle(response.payload, transport=self.artifact_transport)
+            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+
+    async def _handle_global_payload(self, payload: dict[str, Any]) -> None:
         assert self.trainer is not None
         last_commit = payload.get("last_commit") or payload.get("commit")
         if (
@@ -512,11 +548,11 @@ class LearnerWorker:
         global_version = payload.get("global_version")
         global_vector = payload.get("global_vector")
         global_vector_ref = payload.get("global_vector_artifact_ref")
+        global_vector_bundle = payload.get("global_vector_artifact_bundle")
         if global_version is not None and global_vector_ref is not None:
-            vector, artifact_version = apply_update_ref_to_vector(
-                ref=global_vector_ref,
-                transport=self.artifact_transport,
-            )
+            if global_vector_bundle is not None:
+                materialize_artifact_bundle(global_vector_bundle, transport=self.artifact_transport)
+            vector, artifact_version = await self._apply_update_ref_to_vector(global_vector_ref)
             if artifact_version != int(global_version):
                 raise RuntimeError("global update artifact version mismatch")
             if int(global_version) > self.trainer.health().global_version:

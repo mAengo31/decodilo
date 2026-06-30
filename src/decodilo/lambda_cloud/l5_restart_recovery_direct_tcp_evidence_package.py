@@ -9,6 +9,10 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
+from decodilo.runtime.syncer_checkpoint import load_chunked_syncer_checkpoint
+from decodilo.syncer.global_state_store import read_global_vector_artifact
+
 _NUMERIC_TOLERANCE = 1e-9
 _SECRET_NEEDLES = (
     "lambda_api_key=",
@@ -132,22 +136,24 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         if (root / "syncer" / "syncer_summary.json").exists()
         else {}
     )
-    checkpoint = (
-        _read_json(root / "syncer" / "syncer_checkpoint.json")
-        if (root / "syncer" / "syncer_checkpoint.json").exists()
-        else {}
-    )
     events = (
         _read_jsonl(root / "syncer" / "events.jsonl")
         if (root / "syncer" / "events.jsonl").exists()
         else []
     )
+    checkpoint = (
+        _read_json(root / "syncer" / "syncer_checkpoint.json")
+        if (root / "syncer" / "syncer_checkpoint.json").exists()
+        else _read_chunked_checkpoint(root, events)
+    )
+    if checkpoint and "syncer/syncer_checkpoint.json" in missing:
+        missing.remove("syncer/syncer_checkpoint.json")
     roles = layout.get("roles", {}) if isinstance(layout.get("roles"), dict) else {}
     role_names = sorted(roles)
     instance_ids = [str(value.get("instance_id")) for value in roles.values() if value]
     distinct_role_instances = len(instance_ids) == len(set(instance_ids)) and len(instance_ids) >= 3
     learner_artifacts = _learner_artifacts_present(root)
-    nesterov_check = _derive_nesterov_check(events, checkpoint)
+    nesterov_check = _derive_nesterov_check(events, checkpoint, root)
     metrics = summary.get("metrics", {}) if isinstance(summary.get("metrics"), dict) else {}
     blockers = _build_blockers(
         missing=missing,
@@ -283,6 +289,7 @@ def _build_blockers(
 def _derive_nesterov_check(
     events: list[dict[str, Any]],
     checkpoint: dict[str, Any],
+    root: Path,
 ) -> dict[str, Any]:
     commits = [
         event["payload"]
@@ -295,16 +302,23 @@ def _derive_nesterov_check(
     first = commits[0]
     outer_lr = float(first.get("outer_lr", 0.0))
     momentum = float(first.get("outer_momentum", 0.0))
-    velocity = [0.0 for _ in first.get("old_global_vector", [])]
-    running_global = [float(value) for value in first.get("old_global_vector", [])]
+    first_old = _payload_vector(root, first, "old_global_vector", "old_global_vector_artifact_ref")
+    velocity = [0.0 for _ in first_old]
+    running_global = [float(value) for value in first_old]
     max_abs_error = 0.0
     chain_ok = True
     version_ok = True
     previous_version = _as_int(first.get("previous_global_version"))
     for payload in commits:
-        old_global = [float(value) for value in payload.get("old_global_vector", [])]
-        weighted_delta = [float(value) for value in payload.get("weighted_delta", [])]
-        logged_new = [float(value) for value in payload.get("new_global_vector", [])]
+        old_global = _payload_vector(
+            root, payload, "old_global_vector", "old_global_vector_artifact_ref"
+        )
+        weighted_delta = _payload_vector(
+            root, payload, "weighted_delta", "weighted_delta_artifact_ref"
+        )
+        logged_new = _payload_vector(
+            root, payload, "new_global_vector", "new_global_vector_artifact_ref"
+        )
         if len(old_global) != len(weighted_delta) or len(old_global) != len(logged_new):
             return _failed_check("vector_shape_mismatch", rounds_checked=len(commits))
         chain_ok = chain_ok and _max_abs_diff(old_global, running_global) <= _NUMERIC_TOLERANCE
@@ -339,6 +353,46 @@ def _derive_nesterov_check(
         "reason": None if passed else "nesterov_replay_or_checkpoint_mismatch",
     }
 
+
+
+def _read_chunked_checkpoint(root: Path, events: list[dict[str, Any]]) -> dict[str, Any]:
+    for event in reversed(events):
+        if event.get("event_type") != "syncer_checkpoint_written":
+            continue
+        ref = (event.get("payload") or {}).get("checkpoint_artifact_ref")
+        if not isinstance(ref, dict):
+            continue
+        manifest_path = root / "syncer" / str(ref.get("manifest_path", ""))
+        chunk_root = root / "syncer" / str(ref.get("chunk_root", ""))
+        if not manifest_path.exists() or not chunk_root.exists():
+            continue
+        checkpoint = load_chunked_syncer_checkpoint(
+            manifest_path=manifest_path,
+            chunk_store_dir=chunk_root,
+        )
+        return checkpoint.model_dump(mode="json")
+    return {}
+
+
+def _payload_vector(
+    root: Path,
+    payload: dict[str, Any],
+    inline_key: str,
+    ref_key: str,
+) -> list[float]:
+    if inline_key in payload:
+        return [float(value) for value in payload.get(inline_key, [])]
+    ref = payload.get(ref_key)
+    if isinstance(ref, dict):
+        transport = LocalArtifactTransport(
+            policy=ArtifactTransportPolicy(
+                workdir=str(root / "syncer"),
+                artifact_root=str(root / "syncer" / "artifacts"),
+            )
+        )
+        vector, _ = read_global_vector_artifact(ref=ref, transport=transport)
+        return [float(value) for value in vector.reshape(-1)]
+    return []
 
 def _failed_check(reason: str, *, rounds_checked: int) -> dict[str, Any]:
     return {

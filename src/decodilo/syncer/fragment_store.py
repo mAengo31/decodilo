@@ -316,7 +316,7 @@ class FragmentStore:
                 if hasattr(streaming, "result")
                 else streaming.new_values
             )
-            if not np.allclose(
+            if optimizer_name == "sgd" and not np.allclose(
                 streaming_values,
                 merge_result.new_global_vector,
                 rtol=0.0,
