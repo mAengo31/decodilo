@@ -113,3 +113,34 @@ def test_s3_compatible_backend_rejects_wrong_ref_type() -> None:
 
     with pytest.raises(ValueError):
         backend.read_bytes(wrong)
+
+
+def test_s3_compatible_preflight_blocks_without_injected_client() -> None:
+    from decodilo.storage.s3_compatible_backend import preflight_s3_compatible_backend
+
+    report = preflight_s3_compatible_backend(_config())
+
+    assert report.status == "blocked"
+    assert report.symbolic_credentials_present is True
+    assert report.client_injected is False
+    assert "client_not_injected" in report.blockers
+    assert report.remote_backend_enabled is False
+    assert report.launch_allowed is False
+
+
+def test_s3_compatible_preflight_passes_with_injected_client_probe() -> None:
+    from decodilo.storage.s3_compatible_backend import preflight_s3_compatible_backend
+
+    report = preflight_s3_compatible_backend(
+        _config(),
+        client=FakeS3Client(),
+        require_probe=True,
+    )
+
+    assert report.status == "passed"
+    assert report.client_injected is True
+    assert report.probe_attempted is True
+    assert report.probe_passed is True
+    assert report.remote_backend_enabled is True
+    assert report.launch_ready is False
+    assert report.launch_allowed is False

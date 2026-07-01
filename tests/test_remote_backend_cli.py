@@ -159,3 +159,39 @@ def test_remote_backend_cli_commands(tmp_path) -> None:
     assert json.loads(cost_path.read_text(encoding="utf-8"))[
         "total_backend_cost_per_hour"
     ] >= 0
+
+
+def test_remote_s3_preflight_cli_blocks_without_injected_client(tmp_path) -> None:
+    out = tmp_path / "s3-preflight.json"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "decodilo.cli",
+            "remote",
+            "s3-preflight",
+            "--endpoint-url",
+            "https://object.example.invalid",
+            "--bucket",
+            "decodilo-test",
+            "--prefix",
+            "runs/test",
+            "--access-key-ref",
+            "S3_ACCESS_KEY_ID",
+            "--secret-key-ref",
+            "S3_SECRET_ACCESS_KEY",
+            "--out",
+            str(out),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 1
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "blocked"
+    assert payload["remote_backend_enabled"] is False
+    assert payload["launch_allowed"] is False
+    assert "client_not_injected" in payload["blockers"]
+    assert "S3_SECRET_ACCESS_KEY" not in completed.stdout

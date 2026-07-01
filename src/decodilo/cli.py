@@ -2690,6 +2690,11 @@ from decodilo.storage.remote_backend_simulator import (
     run_remote_backend_simulation,
     write_remote_backend_simulation_report,
 )
+from decodilo.storage.s3_compatible_backend import (
+    S3CompatibleBackendConfig,
+    preflight_s3_compatible_backend,
+    write_s3_compatible_preflight_report,
+)
 from decodilo.storage.trash_lifecycle import (
     inspect_trash,
     write_trash_cleanup_report,
@@ -18282,6 +18287,33 @@ def _cmd_remote_review_package(args: argparse.Namespace) -> int:
     return 0 if not package.blockers else 1
 
 
+def _cmd_remote_s3_preflight(args: argparse.Namespace) -> int:
+    config = S3CompatibleBackendConfig(
+        endpoint_url=args.endpoint_url,
+        bucket=args.bucket,
+        prefix=args.prefix,
+        region=args.region,
+        access_key_ref=args.access_key_ref,
+        secret_key_ref=args.secret_key_ref,
+        session_token_ref=args.session_token_ref,
+        server_side_encryption=args.server_side_encryption,
+    )
+    report = preflight_s3_compatible_backend(config, client=None, require_probe=args.require_probe)
+    write_s3_compatible_preflight_report(args.out, report)
+    _print_json(
+        {
+            "out": str(args.out),
+            "status": report.status,
+            "blockers": report.blockers,
+            "warnings": report.warnings,
+            "remote_backend_enabled": report.remote_backend_enabled,
+            "launch_ready": report.launch_ready,
+            "launch_allowed": report.launch_allowed,
+        }
+    )
+    return 0 if report.status == "passed" else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="decodilo", allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -27958,6 +27990,18 @@ def build_parser() -> argparse.ArgumentParser:
     simulate_backend.add_argument("--seed", type=int, default=0)
     simulate_backend.add_argument("--out", type=Path, required=True)
     simulate_backend.set_defaults(func=_cmd_remote_simulate_backend)
+    s3_preflight = remote_sub.add_parser("s3-preflight")
+    s3_preflight.add_argument("--endpoint-url", required=True)
+    s3_preflight.add_argument("--bucket", required=True)
+    s3_preflight.add_argument("--prefix", default="decodilo-artifacts")
+    s3_preflight.add_argument("--region", default=None)
+    s3_preflight.add_argument("--access-key-ref", default=None)
+    s3_preflight.add_argument("--secret-key-ref", default=None)
+    s3_preflight.add_argument("--session-token-ref", default=None)
+    s3_preflight.add_argument("--server-side-encryption", default=None)
+    s3_preflight.add_argument("--require-probe", action="store_true")
+    s3_preflight.add_argument("--out", type=Path, required=True)
+    s3_preflight.set_defaults(func=_cmd_remote_s3_preflight)
     validate_design = remote_sub.add_parser("validate-design")
     validate_design.add_argument("--requirements", type=Path, required=True)
     validate_design.add_argument("--sim-report", type=Path, required=True)

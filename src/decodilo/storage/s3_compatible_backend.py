@@ -8,11 +8,13 @@ method surface.
 
 from __future__ import annotations
 
+import json
 import re
 from collections.abc import Iterator
-from typing import Any, Protocol
+from pathlib import Path
+from typing import Any, Literal, Protocol
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from decodilo.storage.artifact_backend import ArtifactBackendCapabilities, ArtifactBackendRef
 from decodilo.storage.checksums import sha256_bytes
@@ -50,6 +52,113 @@ class S3CompatibleBackendConfig(BaseModel):
         if "=" in value or re.search(r"[A-Za-z0-9_=/+.-]{80,}", value):
             raise ValueError("S3 credential fields must be symbolic refs, not raw secrets")
         return value
+
+
+class S3CompatiblePreflightReport(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    backend_type: str = "s3_compatible"
+    status: Literal["blocked", "passed", "failed"]
+    endpoint_url_present: bool
+    bucket_present: bool
+    prefix_present: bool
+    symbolic_credentials_present: bool
+    client_injected: bool
+    probe_attempted: bool = False
+    probe_passed: bool = False
+    remote_backend_enabled: bool = False
+    launch_ready: bool = False
+    launch_allowed: bool = False
+    blockers: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+
+    def to_json(self) -> str:
+        return json.dumps(self.model_dump(mode="json"), indent=2, sort_keys=True) + "\n"
+
+
+def preflight_s3_compatible_backend(
+    config: S3CompatibleBackendConfig | None,
+    *,
+    client: S3CompatibleClient | None = None,
+    require_probe: bool = False,
+) -> S3CompatiblePreflightReport:
+    blockers: list[str] = []
+    warnings: list[str] = []
+    if config is None:
+        blockers.append("s3_config_missing")
+        return S3CompatiblePreflightReport(
+            status="blocked",
+            endpoint_url_present=False,
+            bucket_present=False,
+            prefix_present=False,
+            symbolic_credentials_present=False,
+            client_injected=False,
+            blockers=blockers,
+            warnings=["S3-compatible backend is fail-closed until config is provided"],
+        )
+
+    endpoint_url_present = bool(config.endpoint_url)
+    bucket_present = bool(config.bucket)
+    prefix_present = bool(config.prefix)
+    symbolic_credentials_present = bool(config.access_key_ref and config.secret_key_ref)
+    if not endpoint_url_present:
+        blockers.append("endpoint_url_missing")
+    if not bucket_present:
+        blockers.append("bucket_missing")
+    if not symbolic_credentials_present:
+        blockers.append("symbolic_credential_refs_missing")
+    if client is None:
+        blockers.append("client_not_injected")
+    if require_probe and client is None:
+        blockers.append("probe_required_but_client_missing")
+
+    probe_attempted = False
+    probe_passed = False
+    if require_probe and client is not None and not blockers:
+        probe_attempted = True
+        try:
+            client.list_objects_v2(Bucket=config.bucket, Prefix=config.prefix.strip("/"))
+            probe_passed = True
+        except Exception as exc:  # noqa: BLE001 - report provider-specific failures as blockers
+            blockers.append("s3_probe_failed")
+            warnings.append(str(exc))
+
+    status: Literal["blocked", "passed", "failed"]
+    if blockers:
+        status = "blocked" if not probe_attempted else "failed"
+    else:
+        status = "passed"
+        if not require_probe:
+            warnings.append("client injected but live probe was not required")
+
+    return S3CompatiblePreflightReport(
+        status=status,
+        endpoint_url_present=endpoint_url_present,
+        bucket_present=bucket_present,
+        prefix_present=prefix_present,
+        symbolic_credentials_present=symbolic_credentials_present,
+        client_injected=client is not None,
+        probe_attempted=probe_attempted,
+        probe_passed=probe_passed,
+        remote_backend_enabled=status == "passed" and client is not None,
+        blockers=sorted(set(blockers)),
+        warnings=warnings,
+    )
+
+
+def write_s3_compatible_preflight_report(
+    path: str | Path,
+    report: S3CompatiblePreflightReport,
+) -> None:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(report.to_json(), encoding="utf-8")
+
+
+def load_s3_compatible_preflight_report(path: str | Path) -> S3CompatiblePreflightReport:
+    return S3CompatiblePreflightReport.model_validate_json(
+        Path(path).read_text(encoding="utf-8")
+    )
 
 
 class S3CompatibleClient(Protocol):
