@@ -25,6 +25,7 @@ from decodilo.runtime.remote_artifact_fetch import (
     materialize_artifact_bundle,
     materialize_artifact_chunk_upload,
 )
+from decodilo.storage.s3_compatible_backend import S3CompatibleArtifactBackend
 from decodilo.trainer.fragment_artifacts import write_fragment_artifact
 from decodilo.trainer.interface import TrainerAdapter
 from decodilo.trainer.registry import create_trainer
@@ -71,6 +72,7 @@ class LearnerWorker:
         checkpoint_artifact_codec: str = "json_safe",
         artifact_transfer_mode: str = "bundle",
         artifact_storage_backend: str = "auto",
+        s3_artifact_backend: S3CompatibleArtifactBackend | None = None,
     ) -> None:
         self.learner_id = learner_id
         self.run_id = run_id
@@ -105,7 +107,8 @@ class LearnerWorker:
                     transfer_mode=artifact_transfer_mode,
                     storage_backend=artifact_storage_backend,
                 ),
-            )
+            ),
+            s3_backend=s3_artifact_backend,
         )
         self.log_path = workdir / f"{learner_id}.log"
         self.checkpoint_path = workdir / f"{learner_id}.checkpoint.json"

@@ -2,9 +2,14 @@ from __future__ import annotations
 
 import io
 
+import numpy as np
 import pytest
 
+from decodilo.errors import InvariantViolation
+from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
+from decodilo.runtime.syncer_service import SyncerService, SyncerServiceConfig
 from decodilo.storage.artifact_backend import ArtifactBackendRef
+from decodilo.storage.chunk_store import ChunkStore
 from decodilo.storage.s3_compatible_backend import (
     S3CompatibleArtifactBackend,
     S3CompatibleBackendConfig,
@@ -144,3 +149,130 @@ def test_s3_compatible_preflight_passes_with_injected_client_probe() -> None:
     assert report.remote_backend_enabled is True
     assert report.launch_ready is False
     assert report.launch_allowed is False
+
+
+def test_s3_compatible_client_factory_requires_explicit_client_or_factory() -> None:
+    from decodilo.storage.s3_client_factory import create_s3_compatible_backend
+
+    with pytest.raises(S3CompatibleBackendNotConfigured):
+        create_s3_compatible_backend(config=_config())
+
+
+def test_s3_compatible_client_factory_builds_backend_from_injected_factory() -> None:
+    from decodilo.storage.s3_client_factory import create_s3_compatible_backend
+
+    fake = FakeS3Client()
+    calls = []
+
+    def factory(config: S3CompatibleBackendConfig):
+        calls.append(config)
+        return fake
+
+    backend = create_s3_compatible_backend(
+        config=_config(),
+        client_factory=factory,
+        require_probe=True,
+    )
+
+    assert calls == [_config()]
+    assert backend.remote_capabilities().remote_backend_enabled is True
+    ref = backend.write_bytes(artifact_id="factory-object", data=b"factory-data")
+    assert backend.read_bytes(ref) == b"factory-data"
+
+
+def test_s3_compatible_artifact_transport_fails_closed_without_injected_backend(tmp_path) -> None:
+    chunk_root = tmp_path / "chunks"
+    manifest_path = tmp_path / "artifacts" / "sample.artifact.json"
+    manifest = ChunkStore(chunk_root).write_bytes(
+        artifact_id="sample",
+        artifact_type="test",
+        run_id="run-s3",
+        data=b"abcdef",
+        chunk_size_bytes=3,
+        manifest_path=manifest_path,
+    )
+    transport = LocalArtifactTransport(
+        policy=ArtifactTransportPolicy(
+            workdir=str(tmp_path),
+            artifact_root=str(tmp_path / "artifacts"),
+            storage_backend="s3_compatible",
+        )
+    )
+
+    with pytest.raises(InvariantViolation, match="S3-compatible.*injected"):
+        transport.make_ref(
+            manifest=manifest,
+            manifest_path=manifest_path,
+            chunk_root=chunk_root,
+            created_by="test",
+        )
+
+
+def test_s3_compatible_artifact_transport_mirrors_manifest_and_chunks_with_fake_client(
+    tmp_path,
+) -> None:
+    fake = FakeS3Client()
+    backend = S3CompatibleArtifactBackend(_config(), client=fake)
+    chunk_root = tmp_path / "chunks"
+    manifest_path = tmp_path / "artifacts" / "sample.artifact.json"
+    manifest = ChunkStore(chunk_root).write_bytes(
+        artifact_id="sample",
+        artifact_type="test",
+        run_id="run-s3",
+        data=b"abcdef",
+        chunk_size_bytes=3,
+        manifest_path=manifest_path,
+    )
+    transport = LocalArtifactTransport(
+        policy=ArtifactTransportPolicy(
+            workdir=str(tmp_path),
+            artifact_root=str(tmp_path / "artifacts"),
+            storage_backend="s3_compatible",
+        ),
+        s3_backend=backend,
+    )
+
+    ref = transport.make_ref(
+        manifest=manifest,
+        manifest_path=manifest_path,
+        chunk_root=chunk_root,
+        created_by="test",
+    )
+
+    assert ref.storage_backend == "s3_compatible"
+    assert ref.metadata["s3_compatible_manifest_ref"]["backend_type"] == "s3_compatible"
+    assert len(ref.metadata["s3_compatible_chunk_refs"]) == 2
+    assert transport.validate_ref(ref) == manifest
+
+    first_chunk_key = ref.metadata["s3_compatible_chunk_refs"][0]["metadata"]["key"]
+    fake.objects[(_config().bucket, first_chunk_key)]["Body"] = b"corrupt"
+    with pytest.raises(InvariantViolation, match="S3-compatible artifact chunk mirror mismatch"):
+        transport.validate_ref(ref)
+
+
+def test_syncer_runtime_uses_injected_s3_backend_for_global_artifacts(tmp_path) -> None:
+    backend = S3CompatibleArtifactBackend(_config(), client=FakeS3Client())
+    service = SyncerService(
+        SyncerServiceConfig(
+            run_id="run-s3-runtime",
+            workdir=tmp_path,
+            learners=1,
+            vector_dim=2,
+            num_fragments=1,
+            steps=1,
+            min_quorum=1,
+            artifact_transfer_mode="object_store",
+            artifact_storage_backend="s3_compatible",
+            s3_artifact_backend=backend,
+        )
+    )
+
+    ref = service._write_global_vector_artifact(
+        "global_update",
+        np.asarray([1.0, 2.0], dtype=np.float64),
+        0,
+    )
+
+    assert ref["storage_backend"] == "s3_compatible"
+    assert ref["metadata"]["s3_compatible_manifest_ref"]["backend_type"] == "s3_compatible"
+    assert service.artifact_transport.validate_ref(ref).run_id == "run-s3-runtime"

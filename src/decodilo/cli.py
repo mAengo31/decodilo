@@ -2853,7 +2853,25 @@ def _cmd_prices_snapshot_import_html(args: argparse.Namespace) -> int:
     return 0
 
 
+# Artifact storage backends that require an explicitly injected, in-process
+# Python client/backend object and therefore cannot be selected across the
+# CLI/subprocess boundary used by the live local/Lambda runtime. Selecting one
+# here must fail closed cleanly and early, not crash deep inside the runtime.
+_CLI_UNINJECTABLE_ARTIFACT_BACKENDS = frozenset({"s3_compatible"})
+
+
+def _reject_uninjectable_artifact_backend_over_cli(args: argparse.Namespace) -> None:
+    backend = getattr(args, "artifact_storage_backend", "auto")
+    if backend in _CLI_UNINJECTABLE_ARTIFACT_BACKENDS:
+        raise SystemExit(
+            f"artifact-storage-backend={backend} is not supported over the CLI "
+            "subprocess boundary: it requires an explicitly injected in-process "
+            "client/backend. Use it via the in-process runtime API instead."
+        )
+
+
 def _cmd_local_run(args: argparse.Namespace) -> int:
+    _reject_uninjectable_artifact_backend_over_cli(args)
     return local_runner.main(args)
 
 
@@ -17710,10 +17728,12 @@ def _cmd_trainer_matrix(args: argparse.Namespace) -> int:
 
 
 def _cmd_syncer_serve(args: argparse.Namespace) -> int:
+    _reject_uninjectable_artifact_backend_over_cli(args)
     return syncer_service.main(args)
 
 
 def _cmd_learner_run(args: argparse.Namespace) -> int:
+    _reject_uninjectable_artifact_backend_over_cli(args)
     return learner_worker.main(args)
 
 

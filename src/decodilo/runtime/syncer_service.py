@@ -44,6 +44,7 @@ from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.checksums import sha256_file
 from decodilo.storage.chunk_store import ChunkStore
 from decodilo.storage.codec_registry import validate_artifact_codec
+from decodilo.storage.s3_compatible_backend import S3CompatibleArtifactBackend
 from decodilo.syncer.binary_streaming_merge import binary_streaming_token_weighted_merge
 from decodilo.syncer.event_log import EventLog, EventType
 from decodilo.syncer.fragment_store import FragmentStore
@@ -115,6 +116,7 @@ class SyncerServiceConfig:
     checkpoint_artifact_codec: str = "json_safe"
     artifact_transfer_mode: str = "bundle"
     artifact_storage_backend: str = "auto"
+    s3_artifact_backend: S3CompatibleArtifactBackend | None = None
 
 
 def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
@@ -152,7 +154,8 @@ class SyncerService:
                     transfer_mode=config.artifact_transfer_mode,
                     storage_backend=config.artifact_storage_backend,
                 ),
-            )
+            ),
+            s3_backend=config.s3_artifact_backend,
         )
         self.event_log = EventLog(
             self.config.workdir / "events.jsonl",
