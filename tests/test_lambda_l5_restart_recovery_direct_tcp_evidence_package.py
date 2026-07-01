@@ -8,21 +8,26 @@ from decodilo.lambda_cloud.l5_restart_recovery_direct_tcp_evidence_package impor
 )
 
 
-def _write_minimal_l5_evidence(root: Path) -> None:
+def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
     (root / "syncer").mkdir(parents=True)
-    (root / "learner-0").mkdir()
-    (root / "learner-1").mkdir()
+    for index in range(learners):
+        (root / f"learner-{index}").mkdir()
     (root / "layout.json").write_text(
         json.dumps(
             {
                 "run_id": "lambda-l5-test",
                 "roles": {
                     "syncer": {"instance_id": "syncer-i", "ip": "10.0.0.1"},
-                    "learner-0": {"instance_id": "learner0-i", "ip": "10.0.0.2"},
-                    "learner-1": {"instance_id": "learner1-i", "ip": "10.0.0.3"},
+                    **{
+                        f"learner-{index}": {
+                            "instance_id": f"learner{index}-i",
+                            "ip": f"10.0.0.{index + 2}",
+                        }
+                        for index in range(learners)
+                    },
                 },
                 "syncer_port": 28080,
-                "remote_instance_count": 3,
+                "remote_instance_count": learners + 1,
                 "network_path": "lambda_firewall_direct_tcp",
             }
         ),
@@ -33,7 +38,7 @@ def _write_minimal_l5_evidence(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "network_probe.json").write_text(
-        json.dumps({"direct_tcp_probe_passed": True, "learner-0": True, "learner-1": True}),
+        json.dumps({"direct_tcp_probe_passed": True}),
         encoding="utf-8",
     )
     (root / "restart_audit.json").write_text(
@@ -50,7 +55,10 @@ def _write_minimal_l5_evidence(root: Path) -> None:
     (root / "termination_safety.json").write_text(
         json.dumps(
             {
-                "owned_instance_ids": ["syncer-i", "learner0-i", "learner1-i"],
+                "owned_instance_ids": [
+                    "syncer-i",
+                    *[f"learner{index}-i" for index in range(learners)],
+                ],
                 "observed_final_live_instance_count": 0,
                 "billing_safety_status": "BILLING_SAFETY_OK",
             }
@@ -124,7 +132,7 @@ def _write_minimal_l5_evidence(root: Path) -> None:
         ),
         encoding="utf-8",
     )
-    for learner_id in ("learner-0", "learner-1"):
+    for learner_id in [f"learner-{index}" for index in range(learners)]:
         (root / learner_id / f"{learner_id}.checkpoint.json").write_text(
             json.dumps({"learner_id": learner_id, "trainer_type": "tiny_adamw"}),
             encoding="utf-8",
@@ -164,6 +172,30 @@ def test_lambda_l5_restart_recovery_direct_tcp_evidence_package_accepts_distinct
     assert package.pathway_operation_layer_ready is False
     assert package.billable_action_performed is True
 
+
+
+
+def test_lambda_l5_evidence_package_accepts_four_learner_roles(tmp_path: Path) -> None:
+    _write_minimal_l5_evidence(tmp_path, learners=4)
+
+    package = build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(tmp_path)
+
+    assert package.evidence_complete is True
+    assert package.lambda_l5_restart_recovery_direct_tcp_passed is True
+    assert package.remote_instance_count == 5
+    assert package.remote_process_roles == [
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3",
+        "syncer",
+    ]
+    assert package.learner_artifacts_present == [
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3",
+    ]
 
 def test_lambda_l5_restart_recovery_direct_tcp_evidence_package_rejects_collocated_roles(
     tmp_path: Path,

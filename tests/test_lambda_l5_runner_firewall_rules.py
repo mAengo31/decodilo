@@ -100,6 +100,7 @@ def test_l5_runner_commands_accept_torch_causal_lm_args(tmp_path: Path) -> None:
         },
     )()
 
+
     syncer_command = runner._syncer_command(args)
     learner_command = runner._learner_command(args, "learner-0", "127.0.0.1")
 
@@ -123,7 +124,7 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "trainer_type": "torch_causal_lm",
             "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
             "vector_dim": 3408,
-            "learners": 2,
+            "learners": 4,
             "steps": 16,
             "min_quorum": 2,
             "local_steps_per_sync": 1,
@@ -137,6 +138,16 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "artifact_transfer_mode": "object_store",
         },
     )()
+
+
+    assert runner._learner_roles(args) == ["learner-0", "learner-1", "learner-2", "learner-3"]
+    assert runner._all_roles(args) == [
+        "syncer",
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3",
+    ]
 
     syncer_command = runner._syncer_command(args)
     learner_command = runner._learner_command(args, "learner-0", "127.0.0.1")

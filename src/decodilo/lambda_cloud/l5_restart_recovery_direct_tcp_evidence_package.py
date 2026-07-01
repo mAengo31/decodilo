@@ -91,6 +91,10 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
     evidence_dir: str | Path,
 ) -> LambdaL5DirectTcpRuntimeEvidencePackage:
     root = Path(evidence_dir)
+    layout = _read_json(root / "layout.json") if (root / "layout.json").exists() else {}
+    roles = layout.get("roles", {}) if isinstance(layout.get("roles"), dict) else {}
+    discovered_learners = sorted(role for role in roles if role.startswith("learner-"))
+    learner_roles = discovered_learners or ["learner-0", "learner-1"]
     required = [
         root / "layout.json",
         root / "termination_safety.json",
@@ -100,17 +104,19 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         root / "syncer" / "events.jsonl",
         root / "syncer" / "syncer_checkpoint.json",
         root / "syncer" / "syncer_summary.json",
-        root / "learner-0" / "learner-0.checkpoint.json",
-        root / "learner-0" / "learner-0.log",
-        root / "learner-1" / "learner-1.checkpoint.json",
-        root / "learner-1" / "learner-1.log",
     ]
+    for learner_id in learner_roles:
+        required.extend(
+            [
+                root / learner_id / f"{learner_id}.checkpoint.json",
+                root / learner_id / f"{learner_id}.log",
+            ]
+        )
     missing = [str(path.relative_to(root)) for path in required if not path.exists()]
     artifact_hashes = {
         str(path.relative_to(root)): _sha256_file(path) for path in required if path.exists()
     }
     secret_findings = _scan_for_secrets(root)
-    layout = _read_json(root / "layout.json") if (root / "layout.json").exists() else {}
     termination = (
         _read_json(root / "termination_safety.json")
         if (root / "termination_safety.json").exists()
@@ -148,7 +154,6 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
     )
     if checkpoint and "syncer/syncer_checkpoint.json" in missing:
         missing.remove("syncer/syncer_checkpoint.json")
-    roles = layout.get("roles", {}) if isinstance(layout.get("roles"), dict) else {}
     role_names = sorted(roles)
     instance_ids = [str(value.get("instance_id")) for value in roles.values() if value]
     distinct_role_instances = len(instance_ids) == len(set(instance_ids)) and len(instance_ids) >= 3
@@ -169,6 +174,7 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         summary=summary,
         nesterov_check=nesterov_check,
         learner_artifacts=learner_artifacts,
+        expected_learner_roles=learner_roles,
     )
     evidence_complete = not blockers and not missing
     return LambdaL5DirectTcpRuntimeEvidencePackage(
@@ -245,11 +251,13 @@ def _build_blockers(
     summary: dict[str, Any],
     nesterov_check: dict[str, Any],
     learner_artifacts: list[str],
+    expected_learner_roles: list[str],
 ) -> list[str]:
     blockers = [f"missing_evidence:{item}" for item in missing]
     if secret_findings:
         blockers.append("secret_scan_failed")
-    if role_names != ["learner-0", "learner-1", "syncer"]:
+    expected_roles = sorted(["syncer", *expected_learner_roles])
+    if role_names != expected_roles:
         blockers.append("expected_remote_roles_missing")
     if not distinct_role_instances:
         blockers.append("roles_not_on_distinct_instances")
@@ -279,8 +287,8 @@ def _build_blockers(
         blockers.append("nesterov_not_exercised")
     if not nesterov_check["passed"]:
         blockers.append("pseudo_gradient_numeric_check_failed")
-    if sorted(learner_artifacts) != ["learner-0", "learner-1"]:
-        blockers.append("expected_two_learner_artifacts_missing")
+    if sorted(learner_artifacts) != sorted(expected_learner_roles):
+        blockers.append("expected_learner_artifacts_missing")
     if termination.get("observed_final_live_instance_count") != 0:
         blockers.append("final_live_instance_count_not_zero")
     return sorted(set(blockers))
@@ -425,9 +433,12 @@ def _apply_nesterov(
 
 def _learner_artifacts_present(root: Path) -> list[str]:
     learners: list[str] = []
-    for learner_id in ("learner-0", "learner-1"):
-        checkpoint_exists = (root / learner_id / f"{learner_id}.checkpoint.json").exists()
-        log_exists = (root / learner_id / f"{learner_id}.log").exists()
+    for path in sorted(root.glob("learner-*")):
+        if not path.is_dir():
+            continue
+        learner_id = path.name
+        checkpoint_exists = (path / f"{learner_id}.checkpoint.json").exists()
+        log_exists = (path / f"{learner_id}.log").exists()
         if checkpoint_exists and log_exists:
             learners.append(learner_id)
     return learners

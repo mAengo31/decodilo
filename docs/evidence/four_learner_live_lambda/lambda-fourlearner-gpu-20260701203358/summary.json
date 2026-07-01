@@ -1,0 +1,43 @@
+{
+  "accepted_updates": 12,
+  "artifact_storage_backend": "syncer_object_store",
+  "artifact_transfer_mode": "object_store",
+  "billable_action_performed": true,
+  "committed_sync_rounds": 4,
+  "cuda_learner_count": 4,
+  "final_instance_count": 0,
+  "firewall_rules_restored": true,
+  "four_learner_live_lambda_passed": true,
+  "inner_optimizer_semantics": "adamw",
+  "launch_allowed": false,
+  "launch_ready": false,
+  "learner_artifacts_present": [
+    "learner-0",
+    "learner-1",
+    "learner-2",
+    "learner-3"
+  ],
+  "outer_optimizer_semantics": "nesterov",
+  "production_scale_ready": false,
+  "pseudo_gradient_numeric_check_passed": true,
+  "remaining_blockers": [
+    "external vendor durable object store not implemented",
+    "live >4 learners not proven",
+    "production-scale model sizes not proven",
+    "full Pathway scheduler not implemented"
+  ],
+  "remote_instance_count": 5,
+  "remote_process_roles": [
+    "learner-0",
+    "learner-1",
+    "learner-2",
+    "learner-3",
+    "syncer"
+  ],
+  "restart_recovered": true,
+  "rounds_after_restart": 2,
+  "run_id": "lambda-fourlearner-gpu-20260701203358",
+  "schema_version": 1,
+  "trainer_num_parameters_seen": 1,
+  "useful_tokens_accepted": 1120
+}

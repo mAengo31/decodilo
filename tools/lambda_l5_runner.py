@@ -40,6 +40,14 @@ class Instance:
     instance_type: str
 
 
+def _learner_roles(args: argparse.Namespace) -> list[str]:
+    return [f"learner-{index}" for index in range(int(args.learners))]
+
+
+def _all_roles(args: argparse.Namespace) -> list[str]:
+    return ["syncer", *_learner_roles(args)]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--env-file", type=Path, default=Path(".env"))
@@ -97,7 +105,7 @@ def main() -> int:
         _assert_no_live_instances(api_key)
         firewall_original_rules = _get_firewall_rules(api_key)
         evidence_dir.mkdir(parents=True, exist_ok=True)
-        roles = ["syncer", "learner-0", "learner-1"]
+        roles = _all_roles(args)
         for role in roles:
             instance_id = _launch_instance(api_key, args.region, args.instance_type, ssh_key_name)
             owned.append(Instance(role, instance_id, "", args.region, args.instance_type))
@@ -114,7 +122,7 @@ def main() -> int:
             api_key,
             firewall_original_rules,
             args.port,
-            learner_ips=[_by_role(owned, "learner-0").ip, _by_role(owned, "learner-1").ip],
+            learner_ips=[_by_role(owned, role).ip for role in _learner_roles(args)],
             evidence_dir=evidence_dir,
         )
         firewall_changed = True
@@ -616,7 +624,7 @@ def _wait_direct_tcp(
 ) -> None:
     results: dict[str, bool] = {}
     errors: dict[str, str] = {}
-    for learner_id in ["learner-0", "learner-1"]:
+    for learner_id in _learner_roles(args):
         inst = _by_role(owned, learner_id)
         deadline = time.time() + 90
         while time.time() < deadline:
@@ -640,7 +648,7 @@ def _wait_direct_tcp(
                 time.sleep(2)
         else:
             results[learner_id] = False
-    probe_passed = all(results.get(role) for role in ["learner-0", "learner-1"])
+    probe_passed = all(results.get(role) for role in _learner_roles(args))
     evidence_dir.mkdir(parents=True, exist_ok=True)
     (evidence_dir / "network_probe.json").write_text(
         json.dumps(
@@ -668,7 +676,7 @@ def _run_learners_with_restart(
     evidence_dir: Path,
 ) -> None:
     procs: list[tuple[str, subprocess.Popen[bytes]]] = []
-    for learner_id in ["learner-0", "learner-1"]:
+    for learner_id in _learner_roles(args):
         inst = _by_role(owned, learner_id)
         cmd = _learner_command(args, learner_id, syncer.ip)
         remote = (
@@ -778,7 +786,7 @@ def _remote_committed_rounds(syncer: Instance, args: argparse.Namespace) -> int:
 
 def _run_learners(owned: list[Instance], syncer_ip: str, args: argparse.Namespace) -> None:
     procs = []
-    for learner_id in ["learner-0", "learner-1"]:
+    for learner_id in _learner_roles(args):
         inst = _by_role(owned, learner_id)
         cmd = _learner_command(args, learner_id, syncer_ip)
         remote = (
@@ -1030,8 +1038,8 @@ def _print_planned_commands(
 ) -> None:
     print(json.dumps({"ssh_key_configured": bool(ssh_key_name), "evidence_dir": str(evidence_dir)}))
     print(_syncer_command(args))
-    print(_learner_command(args, "learner-0", "<syncer-ip>"))
-    print(_learner_command(args, "learner-1", "<syncer-ip>"))
+    for learner_id in _learner_roles(args):
+        print(_learner_command(args, learner_id, "<syncer-ip>"))
 
 
 if __name__ == "__main__":
