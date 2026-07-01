@@ -100,3 +100,39 @@ def test_failed_learners_do_not_block_progress() -> None:
     assert decision.accepted_learner_ids == ["a", "b"]
     assert decision.rejected_learner_ids == {"failed": "failed"}
 
+
+
+def test_chunked_commit_writer_failure_does_not_orphan_started_round() -> None:
+    event_log = EventLog()
+
+    def failing_writer(_role, _vector, _version):
+        raise RuntimeError("artifact writer unavailable")
+
+    store = FragmentStore(
+        initial_global_vector=np.array([0.0]),
+        num_fragments=1,
+        quorum_policy=QuorumPolicy(min_quorum=1),
+        event_log=event_log,
+        event_payload_mode="chunked",
+        merge_mode="streaming_chunked",
+        global_vector_artifact_writer=failing_writer,
+    )
+    store.submit_learner_update(
+        learner_id="a",
+        vector=np.array([1.0]),
+        global_version_seen=0,
+        tokens=10,
+        submitted_at=0,
+    )
+
+    try:
+        store.maybe_commit(current_tick=1)
+    except RuntimeError as exc:
+        assert str(exc) == "artifact writer unavailable"
+    else:  # pragma: no cover - test must fail if no exception is raised
+        raise AssertionError("commit unexpectedly succeeded")
+
+    assert store.global_version == 0
+    event_types = [event.event_type.value for event in event_log.events]
+    assert "sync_round_started" not in event_types
+    assert "sync_round_committed" not in event_types

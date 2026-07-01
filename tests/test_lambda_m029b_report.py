@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from decodilo.lambda_cloud.launch_shape_resolution import (
     LambdaLaunchShapeResolutionReport,
 )
@@ -10,6 +12,10 @@ from decodilo.pricing.snapshots import (
 )
 
 
+def _fresh_price_timestamp() -> str:
+    return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
 def _write_snapshot(tmp_path, *, sample=False):
     path = tmp_path / "prices.json"
     write_price_snapshot(
@@ -17,7 +23,7 @@ def _write_snapshot(tmp_path, *, sample=False):
         PriceSnapshot(
             snapshot_id="snap",
             provider="lambda",
-            captured_at_utc="2026-06-18T00:00:00Z",
+            captured_at_utc=_fresh_price_timestamp(),
             source_url="https://lambda.ai/instances",
             source_type=PriceSourceType.MANUAL_HTML,
             source_sha256="a" * 64,
@@ -29,7 +35,7 @@ def _write_snapshot(tmp_path, *, sample=False):
                     gpus_per_instance=8,
                     price_per_gpu_hour=3.99,
                     price_per_instance_hour=31.92,
-                    captured_at_utc="2026-06-18T00:00:00Z",
+                    captured_at_utc=_fresh_price_timestamp(),
                     record_id="lambda:gpu_8x_h100_sxm:0",
                 )
             ],

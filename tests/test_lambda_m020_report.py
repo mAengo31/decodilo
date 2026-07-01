@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from datetime import UTC, datetime
 
 from decodilo.lambda_cloud.api_models import LambdaInstanceType, LambdaRegion, LambdaSSHKey
 from decodilo.lambda_cloud.approval_manifest import (
@@ -33,6 +34,10 @@ from decodilo.pricing.snapshots import (
     SnapshotPriceRecord,
     write_price_snapshot,
 )
+
+
+def _fresh_price_timestamp() -> str:
+    return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def _write_m020_inputs(tmp_path, *, with_approval: bool = False):
@@ -93,7 +98,7 @@ def _write_m020_inputs(tmp_path, *, with_approval: bool = False):
     snapshot = PriceSnapshot(
         snapshot_id="snap",
         provider="lambda",
-        captured_at_utc="2026-06-16T00:00:00Z",
+        captured_at_utc=_fresh_price_timestamp(),
         source_type=PriceSourceType.MANUAL_JSON,
         source_sha256="0" * 64,
         is_sample_data=False,
@@ -106,7 +111,7 @@ def _write_m020_inputs(tmp_path, *, with_approval: bool = False):
                 region="sample-offline",
                 price_per_gpu_hour=2.5,
                 price_per_instance_hour=20,
-                captured_at_utc="2026-06-16T00:00:00Z",
+                captured_at_utc=_fresh_price_timestamp(),
                 record_id="price-0",
             )
         ],

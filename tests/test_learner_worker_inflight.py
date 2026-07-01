@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from types import SimpleNamespace
 
 from decodilo.runtime.learner_worker import LearnerWorker
@@ -30,16 +31,17 @@ def test_learner_clears_inflight_fragment_when_new_global_version_arrives() -> N
 
     worker._apply_global_vector = apply_global_vector
 
-    worker._handle_global_payload(
-        {
-            "global_version": 1,
-            "global_vector": [0.1, 0.2],
-        }
+    asyncio.run(
+        worker._handle_global_payload(
+            {
+                "global_version": 1,
+                "global_vector": [0.1, 0.2],
+            }
+        )
     )
 
     assert trainer.global_version == 1
     assert worker.in_flight_idempotency_key is None
-
 
 
 def test_learner_clears_inflight_fragment_from_immediate_commit_payload() -> None:
@@ -50,10 +52,12 @@ def test_learner_clears_inflight_fragment_from_immediate_commit_payload() -> Non
     worker.in_flight_idempotency_key = "run:learner-0:step-1:v-0"
     worker.artifact_transport = None
 
-    worker._handle_global_payload(
-        {
-            "commit": {"accepted_learner_ids": ["learner-0", "learner-1"]},
-        }
+    asyncio.run(
+        worker._handle_global_payload(
+            {
+                "commit": {"accepted_learner_ids": ["learner-0", "learner-1"]},
+            }
+        )
     )
 
     assert worker.in_flight_idempotency_key is None
@@ -68,10 +72,12 @@ def test_learner_does_not_repeatedly_mark_same_commit_after_inflight_cleared() -
     worker.in_flight_idempotency_key = None
     worker.artifact_transport = None
 
-    worker._handle_global_payload(
-        {
-            "last_commit": {"accepted_learner_ids": ["learner-0", "learner-1"]},
-        }
+    asyncio.run(
+        worker._handle_global_payload(
+            {
+                "last_commit": {"accepted_learner_ids": ["learner-0", "learner-1"]},
+            }
+        )
     )
 
     assert trainer.accepted == 0

@@ -3793,7 +3793,7 @@ def _cmd_lambda_live_discover(args: argparse.Namespace) -> int:
             "warnings": [
                 *report.warnings,
                 *secret_warnings,
-            ]
+            ],
         }
     )
     write_lambda_live_discovery_report(args.out, report)
@@ -4001,9 +4001,7 @@ def _cmd_lambda_approval_template(args: argparse.Namespace) -> int:
             approved_gpu_type=manifest.approved_gpu_type,
             approved_gpus_per_instance=manifest.approved_gpus_per_instance,
             approval_scope=(
-                ["approved_for_fake_lifecycle_stress"]
-                if args.approve_fake_stress
-                else []
+                ["approved_for_fake_lifecycle_stress"] if args.approve_fake_stress else []
             ),
             approval_notes=(
                 "Approved only for fake Lambda lifecycle rehearsal; real launch remains disabled."
@@ -4063,9 +4061,7 @@ def _cmd_lambda_shape_evidence_build_catalog(args: argparse.Namespace) -> int:
             is_price_evidence=True,
             is_sample_data=snapshot.is_sample_data,
             confidence="high" if not snapshot.is_sample_data else "medium",
-            limitations=[
-                "catalog and price evidence do not prove live Lambda availability"
-            ],
+            limitations=["catalog and price evidence do not prove live Lambda availability"],
             warnings=[] if not snapshot.is_sample_data else ["sample price evidence"],
         )
         for record in snapshot.records
@@ -4182,9 +4178,7 @@ def _cmd_lambda_fake_lifecycle_fault(args: argparse.Namespace) -> int:
         approval_manifest_path=args.approval_manifest,
         workdir=args.workdir,
         idempotency_key=f"fake-fault-{args.failure_mode}",
-        config=FakeLifecycleConfig(
-            failure=FakeLambdaFailureConfig(failure_mode=args.failure_mode)
-        ),
+        config=FakeLifecycleConfig(failure=FakeLambdaFailureConfig(failure_mode=args.failure_mode)),
     )
     write_fake_lambda_lifecycle_report(args.out, report)
     _print_json(
@@ -4373,9 +4367,7 @@ def _cmd_lambda_real_mutation_evidence_package(args: argparse.Namespace) -> int:
             "evidence_complete": package.evidence_complete,
             "missing_items": package.missing_items,
             "blockers": package.blockers,
-            "future_real_launch_review_candidate": (
-                package.future_real_launch_review_candidate
-            ),
+            "future_real_launch_review_candidate": (package.future_real_launch_review_candidate),
             "real_mutation_enabled": package.real_mutation_enabled,
             "launch_ready": package.launch_ready,
             "launch_allowed": package.launch_allowed,
@@ -4559,9 +4551,7 @@ def _cmd_lambda_final_prelaunch_termination_runbook(args: argparse.Namespace) ->
         {
             "out": str(args.out),
             "steps": len(runbook.steps),
-            "executable_terminate_command_present": (
-                runbook.executable_terminate_command_present
-            ),
+            "executable_terminate_command_present": (runbook.executable_terminate_command_present),
             "launch_allowed": runbook.launch_allowed,
         }
     )
@@ -4569,9 +4559,7 @@ def _cmd_lambda_final_prelaunch_termination_runbook(args: argparse.Namespace) ->
 
 
 def _cmd_lambda_final_prelaunch_checklist_template(args: argparse.Namespace) -> int:
-    checklist = build_lambda_first_launch_operator_checklist(
-        acknowledge_all=args.acknowledge_all
-    )
+    checklist = build_lambda_first_launch_operator_checklist(acknowledge_all=args.acknowledge_all)
     write_lambda_first_launch_operator_checklist(args.out, checklist)
     _print_json(
         {
@@ -4730,8 +4718,7 @@ def _cmd_lambda_decision_report(args: argparse.Namespace) -> int:
 def _minimal_mutation_context_from_args(args: argparse.Namespace):
     authorization = load_lambda_m027_authorization_record(args.m027_authorization)
     authorized = (
-        authorization.status
-        == "authorized_to_implement_minimal_mutation_code_disabled_by_default"
+        authorization.status == "authorized_to_implement_minimal_mutation_code_disabled_by_default"
     )
     if not authorized:
         raise SystemExit("M027 authorization record does not authorize implementation work")
@@ -5033,8 +5020,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         or _has_m031_or_m034_run_flags(args)
     ):
         raise SystemExit(
-            "M051 metadata bootstrap run cannot be combined with M039, M046, "
-            "or M031/M034 gates"
+            "M051 metadata bootstrap run cannot be combined with M039, M046, or M031/M034 gates"
         )
     capacity_selected_attempt = (
         None
@@ -5042,9 +5028,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         else _load_m046_capacity_selected_execution_gates(args)
     )
     if capacity_selected_attempt is not None and _has_m039_specific_run_flags(args):
-        raise SystemExit(
-            "M046 capacity-selected run cannot be combined with M039 lower-cost gates"
-        )
+        raise SystemExit("M046 capacity-selected run cannot be combined with M039 lower-cost gates")
     lower_cost_attempt = (
         None
         if capacity_selected_attempt is not None
@@ -5053,9 +5037,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         else _load_m039_lower_cost_execution_gates(args)
     )
     if capacity_selected_attempt is not None and _has_m031_or_m034_run_flags(args):
-        raise SystemExit(
-            "M046 capacity-selected run cannot be combined with M031/M034 gates"
-        )
+        raise SystemExit("M046 capacity-selected run cannot be combined with M031/M034 gates")
     if lower_cost_attempt is not None and _has_m031_or_m034_run_flags(args):
         raise SystemExit("M039 lower-cost run cannot be combined with M031/M034 gates")
     if (
@@ -5092,12 +5074,8 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             {
                 "shape": lower_cost_attempt["execution_gate"].selected_shape,
                 "region": lower_cost_attempt["execution_gate"].selected_region,
-                "ssh_key_hash": lower_cost_attempt[
-                    "execution_gate"
-                ].selected_ssh_key_hash,
-                "authorization": lower_cost_attempt[
-                    "authorization"
-                ].authorization_status,
+                "ssh_key_hash": lower_cost_attempt["execution_gate"].selected_ssh_key_hash,
+                "authorization": lower_cost_attempt["authorization"].authorization_status,
             }
         )
     elif metadata_bootstrap_attempt is not None:
@@ -5106,18 +5084,14 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         second_attempt = None
         third_attempt = None
         run_id = "lambda-m051-metadata-bootstrap"
-        plan_hash = metadata_bootstrap_plan_hash(
-            metadata_bootstrap_attempt["metadata_plan"]
-        )
+        plan_hash = metadata_bootstrap_plan_hash(metadata_bootstrap_attempt["metadata_plan"])
     elif m054b_ssh_attempt is not None:
         m028_report = None
         authorization = None
         second_attempt = None
         third_attempt = None
         run_id = m054b_ssh_attempt.get("run_id", "lambda-m054b-ssh-connectivity")
-        plan_hash = m054b_ssh_attempt.get("plan_hash") or m054b_plan_hash(
-            m054b_ssh_attempt["plan"]
-        )
+        plan_hash = m054b_ssh_attempt.get("plan_hash") or m054b_plan_hash(m054b_ssh_attempt["plan"])
     else:
         m028_report = None
         authorization = None
@@ -5129,15 +5103,9 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 "selected_candidate": capacity_selected_attempt[
                     "execution_gate"
                 ].selected_candidate,
-                "selected_region": capacity_selected_attempt[
-                    "execution_gate"
-                ].selected_region,
-                "ssh_key_hash": capacity_selected_attempt[
-                    "execution_gate"
-                ].selected_ssh_key_hash,
-                "authorization": capacity_selected_attempt[
-                    "authorization"
-                ].authorization_status,
+                "selected_region": capacity_selected_attempt["execution_gate"].selected_region,
+                "ssh_key_hash": capacity_selected_attempt["execution_gate"].selected_ssh_key_hash,
+                "authorization": capacity_selected_attempt["authorization"].authorization_status,
             }
         )
     idempotency = build_m029_idempotency_report(
@@ -5201,8 +5169,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             fake_server_mode=fake_mode,
         )
         (workdir / "capacity-selected-gates.json").write_text(
-            json.dumps(capacity_selected_attempt["summary"], indent=2, sort_keys=True)
-            + "\n",
+            json.dumps(capacity_selected_attempt["summary"], indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
         write_lambda_capacity_selected_execution_gate_check(
@@ -5285,8 +5252,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 workdir
                 / (
                     f"{str(milestone).lower()}-command-manifest.json"
-                    if milestone
-                    in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
+                    if milestone in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
                     else "m066r-command-manifest.json"
                 ),
                 m054b_ssh_attempt["manifest"],
@@ -5295,8 +5261,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 workdir
                 / (
                     f"{str(milestone).lower()}-gate-check.json"
-                    if milestone
-                    in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
+                    if milestone in {"M067R", "M071R", "M073R", "M075R", "M077R", "M079R"}
                     else "m066r-gate-check.json"
                 ),
                 m054b_ssh_attempt["gate"],
@@ -5421,9 +5386,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
     resource_lock = (
         _m046_resource_lock_from_capacity_selected_attempt(capacity_selected_attempt)
         if capacity_selected_attempt is not None
-        else _m051_resource_lock_from_metadata_bootstrap_attempt(
-            metadata_bootstrap_attempt
-        )
+        else _m051_resource_lock_from_metadata_bootstrap_attempt(metadata_bootstrap_attempt)
         if metadata_bootstrap_attempt is not None
         else _m054b_resource_lock_from_ssh_connectivity_attempt(m054b_ssh_attempt)
         if m054b_ssh_attempt is not None
@@ -5490,11 +5453,8 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 ),
                 dependency_bundle_path=m054b_ssh_attempt.get("dependency_bundle"),
                 dependency_bundle_sha256=(
-                    m054b_ssh_attempt.get(
-                        "dependency_bundle_validation"
-                    ).bundle_sha256
-                    if m054b_ssh_attempt.get("dependency_bundle_validation")
-                    is not None
+                    m054b_ssh_attempt.get("dependency_bundle_validation").bundle_sha256
+                    if m054b_ssh_attempt.get("dependency_bundle_validation") is not None
                     else None
                 ),
                 ssh_username=m054b_ssh_attempt["plan"].ssh_username,
@@ -5585,9 +5545,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
         billable_action_performed=(not fake_mode and launch_result.request_sent),
     )
     write_lambda_m029_spend_audit(workdir / "spend-audit.json", spend)
-    diagnostic_report = build_lambda_mutation_transport_diagnostic_report(
-        transport.diagnostics_log
-    )
+    diagnostic_report = build_lambda_mutation_transport_diagnostic_report(transport.diagnostics_log)
     write_lambda_mutation_transport_diagnostic_report(
         workdir / "transport-diagnostics.json",
         diagnostic_report,
@@ -5637,22 +5595,16 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             "host_discovery_source": ssh_evidence.host_discovery_source_path,
             "host_discovery_source_path": ssh_evidence.host_discovery_source_path,
             "host_discovery_poll_count": ssh_evidence.host_discovery_poll_count,
-            "host_discovery_duration_seconds": (
-                ssh_evidence.host_discovery_duration_seconds
-            ),
+            "host_discovery_duration_seconds": (ssh_evidence.host_discovery_duration_seconds),
             "ssh_host_present": ssh_evidence.host_discovery_status == "FOUND",
             "ssh_key_present": ssh_evidence.ssh_key_present,
             "ssh_attempted": ssh_evidence.probe_attempted,
             "ssh_auth_result": ssh_evidence.auth_result,
-            "ssh_port_readiness_attempted": (
-                ssh_evidence.ssh_port_readiness_attempted
-            ),
+            "ssh_port_readiness_attempted": (ssh_evidence.ssh_port_readiness_attempted),
             "ssh_port_reachable": ssh_evidence.ssh_port_reachable,
             "ssh_port_poll_count": ssh_evidence.ssh_port_poll_count,
             "ssh_port_wait_seconds": ssh_evidence.ssh_port_wait_seconds,
-            "ssh_port_connect_timeout_seconds": (
-                ssh_evidence.ssh_port_connect_timeout_seconds
-            ),
+            "ssh_port_connect_timeout_seconds": (ssh_evidence.ssh_port_connect_timeout_seconds),
             "ssh_exit_status": ssh_evidence.exit_status,
             "ssh_failure_classification": ssh_evidence.ssh_failure_classification,
             "ssh_redacted_stderr_present": ssh_evidence.redacted_stderr_present,
@@ -5662,11 +5614,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
             "remote_command_attempted": ssh_evidence.remote_command_attempted,
             "remote_command_result": (
                 getattr(ssh_evidence, "remote_command_result", None)
-                or (
-                    "not_attempted"
-                    if not ssh_evidence.remote_command_attempted
-                    else "forbidden"
-                )
+                or ("not_attempted" if not ssh_evidence.remote_command_attempted else "forbidden")
             ),
             "remote_command": getattr(ssh_evidence, "approved_command", None),
             "remote_command_stage_results": [
@@ -5840,9 +5788,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 "stdout_capture_active",
                 False,
             ),
-            "stdout_redacted_present": bool(
-                getattr(ssh_evidence, "stdout_redacted", None)
-            ),
+            "stdout_redacted_present": bool(getattr(ssh_evidence, "stdout_redacted", None)),
             "stdout_sha256_prefix": getattr(
                 ssh_evidence,
                 "stdout_sha256_prefix",
@@ -5854,11 +5800,11 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
                 "stdout_secret_scan_passed",
                 True,
             ),
-            "file_transfer_attempted": ssh_evidence.file_transfer_attempted,
-            "port_forwarding_attempted": ssh_evidence.port_forwarding_attempted,
-            "package_install_attempted": ssh_evidence.package_install_attempted,
-            "downloads_attempted": ssh_evidence.downloads_attempted,
-            "training_attempted": ssh_evidence.training_attempted,
+            "file_transfer_attempted": getattr(ssh_evidence, "file_transfer_attempted", False),
+            "port_forwarding_attempted": getattr(ssh_evidence, "port_forwarding_attempted", False),
+            "package_install_attempted": getattr(ssh_evidence, "package_install_attempted", False),
+            "downloads_attempted": getattr(ssh_evidence, "downloads_attempted", False),
+            "training_attempted": getattr(ssh_evidence, "training_attempted", False),
         }
         if not ssh_evidence.probe_passed:
             ssh_updates.update(
@@ -5889,9 +5835,7 @@ def _cmd_lambda_m029_run(args: argparse.Namespace) -> int:
     ssh_probe_passed = ssh_evidence is None or ssh_evidence.probe_passed
     return (
         0
-        if report.termination_verified
-        and not report.manual_review_required
-        and ssh_probe_passed
+        if report.termination_verified and not report.manual_review_required and ssh_probe_passed
         else 1
     )
 
@@ -5946,19 +5890,12 @@ def _load_m031_second_attempt_gates(args: argparse.Namespace) -> dict | None:
     missing = [name for name, value in values.items() if value is None]
     if missing:
         raise SystemExit(
-            "M031 second-attempt run requires all M030 artifacts; missing "
-            + ", ".join(missing)
+            "M031 second-attempt run requires all M030 artifacts; missing " + ", ".join(missing)
         )
     risk = load_lambda_second_attempt_risk_report(args.second_risk_review)
-    mitigation = load_lambda_response_loss_mitigation_review(
-        args.second_mitigation_review
-    )
-    correlation = load_lambda_second_attempt_correlation_plan(
-        args.second_correlation_plan
-    )
-    reconciliation = load_lambda_second_attempt_reconciliation_plan(
-        args.second_reconciliation_plan
-    )
+    mitigation = load_lambda_response_loss_mitigation_review(args.second_mitigation_review)
+    correlation = load_lambda_second_attempt_correlation_plan(args.second_correlation_plan)
+    reconciliation = load_lambda_second_attempt_reconciliation_plan(args.second_reconciliation_plan)
     authorization = load_lambda_second_attempt_authorization(args.second_authorization)
     go_no_go = load_lambda_second_attempt_go_no_go(args.second_go_no_go)
     blockers: list[str] = []
@@ -6003,9 +5940,7 @@ def _load_m031_second_attempt_gates(args: argparse.Namespace) -> dict | None:
             "run_id": correlation.second_attempt_id,
             "launch_idempotency_key": correlation.idempotency_key,
             "automatic_retry_forbidden": mitigation.automatic_retry_forbidden,
-            "low_confidence_candidate_terminable": (
-                reconciliation.terminate_allowed_for_candidate
-            ),
+            "low_confidence_candidate_terminable": (reconciliation.terminate_allowed_for_candidate),
             "launch_ready": False,
             "launch_allowed": False,
         },
@@ -6030,15 +5965,12 @@ def _load_m034_third_attempt_gates(
     }
     if not any(values.values()):
         if not fake_mode and Path("/tmp/decodilo-lambda-m033-report.json").exists():
-            raise SystemExit(
-                "M034 real launch requires explicit M033/M034 artifact flags"
-            )
+            raise SystemExit("M034 real launch requires explicit M033/M034 artifact flags")
         return None
     missing = [name for name, value in values.items() if value is None]
     if missing:
         raise SystemExit(
-            "M034 third-attempt run requires all M033/M034 artifacts; missing "
-            + ", ".join(missing)
+            "M034 third-attempt run requires all M033/M034 artifacts; missing " + ", ".join(missing)
         )
     gate = build_lambda_m034_gate_check_from_paths(
         m028_report=args.m028_report,
@@ -6056,9 +5988,7 @@ def _load_m034_third_attempt_gates(
     if not gate.gate_passed:
         raise SystemExit("M034 third-attempt gates failed: " + ", ".join(gate.blockers))
     correlation = load_lambda_third_attempt_correlation_plan(args.correlation_plan)
-    reconciliation = load_lambda_third_attempt_reconciliation_plan(
-        args.reconciliation_plan
-    )
+    reconciliation = load_lambda_third_attempt_reconciliation_plan(args.reconciliation_plan)
     authorization = load_lambda_third_attempt_authorization(args.m034_authorization)
     go_no_go = load_lambda_third_attempt_go_no_go(args.third_go_no_go)
     risk = load_lambda_third_attempt_risk_review(args.risk_review)
@@ -6073,12 +6003,8 @@ def _load_m034_third_attempt_gates(
         "m033_report": m033_report,
         "summary": {
             "gate_passed": gate.gate_passed,
-            "effective_launch_timeout_seconds": (
-                gate.effective_launch_timeout_seconds
-            ),
-            "effective_terminate_timeout_seconds": (
-                gate.effective_terminate_timeout_seconds
-            ),
+            "effective_launch_timeout_seconds": (gate.effective_launch_timeout_seconds),
+            "effective_terminate_timeout_seconds": (gate.effective_terminate_timeout_seconds),
             "effective_read_only_verification_timeout_seconds": (
                 gate.effective_read_only_verification_timeout_seconds
             ),
@@ -6119,18 +6045,12 @@ def _m039_lower_cost_values(args: argparse.Namespace) -> dict[str, Path | None]:
 
 def _m046_capacity_selected_values(args: argparse.Namespace) -> dict[str, Path | None]:
     return {
-        "capacity_selected_m046_authorization": (
-            args.capacity_selected_m046_authorization
-        ),
+        "capacity_selected_m046_authorization": (args.capacity_selected_m046_authorization),
         "capacity_selected_cost_risk_review": args.capacity_selected_cost_risk_review,
-        "capacity_selected_operator_approval": (
-            args.capacity_selected_operator_approval
-        ),
+        "capacity_selected_operator_approval": (args.capacity_selected_operator_approval),
         "capacity_selected_gate_check": args.capacity_selected_gate_check,
         "capacity_aware_selector_output": args.capacity_aware_selector_output,
-        "capacity_aware_selector_authorization": (
-            args.capacity_aware_selector_authorization
-        ),
+        "capacity_aware_selector_authorization": (args.capacity_aware_selector_authorization),
         "capacity_aware_selector_gate_check": args.capacity_aware_selector_gate_check,
         "capacity_history": args.capacity_history,
         "capacity_retry_policy": args.capacity_retry_policy,
@@ -6144,9 +6064,7 @@ def _m051_metadata_bootstrap_values(args: argparse.Namespace) -> dict[str, Path 
     return {
         "m051_bootstrap_authorization": args.m051_bootstrap_authorization,
         "m051_metadata_plan": args.m051_metadata_plan,
-        "m051_bootstrap_execution_gate_check": (
-            args.m051_bootstrap_execution_gate_check
-        ),
+        "m051_bootstrap_execution_gate_check": (args.m051_bootstrap_execution_gate_check),
         "m051_no_mutation_no_ssh_audit": args.m051_no_mutation_no_ssh_audit,
         "m051_bootstrap_runbook_preview": args.m051_bootstrap_runbook_preview,
         "m050_report": args.m050_report,
@@ -6362,9 +6280,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
         values.update(
             {
                 "m068r_dependency_bundle": args.m068r_dependency_bundle,
-                "m068r_dependency_bundle_validation": (
-                    args.m068r_dependency_bundle_validation
-                ),
+                "m068r_dependency_bundle_validation": (args.m068r_dependency_bundle_validation),
             }
         )
     missing = [name for name, value in values.items() if value is None]
@@ -6381,94 +6297,60 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
         if m068r_requested
         else None
     )
-    manifest = load_lambda_remote_vertical_slice_command_manifest(
-        args.m067r_command_manifest
-    )
+    manifest = load_lambda_remote_vertical_slice_command_manifest(args.m067r_command_manifest)
     validation = load_lambda_remote_vertical_slice_manifest_validation(
         args.m067r_manifest_validation
     )
     plan = load_lambda_remote_vertical_slice_execution_plan(args.m067r_plan)
     gate = load_lambda_remote_vertical_slice_gate_check(args.m067r_gate_check)
-    arming = load_lambda_remote_vertical_slice_one_shot_arming(
-        args.m067r_one_shot_arming
-    )
-    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(
-        args.m067r_reviewer_bridge
-    )
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    arming = load_lambda_remote_vertical_slice_one_shot_arming(args.m067r_one_shot_arming)
+    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(args.m067r_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
     blockers: list[str] = []
     is_m071r = (
-        manifest.milestone == "M071R"
-        or plan.milestone == "M071R"
-        or gate.milestone == "M071R"
+        manifest.milestone == "M071R" or plan.milestone == "M071R" or gate.milestone == "M071R"
     )
     is_m073r = (
-        manifest.milestone == "M073R"
-        or plan.milestone == "M073R"
-        or gate.milestone == "M073R"
+        manifest.milestone == "M073R" or plan.milestone == "M073R" or gate.milestone == "M073R"
     )
     is_m075r = (
-        manifest.milestone == "M075R"
-        or plan.milestone == "M075R"
-        or gate.milestone == "M075R"
+        manifest.milestone == "M075R" or plan.milestone == "M075R" or gate.milestone == "M075R"
     )
     is_m077r = (
-        manifest.milestone == "M077R"
-        or plan.milestone == "M077R"
-        or gate.milestone == "M077R"
+        manifest.milestone == "M077R" or plan.milestone == "M077R" or gate.milestone == "M077R"
     )
     is_m079r = (
-        manifest.milestone == "M079R"
-        or plan.milestone == "M079R"
-        or gate.milestone == "M079R"
+        manifest.milestone == "M079R" or plan.milestone == "M079R" or gate.milestone == "M079R"
     )
     is_m081r = (
-        manifest.milestone == "M081R"
-        or plan.milestone == "M081R"
-        or gate.milestone == "M081R"
+        manifest.milestone == "M081R" or plan.milestone == "M081R" or gate.milestone == "M081R"
     )
     is_m083r = (
-        manifest.milestone == "M083R"
-        or plan.milestone == "M083R"
-        or gate.milestone == "M083R"
+        manifest.milestone == "M083R" or plan.milestone == "M083R" or gate.milestone == "M083R"
     )
     is_m085r = (
-        manifest.milestone == "M085R"
-        or plan.milestone == "M085R"
-        or gate.milestone == "M085R"
+        manifest.milestone == "M085R" or plan.milestone == "M085R" or gate.milestone == "M085R"
     )
     is_m087r = (
-        manifest.milestone == "M087R"
-        or plan.milestone == "M087R"
-        or gate.milestone == "M087R"
+        manifest.milestone == "M087R" or plan.milestone == "M087R" or gate.milestone == "M087R"
     )
     is_m089r = (
-        manifest.milestone == "M089R"
-        or plan.milestone == "M089R"
-        or gate.milestone == "M089R"
+        manifest.milestone == "M089R" or plan.milestone == "M089R" or gate.milestone == "M089R"
     )
     is_m093r = (
-        manifest.milestone == "M093R"
-        or plan.milestone == "M093R"
-        or gate.milestone == "M093R"
+        manifest.milestone == "M093R" or plan.milestone == "M093R" or gate.milestone == "M093R"
     )
     failure_artifact_capture_policy = None
     failure_artifact_capture_policy_hash = None
     if is_m075r and args.m075r_failure_artifact_capture_policy is not None:
-        failure_artifact_capture_policy = (
-            load_lambda_remote_vslice_failure_artifact_capture_policy(
-                args.m075r_failure_artifact_capture_policy
-            )
+        failure_artifact_capture_policy = load_lambda_remote_vslice_failure_artifact_capture_policy(
+            args.m075r_failure_artifact_capture_policy
         )
         failure_artifact_capture_policy_hash = _sha256_file(
             args.m075r_failure_artifact_capture_policy
@@ -6488,63 +6370,49 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m093r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m093r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m093r_manifest_artifact_policy)
     elif is_m093r:
         blockers.append("m093r_manifest_artifact_policy_required")
     elif is_m089r and args.m089r_manifest_artifact_policy is not None:
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m089r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m089r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m089r_manifest_artifact_policy)
     elif is_m089r:
         blockers.append("m089r_manifest_artifact_policy_required")
     elif is_m087r and args.m087r_manifest_artifact_policy is not None:
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m087r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m087r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m087r_manifest_artifact_policy)
     elif is_m087r:
         blockers.append("m087r_manifest_artifact_policy_required")
     elif is_m085r and args.m085r_manifest_artifact_policy is not None:
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m085r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m085r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m085r_manifest_artifact_policy)
     elif is_m085r:
         blockers.append("m085r_manifest_artifact_policy_required")
     elif is_m083r and args.m083r_manifest_artifact_policy is not None:
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m083r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m083r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m083r_manifest_artifact_policy)
     elif is_m083r:
         blockers.append("m083r_manifest_artifact_policy_required")
     elif is_m081r and args.m081r_manifest_artifact_policy is not None:
         manifest_artifact_policy = load_lambda_remote_vslice_manifest_artifact_policy(
             args.m081r_manifest_artifact_policy
         )
-        manifest_artifact_policy_hash = _sha256_file(
-            args.m081r_manifest_artifact_policy
-        )
+        manifest_artifact_policy_hash = _sha256_file(args.m081r_manifest_artifact_policy)
     elif is_m081r:
         blockers.append("m081r_manifest_artifact_policy_required")
     elif is_m079r and args.m079r_declared_artifact_policy is not None:
         declared_artifact_policy = load_lambda_remote_vslice_declared_artifact_policy(
             args.m079r_declared_artifact_policy
         )
-        declared_artifact_policy_hash = _sha256_file(
-            args.m079r_declared_artifact_policy
-        )
+        declared_artifact_policy_hash = _sha256_file(args.m079r_declared_artifact_policy)
     elif is_m079r:
         blockers.append("m079r_declared_artifact_policy_required")
     is_m068r = (
@@ -6709,15 +6577,11 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             blockers.append("m068r_dependency_bundle_artifacts_required")
         elif not Path(args.m068r_dependency_bundle).is_file():
             blockers.append("m068r_dependency_bundle_missing")
-        elif (
-            _sha256_file(args.m068r_dependency_bundle)
-            != dependency_validation.bundle_sha256
-        ):
+        elif _sha256_file(args.m068r_dependency_bundle) != dependency_validation.bundle_sha256:
             blockers.append("m068r_dependency_bundle_hash_mismatch")
         if dependency_validation is not None and not dependency_validation.validation_passed:
             blockers.extend(
-                dependency_validation.blockers
-                or ["dependency_bundle_validation_failed"]
+                dependency_validation.blockers or ["dependency_bundle_validation_failed"]
             )
     if not bundle_validation.validation_passed:
         blockers.extend(bundle_validation.blockers or ["source_bundle_validation_failed"])
@@ -6760,10 +6624,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             )
         if not failure_artifact_capture_policy.capture_on_failure_allowed:
             blockers.append("failure_artifact_capture_not_allowed")
-        if (
-            failure_artifact_capture_policy.capture_scope
-            != "predeclared_artifact_only"
-        ):
+        if failure_artifact_capture_policy.capture_scope != "predeclared_artifact_only":
             blockers.append("failure_artifact_capture_scope_not_predeclared_only")
         if (
             failure_artifact_capture_policy.expected_output_artifact_path
@@ -6772,16 +6633,11 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             blockers.append("failure_artifact_capture_path_mismatch")
         if not failure_artifact_capture_policy.no_arbitrary_file_read:
             blockers.append("failure_artifact_policy_allows_arbitrary_file_read")
-        if (
-            arming.failure_artifact_capture_policy_hash
-            != failure_artifact_capture_policy_hash
-        ):
+        if arming.failure_artifact_capture_policy_hash != failure_artifact_capture_policy_hash:
             blockers.append("m075r_arming_failure_artifact_policy_hash_mismatch")
     if artifact_body_policy is not None:
         if artifact_body_policy.policy_status != "policy_defined":
-            blockers.extend(
-                artifact_body_policy.blockers or ["artifact_body_policy_not_defined"]
-            )
+            blockers.extend(artifact_body_policy.blockers or ["artifact_body_policy_not_defined"])
         if not artifact_body_policy.content_capture_allowed:
             blockers.append("artifact_body_capture_not_allowed")
         if artifact_body_policy.declared_artifact_path != "/tmp/decodilo-runtime-smoke.json":
@@ -6795,8 +6651,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
     if declared_artifact_policy is not None:
         if declared_artifact_policy.policy_status != "policy_defined":
             blockers.extend(
-                declared_artifact_policy.blockers
-                or ["declared_artifact_policy_not_defined"]
+                declared_artifact_policy.blockers or ["declared_artifact_policy_not_defined"]
             )
         if (
             declared_artifact_policy.declared_artifact_path
@@ -6816,8 +6671,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
     if manifest_artifact_policy is not None:
         if manifest_artifact_policy.policy_status != "manifest_artifact_policy_defined":
             blockers.extend(
-                manifest_artifact_policy.blockers
-                or ["manifest_artifact_policy_not_defined"]
+                manifest_artifact_policy.blockers or ["manifest_artifact_policy_not_defined"]
             )
         expected_manifest_artifact_path = (
             "/tmp/decodilo-tiny-real-training-smoke.json"
@@ -6832,10 +6686,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             if is_m083r
             else "/tmp/decodilo-diloco-smoke.json"
         )
-        if (
-            manifest_artifact_policy.declared_artifact_path
-            != expected_manifest_artifact_path
-        ):
+        if manifest_artifact_policy.declared_artifact_path != expected_manifest_artifact_path:
             blockers.append("manifest_artifact_policy_path_mismatch")
         if is_m081r and not manifest_artifact_policy.diloco_smoke_declared_artifact_supported:
             blockers.append("manifest_artifact_policy_diloco_path_missing")
@@ -6888,14 +6739,11 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             blockers.append(
                 "m093r_arming_manifest_artifact_policy_hash_mismatch"
                 if is_m093r
-                else
-                "m089r_arming_manifest_artifact_policy_hash_mismatch"
+                else "m089r_arming_manifest_artifact_policy_hash_mismatch"
                 if is_m089r
-                else
-                "m087r_arming_manifest_artifact_policy_hash_mismatch"
+                else "m087r_arming_manifest_artifact_policy_hash_mismatch"
                 if is_m087r
-                else
-                "m085r_arming_manifest_artifact_policy_hash_mismatch"
+                else "m085r_arming_manifest_artifact_policy_hash_mismatch"
                 if is_m085r
                 else "m083r_arming_manifest_artifact_policy_hash_mismatch"
                 if is_m083r
@@ -6912,10 +6760,7 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
     if bridge.source_bundle_sha256 != bundle_validation.bundle_sha256:
         blockers.append("m067r_bridge_source_bundle_hash_mismatch")
     if failure_artifact_capture_policy is not None:
-        if (
-            bridge.failure_artifact_capture_policy_hash
-            != failure_artifact_capture_policy_hash
-        ):
+        if bridge.failure_artifact_capture_policy_hash != failure_artifact_capture_policy_hash:
             blockers.append("m075r_bridge_failure_artifact_policy_hash_mismatch")
     if artifact_body_policy is not None:
         if bridge.artifact_body_policy_hash != artifact_body_policy_hash:
@@ -6928,14 +6773,11 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             blockers.append(
                 "m093r_bridge_manifest_artifact_policy_hash_mismatch"
                 if is_m093r
-                else
-                "m089r_bridge_manifest_artifact_policy_hash_mismatch"
+                else "m089r_bridge_manifest_artifact_policy_hash_mismatch"
                 if is_m089r
-                else
-                "m087r_bridge_manifest_artifact_policy_hash_mismatch"
+                else "m087r_bridge_manifest_artifact_policy_hash_mismatch"
                 if is_m087r
-                else
-                "m085r_bridge_manifest_artifact_policy_hash_mismatch"
+                else "m085r_bridge_manifest_artifact_policy_hash_mismatch"
                 if is_m085r
                 else "m083r_bridge_manifest_artifact_policy_hash_mismatch"
                 if is_m083r
@@ -7059,13 +6901,9 @@ def _load_m067r_source_bundle_execution_gates(args: argparse.Namespace) -> dict 
             "command_manifest_hash": plan.command_manifest_hash,
             "source_bundle_sha256": bundle_validation.bundle_sha256,
             "dependency_bundle_sha256": (
-                dependency_validation.bundle_sha256
-                if dependency_validation is not None
-                else None
+                dependency_validation.bundle_sha256 if dependency_validation is not None else None
             ),
-            "failure_artifact_capture_policy_hash": (
-                failure_artifact_capture_policy_hash
-            ),
+            "failure_artifact_capture_policy_hash": (failure_artifact_capture_policy_hash),
             "artifact_body_policy_hash": artifact_body_policy_hash,
             "declared_artifact_policy_hash": (
                 declared_artifact_policy_hash or manifest_artifact_policy_hash
@@ -7127,28 +6965,18 @@ def _load_m066r_remote_vertical_slice_execution_gates(
             "missing " + ", ".join(missing)
         )
     policy = load_lambda_remote_vertical_slice_policy(args.m066r_policy)
-    manifest = load_lambda_remote_vertical_slice_command_manifest(
-        args.m066r_command_manifest
-    )
+    manifest = load_lambda_remote_vertical_slice_command_manifest(args.m066r_command_manifest)
     validation = load_lambda_remote_vertical_slice_manifest_validation(
         args.m066r_manifest_validation
     )
     plan = load_lambda_remote_vertical_slice_execution_plan(args.m066r_plan)
     gate = load_lambda_remote_vertical_slice_gate_check(args.m066r_gate_check)
-    arming = load_lambda_remote_vertical_slice_one_shot_arming(
-        args.m066r_one_shot_arming
-    )
-    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(
-        args.m066r_reviewer_bridge
-    )
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    arming = load_lambda_remote_vertical_slice_one_shot_arming(args.m066r_one_shot_arming)
+    bridge = load_lambda_remote_vertical_slice_reviewer_bridge(args.m066r_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
@@ -7226,8 +7054,7 @@ def _load_m066r_remote_vertical_slice_execution_gates(
         blockers.append("m066r_plan_exceeds_budget_or_runtime_limit")
     if blockers:
         raise SystemExit(
-            "M066R remote vertical-slice execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M066R remote vertical-slice execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     return {
         "milestone": "M066R",
@@ -7328,14 +7155,10 @@ def _load_m065_python_runtime_execution_gates(args: argparse.Namespace) -> dict 
     command_review = load_lambda_python_runtime_command_review(args.m065_command_review)
     arming = load_lambda_m065_one_shot_arming(args.m065_one_shot_arming)
     bridge = load_lambda_m065_reviewer_bridge(args.m065_reviewer_bridge)
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
@@ -7364,9 +7187,7 @@ def _load_m065_python_runtime_execution_gates(args: argparse.Namespace) -> dict 
         blockers.append("m065_authorization_must_select_python_version_only")
     if command_policy.selected_future_command_set != [M065_PYTHON_RUNTIME_COMMAND]:
         blockers.append("m065_command_policy_must_select_python_version_only")
-    if output_policy.output_policy_status != (
-        "python_runtime_output_policy_defined_future_only"
-    ):
+    if output_policy.output_policy_status != ("python_runtime_output_policy_defined_future_only"):
         blockers.extend(output_policy.blockers or ["m065_output_policy_not_ready"])
     if command_review.selected_future_command_set != [M065_PYTHON_RUNTIME_COMMAND]:
         blockers.append("m065_command_review_must_select_python_version_only")
@@ -7496,8 +7317,7 @@ def _load_m063_gpu_visibility_execution_gates(args: argparse.Namespace) -> dict 
         or _has_m057_minimal_remote_command_run_flags(args)
     ):
         raise SystemExit(
-            "M063 GPU visibility query run cannot be combined with M061, M059, "
-            "or M057 gates"
+            "M063 GPU visibility query run cannot be combined with M061, M059, or M057 gates"
         )
     values = {
         "m063_plan": args.m063_plan,
@@ -7529,29 +7349,21 @@ def _load_m063_gpu_visibility_execution_gates(args: argparse.Namespace) -> dict 
     command_review = load_lambda_gpu_visibility_command_review(args.m063_command_review)
     arming = load_lambda_m063_one_shot_arming(args.m063_one_shot_arming)
     bridge = load_lambda_m063_reviewer_bridge(args.m063_reviewer_bridge)
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
     blockers: list[str] = []
     if plan.plan_status != "plan_passed":
         blockers.extend(plan.blockers or ["m063_plan_not_passed"])
-    if (
-        plan.command != M063_GPU_VISIBILITY_COMMAND
-        or plan.command_argv
-        != [
-            "nvidia-smi",
-            "--query-gpu=name,memory.total,driver_version",
-            "--format=csv,noheader",
-        ]
-    ):
+    if plan.command != M063_GPU_VISIBILITY_COMMAND or plan.command_argv != [
+        "nvidia-smi",
+        "--query-gpu=name,memory.total,driver_version",
+        "--format=csv,noheader",
+    ]:
         blockers.append("m063_plan_command_must_equal_exact_gpu_visibility_query")
     if not gate.gate_passed:
         blockers.extend(gate.blockers or ["m063_gate_not_passed"])
@@ -7570,9 +7382,7 @@ def _load_m063_gpu_visibility_execution_gates(args: argparse.Namespace) -> dict 
         blockers.append("m063_authorization_must_select_gpu_query_only")
     if command_policy.selected_future_command_set != [M063_GPU_VISIBILITY_COMMAND]:
         blockers.append("m063_command_policy_must_select_gpu_query_only")
-    if output_policy.output_policy_status != (
-        "gpu_visibility_output_policy_defined_future_only"
-    ):
+    if output_policy.output_policy_status != ("gpu_visibility_output_policy_defined_future_only"):
         blockers.extend(output_policy.blockers or ["m063_output_policy_not_ready"])
     if command_review.selected_future_command_set != [M063_GPU_VISIBILITY_COMMAND]:
         blockers.append("m063_command_review_must_select_gpu_query_only")
@@ -7632,8 +7442,7 @@ def _load_m063_gpu_visibility_execution_gates(args: argparse.Namespace) -> dict 
         blockers.append("m063_plan_exceeds_budget_or_runtime_limit")
     if blockers:
         raise SystemExit(
-            "M063 GPU visibility query execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M063 GPU visibility query execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     return {
         "milestone": "M063",
@@ -7723,14 +7532,10 @@ def _load_m061_identity_command_execution_gates(args: argparse.Namespace) -> dic
     authorization = load_lambda_m061_whoami_authorization(args.m061_authorization)
     arming = load_lambda_m061_one_shot_arming(args.m061_one_shot_arming)
     bridge = load_lambda_m061_reviewer_bridge(args.m061_reviewer_bridge)
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
@@ -7890,14 +7695,10 @@ def _load_m059_identity_command_execution_gates(args: argparse.Namespace) -> dic
     authorization = load_lambda_m059_remote_command_authorization(args.m059_authorization)
     arming = load_lambda_m059_one_shot_arming(args.m059_one_shot_arming)
     bridge = load_lambda_m059_reviewer_bridge(args.m059_reviewer_bridge)
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
     controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
@@ -7914,10 +7715,7 @@ def _load_m059_identity_command_execution_gates(args: argparse.Namespace) -> dic
         blockers.append("m059_gate_candidate_mismatch")
     if gate.selected_region != plan.selected_region:
         blockers.append("m059_gate_region_mismatch")
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m059_identity_command_review"
-    ):
+    if authorization.authorization_status != "authorized_for_future_m059_identity_command_review":
         blockers.extend(authorization.blockers or ["m059_authorization_not_ready"])
     if authorization.selected_future_command_set != ["hostname"]:
         blockers.append("m059_authorization_must_select_hostname_only")
@@ -8037,9 +7835,7 @@ def _load_m057_minimal_remote_command_execution_gates(
         return None
     m056 = _load_m056_ssh_retry_execution_gates(args)
     if m056 is None:
-        raise SystemExit(
-            "M057 minimal remote-command run requires M056 SSH retry artifacts"
-        )
+        raise SystemExit("M057 minimal remote-command run requires M056 SSH retry artifacts")
     values = {
         "m057_operator_approval": args.m057_operator_approval,
         "m057_command_policy": args.m057_command_policy,
@@ -8054,9 +7850,7 @@ def _load_m057_minimal_remote_command_execution_gates(
             + ", ".join(missing)
         )
     approval = load_lambda_m057_operator_approval(args.m057_operator_approval)
-    command_policy = load_lambda_m057_minimal_remote_command_policy(
-        args.m057_command_policy
-    )
+    command_policy = load_lambda_m057_minimal_remote_command_policy(args.m057_command_policy)
     gate = load_lambda_m057_gate_check(args.m057_gate_check)
     arming = load_lambda_m057_one_shot_arming(args.m057_one_shot_arming)
     bridge = load_lambda_m057_reviewer_bridge(args.m057_reviewer_bridge)
@@ -8103,8 +7897,7 @@ def _load_m057_minimal_remote_command_execution_gates(
         blockers.append("m057_bridge_allows_forbidden_remote_work")
     if blockers:
         raise SystemExit(
-            "M057 minimal remote-command execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M057 minimal remote-command execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     m056.update(
         {
@@ -8152,30 +7945,19 @@ def _load_m056_ssh_retry_execution_gates(args: argparse.Namespace) -> dict | Non
     missing = [name for name, value in values.items() if value is None]
     if missing:
         raise SystemExit(
-            "M056 SSH retry run requires all M056 artifacts; missing "
-            + ", ".join(missing)
+            "M056 SSH retry run requires all M056 artifacts; missing " + ", ".join(missing)
         )
     plan = load_lambda_ssh_connectivity_m056_plan(args.m056_plan)
     gate = load_lambda_ssh_connectivity_m056_gate_check(args.m056_gate_check)
     authorization = load_lambda_ssh_retry_future_authorization(args.m056_authorization)
-    arming = load_lambda_ssh_connectivity_m056_one_shot_arming(
-        args.m056_one_shot_arming
-    )
-    bridge = load_lambda_ssh_connectivity_m056_reviewer_bridge(
-        args.m056_reviewer_bridge
-    )
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m056_ssh_static_validation
-    )
+    arming = load_lambda_ssh_connectivity_m056_one_shot_arming(args.m056_one_shot_arming)
+    bridge = load_lambda_ssh_connectivity_m056_reviewer_bridge(args.m056_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(args.m056_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m056_ssh_no_exec_audit)
     safe_command = load_lambda_ssh_safe_client_command(args.m056_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
-    controls = load_lambda_strand_response_loss_control_check(
-        args.response_loss_controls
-    )
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     stderr_policy = load_lambda_ssh_stderr_capture_policy(args.ssh_stderr_capture_policy)
     blockers: list[str] = []
     if plan.plan_status != "plan_passed":
@@ -8264,8 +8046,7 @@ def _load_m056_ssh_retry_execution_gates(args: argparse.Namespace) -> dict | Non
         blockers.append("m056_private_key_reference_unavailable_for_probe")
     if blockers:
         raise SystemExit(
-            "M056 SSH retry execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M056 SSH retry execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     return {
         "milestone": "M056",
@@ -8349,33 +8130,20 @@ def _load_m054b_ssh_connectivity_execution_gates(
         "ssh_stderr_capture_policy",
     }
     missing = [
-        name
-        for name, value in values.items()
-        if value is None and name not in optional_m055c_names
+        name for name, value in values.items() if value is None and name not in optional_m055c_names
     ]
     if missing:
         raise SystemExit(
-            "M054B SSH-connectivity run requires all M054B artifacts; missing "
-            + ", ".join(missing)
+            "M054B SSH-connectivity run requires all M054B artifacts; missing " + ", ".join(missing)
         )
     plan = load_lambda_ssh_connectivity_m054b_plan(args.m054b_plan)
-    arming = load_lambda_ssh_connectivity_one_shot_arming(
-        args.m054_ssh_one_shot_arming
-    )
-    bridge = load_lambda_ssh_connectivity_reviewer_bridge(
-        args.m054_ssh_reviewer_bridge
-    )
-    static = load_lambda_ssh_connectivity_static_validation(
-        args.m054_ssh_static_validation
-    )
+    arming = load_lambda_ssh_connectivity_one_shot_arming(args.m054_ssh_one_shot_arming)
+    bridge = load_lambda_ssh_connectivity_reviewer_bridge(args.m054_ssh_reviewer_bridge)
+    static = load_lambda_ssh_connectivity_static_validation(args.m054_ssh_static_validation)
     audit = load_lambda_ssh_connectivity_no_exec_audit(args.m054_ssh_no_exec_audit)
-    preview = load_lambda_ssh_connectivity_command_preview(
-        args.m054_ssh_command_preview
-    )
+    preview = load_lambda_ssh_connectivity_command_preview(args.m054_ssh_command_preview)
     safe_command = load_lambda_ssh_safe_client_command(args.m054_ssh_safe_client_command)
-    safe_validation = validate_ssh_connectivity_command_preview(
-        safe_command.command_preview
-    )
+    safe_validation = validate_ssh_connectivity_command_preview(safe_command.command_preview)
     m055c_plan = (
         load_lambda_ssh_connectivity_m055c_plan(args.m055c_plan)
         if args.m055c_plan is not None
@@ -8392,9 +8160,7 @@ def _load_m054b_ssh_connectivity_execution_gates(
         else None
     )
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
-    controls = load_lambda_strand_response_loss_control_check(
-        args.response_loss_controls
-    )
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     blockers: list[str] = []
     if plan.plan_status != "plan_passed":
         blockers.extend(plan.blockers or ["m054b_plan_not_passed"])
@@ -8474,9 +8240,7 @@ def _load_m054b_ssh_connectivity_execution_gates(
         value is not None
         for value in (args.m055c_plan, args.m055c_gate_check, args.ssh_stderr_capture_policy)
     )
-    if m055c_triggered and (
-        m055c_plan is None or m055c_gate is None or stderr_policy is None
-    ):
+    if m055c_triggered and (m055c_plan is None or m055c_gate is None or stderr_policy is None):
         blockers.append("m055c_requires_plan_gate_and_stderr_policy")
     if m055c_plan is not None:
         if m055c_plan.plan_status != "plan_passed":
@@ -8511,8 +8275,7 @@ def _load_m054b_ssh_connectivity_execution_gates(
         blockers.append("m054_private_key_reference_unavailable_for_probe")
     if blockers:
         raise SystemExit(
-            "M054B SSH-connectivity execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M054B SSH-connectivity execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     return {
         "plan": plan,
@@ -8595,27 +8358,16 @@ def _load_m051_metadata_bootstrap_execution_gates(
     missing = [name for name in required if values[name] is None]
     if missing:
         raise SystemExit(
-            "M051 metadata bootstrap run requires all M051 artifacts; missing "
-            + ", ".join(missing)
+            "M051 metadata bootstrap run requires all M051 artifacts; missing " + ", ".join(missing)
         )
-    authorization = load_lambda_m051_bootstrap_authorization(
-        args.m051_bootstrap_authorization
-    )
+    authorization = load_lambda_m051_bootstrap_authorization(args.m051_bootstrap_authorization)
     plan = load_lambda_m051_metadata_bootstrap_plan(args.m051_metadata_plan)
-    gate = load_lambda_m051_bootstrap_execution_gate(
-        args.m051_bootstrap_execution_gate_check
-    )
-    audit = load_lambda_m051_no_mutation_no_ssh_audit(
-        args.m051_no_mutation_no_ssh_audit
-    )
-    runbook = load_lambda_m051_bootstrap_runbook_preview(
-        args.m051_bootstrap_runbook_preview
-    )
+    gate = load_lambda_m051_bootstrap_execution_gate(args.m051_bootstrap_execution_gate_check)
+    audit = load_lambda_m051_no_mutation_no_ssh_audit(args.m051_no_mutation_no_ssh_audit)
+    runbook = load_lambda_m051_bootstrap_runbook_preview(args.m051_bootstrap_runbook_preview)
     m050 = load_lambda_m050_report(args.m050_report)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
-    controls = load_lambda_strand_response_loss_control_check(
-        args.response_loss_controls
-    )
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     one_shot_arming = (
         load_lambda_m051_one_shot_arming(args.m051_one_shot_arming)
         if args.m051_one_shot_arming is not None
@@ -8719,8 +8471,7 @@ def _load_m051_metadata_bootstrap_execution_gates(
         blockers.append("training_allowed_flag_true")
     if blockers:
         raise SystemExit(
-            "M051 metadata bootstrap execution gate failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M051 metadata bootstrap execution gate failed: " + ", ".join(sorted(set(blockers)))
         )
     return {
         "authorization": authorization,
@@ -8754,9 +8505,7 @@ def _load_m051_metadata_bootstrap_execution_gates(
             "strand_payload_compatible": gate.strand_payload_compatible,
             "response_capture_active": gate.response_capture_active,
             "status_before_parse": gate.status_before_parse,
-            "effective_launch_timeout_seconds": (
-                gate.effective_launch_timeout_seconds
-            ),
+            "effective_launch_timeout_seconds": (gate.effective_launch_timeout_seconds),
             "no_auto_launch_retry": gate.no_auto_launch_retry,
             "launch_ready": False,
             "launch_allowed": False,
@@ -8801,24 +8550,17 @@ def _load_m046_capacity_selected_execution_gates(
     )
     if not execution_gate.gate_passed:
         raise SystemExit(
-            "M046 capacity-selected execution gate failed: "
-            + ", ".join(execution_gate.blockers)
+            "M046 capacity-selected execution gate failed: " + ", ".join(execution_gate.blockers)
         )
     authorization = load_lambda_capacity_selected_m046_authorization(
         args.capacity_selected_m046_authorization
     )
-    cost = load_lambda_capacity_selected_cost_risk_review(
-        args.capacity_selected_cost_risk_review
-    )
+    cost = load_lambda_capacity_selected_cost_risk_review(args.capacity_selected_cost_risk_review)
     approval = load_lambda_capacity_selected_operator_approval(
         args.capacity_selected_operator_approval
     )
-    review_gate = load_lambda_capacity_selected_gate_check(
-        args.capacity_selected_gate_check
-    )
-    selector = load_lambda_capacity_history_aware_selector(
-        args.capacity_aware_selector_output
-    )
+    review_gate = load_lambda_capacity_selected_gate_check(args.capacity_selected_gate_check)
+    selector = load_lambda_capacity_history_aware_selector(args.capacity_aware_selector_output)
     selector_authorization = load_lambda_capacity_history_selector_authorization(
         args.capacity_aware_selector_authorization
     )
@@ -8826,9 +8568,7 @@ def _load_m046_capacity_selected_execution_gates(
         args.capacity_aware_selector_gate_check
     )
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
-    controls = load_lambda_strand_response_loss_control_check(
-        args.response_loss_controls
-    )
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     m045 = load_lambda_m045_report(args.m045_report)
     if not m045.report_passed or not m045.future_launch_candidate:
         raise SystemExit("M045 report does not approve future M046 capacity-selected review")
@@ -8861,9 +8601,7 @@ def _load_m046_capacity_selected_execution_gates(
             "strand_payload_compatible": execution_gate.strand_payload_compatible,
             "response_capture_active": execution_gate.response_capture_active,
             "status_before_parse": execution_gate.status_before_parse,
-            "effective_launch_timeout_seconds": (
-                execution_gate.effective_launch_timeout_seconds
-            ),
+            "effective_launch_timeout_seconds": (execution_gate.effective_launch_timeout_seconds),
             "no_auto_launch_retry": execution_gate.no_auto_launch_retry,
             "old_path_fallback_blocked": execution_gate.old_path_fallback_blocked,
             "m039_path_fallback_blocked": execution_gate.m039_path_fallback_blocked,
@@ -8880,8 +8618,7 @@ def _load_m039_lower_cost_execution_gates(args: argparse.Namespace) -> dict | No
     missing = [name for name, value in values.items() if value is None]
     if missing:
         raise SystemExit(
-            "M039 lower-cost run requires all lower-cost artifacts; missing "
-            + ", ".join(missing)
+            "M039 lower-cost run requires all lower-cost artifacts; missing " + ", ".join(missing)
         )
     execution_gate = build_lambda_lower_cost_execution_gate_check_from_paths(
         m039_authorization=args.m039_authorization,
@@ -8903,28 +8640,17 @@ def _load_m039_lower_cost_execution_gates(args: argparse.Namespace) -> dict | No
         raise SystemExit("M039 lower-cost gate failed: " + ", ".join(legacy_gate.blockers))
     if not execution_gate.gate_passed:
         raise SystemExit(
-            "M039 lower-cost execution gate failed: "
-            + ", ".join(execution_gate.blockers)
+            "M039 lower-cost execution gate failed: " + ", ".join(execution_gate.blockers)
         )
     authorization = load_lambda_lower_cost_m039_authorization(args.m039_authorization)
-    canonical = load_lambda_lower_cost_canonical_readiness(
-        args.lower_cost_canonical_readiness
-    )
-    state_snapshot = load_lambda_lower_cost_final_state_snapshot(
-        args.lower_cost_state_snapshot
-    )
+    canonical = load_lambda_lower_cost_canonical_readiness(args.lower_cost_canonical_readiness)
+    state_snapshot = load_lambda_lower_cost_final_state_snapshot(args.lower_cost_state_snapshot)
     budget_lock = load_lambda_lower_cost_budget_lock(args.lower_cost_budget_lock)
     resource_lock = load_lambda_lower_cost_resource_lock(args.lower_cost_resource_lock)
-    launch_window = load_lambda_lower_cost_launch_window_lock(
-        args.lower_cost_launch_window_lock
-    )
-    launch_plan = load_lambda_strand_lower_cost_launch_plan_report(
-        args.lower_cost_launch_plan
-    )
+    launch_window = load_lambda_lower_cost_launch_window_lock(args.lower_cost_launch_window_lock)
+    launch_plan = load_lambda_strand_lower_cost_launch_plan_report(args.lower_cost_launch_plan)
     ssh_selection = load_lambda_existing_ssh_key_selection(args.ssh_key_selection)
-    controls = load_lambda_strand_response_loss_control_check(
-        args.response_loss_controls
-    )
+    controls = load_lambda_strand_response_loss_control_check(args.response_loss_controls)
     m038a = load_lambda_m038a_report(args.m038a_report)
     if not m038a.report_passed or not m038a.future_launch_candidate:
         raise SystemExit("M038A report does not approve future M039 lower-cost review")
@@ -8955,9 +8681,7 @@ def _load_m039_lower_cost_execution_gates(args: argparse.Namespace) -> dict | No
             "strand_payload_compatible": execution_gate.strand_payload_compatible,
             "response_capture_active": execution_gate.response_capture_active,
             "status_before_parse": execution_gate.status_before_parse,
-            "effective_launch_timeout_seconds": (
-                execution_gate.effective_launch_timeout_seconds
-            ),
+            "effective_launch_timeout_seconds": (execution_gate.effective_launch_timeout_seconds),
             "no_auto_launch_retry": execution_gate.no_auto_launch_retry,
             "launch_ready": False,
             "launch_allowed": False,
@@ -9020,11 +8744,7 @@ def _m029_effective_launch_timeout_seconds(
         metadata_bootstrap_attempt,
         m054b_ssh_attempt,
     )
-    value = (
-        getattr(gate, "effective_launch_timeout_seconds", None)
-        if gate is not None
-        else None
-    )
+    value = getattr(gate, "effective_launch_timeout_seconds", None) if gate is not None else None
     return float(value if value is not None else 10.0)
 
 
@@ -9057,10 +8777,7 @@ def _arm_m039_lower_cost_attempt(
         blockers.append("missing exact terminate-required confirmation")
     if not gate.gate_passed:
         blockers.extend(gate.blockers or ["lower_cost_execution_gate_failed"])
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m039_lower_cost_launch_attempt"
-    ):
+    if authorization.authorization_status != "authorized_for_future_m039_lower_cost_launch_attempt":
         blockers.extend(authorization.blockers or ["m039_authorization_not_passed"])
     if budget.max_budget > 50 or not budget.budget_lock_passed:
         blockers.extend(budget.blockers or ["lower_cost_budget_lock_failed"])
@@ -9079,8 +8796,7 @@ def _arm_m039_lower_cost_attempt(
         ]
     )
     token = LambdaM029ArmingToken(
-        token_id="m039-lower-arm-"
-        + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
+        token_id="m039-lower-arm-" + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
         run_id=run_id,
         max_budget=budget.max_budget,
         max_runtime_minutes=window.max_runtime_minutes,
@@ -9095,9 +8811,7 @@ def _arm_m039_lower_cost_attempt(
         arming_passed=not blockers,
         token=token,
         blockers=blockers,
-        warnings=[
-            "M039 lower-cost arming is scoped to one launch request and owned termination."
-        ],
+        warnings=["M039 lower-cost arming is scoped to one launch request and owned termination."],
     )
 
 
@@ -9130,9 +8844,7 @@ def _arm_m046_capacity_selected_attempt(
         blockers.extend(authorization.blockers or ["m046_authorization_not_passed"])
     if not cost.cost_risk_review_passed or cost.max_budget > 50:
         blockers.extend(cost.blockers or ["capacity_selected_cost_risk_review_failed"])
-    if approval.approval_status != (
-        "approved_for_future_m046_capacity_selected_launch_review"
-    ):
+    if approval.approval_status != ("approved_for_future_m046_capacity_selected_launch_review"):
         blockers.extend(approval.blockers or ["operator_approval_not_passed"])
     if gate.selected_candidate != CAPACITY_SELECTED_CANDIDATE:
         blockers.append(f"selected_candidate_must_be_{CAPACITY_SELECTED_CANDIDATE}")
@@ -9153,8 +8865,7 @@ def _arm_m046_capacity_selected_attempt(
         ]
     )
     token = LambdaM029ArmingToken(
-        token_id="m046-capacity-arm-"
-        + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
+        token_id="m046-capacity-arm-" + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
         run_id=run_id,
         max_budget=50.0,
         max_runtime_minutes=30,
@@ -9170,8 +8881,7 @@ def _arm_m046_capacity_selected_attempt(
         token=token,
         blockers=blockers,
         warnings=[
-            "M046 capacity-selected arming is scoped to one launch request and "
-            "owned termination."
+            "M046 capacity-selected arming is scoped to one launch request and owned termination."
         ],
     )
 
@@ -9245,8 +8955,7 @@ def _arm_m051_metadata_bootstrap_attempt(
         ]
     )
     token = LambdaM029ArmingToken(
-        token_id="m051-bootstrap-arm-"
-        + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
+        token_id="m051-bootstrap-arm-" + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
         run_id=run_id,
         max_budget=50.0,
         max_runtime_minutes=30,
@@ -9316,8 +9025,7 @@ def _arm_m054b_ssh_connectivity_attempt(
         blockers.append("missing exact terminate-required confirmation")
     if (
         not fake_server_mode
-        and _m055_env_source_value("CONFIRM_" + "LAM" + "BDA_BILLABLE_ACTION", env_file)
-        != "true"
+        and _m055_env_source_value("CONFIRM_" + "LAM" + "BDA_BILLABLE_ACTION", env_file) != "true"
     ):
         blockers.append("missing CONFIRM_LAMBDA_BILLABLE_ACTION=true")
     if not fake_server_mode:
@@ -9343,21 +9051,18 @@ def _arm_m054b_ssh_connectivity_attempt(
     if is_m066r and is_lambda_remote_vertical_slice_one_shot_arming_expired(arming):
         blockers.append("m066r_remote_vertical_slice_one_shot_arming_expired")
     if (
-        (
-            is_m067r
-            or is_m071r
-            or is_m073r
-            or is_m075r
-            or is_m077r
-            or is_m079r
-            or is_m081r
-            or is_m083r
-            or is_m085r
-            or is_m087r
-            or is_m089r
-        )
-        and is_lambda_remote_vertical_slice_one_shot_arming_expired(arming)
-    ):
+        is_m067r
+        or is_m071r
+        or is_m073r
+        or is_m075r
+        or is_m077r
+        or is_m079r
+        or is_m081r
+        or is_m083r
+        or is_m085r
+        or is_m087r
+        or is_m089r
+    ) and is_lambda_remote_vertical_slice_one_shot_arming_expired(arming):
         blockers.append("remote_vertical_slice_one_shot_arming_expired")
     if (
         not is_m056
@@ -9434,8 +9139,7 @@ def _arm_m054b_ssh_connectivity_attempt(
         ]
     )
     token = LambdaM029ArmingToken(
-        token_id="m054b-ssh-arm-"
-        + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
+        token_id="m054b-ssh-arm-" + hashlib.sha256(material.encode("utf-8")).hexdigest()[:16],
         run_id=run_id,
         max_budget=50.0,
         max_runtime_minutes=30,
@@ -9581,8 +9285,7 @@ def _cmd_lambda_lower_cost_authorization_package(args: argparse.Namespace) -> in
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.future_authorization_status
-        == "authorized_for_future_lower_cost_launch_review"
+        if report.future_authorization_status == "authorized_for_future_lower_cost_launch_review"
         else 1
     )
 
@@ -9870,8 +9573,7 @@ def _cmd_lambda_availability_first_authorize(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_availability_first_launch_review"
+        if report.authorization_status == "authorized_for_future_availability_first_launch_review"
         else 1
     )
 
@@ -9932,9 +9634,7 @@ def _cmd_lambda_catalog_rotation_risk_acceptance(args: argparse.Namespace) -> in
 
 
 def _cmd_lambda_catalog_rotation_operator_decision(args: argparse.Namespace) -> int:
-    report = build_lambda_catalog_rotation_operator_decision_from_path(
-        args.risk_acceptance
-    )
+    report = build_lambda_catalog_rotation_operator_decision_from_path(args.risk_acceptance)
     write_lambda_catalog_rotation_operator_decision(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0 if report.decision_status != "incomplete" else 1
@@ -10058,8 +9758,7 @@ def _cmd_lambda_flexible_selector_authorize(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_flexible_selector_launch_review"
+        if report.authorization_status == "authorized_for_future_flexible_selector_launch_review"
         else 1
     )
 
@@ -10075,9 +9774,7 @@ def _cmd_lambda_flexible_selector_gate_check(args: argparse.Namespace) -> int:
 
 
 def _cmd_lambda_flexible_selector_fixed_shape_audit(args: argparse.Namespace) -> int:
-    report = build_lambda_flexible_selector_fixed_shape_audit_from_path(
-        args.authorization
-    )
+    report = build_lambda_flexible_selector_fixed_shape_audit_from_path(args.authorization)
     write_lambda_flexible_selector_fixed_shape_audit(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0 if report.audit_passed else 1
@@ -10091,11 +9788,7 @@ def _cmd_lambda_flexible_selector_command_preview(args: argparse.Namespace) -> i
     )
     write_lambda_flexible_selector_command_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_flexible_selector_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_flexible_selector_review" else 1
 
 
 def _cmd_lambda_flexible_selector_capacity_policy(args: argparse.Namespace) -> int:
@@ -10155,8 +9848,7 @@ def _cmd_lambda_flexible_selector_capacity_aware_authorize(
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_capacity_history_selector_review"
+        if report.authorization_status == "authorized_for_future_capacity_history_selector_review"
         else 1
     )
 
@@ -10182,12 +9874,7 @@ def _cmd_lambda_flexible_selector_capacity_aware_command_preview(
     )
     write_lambda_capacity_history_selector_command_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status
-        == "ready_for_future_capacity_history_selector_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_capacity_history_selector_review" else 1
 
 
 def _cmd_lambda_m044h_report(args: argparse.Namespace) -> int:
@@ -10284,11 +9971,7 @@ def _cmd_lambda_capacity_selected_command_preview(args: argparse.Namespace) -> i
     )
     write_lambda_capacity_selected_command_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m046_capacity_selected_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m046_capacity_selected_review" else 1
 
 
 def _cmd_lambda_m046a_report(args: argparse.Namespace) -> int:
@@ -10577,10 +10260,7 @@ def _cmd_lambda_bootstrap_m051_operator_confirmation(args: argparse.Namespace) -
     write_lambda_m051_operator_confirmation(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.confirmation_status
-        == "confirmed_for_m051_one_shot_metadata_bootstrap"
-        else 1
+        0 if report.confirmation_status == "confirmed_for_m051_one_shot_metadata_bootstrap" else 1
     )
 
 
@@ -10596,11 +10276,7 @@ def _cmd_lambda_bootstrap_m051_arm_one_shot(args: argparse.Namespace) -> int:
     )
     write_lambda_m051_one_shot_arming(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.arming_status == "armed_for_one_shot_m051_metadata_bootstrap"
-        else 1
-    )
+    return 0 if report.arming_status == "armed_for_one_shot_m051_metadata_bootstrap" else 1
 
 
 def _cmd_lambda_bootstrap_m051_command_binding(args: argparse.Namespace) -> int:
@@ -10628,11 +10304,7 @@ def _cmd_lambda_bootstrap_m051_reviewer_bridge(args: argparse.Namespace) -> int:
     )
     write_lambda_m051_execution_reviewer_bridge(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.bridge_status == "reviewer_compatible_one_shot_ready"
-        else 1
-    )
+    return 0 if report.bridge_status == "reviewer_compatible_one_shot_ready" else 1
 
 
 def _cmd_lambda_bootstrap_m051_arming_gate_check(args: argparse.Namespace) -> int:
@@ -10650,12 +10322,7 @@ def _cmd_lambda_bootstrap_m051_arming_command_preview(args: argparse.Namespace) 
     )
     write_lambda_m051_arming_command_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status
-        == "ready_for_future_m051b_one_shot_metadata_bootstrap"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m051b_one_shot_metadata_bootstrap" else 1
 
 
 def _cmd_lambda_metadata_bootstrap_success_record(args: argparse.Namespace) -> int:
@@ -10814,8 +10481,7 @@ def _cmd_lambda_remote_command_authorize_m059(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_m059_identity_command_review"
+        if report.authorization_status == "authorized_for_future_m059_identity_command_review"
         else 1
     )
 
@@ -10828,11 +10494,7 @@ def _cmd_lambda_remote_command_m059_runbook_preview(
     )
     write_lambda_m059_command_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m059_identity_command_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m059_identity_command_review" else 1
 
 
 def _cmd_lambda_remote_command_m059_plan(args: argparse.Namespace) -> int:
@@ -11058,8 +10720,7 @@ def _cmd_lambda_gpu_visibility_command_policy(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.command_policy_status
-        == "gpu_visibility_command_policy_defined_future_only"
+        if report.command_policy_status == "gpu_visibility_command_policy_defined_future_only"
         else 1
     )
 
@@ -11070,8 +10731,7 @@ def _cmd_lambda_gpu_visibility_output_policy(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.output_policy_status
-        == "gpu_visibility_output_policy_defined_future_only"
+        if report.output_policy_status == "gpu_visibility_output_policy_defined_future_only"
         else 1
     )
 
@@ -11085,8 +10745,7 @@ def _cmd_lambda_gpu_visibility_command_review(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.command_review_status
-        == "gpu_visibility_command_review_passed_future_only"
+        if report.command_review_status == "gpu_visibility_command_review_passed_future_only"
         else 1
     )
 
@@ -11102,8 +10761,7 @@ def _cmd_lambda_gpu_visibility_authorize_m063(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_m063_gpu_visibility_query_review"
+        if report.authorization_status == "authorized_for_future_m063_gpu_visibility_query_review"
         else 1
     )
 
@@ -11114,11 +10772,7 @@ def _cmd_lambda_gpu_visibility_m063_runbook_preview(args: argparse.Namespace) ->
     )
     write_lambda_m063_gpu_visibility_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m063_gpu_visibility_query_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m063_gpu_visibility_query_review" else 1
 
 
 def _cmd_lambda_gpu_visibility_m063_plan(args: argparse.Namespace) -> int:
@@ -11156,11 +10810,7 @@ def _cmd_lambda_gpu_visibility_m063_arm_one_shot(args: argparse.Namespace) -> in
     )
     write_lambda_m063_one_shot_arming(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.arming_status == "armed_for_one_shot_m063_gpu_visibility_query"
-        else 1
-    )
+    return 0 if report.arming_status == "armed_for_one_shot_m063_gpu_visibility_query" else 1
 
 
 def _cmd_lambda_gpu_visibility_m063_reviewer_bridge(args: argparse.Namespace) -> int:
@@ -11235,11 +10885,7 @@ def _cmd_lambda_python_runtime_command_policy(args: argparse.Namespace) -> int:
     report = build_lambda_python_runtime_command_policy()
     write_lambda_python_runtime_command_policy(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.policy_status == "python_runtime_command_policy_defined_future_only"
-        else 1
-    )
+    return 0 if report.policy_status == "python_runtime_command_policy_defined_future_only" else 1
 
 
 def _cmd_lambda_python_runtime_output_policy(args: argparse.Namespace) -> int:
@@ -11278,8 +10924,7 @@ def _cmd_lambda_python_runtime_authorize_m065(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_m065_python_version_query_review"
+        if report.authorization_status == "authorized_for_future_m065_python_version_query_review"
         else 1
     )
 
@@ -11290,11 +10935,7 @@ def _cmd_lambda_python_runtime_m065_runbook_preview(args: argparse.Namespace) ->
     )
     write_lambda_m065_python_runtime_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m065_python_version_query_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m065_python_version_query_review" else 1
 
 
 def _cmd_lambda_python_runtime_m065_plan(args: argparse.Namespace) -> int:
@@ -11332,11 +10973,7 @@ def _cmd_lambda_python_runtime_m065_arm_one_shot(args: argparse.Namespace) -> in
     )
     write_lambda_m065_one_shot_arming(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.arming_status == "armed_for_one_shot_m065_python_runtime_query"
-        else 1
-    )
+    return 0 if report.arming_status == "armed_for_one_shot_m065_python_runtime_query" else 1
 
 
 def _cmd_lambda_python_runtime_m065_reviewer_bridge(args: argparse.Namespace) -> int:
@@ -11495,10 +11132,7 @@ def _cmd_lambda_remote_vslice_source_bundle_arm_one_shot(
     write_lambda_remote_vertical_slice_one_shot_arming(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.arming_status
-        == "armed_for_one_shot_m067r_source_bundle_vertical_slice"
-        else 1
+        0 if report.arming_status == "armed_for_one_shot_m067r_source_bundle_vertical_slice" else 1
     )
 
 
@@ -11609,10 +11243,15 @@ def _cmd_lambda_dependency_wheelhouse_build_policy(args: argparse.Namespace) -> 
     )
     write_lambda_wheelhouse_build_policy(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return 0 if report.policy_status in {
-        "use_existing_compatible_wheelhouse",
-        "approved_controlled_local_wheel_download",
-    } else 1
+    return (
+        0
+        if report.policy_status
+        in {
+            "use_existing_compatible_wheelhouse",
+            "approved_controlled_local_wheel_download",
+        }
+        else 1
+    )
 
 
 def _cmd_lambda_dependency_download_wheelhouse(args: argparse.Namespace) -> int:
@@ -11727,11 +11366,7 @@ def _cmd_lambda_ssh_readiness_update_history(args: argparse.Namespace) -> int:
     )
     write_lambda_ssh_proven_candidate_history_update(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.update_status == "ssh_proven_candidate_history_updated"
-        else 1
-    )
+    return 0 if report.update_status == "ssh_proven_candidate_history_updated" else 1
 
 
 def _cmd_lambda_remote_vslice_ssh_proven_policy(args: argparse.Namespace) -> int:
@@ -11770,8 +11405,7 @@ def _cmd_lambda_remote_vslice_authorize_retry(args: argparse.Namespace) -> int:
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_m067r2_ssh_proven_candidate_review"
+        if report.authorization_status == "authorized_for_future_m067r2_ssh_proven_candidate_review"
         else 1
     )
 
@@ -11890,11 +11524,7 @@ def _cmd_lambda_first_experiment_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_first_experiment_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status == "ready_for_future_first_experiment_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_first_experiment_planning" else 1
 
 
 def _cmd_lambda_first_experiment_success_record(args: argparse.Namespace) -> int:
@@ -11999,8 +11629,7 @@ def _cmd_lambda_first_experiment_authorize_m071r(args: argparse.Namespace) -> in
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.authorization_status
-        == "authorized_for_future_m071r_first_experiment_attempt"
+        if report.authorization_status == "authorized_for_future_m071r_first_experiment_attempt"
         else 1
     )
 
@@ -12013,11 +11642,7 @@ def _cmd_lambda_first_experiment_m071r_runbook_preview(
     )
     write_lambda_m071r_first_experiment_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m071r_first_experiment_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m071r_first_experiment_review" else 1
 
 
 def _cmd_lambda_m070_report(args: argparse.Namespace) -> int:
@@ -12065,10 +11690,7 @@ def _cmd_lambda_tiny_smoke_authorize_m073r(args: argparse.Namespace) -> int:
     write_lambda_m073r_tiny_smoke_authorization(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.authorization_status
-        == "authorized_for_future_m073r_tiny_decodilo_smoke"
-        else 1
+        0 if report.authorization_status == "authorized_for_future_m073r_tiny_decodilo_smoke" else 1
     )
 
 
@@ -12080,11 +11702,7 @@ def _cmd_lambda_tiny_smoke_m073r_runbook_preview(
     )
     write_lambda_m073r_tiny_smoke_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m073r_tiny_smoke_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m073r_tiny_smoke_review" else 1
 
 
 def _cmd_lambda_tiny_smoke_success_record(args: argparse.Namespace) -> int:
@@ -12141,12 +11759,7 @@ def _cmd_lambda_runtime_protocol_smoke_readiness(args: argparse.Namespace) -> in
     )
     write_lambda_runtime_protocol_smoke_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status
-        == "ready_for_future_runtime_protocol_smoke_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_runtime_protocol_smoke_planning" else 1
 
 
 def _cmd_lambda_runtime_protocol_smoke_discover_command(
@@ -12197,18 +11810,13 @@ def _cmd_lambda_runtime_protocol_smoke_m075r_runbook_preview(
 
 def _cmd_lambda_runtime_protocol_smoke_m075r_plan(args: argparse.Namespace) -> int:
     upload_policy = load_lambda_source_dependency_upload_policy(args.upload_policy)
-    authorization = load_lambda_m075r_runtime_protocol_smoke_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m075r_runtime_protocol_smoke_authorization(args.authorization)
     if (
         upload_policy.upload_policy_status != "policy_defined"
         or not upload_policy.upload_only_after_ssh_banner_readiness
     ):
         raise SystemExit("M075R plan requires SSH-banner-gated upload policy")
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m075r_runtime_protocol_smoke"
-    ):
+    if authorization.authorization_status != "authorized_for_future_m075r_runtime_protocol_smoke":
         raise SystemExit("M075R plan requires future M075R authorization")
     report = build_lambda_remote_dependency_bundle_execution_plan_from_paths(
         discovery_report=args.discovery_report,
@@ -12253,24 +11861,17 @@ def _cmd_lambda_runtime_protocol_smoke_m075r2_plan(args: argparse.Namespace) -> 
     capture_policy = load_lambda_remote_vslice_failure_artifact_capture_policy(
         args.failure_artifact_policy
     )
-    authorization = load_lambda_m075r2_runtime_smoke_retry_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m075r2_runtime_smoke_retry_authorization(args.authorization)
     if (
         upload_policy.upload_policy_status != "policy_defined"
         or not upload_policy.upload_only_after_ssh_banner_readiness
     ):
         raise SystemExit("M075R2 plan requires SSH-banner-gated upload policy")
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m075r2_runtime_smoke_retry"
-    ):
+    if authorization.authorization_status != "authorized_for_future_m075r2_runtime_smoke_retry":
         raise SystemExit("M075R2 plan requires future M075R2 authorization")
     blockers: list[str] = []
     if not capture_policy.policy_passed:
-        blockers.extend(
-            capture_policy.blockers or ["failure_artifact_capture_policy_failed"]
-        )
+        blockers.extend(capture_policy.blockers or ["failure_artifact_capture_policy_failed"])
     if not capture_policy.capture_on_failure_allowed:
         blockers.append("failure_artifact_capture_not_allowed")
     if capture_policy.capture_scope != "predeclared_artifact_only":
@@ -12311,9 +11912,7 @@ def _cmd_lambda_runtime_protocol_smoke_m075r2_gate_check(
     )
     blockers = list(report.blockers)
     if not capture_policy.policy_passed:
-        blockers.extend(
-            capture_policy.blockers or ["failure_artifact_capture_policy_failed"]
-        )
+        blockers.extend(capture_policy.blockers or ["failure_artifact_capture_policy_failed"])
     if not capture_policy.capture_on_failure_allowed:
         blockers.append("failure_artifact_capture_not_allowed")
     if capture_policy.capture_scope != "predeclared_artifact_only":
@@ -12335,16 +11934,9 @@ def _cmd_lambda_runtime_protocol_smoke_m075r2_gate_check(
 
 
 def _cmd_lambda_runtime_protocol_smoke_m075r3_plan(args: argparse.Namespace) -> int:
-    body_policy = load_lambda_runtime_smoke_artifact_body_policy(
-        args.artifact_body_policy
-    )
-    authorization = load_lambda_m075r3_runtime_smoke_retry_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m075r3_runtime_smoke_retry"
-    ):
+    body_policy = load_lambda_runtime_smoke_artifact_body_policy(args.artifact_body_policy)
+    authorization = load_lambda_m075r3_runtime_smoke_retry_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m075r3_runtime_smoke_retry":
         raise SystemExit("M075R3 plan requires future M075R3 authorization")
     blockers: list[str] = []
     if body_policy.policy_status != "policy_defined":
@@ -12400,16 +11992,9 @@ def _cmd_lambda_runtime_protocol_smoke_m075r3_gate_check(
 
 
 def _cmd_lambda_runtime_protocol_smoke_m075r4_plan(args: argparse.Namespace) -> int:
-    body_policy = load_lambda_runtime_smoke_artifact_body_policy(
-        args.artifact_body_policy
-    )
-    authorization = load_lambda_m075r4_runtime_smoke_retry_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m075r4_runtime_smoke_retry"
-    ):
+    body_policy = load_lambda_runtime_smoke_artifact_body_policy(args.artifact_body_policy)
+    authorization = load_lambda_m075r4_runtime_smoke_retry_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m075r4_runtime_smoke_retry":
         raise SystemExit("M075R4 plan requires future M075R4 authorization")
     blockers: list[str] = []
     if body_policy.policy_status != "policy_defined":
@@ -12557,10 +12142,7 @@ def _cmd_lambda_runtime_protocol_smoke_parse_artifact_fixture(
     write_runtime_smoke_artifact_parser_report(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.json_parse_succeeded
-        or report.parse_status == "metadata_only_oversized"
-        else 1
+        0 if report.json_parse_succeeded or report.parse_status == "metadata_only_oversized" else 1
     )
 
 
@@ -12713,8 +12295,7 @@ def _cmd_lambda_first_synthetic_experiment_readiness(
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.readiness_status
-        == "ready_for_future_first_synthetic_experiment_planning"
+        if report.readiness_status == "ready_for_future_first_synthetic_experiment_planning"
         else 1
     )
 
@@ -12768,9 +12349,7 @@ def _cmd_lambda_first_synthetic_experiment_m077r_runbook_preview(
 
 
 def _cmd_lambda_first_synthetic_experiment_m077r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m077r_first_synthetic_experiment_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m077r_first_synthetic_experiment_authorization(args.authorization)
     if (
         authorization.authorization_status
         != "authorized_for_future_m077r_first_synthetic_experiment"
@@ -12829,11 +12408,7 @@ def _cmd_lambda_synthetic_experiment_success_record(
     )
     write_lambda_synthetic_experiment_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status == "first_remote_synthetic_experiment_success"
-        else 1
-    )
+    return 0 if report.success_status == "first_remote_synthetic_experiment_success" else 1
 
 
 def _cmd_lambda_synthetic_experiment_reconcile(args: argparse.Namespace) -> int:
@@ -12889,11 +12464,7 @@ def _cmd_lambda_learner_syncer_smoke_success_record(
     )
     write_lambda_learner_syncer_smoke_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status == "remote_learner_syncer_smoke_success"
-        else 1
-    )
+    return 0 if report.success_status == "remote_learner_syncer_smoke_success" else 1
 
 
 def _cmd_lambda_learner_syncer_smoke_reconcile(args: argparse.Namespace) -> int:
@@ -12950,10 +12521,7 @@ def _cmd_lambda_next_synthetic_experiment_readiness(
     write_lambda_next_synthetic_experiment_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.readiness_status
-        == "ready_for_future_next_synthetic_experiment_planning"
-        else 1
+        0 if report.readiness_status == "ready_for_future_next_synthetic_experiment_planning" else 1
     )
 
 
@@ -13063,9 +12631,7 @@ def _cmd_lambda_next_synthetic_experiment_m079r2_runbook_preview(
 
 
 def _cmd_lambda_next_synthetic_experiment_m079r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m079r_next_synthetic_experiment_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m079r_next_synthetic_experiment_authorization(args.authorization)
     if (
         authorization.authorization_status
         != "authorized_for_future_m079r_next_synthetic_experiment"
@@ -13135,16 +12701,13 @@ def _validate_m079r2_declared_artifact_policy(path: Path) -> str:
         blockers.append("declared_artifact_policy_allows_fallback_paths")
     if blockers:
         raise SystemExit(
-            "M079R2 declared artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M079R2 declared artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
 
 def _cmd_lambda_next_synthetic_experiment_m079r2_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m079r2_next_synthetic_experiment_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m079r2_next_synthetic_experiment_authorization(args.authorization)
     if (
         authorization.authorization_status
         != "authorized_for_future_m079r2_next_synthetic_experiment_retry"
@@ -13210,11 +12773,7 @@ def _cmd_lambda_diloco_synthetic_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_diloco_synthetic_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status == "ready_for_future_diloco_synthetic_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_diloco_synthetic_planning" else 1
 
 
 def _cmd_lambda_diloco_synthetic_discover_command(
@@ -13319,9 +12878,7 @@ def _cmd_lambda_diloco_synthetic_m081r2_runbook_preview(
 
 
 def _cmd_lambda_diloco_synthetic_m081r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m081r_diloco_synthetic_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m081r_diloco_synthetic_authorization(args.authorization)
     if (
         authorization.authorization_status
         != "authorized_for_future_m081r_diloco_synthetic_experiment"
@@ -13401,20 +12958,14 @@ def _validate_m081r2_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M081R2 manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M081R2 manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
 
 def _cmd_lambda_diloco_synthetic_m081r2_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m081r2_diloco_synthetic_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m081r2_diloco_synthetic_retry"
-    ):
+    authorization = load_lambda_m081r2_diloco_synthetic_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m081r2_diloco_synthetic_retry":
         raise SystemExit("M081R2 plan requires future M081R2 retry authorization")
     manifest_artifact_policy_hash = _validate_m081r2_manifest_artifact_policy(
         args.manifest_artifact_policy
@@ -13476,11 +13027,7 @@ def _cmd_lambda_diloco_synthetic_success_record(args: argparse.Namespace) -> int
     )
     write_lambda_diloco_synthetic_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status == "remote_diloco_shaped_synthetic_success"
-        else 1
-    )
+    return 0 if report.success_status == "remote_diloco_shaped_synthetic_success" else 1
 
 
 def _cmd_lambda_diloco_synthetic_reconcile(args: argparse.Namespace) -> int:
@@ -13580,11 +13127,7 @@ def _cmd_lambda_diloco_optimizer_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_diloco_optimizer_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status == "ready_for_future_diloco_optimizer_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_diloco_optimizer_planning" else 1
 
 
 def _cmd_lambda_diloco_optimizer_discover_command(
@@ -13641,12 +13184,7 @@ def _cmd_lambda_integrated_diloco_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_integrated_diloco_synthetic_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status
-        == "ready_for_future_integrated_diloco_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_integrated_diloco_planning" else 1
 
 
 def _cmd_lambda_integrated_diloco_discover_command(
@@ -13700,11 +13238,7 @@ def _cmd_lambda_integrated_diloco_success_record(args: argparse.Namespace) -> in
     )
     write_lambda_integrated_diloco_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status == "remote_integrated_diloco_synthetic_success"
-        else 1
-    )
+    return 0 if report.success_status == "remote_integrated_diloco_synthetic_success" else 1
 
 
 def _cmd_lambda_integrated_diloco_reconcile(args: argparse.Namespace) -> int:
@@ -13754,11 +13288,7 @@ def _cmd_lambda_parameter_fragment_success_record(args: argparse.Namespace) -> i
     )
     write_lambda_parameter_fragment_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status == "remote_parameter_fragment_smoke_success"
-        else 1
-    )
+    return 0 if report.success_status == "remote_parameter_fragment_smoke_success" else 1
 
 
 def _cmd_lambda_parameter_fragment_reconcile(args: argparse.Namespace) -> int:
@@ -13808,11 +13338,7 @@ def _cmd_lambda_parameter_fragment_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_parameter_fragment_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status == "ready_for_future_parameter_fragment_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_parameter_fragment_planning" else 1
 
 
 def _cmd_lambda_parameter_fragment_discover_command(
@@ -13884,8 +13410,7 @@ def _cmd_lambda_bounded_diloco_experiment_readiness(
     _print_json(report.model_dump(mode="json"))
     return (
         0
-        if report.readiness_status
-        == "ready_for_first_bounded_synthetic_diloco_experiment_planning"
+        if report.readiness_status == "ready_for_first_bounded_synthetic_diloco_experiment_planning"
         else 1
     )
 
@@ -13947,12 +13472,7 @@ def _cmd_lambda_bounded_diloco_experiment_success_record(
     )
     write_lambda_bounded_diloco_experiment_success_record(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.success_status
-        == "remote_bounded_synthetic_diloco_experiment_success"
-        else 1
-    )
+    return 0 if report.success_status == "remote_bounded_synthetic_diloco_experiment_success" else 1
 
 
 def _cmd_lambda_bounded_diloco_experiment_reconcile(
@@ -14014,12 +13534,7 @@ def _cmd_lambda_bounded_diloco_experiment_result_summary(
     )
     write_lambda_bounded_experiment_result_summary(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.summary_status
-        == "bounded_synthetic_diloco_experiment_summarized"
-        else 1
-    )
+    return 0 if report.summary_status == "bounded_synthetic_diloco_experiment_summarized" else 1
 
 
 def _cmd_lambda_bounded_diloco_experiment_evidence_interpretation(
@@ -14123,20 +13638,14 @@ def _validate_m085r_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M085R manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M085R manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
 
 def _cmd_lambda_integrated_diloco_m085r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m085r_integrated_diloco_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m085r_integrated_diloco_smoke"
-    ):
+    authorization = load_lambda_m085r_integrated_diloco_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m085r_integrated_diloco_smoke":
         raise SystemExit("M085R plan requires future M085R authorization")
     manifest_artifact_policy_hash = _validate_m085r_manifest_artifact_policy(
         args.manifest_artifact_policy
@@ -14234,8 +13743,7 @@ def _validate_m087r_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M087R manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M087R manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
@@ -14275,13 +13783,8 @@ def _ssh_history_proves_candidate_region(
 
 
 def _cmd_lambda_parameter_fragment_m087r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m087r_parameter_fragment_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m087r_parameter_fragment_smoke"
-    ):
+    authorization = load_lambda_m087r_parameter_fragment_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m087r_parameter_fragment_smoke":
         raise SystemExit("M087R plan requires future M087R authorization")
     manifest_artifact_policy_hash = _validate_m087r_manifest_artifact_policy(
         args.manifest_artifact_policy
@@ -14386,8 +13889,7 @@ def _validate_m089r_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M089R manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M089R manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
@@ -14395,9 +13897,7 @@ def _validate_m089r_manifest_artifact_policy(path: Path) -> str:
 def _cmd_lambda_bounded_diloco_experiment_m089r_plan(
     args: argparse.Namespace,
 ) -> int:
-    authorization = load_lambda_m089r_bounded_diloco_experiment_authorization(
-        args.authorization
-    )
+    authorization = load_lambda_m089r_bounded_diloco_experiment_authorization(args.authorization)
     if (
         authorization.authorization_status
         != "authorized_for_future_m089r_bounded_diloco_experiment"
@@ -14506,20 +14006,14 @@ def _validate_m093r_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M093R manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M093R manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
 
 def _cmd_lambda_tiny_real_training_m093r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m093r_tiny_real_training_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m093r_tiny_real_training_smoke"
-    ):
+    authorization = load_lambda_m093r_tiny_real_training_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m093r_tiny_real_training_smoke":
         raise SystemExit("M093R plan requires future M093R authorization")
     manifest_artifact_policy_hash = _validate_m093r_manifest_artifact_policy(
         args.manifest_artifact_policy
@@ -14624,20 +14118,14 @@ def _validate_m083r_manifest_artifact_policy(path: Path) -> str:
         blockers.append("manifest_artifact_policy_allows_symlink_escapes")
     if blockers:
         raise SystemExit(
-            "M083R manifest artifact policy failed: "
-            + ", ".join(sorted(set(blockers)))
+            "M083R manifest artifact policy failed: " + ", ".join(sorted(set(blockers)))
         )
     return _sha256_file(path)
 
 
 def _cmd_lambda_diloco_optimizer_m083r_plan(args: argparse.Namespace) -> int:
-    authorization = load_lambda_m083r_diloco_optimizer_authorization(
-        args.authorization
-    )
-    if (
-        authorization.authorization_status
-        != "authorized_for_future_m083r_diloco_optimizer_smoke"
-    ):
+    authorization = load_lambda_m083r_diloco_optimizer_authorization(args.authorization)
+    if authorization.authorization_status != "authorized_for_future_m083r_diloco_optimizer_smoke":
         raise SystemExit("M083R plan requires future M083R authorization")
     manifest_artifact_policy_hash = _validate_m083r_manifest_artifact_policy(
         args.manifest_artifact_policy
@@ -14795,10 +14283,7 @@ def _cmd_lambda_remote_vslice_authorize_m073r2(args: argparse.Namespace) -> int:
     write_lambda_m073r2_retry_authorization(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.authorization_status
-        == "authorized_for_future_m073r2_tiny_smoke_retry"
-        else 1
+        0 if report.authorization_status == "authorized_for_future_m073r2_tiny_smoke_retry" else 1
     )
 
 
@@ -14811,11 +14296,7 @@ def _cmd_lambda_remote_vslice_m073r2_runbook_preview(
     )
     write_lambda_m073r2_runbook_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.preview_status == "ready_for_future_m073r2_tiny_smoke_retry_review"
-        else 1
-    )
+    return 0 if report.preview_status == "ready_for_future_m073r2_tiny_smoke_retry_review" else 1
 
 
 def _cmd_lambda_m072_report(args: argparse.Namespace) -> int:
@@ -15408,11 +14889,7 @@ def _cmd_lambda_ssh_connectivity_retry_decision(args: argparse.Namespace) -> int
     )
     write_lambda_ssh_retry_operator_decision(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.decision_status == "authorize_future_live_candidate_ssh_retry_review"
-        else 1
-    )
+    return 0 if report.decision_status == "authorize_future_live_candidate_ssh_retry_review" else 1
 
 
 def _cmd_lambda_ssh_connectivity_authorize_m056(args: argparse.Namespace) -> int:
@@ -15439,9 +14916,7 @@ def _cmd_lambda_ssh_connectivity_retry_command_preview(
     write_lambda_ssh_retry_command_preview(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return (
-        0
-        if report.preview_status == "ready_for_future_m056_live_candidate_ssh_retry_review"
-        else 1
+        0 if report.preview_status == "ready_for_future_m056_live_candidate_ssh_retry_review" else 1
     )
 
 
@@ -15613,11 +15088,7 @@ def _cmd_lambda_ssh_connectivity_m057_operator_approval(
     )
     write_lambda_m057_operator_approval(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.approval_status == "approved_for_m057_minimal_remote_command"
-        else 1
-    )
+    return 0 if report.approval_status == "approved_for_m057_minimal_remote_command" else 1
 
 
 def _cmd_lambda_ssh_connectivity_m057_command_policy(args: argparse.Namespace) -> int:
@@ -15648,11 +15119,7 @@ def _cmd_lambda_ssh_connectivity_m057_arm_one_shot(args: argparse.Namespace) -> 
     )
     write_lambda_m057_one_shot_arming(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.arming_status == "armed_for_one_shot_m057_minimal_remote_command"
-        else 1
-    )
+    return 0 if report.arming_status == "armed_for_one_shot_m057_minimal_remote_command" else 1
 
 
 def _cmd_lambda_ssh_connectivity_m057_reviewer_bridge(
@@ -15787,11 +15254,7 @@ def _cmd_lambda_tiny_real_training_readiness(args: argparse.Namespace) -> int:
     )
     write_lambda_tiny_real_training_readiness(args.out, report)
     _print_json(report.model_dump(mode="json"))
-    return (
-        0
-        if report.readiness_status == "ready_for_future_tiny_real_training_planning"
-        else 1
-    )
+    return 0 if report.readiness_status == "ready_for_future_tiny_real_training_planning" else 1
 
 
 def _cmd_lambda_tiny_real_training_discover_command(
@@ -15961,18 +15424,14 @@ def _cmd_lambda_catalog_availability_risk_acceptance(args: argparse.Namespace) -
 def _cmd_lambda_catalog_availability_operator_decision(
     args: argparse.Namespace,
 ) -> int:
-    report = build_lambda_catalog_availability_operator_decision_from_path(
-        args.risk_acceptance
-    )
+    report = build_lambda_catalog_availability_operator_decision_from_path(args.risk_acceptance)
     write_lambda_catalog_availability_operator_decision(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0 if report.decision_status != "incomplete" else 1
 
 
 def _cmd_lambda_catalog_availability_wait_plan(args: argparse.Namespace) -> int:
-    report = build_lambda_wait_for_live_availability_plan_from_path(
-        args.operator_decision
-    )
+    report = build_lambda_wait_for_live_availability_plan_from_path(args.operator_decision)
     write_lambda_wait_for_live_availability_plan(args.out, report)
     _print_json(report.model_dump(mode="json"))
     return 0 if report.plan_status == "wait_for_live_availability" else 1
@@ -16722,11 +16181,7 @@ def _cmd_lambda_second_attempt_authorize(args: argparse.Namespace) -> int:
     )
     write_lambda_second_attempt_authorization(args.out, authorization)
     _print_json(authorization.model_dump(mode="json"))
-    return (
-        0
-        if authorization.status == "authorized_for_future_m031_second_launch_attempt"
-        else 1
-    )
+    return 0 if authorization.status == "authorized_for_future_m031_second_launch_attempt" else 1
 
 
 def _cmd_lambda_second_attempt_go_no_go(args: argparse.Namespace) -> int:
@@ -16763,9 +16218,7 @@ def _cmd_lambda_third_attempt_timeout_policy(args: argparse.Namespace) -> int:
     policy = build_lambda_launch_timeout_policy(
         launch_request_timeout_seconds=args.launch_timeout_seconds,
         terminate_request_timeout_seconds=args.terminate_timeout_seconds,
-        read_only_verification_timeout_seconds=(
-            args.read_only_verification_timeout_seconds
-        ),
+        read_only_verification_timeout_seconds=(args.read_only_verification_timeout_seconds),
         poll_interval_seconds=args.poll_interval_seconds,
         max_read_only_reconcile_seconds=args.max_read_only_reconcile_seconds,
         no_auto_launch_retry=not args.allow_auto_launch_retry,
@@ -16826,11 +16279,7 @@ def _cmd_lambda_third_attempt_authorize(args: argparse.Namespace) -> int:
     )
     write_lambda_third_attempt_authorization(args.out, authorization)
     _print_json(authorization.model_dump(mode="json"))
-    return (
-        0
-        if authorization.status == "authorized_for_future_m034_third_launch_attempt"
-        else 1
-    )
+    return 0 if authorization.status == "authorized_for_future_m034_third_launch_attempt" else 1
 
 
 def _cmd_lambda_third_attempt_go_no_go(args: argparse.Namespace) -> int:
@@ -16889,15 +16338,11 @@ def _m039_resource_lock_from_lower_cost_attempt(
     plan = launch_plan_report.plan
     raw_ssh_key = ssh_selection.selected_ssh_key_name_for_payload
     if not execution_gate.gate_passed:
-        raise SystemExit(
-            "M039 lower-cost execution gate failed before request construction"
-        )
+        raise SystemExit("M039 lower-cost execution gate failed before request construction")
     if plan is None or not launch_plan_report.plan_passed:
         raise SystemExit("M039 lower-cost launch plan is invalid")
     if not raw_ssh_key:
-        raise SystemExit(
-            "M039 lower-cost launch requires a private existing SSH key name"
-        )
+        raise SystemExit("M039 lower-cost launch requires a private existing SSH key name")
     if raw_ssh_key not in plan.ssh_key_names:
         raise SystemExit("M039 lower-cost private SSH key does not match launch plan")
     if plan.shape != "gpu_1x_h100_pcie" or plan.instance_type_name != "gpu_1x_h100_pcie":
@@ -16948,13 +16393,9 @@ def _m046_resource_lock_from_capacity_selected_attempt(
     ssh_selection = capacity_selected["ssh_key_selection"]
     raw_ssh_key = ssh_selection.selected_ssh_key_name_for_payload
     if not execution_gate.gate_passed:
-        raise SystemExit(
-            "M046 capacity-selected execution gate failed before request construction"
-        )
+        raise SystemExit("M046 capacity-selected execution gate failed before request construction")
     if not raw_ssh_key:
-        raise SystemExit(
-            "M046 capacity-selected launch requires a private existing SSH key name"
-        )
+        raise SystemExit("M046 capacity-selected launch requires a private existing SSH key name")
     if ssh_selection.raw_public_key_material_present:
         raise SystemExit("M046 capacity-selected SSH key artifact contains raw key material")
     if execution_gate.selected_candidate != CAPACITY_SELECTED_CANDIDATE:
@@ -17288,10 +16729,14 @@ def _m055_private_key_from_public_key_comment(comment: str) -> Path | None:
         return None
     for public_key_path in sorted(ssh_dir.glob("*.pub")):
         try:
-            parts = public_key_path.read_text(
-                encoding="utf-8",
-                errors="ignore",
-            ).strip().split(maxsplit=2)
+            parts = (
+                public_key_path.read_text(
+                    encoding="utf-8",
+                    errors="ignore",
+                )
+                .strip()
+                .split(maxsplit=2)
+            )
         except OSError:
             continue
         if len(parts) < 3 or parts[2] != comment:
@@ -17420,16 +16865,12 @@ def _m054b_poll_owned_instance_ssh_host(
     timeout_seconds = (
         0.0
         if fake_mode
-        else float(
-            os.environ.get("LAMBDA" + "_SSH_HOST_DISCOVERY_TIMEOUT_SECONDS", "120")
-        )
+        else float(os.environ.get("LAMBDA" + "_SSH_HOST_DISCOVERY_TIMEOUT_SECONDS", "120"))
     )
     interval_seconds = (
         0.0
         if fake_mode
-        else float(
-            os.environ.get("LAMBDA" + "_SSH_HOST_DISCOVERY_INTERVAL_SECONDS", "2")
-        )
+        else float(os.environ.get("LAMBDA" + "_SSH_HOST_DISCOVERY_INTERVAL_SECONDS", "2"))
     )
     allow_private_ip = os.environ.get("LAMBDA" + "_ALLOW_PRIVATE_SSH_HOST", "").lower() in {
         "1",
@@ -17917,9 +17358,7 @@ def _scenario_from_scaling_args(args: argparse.Namespace) -> LearnerPodScalingSc
         mode=args.mode,
         candidate_learner_counts=_parse_int_csv(args.candidate_learners),
         fixed_total_gpus=args.total_gpus if args.mode == "fixed_total_compute" else None,
-        gpus_per_learner=(
-            None if args.mode == "fixed_total_compute" else args.gpus_per_learner
-        ),
+        gpus_per_learner=(None if args.mode == "fixed_total_compute" else args.gpus_per_learner),
         training_duration_hours=args.training_duration_hours,
         target_useful_tokens=args.target_useful_tokens,
         model_parameter_count=args.model_params,
@@ -17992,12 +17431,8 @@ def _cmd_remote_simulate_backend(args: argparse.Namespace) -> int:
     _print_json(
         {
             "out": str(args.out),
-            "read_gbps_meets_target": report.throughput_validation[
-                "read_gbps_meets_target"
-            ],
-            "write_gbps_meets_target": report.throughput_validation[
-                "write_gbps_meets_target"
-            ],
+            "read_gbps_meets_target": report.throughput_validation["read_gbps_meets_target"],
+            "write_gbps_meets_target": report.throughput_validation["write_gbps_meets_target"],
             "remote_backend_enabled": report.remote_backend_enabled,
             "launch_ready": report.launch_ready,
             "launch_allowed": report.launch_allowed,
@@ -18267,8 +17702,7 @@ def _cmd_remote_decision_record(args: argparse.Namespace) -> int:
         risk_register=risk_register,
         rollout_plan_ref=str(args.rollout_plan) if args.rollout_plan else None,
         evidence_complete=(
-            evidence.manifest.evidence_completeness_score >= 1.0
-            and not evidence.manifest.blockers
+            evidence.manifest.evidence_completeness_score >= 1.0 and not evidence.manifest.blockers
         ),
     )
     write_remote_backend_decision_record(args.out, record)
@@ -19098,13 +18532,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_fake_lifecycle_preflight = lambda_fake_lifecycle_sub.add_parser("preflight")
     lambda_fake_lifecycle_preflight.add_argument("--m020-report", type=Path, required=True)
-    lambda_fake_lifecycle_preflight.add_argument(
-        "--approval-manifest", type=Path, required=True
-    )
+    lambda_fake_lifecycle_preflight.add_argument("--approval-manifest", type=Path, required=True)
     lambda_fake_lifecycle_preflight.add_argument("--out", type=Path, required=True)
-    lambda_fake_lifecycle_preflight.set_defaults(
-        func=_cmd_lambda_fake_lifecycle_preflight
-    )
+    lambda_fake_lifecycle_preflight.set_defaults(func=_cmd_lambda_fake_lifecycle_preflight)
     lambda_fake_lifecycle_run = lambda_fake_lifecycle_sub.add_parser("run")
     lambda_fake_lifecycle_run.add_argument("--m020-report", type=Path, required=True)
     lambda_fake_lifecycle_run.add_argument("--approval-manifest", type=Path, required=True)
@@ -19113,36 +18543,24 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_fake_lifecycle_run.add_argument("--out", type=Path, required=True)
     lambda_fake_lifecycle_run.set_defaults(func=_cmd_lambda_fake_lifecycle_run)
     lambda_fake_lifecycle_teardown = lambda_fake_lifecycle_sub.add_parser("teardown")
-    lambda_fake_lifecycle_teardown.add_argument(
-        "--lifecycle-report", type=Path, required=True
-    )
+    lambda_fake_lifecycle_teardown.add_argument("--lifecycle-report", type=Path, required=True)
     lambda_fake_lifecycle_teardown.add_argument("--out", type=Path, required=True)
-    lambda_fake_lifecycle_teardown.set_defaults(
-        func=_cmd_lambda_fake_lifecycle_teardown
-    )
+    lambda_fake_lifecycle_teardown.set_defaults(func=_cmd_lambda_fake_lifecycle_teardown)
     lambda_fake_lifecycle_verify = lambda_fake_lifecycle_sub.add_parser("verify")
-    lambda_fake_lifecycle_verify.add_argument(
-        "--lifecycle-report", type=Path, required=True
-    )
-    lambda_fake_lifecycle_verify.add_argument(
-        "--teardown-report", type=Path, required=True
-    )
+    lambda_fake_lifecycle_verify.add_argument("--lifecycle-report", type=Path, required=True)
+    lambda_fake_lifecycle_verify.add_argument("--teardown-report", type=Path, required=True)
     lambda_fake_lifecycle_verify.add_argument("--out", type=Path, required=True)
     lambda_fake_lifecycle_verify.set_defaults(func=_cmd_lambda_fake_lifecycle_verify)
     lambda_fake_lifecycle_fault = lambda_fake_lifecycle_sub.add_parser("fault")
     lambda_fake_lifecycle_fault.add_argument("--m020-report", type=Path, required=True)
-    lambda_fake_lifecycle_fault.add_argument(
-        "--approval-manifest", type=Path, required=True
-    )
+    lambda_fake_lifecycle_fault.add_argument("--approval-manifest", type=Path, required=True)
     lambda_fake_lifecycle_fault.add_argument("--failure-mode", required=True)
     lambda_fake_lifecycle_fault.add_argument("--workdir", type=Path, required=True)
     lambda_fake_lifecycle_fault.add_argument("--out", type=Path, required=True)
     lambda_fake_lifecycle_fault.set_defaults(func=_cmd_lambda_fake_lifecycle_fault)
     lambda_fake_lifecycle_stress = lambda_fake_lifecycle_sub.add_parser("stress")
     lambda_fake_lifecycle_stress.add_argument("--m020-report", type=Path, required=True)
-    lambda_fake_lifecycle_stress.add_argument(
-        "--approval-manifest", type=Path, required=True
-    )
+    lambda_fake_lifecycle_stress.add_argument("--approval-manifest", type=Path, required=True)
     lambda_fake_lifecycle_stress.add_argument("--workdir", type=Path, required=True)
     lambda_fake_lifecycle_stress.add_argument("--cycles", type=int, default=5)
     lambda_fake_lifecycle_stress.add_argument(
@@ -19151,45 +18569,31 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_fake_lifecycle_stress.add_argument("--out", type=Path, required=True)
     lambda_fake_lifecycle_stress.set_defaults(func=_cmd_lambda_fake_lifecycle_stress)
-    lambda_fake_lifecycle_teardown_audit = lambda_fake_lifecycle_sub.add_parser(
-        "teardown-audit"
-    )
+    lambda_fake_lifecycle_teardown_audit = lambda_fake_lifecycle_sub.add_parser("teardown-audit")
     lambda_fake_lifecycle_teardown_audit.add_argument(
         "--lifecycle-report", type=Path, required=True
     )
-    lambda_fake_lifecycle_teardown_audit.add_argument(
-        "--teardown-report", type=Path, required=True
-    )
+    lambda_fake_lifecycle_teardown_audit.add_argument("--teardown-report", type=Path, required=True)
     lambda_fake_lifecycle_teardown_audit.add_argument("--out", type=Path, required=True)
     lambda_fake_lifecycle_teardown_audit.set_defaults(
         func=_cmd_lambda_fake_lifecycle_teardown_audit
     )
-    lambda_fake_lifecycle_evidence = lambda_fake_lifecycle_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_fake_lifecycle_evidence = lambda_fake_lifecycle_sub.add_parser("evidence-package")
     lambda_fake_lifecycle_evidence.add_argument("--m020-report", type=Path, required=True)
-    lambda_fake_lifecycle_evidence.add_argument(
-        "--approval-manifest", type=Path, required=True
-    )
-    lambda_fake_lifecycle_evidence.add_argument(
-        "--preflight-report", type=Path, required=True
-    )
+    lambda_fake_lifecycle_evidence.add_argument("--approval-manifest", type=Path, required=True)
+    lambda_fake_lifecycle_evidence.add_argument("--preflight-report", type=Path, required=True)
     lambda_fake_lifecycle_evidence.add_argument("--stress-report", type=Path, required=True)
     lambda_fake_lifecycle_evidence.add_argument("--teardown-audit", type=Path, required=True)
     lambda_fake_lifecycle_evidence.add_argument("--project-root", type=Path, default=Path("."))
     lambda_fake_lifecycle_evidence.add_argument("--out", type=Path, required=True)
-    lambda_fake_lifecycle_evidence.set_defaults(
-        func=_cmd_lambda_fake_lifecycle_evidence_package
-    )
+    lambda_fake_lifecycle_evidence.set_defaults(func=_cmd_lambda_fake_lifecycle_evidence_package)
     lambda_fake_mutation = lambda_sub.add_parser("fake-mutation")
     lambda_fake_mutation_sub = lambda_fake_mutation.add_subparsers(
         dest="lambda_fake_mutation_command",
         required=True,
     )
     lambda_fake_mutation_contract = lambda_fake_mutation_sub.add_parser("contract")
-    lambda_fake_mutation_contract.add_argument(
-        "--lifecycle-report", type=Path, required=True
-    )
+    lambda_fake_mutation_contract.add_argument("--lifecycle-report", type=Path, required=True)
     lambda_fake_mutation_contract.add_argument("--out", type=Path, required=True)
     lambda_fake_mutation_contract.set_defaults(func=_cmd_lambda_fake_mutation_contract)
     lambda_absence = lambda_sub.add_parser("real-mutation-absence-audit")
@@ -19218,9 +18622,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_real_mutation_proposal.set_defaults(func=_cmd_lambda_real_mutation_proposal)
     lambda_real_mutation_operation = lambda_real_mutation_sub.add_parser("operation-spec")
     lambda_real_mutation_operation.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_operation.set_defaults(
-        func=_cmd_lambda_real_mutation_operation_spec
-    )
+    lambda_real_mutation_operation.set_defaults(func=_cmd_lambda_real_mutation_operation_spec)
     lambda_real_mutation_arming = lambda_real_mutation_sub.add_parser("arming-gate")
     lambda_real_mutation_arming.add_argument("--out", type=Path, required=True)
     lambda_real_mutation_arming.set_defaults(func=_cmd_lambda_real_mutation_arming_gate)
@@ -19268,9 +18670,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_real_mutation_evidence.add_argument("--safety-case", type=Path, required=True)
     lambda_real_mutation_evidence.add_argument("--failure-modes", type=Path, default=None)
     lambda_real_mutation_evidence.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_evidence.set_defaults(
-        func=_cmd_lambda_real_mutation_evidence_package
-    )
+    lambda_real_mutation_evidence.set_defaults(func=_cmd_lambda_real_mutation_evidence_package)
     lambda_real_mutation_review = lambda_real_mutation_sub.add_parser("review-record")
     lambda_real_mutation_review.add_argument(
         "--evidence-package",
@@ -19279,18 +18679,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_real_mutation_review.add_argument("--out", type=Path, required=True)
     lambda_real_mutation_review.set_defaults(func=_cmd_lambda_real_mutation_review_record)
-    lambda_real_mutation_skeleton_audit = lambda_real_mutation_sub.add_parser(
-        "skeleton-audit"
-    )
+    lambda_real_mutation_skeleton_audit = lambda_real_mutation_sub.add_parser("skeleton-audit")
     lambda_real_mutation_skeleton_audit.add_argument(
         "--project-root",
         type=Path,
         required=True,
     )
     lambda_real_mutation_skeleton_audit.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_skeleton_audit.set_defaults(
-        func=_cmd_lambda_real_mutation_skeleton_audit
-    )
+    lambda_real_mutation_skeleton_audit.set_defaults(func=_cmd_lambda_real_mutation_skeleton_audit)
     lambda_real_mutation_budget_lock = lambda_real_mutation_sub.add_parser("budget-lock")
     lambda_real_mutation_budget_lock.add_argument("--m020-report", type=Path, required=True)
     lambda_real_mutation_budget_lock.add_argument(
@@ -19299,12 +18695,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_real_mutation_budget_lock.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_budget_lock.set_defaults(
-        func=_cmd_lambda_real_mutation_budget_lock
-    )
-    lambda_real_mutation_idempotency = lambda_real_mutation_sub.add_parser(
-        "idempotency-plan"
-    )
+    lambda_real_mutation_budget_lock.set_defaults(func=_cmd_lambda_real_mutation_budget_lock)
+    lambda_real_mutation_idempotency = lambda_real_mutation_sub.add_parser("idempotency-plan")
     lambda_real_mutation_idempotency.add_argument("--run-id", required=True)
     lambda_real_mutation_idempotency.add_argument("--operation", required=True)
     lambda_real_mutation_idempotency.add_argument("--plan-hash", required=True)
@@ -19313,15 +18705,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="planned-owned-placeholder",
     )
     lambda_real_mutation_idempotency.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_idempotency.set_defaults(
-        func=_cmd_lambda_real_mutation_idempotency_plan
-    )
+    lambda_real_mutation_idempotency.set_defaults(func=_cmd_lambda_real_mutation_idempotency_plan)
     lambda_real_mutation_scope = lambda_real_mutation_sub.add_parser("resource-scope")
     lambda_real_mutation_scope.add_argument("--m020-report", type=Path, required=True)
     lambda_real_mutation_scope.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_scope.set_defaults(
-        func=_cmd_lambda_real_mutation_resource_scope
-    )
+    lambda_real_mutation_scope.set_defaults(func=_cmd_lambda_real_mutation_resource_scope)
     lambda_real_mutation_prepare = lambda_real_mutation_sub.add_parser("prepare-launch")
     lambda_real_mutation_prepare.add_argument("--proposal", type=Path, required=True)
     lambda_real_mutation_prepare.add_argument("--operation-spec", type=Path, required=True)
@@ -19333,9 +18721,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_real_mutation_prepare.add_argument("--resource-scope", type=Path, required=True)
     lambda_real_mutation_prepare.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_prepare.set_defaults(
-        func=_cmd_lambda_real_mutation_prepare_launch
-    )
+    lambda_real_mutation_prepare.set_defaults(func=_cmd_lambda_real_mutation_prepare_launch)
     lambda_real_mutation_disabled_launch = lambda_real_mutation_sub.add_parser(
         "disabled-launch-test"
     )
@@ -19360,17 +18746,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_real_mutation_support.add_argument("--out", type=Path, required=True)
-    lambda_real_mutation_support.set_defaults(
-        func=_cmd_lambda_real_mutation_support_artifact
-    )
+    lambda_real_mutation_support.set_defaults(func=_cmd_lambda_real_mutation_support_artifact)
     lambda_final_prelaunch = lambda_sub.add_parser("final-prelaunch")
     lambda_final_prelaunch_sub = lambda_final_prelaunch.add_subparsers(
         dest="lambda_final_prelaunch_command",
         required=True,
     )
-    lambda_final_prelaunch_evidence = lambda_final_prelaunch_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_final_prelaunch_evidence = lambda_final_prelaunch_sub.add_parser("evidence-package")
     lambda_final_prelaunch_evidence.add_argument(
         "--m019c-discovery",
         type=Path,
@@ -19398,14 +18780,10 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_final_prelaunch_evidence.add_argument("--out", type=Path, required=True)
-    lambda_final_prelaunch_evidence.set_defaults(
-        func=_cmd_lambda_final_prelaunch_evidence_package
-    )
+    lambda_final_prelaunch_evidence.set_defaults(func=_cmd_lambda_final_prelaunch_evidence_package)
     lambda_final_prelaunch_runbook = lambda_final_prelaunch_sub.add_parser("runbook")
     lambda_final_prelaunch_runbook.add_argument("--out", type=Path, required=True)
-    lambda_final_prelaunch_runbook.set_defaults(
-        func=_cmd_lambda_final_prelaunch_runbook
-    )
+    lambda_final_prelaunch_runbook.set_defaults(func=_cmd_lambda_final_prelaunch_runbook)
     lambda_final_prelaunch_termination = lambda_final_prelaunch_sub.add_parser(
         "termination-runbook"
     )
@@ -19413,9 +18791,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_final_prelaunch_termination.set_defaults(
         func=_cmd_lambda_final_prelaunch_termination_runbook
     )
-    lambda_final_prelaunch_checklist = lambda_final_prelaunch_sub.add_parser(
-        "checklist-template"
-    )
+    lambda_final_prelaunch_checklist = lambda_final_prelaunch_sub.add_parser("checklist-template")
     lambda_final_prelaunch_checklist.add_argument("--out", type=Path, required=True)
     lambda_final_prelaunch_checklist.add_argument(
         "--acknowledge-all",
@@ -19424,18 +18800,14 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_final_prelaunch_checklist.set_defaults(
         func=_cmd_lambda_final_prelaunch_checklist_template
     )
-    lambda_final_prelaunch_semantic = lambda_final_prelaunch_sub.add_parser(
-        "semantic-audit"
-    )
+    lambda_final_prelaunch_semantic = lambda_final_prelaunch_sub.add_parser("semantic-audit")
     lambda_final_prelaunch_semantic.add_argument(
         "--project-root",
         type=Path,
         required=True,
     )
     lambda_final_prelaunch_semantic.add_argument("--out", type=Path, required=True)
-    lambda_final_prelaunch_semantic.set_defaults(
-        func=_cmd_lambda_final_prelaunch_semantic_audit
-    )
+    lambda_final_prelaunch_semantic.set_defaults(func=_cmd_lambda_final_prelaunch_semantic_audit)
     lambda_final_prelaunch_review = lambda_final_prelaunch_sub.add_parser("review")
     lambda_final_prelaunch_review.add_argument(
         "--evidence-package",
@@ -19453,9 +18825,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_final_prelaunch_review.add_argument("--out", type=Path, required=True)
-    lambda_final_prelaunch_review.set_defaults(
-        func=_cmd_lambda_final_prelaunch_review
-    )
+    lambda_final_prelaunch_review.set_defaults(func=_cmd_lambda_final_prelaunch_review)
     lambda_final_prelaunch_go = lambda_final_prelaunch_sub.add_parser("go-no-go")
     lambda_final_prelaunch_go.add_argument("--review", type=Path, required=True)
     lambda_final_prelaunch_go.add_argument("--out", type=Path, required=True)
@@ -19523,9 +18893,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_decision_authorization.add_argument("--out", type=Path, required=True)
-    lambda_decision_authorization.set_defaults(
-        func=_cmd_lambda_decision_m027_authorization
-    )
+    lambda_decision_authorization.set_defaults(func=_cmd_lambda_decision_m027_authorization)
     lambda_decision_report = lambda_decision_sub.add_parser("report")
     lambda_decision_report.add_argument("--decision-record", type=Path, required=True)
     lambda_decision_report.add_argument(
@@ -19987,9 +19355,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m031_capture = lambda_m031_incident_sub.add_parser("capture-policy")
     lambda_m031_capture.add_argument("--out", type=Path, required=True)
     lambda_m031_capture.set_defaults(func=_cmd_lambda_m031_incident_capture_policy)
-    lambda_m031_repeated = lambda_m031_incident_sub.add_parser(
-        "repeated-response-loss-review"
-    )
+    lambda_m031_repeated = lambda_m031_incident_sub.add_parser("repeated-response-loss-review")
     lambda_m031_repeated.add_argument("--m029c-report", type=Path, required=True)
     lambda_m031_repeated.add_argument("--m031-report", type=Path, required=True)
     lambda_m031_repeated.add_argument("--m029e-closeout", type=Path, required=True)
@@ -19998,9 +19364,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_m031_repeated.add_argument("--endpoint-diagnostics", type=Path, default=None)
     lambda_m031_repeated.add_argument("--mitigation-accepted", action="store_true")
     lambda_m031_repeated.add_argument("--out", type=Path, required=True)
-    lambda_m031_repeated.set_defaults(
-        func=_cmd_lambda_m031_incident_repeated_response_loss_review
-    )
+    lambda_m031_repeated.set_defaults(func=_cmd_lambda_m031_incident_repeated_response_loss_review)
     lambda_m031_hold = lambda_m031_incident_sub.add_parser("future-launch-hold")
     lambda_m031_hold.add_argument("--m031-incident-report", type=Path, required=True)
     lambda_m031_hold.add_argument(
@@ -20058,23 +19422,15 @@ def build_parser() -> argparse.ArgumentParser:
         ],
     )
     lambda_response_fixture.add_argument("--out", type=Path, required=True)
-    lambda_response_fixture.set_defaults(
-        func=_cmd_lambda_response_loss_diagnostics_fixture
-    )
+    lambda_response_fixture.set_defaults(func=_cmd_lambda_response_loss_diagnostics_fixture)
     lambda_response_regression = lambda_response_loss_sub.add_parser("regression-harness")
     lambda_response_regression.add_argument("--out", type=Path, required=True)
-    lambda_response_regression.set_defaults(
-        func=_cmd_lambda_response_loss_regression_harness
-    )
-    lambda_response_acceptance = lambda_response_loss_sub.add_parser(
-        "mitigation-acceptance"
-    )
+    lambda_response_regression.set_defaults(func=_cmd_lambda_response_loss_regression_harness)
+    lambda_response_acceptance = lambda_response_loss_sub.add_parser("mitigation-acceptance")
     lambda_response_acceptance.add_argument("--endpoint-spec", type=Path, required=True)
     lambda_response_acceptance.add_argument("--regression-report", type=Path, required=True)
     lambda_response_acceptance.add_argument("--out", type=Path, required=True)
-    lambda_response_acceptance.set_defaults(
-        func=_cmd_lambda_response_loss_mitigation_acceptance
-    )
+    lambda_response_acceptance.set_defaults(func=_cmd_lambda_response_loss_mitigation_acceptance)
     lambda_response_release = lambda_response_loss_sub.add_parser("hold-release")
     lambda_response_release.add_argument("--m031-incident-report", type=Path, required=True)
     lambda_response_release.add_argument("--mitigation-acceptance", type=Path, required=True)
@@ -20125,9 +19481,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_strand_lower.add_argument("--name", default=None)
     lambda_strand_lower.add_argument("--out", type=Path, required=True)
     lambda_strand_lower.set_defaults(func=_cmd_lambda_strand_lower_cost_plan)
-    lambda_strand_controls = lambda_strand_review_sub.add_parser(
-        "response-loss-controls"
-    )
+    lambda_strand_controls = lambda_strand_review_sub.add_parser("response-loss-controls")
     lambda_strand_controls.add_argument("--timeout-seconds", type=float, default=30.0)
     lambda_strand_controls.add_argument("--out", type=Path, required=True)
     lambda_strand_controls.set_defaults(func=_cmd_lambda_strand_response_loss_controls)
@@ -20288,9 +19642,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_support_behavior.add_argument("--response", type=Path, required=True)
     lambda_support_behavior.add_argument("--validation", type=Path, required=True)
     lambda_support_behavior.add_argument("--out", type=Path, required=True)
-    lambda_support_behavior.set_defaults(
-        func=_cmd_lambda_support_confirmation_endpoint_behavior
-    )
+    lambda_support_behavior.set_defaults(func=_cmd_lambda_support_confirmation_endpoint_behavior)
     lambda_support_shape = lambda_support_sub.add_parser("response-shape")
     lambda_support_shape.add_argument("--endpoint-behavior", type=Path, required=True)
     lambda_support_shape.add_argument("--out", type=Path, required=True)
@@ -20298,9 +19650,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_support_idempotency = lambda_support_sub.add_parser("idempotency-semantics")
     lambda_support_idempotency.add_argument("--response", type=Path, required=True)
     lambda_support_idempotency.add_argument("--out", type=Path, required=True)
-    lambda_support_idempotency.set_defaults(
-        func=_cmd_lambda_support_confirmation_idempotency
-    )
+    lambda_support_idempotency.set_defaults(func=_cmd_lambda_support_confirmation_idempotency)
     lambda_support_ambiguous = lambda_support_sub.add_parser("ambiguous-semantics")
     lambda_support_ambiguous.add_argument("--response", type=Path, required=True)
     lambda_support_ambiguous.add_argument("--out", type=Path, required=True)
@@ -20342,9 +19692,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_support_package.add_argument("--out", type=Path, required=True)
-    lambda_support_package.set_defaults(
-        func=_cmd_lambda_support_confirmation_evidence_package
-    )
+    lambda_support_package.set_defaults(func=_cmd_lambda_support_confirmation_evidence_package)
     lambda_support_decision = lambda_support_sub.add_parser("endpoint-decision")
     lambda_support_decision.add_argument("--validation", type=Path, default=None)
     lambda_support_decision.add_argument(
@@ -20355,9 +19703,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_support_decision.add_argument("--endpoint-behavior", type=Path, default=None)
     lambda_support_decision.add_argument("--operator-accepts-medium", action="store_true")
     lambda_support_decision.add_argument("--out", type=Path, required=True)
-    lambda_support_decision.set_defaults(
-        func=_cmd_lambda_support_confirmation_endpoint_decision
-    )
+    lambda_support_decision.set_defaults(func=_cmd_lambda_support_confirmation_endpoint_decision)
     lambda_lower_cost = lambda_sub.add_parser("lower-cost-shape")
     lambda_lower_cost_sub = lambda_lower_cost.add_subparsers(
         dest="lambda_lower_cost_shape_command",
@@ -20375,17 +19721,13 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_lower_selection.add_argument("--support-response", type=Path, default=None)
     lambda_lower_selection.add_argument("--operator-selected-shape", default=None)
     lambda_lower_selection.add_argument("--out", type=Path, required=True)
-    lambda_lower_selection.set_defaults(
-        func=_cmd_lambda_lower_cost_shape_operator_selection
-    )
+    lambda_lower_selection.set_defaults(func=_cmd_lambda_lower_cost_shape_operator_selection)
     lambda_lower_package = lambda_lower_cost_sub.add_parser("reauthorization-package")
     lambda_lower_package.add_argument("--selection", type=Path, required=True)
     lambda_lower_package.add_argument("--lower-cost-review", type=Path, default=None)
     lambda_lower_package.add_argument("--selected-region", default="us-west-1")
     lambda_lower_package.add_argument("--out", type=Path, required=True)
-    lambda_lower_package.set_defaults(
-        func=_cmd_lambda_lower_cost_shape_reauthorization_package
-    )
+    lambda_lower_package.set_defaults(func=_cmd_lambda_lower_cost_shape_reauthorization_package)
     lambda_lower_cost_review = lambda_sub.add_parser("lower-cost")
     lambda_lower_cost_review_sub = lambda_lower_cost_review.add_subparsers(
         dest="lambda_lower_cost_command",
@@ -20396,9 +19738,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_lower_price.add_argument("--shape", default="gpu_1x_h100_pcie")
     lambda_lower_price.add_argument("--out", type=Path, required=True)
     lambda_lower_price.set_defaults(func=_cmd_lambda_lower_cost_price_reconcile)
-    lambda_lower_resource = lambda_lower_cost_review_sub.add_parser(
-        "resource-reconcile"
-    )
+    lambda_lower_resource = lambda_lower_cost_review_sub.add_parser("resource-reconcile")
     lambda_lower_resource.add_argument("--discovery-report", type=Path, required=True)
     lambda_lower_resource.add_argument("--launch-plan", type=Path, required=True)
     lambda_lower_resource.add_argument("--ssh-key-selection", type=Path, required=True)
@@ -20421,9 +19761,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_lower_decision.add_argument("--out", type=Path, required=True)
     lambda_lower_decision.set_defaults(func=_cmd_lambda_lower_cost_decision)
-    lambda_lower_readiness = lambda_lower_cost_review_sub.add_parser(
-        "canonical-readiness"
-    )
+    lambda_lower_readiness = lambda_lower_cost_review_sub.add_parser("canonical-readiness")
     lambda_lower_readiness.add_argument("--launch-plan", type=Path, required=True)
     lambda_lower_readiness.add_argument("--ssh-key-selection", type=Path, required=True)
     lambda_lower_readiness.add_argument(
@@ -20461,16 +19799,12 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_lower_window.add_argument("--max-runtime-minutes", type=int, default=30)
     lambda_lower_window.add_argument("--out", type=Path, required=True)
     lambda_lower_window.set_defaults(func=_cmd_lambda_lower_cost_launch_window_lock)
-    lambda_lower_approval = lambda_lower_cost_review_sub.add_parser(
-        "operator-approval-template"
-    )
+    lambda_lower_approval = lambda_lower_cost_review_sub.add_parser("operator-approval-template")
     lambda_lower_approval.add_argument("--operator-name", default=None)
     lambda_lower_approval.add_argument("--approve-future-m039", action="store_true")
     lambda_lower_approval.add_argument("--acknowledge-all", action="store_true")
     lambda_lower_approval.add_argument("--out", type=Path, required=True)
-    lambda_lower_approval.set_defaults(
-        func=_cmd_lambda_lower_cost_operator_approval_template
-    )
+    lambda_lower_approval.set_defaults(func=_cmd_lambda_lower_cost_operator_approval_template)
     lambda_lower_m039 = lambda_lower_cost_review_sub.add_parser("authorize-m039")
     lambda_lower_m039.add_argument("--canonical-readiness", type=Path, required=True)
     lambda_lower_m039.add_argument("--state-snapshot", type=Path, required=True)
@@ -20487,9 +19821,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_lower_gate.add_argument("--response-loss-controls", type=Path, required=True)
     lambda_lower_gate.add_argument("--out", type=Path, required=True)
     lambda_lower_gate.set_defaults(func=_cmd_lambda_lower_cost_gate_check)
-    lambda_lower_execution_gate = lambda_lower_cost_review_sub.add_parser(
-        "execution-gate-check"
-    )
+    lambda_lower_execution_gate = lambda_lower_cost_review_sub.add_parser("execution-gate-check")
     lambda_lower_execution_gate.add_argument(
         "--m039-authorization",
         type=Path,
@@ -20524,9 +19856,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_lower_execution_gate.add_argument("--out", type=Path, required=True)
-    lambda_lower_execution_gate.set_defaults(
-        func=_cmd_lambda_lower_cost_execution_gate_check
-    )
+    lambda_lower_execution_gate.set_defaults(func=_cmd_lambda_lower_cost_execution_gate_check)
     lambda_lower_command = lambda_lower_cost_review_sub.add_parser("command-preview")
     lambda_lower_command.add_argument("--authorization", type=Path, required=True)
     lambda_lower_command.add_argument("--out", type=Path, required=True)
@@ -20654,9 +19984,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_availability_first_command",
         required=True,
     )
-    lambda_availability_extract = lambda_availability_first_sub.add_parser(
-        "extract-candidates"
-    )
+    lambda_availability_extract = lambda_availability_first_sub.add_parser("extract-candidates")
     lambda_availability_extract.add_argument(
         "--discovery-report",
         type=Path,
@@ -20668,9 +19996,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_availability_extract.add_argument("--out", type=Path, required=True)
-    lambda_availability_extract.set_defaults(
-        func=_cmd_lambda_availability_first_extract_candidates
-    )
+    lambda_availability_extract.set_defaults(func=_cmd_lambda_availability_first_extract_candidates)
     lambda_availability_rank = lambda_availability_first_sub.add_parser("rank")
     lambda_availability_rank.add_argument("--candidates", type=Path, required=True)
     lambda_availability_rank.add_argument(
@@ -20773,9 +20099,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_availability_authorize.add_argument("--out", type=Path, required=True)
-    lambda_availability_authorize.set_defaults(
-        func=_cmd_lambda_availability_first_authorize
-    )
+    lambda_availability_authorize.set_defaults(func=_cmd_lambda_availability_first_authorize)
     lambda_availability_go = lambda_availability_first_sub.add_parser("go-no-go")
     lambda_availability_go.add_argument("--authorization", type=Path, required=True)
     lambda_availability_go.add_argument("--out", type=Path, required=True)
@@ -20800,29 +20124,21 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_catalog_availability_command",
         required=True,
     )
-    lambda_catalog_risk = lambda_catalog_availability_sub.add_parser(
-        "risk-acceptance-template"
-    )
+    lambda_catalog_risk = lambda_catalog_availability_sub.add_parser("risk-acceptance-template")
     lambda_catalog_risk.add_argument("--accept-risk", action="store_true")
     lambda_catalog_risk.add_argument("--decline-risk", action="store_true")
     lambda_catalog_risk.add_argument("--acknowledge-all", action="store_true")
     lambda_catalog_risk.add_argument("--operator-name", default=None)
     lambda_catalog_risk.add_argument("--out", type=Path, required=True)
-    lambda_catalog_risk.set_defaults(
-        func=_cmd_lambda_catalog_availability_risk_acceptance
-    )
-    lambda_catalog_decision = lambda_catalog_availability_sub.add_parser(
-        "operator-decision"
-    )
+    lambda_catalog_risk.set_defaults(func=_cmd_lambda_catalog_availability_risk_acceptance)
+    lambda_catalog_decision = lambda_catalog_availability_sub.add_parser("operator-decision")
     lambda_catalog_decision.add_argument(
         "--risk-acceptance",
         type=Path,
         required=True,
     )
     lambda_catalog_decision.add_argument("--out", type=Path, required=True)
-    lambda_catalog_decision.set_defaults(
-        func=_cmd_lambda_catalog_availability_operator_decision
-    )
+    lambda_catalog_decision.set_defaults(func=_cmd_lambda_catalog_availability_operator_decision)
     lambda_catalog_wait = lambda_catalog_availability_sub.add_parser("wait-plan")
     lambda_catalog_wait.add_argument(
         "--operator-decision",
@@ -20831,9 +20147,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_catalog_wait.add_argument("--out", type=Path, required=True)
     lambda_catalog_wait.set_defaults(func=_cmd_lambda_catalog_availability_wait_plan)
-    lambda_catalog_authorize = lambda_catalog_availability_sub.add_parser(
-        "authorize-m042"
-    )
+    lambda_catalog_authorize = lambda_catalog_availability_sub.add_parser("authorize-m042")
     lambda_catalog_authorize.add_argument(
         "--capacity-closeout",
         type=Path,
@@ -20861,9 +20175,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_catalog_authorize.add_argument("--out", type=Path, required=True)
-    lambda_catalog_authorize.set_defaults(
-        func=_cmd_lambda_catalog_availability_authorize_m042
-    )
+    lambda_catalog_authorize.set_defaults(func=_cmd_lambda_catalog_availability_authorize_m042)
     lambda_catalog_gate = lambda_catalog_availability_sub.add_parser("gate-check")
     lambda_catalog_gate.add_argument(
         "--m042-authorization",
@@ -20884,9 +20196,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_catalog_gate.add_argument("--ssh-key-selection", type=Path, required=True)
     lambda_catalog_gate.add_argument("--out", type=Path, required=True)
     lambda_catalog_gate.set_defaults(func=_cmd_lambda_catalog_availability_gate_check)
-    lambda_catalog_preview = lambda_catalog_availability_sub.add_parser(
-        "command-preview"
-    )
+    lambda_catalog_preview = lambda_catalog_availability_sub.add_parser("command-preview")
     lambda_catalog_preview.add_argument(
         "--m042-authorization",
         type=Path,
@@ -20894,9 +20204,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_catalog_preview.add_argument("--gate-check", type=Path, required=True)
     lambda_catalog_preview.add_argument("--out", type=Path, required=True)
-    lambda_catalog_preview.set_defaults(
-        func=_cmd_lambda_catalog_availability_command_preview
-    )
+    lambda_catalog_preview.set_defaults(func=_cmd_lambda_catalog_availability_command_preview)
     lambda_m041 = lambda_sub.add_parser("m041")
     lambda_m041_sub = lambda_m041.add_subparsers(
         dest="lambda_m041_command",
@@ -20939,9 +20247,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_catalog_rotation_rank.add_argument("--out", type=Path, required=True)
     lambda_catalog_rotation_rank.set_defaults(func=_cmd_lambda_catalog_rotation_rank)
-    lambda_catalog_rotation_cost = lambda_catalog_rotation_sub.add_parser(
-        "cost-review"
-    )
+    lambda_catalog_rotation_cost = lambda_catalog_rotation_sub.add_parser("cost-review")
     lambda_catalog_rotation_cost.add_argument(
         "--rotation-rank",
         type=Path,
@@ -20954,9 +20260,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_catalog_rotation_cost.add_argument("--max-budget", type=float, default=50.0)
     lambda_catalog_rotation_cost.add_argument("--out", type=Path, required=True)
-    lambda_catalog_rotation_cost.set_defaults(
-        func=_cmd_lambda_catalog_rotation_cost_review
-    )
+    lambda_catalog_rotation_cost.set_defaults(func=_cmd_lambda_catalog_rotation_cost_review)
     lambda_catalog_rotation_risk = lambda_catalog_rotation_sub.add_parser(
         "risk-acceptance-template"
     )
@@ -20972,12 +20276,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_catalog_rotation_risk.add_argument("--acknowledge-all", action="store_true")
     lambda_catalog_rotation_risk.add_argument("--operator-name", default=None)
     lambda_catalog_rotation_risk.add_argument("--out", type=Path, required=True)
-    lambda_catalog_rotation_risk.set_defaults(
-        func=_cmd_lambda_catalog_rotation_risk_acceptance
-    )
-    lambda_catalog_rotation_decision = lambda_catalog_rotation_sub.add_parser(
-        "operator-decision"
-    )
+    lambda_catalog_rotation_risk.set_defaults(func=_cmd_lambda_catalog_rotation_risk_acceptance)
+    lambda_catalog_rotation_decision = lambda_catalog_rotation_sub.add_parser("operator-decision")
     lambda_catalog_rotation_decision.add_argument(
         "--risk-acceptance",
         type=Path,
@@ -20994,12 +20294,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_catalog_rotation_wait.add_argument("--out", type=Path, required=True)
-    lambda_catalog_rotation_wait.set_defaults(
-        func=_cmd_lambda_catalog_rotation_wait_plan
-    )
-    lambda_catalog_rotation_auth = lambda_catalog_rotation_sub.add_parser(
-        "authorize-m045"
-    )
+    lambda_catalog_rotation_wait.set_defaults(func=_cmd_lambda_catalog_rotation_wait_plan)
+    lambda_catalog_rotation_auth = lambda_catalog_rotation_sub.add_parser("authorize-m045")
     lambda_catalog_rotation_auth.add_argument(
         "--capacity-history",
         type=Path,
@@ -21033,29 +20329,21 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_catalog_rotation_auth.add_argument("--out", type=Path, required=True)
-    lambda_catalog_rotation_auth.set_defaults(
-        func=_cmd_lambda_catalog_rotation_authorize_m045
-    )
-    lambda_catalog_rotation_preview = lambda_catalog_rotation_sub.add_parser(
-        "command-preview"
-    )
+    lambda_catalog_rotation_auth.set_defaults(func=_cmd_lambda_catalog_rotation_authorize_m045)
+    lambda_catalog_rotation_preview = lambda_catalog_rotation_sub.add_parser("command-preview")
     lambda_catalog_rotation_preview.add_argument(
         "--authorization",
         type=Path,
         required=True,
     )
     lambda_catalog_rotation_preview.add_argument("--out", type=Path, required=True)
-    lambda_catalog_rotation_preview.set_defaults(
-        func=_cmd_lambda_catalog_rotation_command_preview
-    )
+    lambda_catalog_rotation_preview.set_defaults(func=_cmd_lambda_catalog_rotation_command_preview)
     lambda_flexible_selector = lambda_sub.add_parser("flexible-selector")
     lambda_flexible_selector_sub = lambda_flexible_selector.add_subparsers(
         dest="lambda_flexible_selector_command",
         required=True,
     )
-    lambda_flexible_approval = lambda_flexible_selector_sub.add_parser(
-        "operator-approval-template"
-    )
+    lambda_flexible_approval = lambda_flexible_selector_sub.add_parser("operator-approval-template")
     lambda_flexible_approval.add_argument(
         "--approve-future-review",
         action="store_true",
@@ -21067,9 +20355,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_flexible_approval.add_argument("--acknowledge-all", action="store_true")
     lambda_flexible_approval.add_argument("--operator-name", default=None)
     lambda_flexible_approval.add_argument("--out", type=Path, required=True)
-    lambda_flexible_approval.set_defaults(
-        func=_cmd_lambda_flexible_selector_operator_approval
-    )
+    lambda_flexible_approval.set_defaults(func=_cmd_lambda_flexible_selector_operator_approval)
     lambda_flexible_authorize = lambda_flexible_selector_sub.add_parser("authorize")
     lambda_flexible_authorize.add_argument(
         "--selector-output",
@@ -21098,25 +20384,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_flexible_authorize.add_argument("--max-budget", type=float, default=50.0)
     lambda_flexible_authorize.add_argument("--out", type=Path, required=True)
-    lambda_flexible_authorize.set_defaults(
-        func=_cmd_lambda_flexible_selector_authorize
-    )
+    lambda_flexible_authorize.set_defaults(func=_cmd_lambda_flexible_selector_authorize)
     lambda_flexible_gate = lambda_flexible_selector_sub.add_parser("gate-check")
     lambda_flexible_gate.add_argument("--authorization", type=Path, required=True)
     lambda_flexible_gate.add_argument("--selector-output", type=Path, required=True)
     lambda_flexible_gate.add_argument("--out", type=Path, required=True)
     lambda_flexible_gate.set_defaults(func=_cmd_lambda_flexible_selector_gate_check)
-    lambda_flexible_audit = lambda_flexible_selector_sub.add_parser(
-        "fixed-shape-audit"
-    )
+    lambda_flexible_audit = lambda_flexible_selector_sub.add_parser("fixed-shape-audit")
     lambda_flexible_audit.add_argument("--authorization", type=Path, required=True)
     lambda_flexible_audit.add_argument("--out", type=Path, required=True)
-    lambda_flexible_audit.set_defaults(
-        func=_cmd_lambda_flexible_selector_fixed_shape_audit
-    )
-    lambda_flexible_preview = lambda_flexible_selector_sub.add_parser(
-        "command-preview"
-    )
+    lambda_flexible_audit.set_defaults(func=_cmd_lambda_flexible_selector_fixed_shape_audit)
+    lambda_flexible_preview = lambda_flexible_selector_sub.add_parser("command-preview")
     lambda_flexible_preview.add_argument("--authorization", type=Path, required=True)
     lambda_flexible_preview.add_argument("--gate-check", type=Path, required=True)
     lambda_flexible_preview.add_argument(
@@ -21125,21 +20403,15 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_flexible_preview.add_argument("--out", type=Path, required=True)
-    lambda_flexible_preview.set_defaults(
-        func=_cmd_lambda_flexible_selector_command_preview
-    )
-    lambda_flexible_policy = lambda_flexible_selector_sub.add_parser(
-        "capacity-policy"
-    )
+    lambda_flexible_preview.set_defaults(func=_cmd_lambda_flexible_selector_command_preview)
+    lambda_flexible_policy = lambda_flexible_selector_sub.add_parser("capacity-policy")
     lambda_flexible_policy.add_argument(
         "--allow-same-shape-retry-with-explicit-acceptance",
         action="store_true",
     )
     lambda_flexible_policy.add_argument("--max-budget", type=float, default=50.0)
     lambda_flexible_policy.add_argument("--out", type=Path, required=True)
-    lambda_flexible_policy.set_defaults(
-        func=_cmd_lambda_flexible_selector_capacity_policy
-    )
+    lambda_flexible_policy.set_defaults(func=_cmd_lambda_flexible_selector_capacity_policy)
     lambda_flexible_same_shape = lambda_flexible_selector_sub.add_parser(
         "same-shape-retry-acceptance"
     )
@@ -21264,9 +20536,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_capacity_selected_command",
         required=True,
     )
-    lambda_capacity_selected_cost = lambda_capacity_selected_sub.add_parser(
-        "cost-risk-review"
-    )
+    lambda_capacity_selected_cost = lambda_capacity_selected_sub.add_parser("cost-risk-review")
     lambda_capacity_selected_cost.add_argument(
         "--selector-output",
         type=Path,
@@ -21294,9 +20564,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_capacity_selected_cost.add_argument("--max-budget", type=float, default=50.0)
     lambda_capacity_selected_cost.add_argument("--out", type=Path, required=True)
-    lambda_capacity_selected_cost.set_defaults(
-        func=_cmd_lambda_capacity_selected_cost_risk_review
-    )
+    lambda_capacity_selected_cost.set_defaults(func=_cmd_lambda_capacity_selected_cost_risk_review)
     lambda_capacity_selected_approval = lambda_capacity_selected_sub.add_parser(
         "operator-approval-template"
     )
@@ -21321,9 +20589,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_capacity_selected_approval.set_defaults(
         func=_cmd_lambda_capacity_selected_operator_approval
     )
-    lambda_capacity_selected_authorize = lambda_capacity_selected_sub.add_parser(
-        "authorize-m046"
-    )
+    lambda_capacity_selected_authorize = lambda_capacity_selected_sub.add_parser("authorize-m046")
     lambda_capacity_selected_authorize.add_argument(
         "--cost-risk-review",
         type=Path,
@@ -21376,9 +20642,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_capacity_selected_gate.add_argument("--out", type=Path, required=True)
-    lambda_capacity_selected_gate.set_defaults(
-        func=_cmd_lambda_capacity_selected_gate_check
-    )
+    lambda_capacity_selected_gate.set_defaults(func=_cmd_lambda_capacity_selected_gate_check)
     lambda_capacity_selected_execution_gate = lambda_capacity_selected_sub.add_parser(
         "execution-gate-check"
     )
@@ -21435,9 +20699,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_capacity_selected_execution_gate.set_defaults(
         func=_cmd_lambda_capacity_selected_execution_gate_check
     )
-    lambda_capacity_selected_preview = lambda_capacity_selected_sub.add_parser(
-        "command-preview"
-    )
+    lambda_capacity_selected_preview = lambda_capacity_selected_sub.add_parser("command-preview")
     lambda_capacity_selected_preview.add_argument(
         "--authorization",
         type=Path,
@@ -21457,9 +20719,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_alternative_shape_command",
         required=True,
     )
-    lambda_alternative_shape_selection = lambda_alternative_shape_sub.add_parser(
-        "selection"
-    )
+    lambda_alternative_shape_selection = lambda_alternative_shape_sub.add_parser("selection")
     lambda_alternative_shape_selection.add_argument(
         "--rotation-rank",
         type=Path,
@@ -21484,9 +20744,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_alternative_shape_selection.add_argument("--out", type=Path, required=True)
-    lambda_alternative_shape_selection.set_defaults(
-        func=_cmd_lambda_alternative_shape_selection
-    )
+    lambda_alternative_shape_selection.set_defaults(func=_cmd_lambda_alternative_shape_selection)
     lambda_m043 = lambda_sub.add_parser("m043")
     lambda_m043_sub = lambda_m043.add_subparsers(
         dest="lambda_m043_command",
@@ -21600,17 +20858,13 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_lifecycle_success.add_argument("--final-summary", type=Path, required=True)
     lambda_lifecycle_success.add_argument("--post-discovery", type=Path, required=True)
     lambda_lifecycle_success.add_argument("--out", type=Path, required=True)
-    lambda_lifecycle_success.set_defaults(
-        func=_cmd_lambda_lifecycle_smoke_success_record
-    )
+    lambda_lifecycle_success.set_defaults(func=_cmd_lambda_lifecycle_smoke_success_record)
     lambda_lifecycle_reconcile = lambda_lifecycle_smoke_sub.add_parser("reconcile")
     lambda_lifecycle_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_lifecycle_reconcile.add_argument("--post-discovery", type=Path, required=True)
     lambda_lifecycle_reconcile.add_argument("--out", type=Path, required=True)
     lambda_lifecycle_reconcile.set_defaults(func=_cmd_lambda_lifecycle_smoke_reconcile)
-    lambda_lifecycle_evidence = lambda_lifecycle_smoke_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_lifecycle_evidence = lambda_lifecycle_smoke_sub.add_parser("evidence-package")
     lambda_lifecycle_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -21622,9 +20876,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_lifecycle_evidence.add_argument("--out", type=Path, required=True)
-    lambda_lifecycle_evidence.set_defaults(
-        func=_cmd_lambda_lifecycle_smoke_evidence_package
-    )
+    lambda_lifecycle_evidence.set_defaults(func=_cmd_lambda_lifecycle_smoke_evidence_package)
     lambda_lifecycle_closeout = lambda_lifecycle_smoke_sub.add_parser("closeout")
     lambda_lifecycle_closeout.add_argument(
         "--success-record",
@@ -21655,9 +20907,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_live_instance_types_parse.add_argument("--out", type=Path, required=True)
-    lambda_live_instance_types_parse.set_defaults(
-        func=_cmd_lambda_live_instance_types_parse
-    )
+    lambda_live_instance_types_parse.set_defaults(func=_cmd_lambda_live_instance_types_parse)
     lambda_live_region = lambda_sub.add_parser("live-region")
     lambda_live_region_sub = lambda_live_region.add_subparsers(
         dest="lambda_live_region_command",
@@ -21691,9 +20941,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_successful_launch_command",
         required=True,
     )
-    lambda_successful_strategy = lambda_successful_launch_sub.add_parser(
-        "strategy-update"
-    )
+    lambda_successful_strategy = lambda_successful_launch_sub.add_parser("strategy-update")
     lambda_successful_strategy.add_argument(
         "--success-record",
         type=Path,
@@ -21705,9 +20953,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_successful_strategy.add_argument("--out", type=Path, required=True)
-    lambda_successful_strategy.set_defaults(
-        func=_cmd_lambda_successful_launch_strategy_update
-    )
+    lambda_successful_strategy.set_defaults(func=_cmd_lambda_successful_launch_strategy_update)
     lambda_m047 = lambda_sub.add_parser("m047")
     lambda_m047_sub = lambda_m047.add_subparsers(
         dest="lambda_m047_command",
@@ -21762,21 +21008,13 @@ def build_parser() -> argparse.ArgumentParser:
         default="metadata-only",
     )
     lambda_bootstrap_commands.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_commands.set_defaults(
-        func=_cmd_lambda_bootstrap_command_allowlist
-    )
-    lambda_bootstrap_install = lambda_bootstrap_sub.add_parser(
-        "package-install-policy"
-    )
+    lambda_bootstrap_commands.set_defaults(func=_cmd_lambda_bootstrap_command_allowlist)
+    lambda_bootstrap_install = lambda_bootstrap_sub.add_parser("package-install-policy")
     lambda_bootstrap_install.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_install.set_defaults(
-        func=_cmd_lambda_bootstrap_package_install_policy
-    )
+    lambda_bootstrap_install.set_defaults(func=_cmd_lambda_bootstrap_package_install_policy)
     lambda_bootstrap_training = lambda_bootstrap_sub.add_parser("no-training-policy")
     lambda_bootstrap_training.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_training.set_defaults(
-        func=_cmd_lambda_bootstrap_no_training_policy
-    )
+    lambda_bootstrap_training.set_defaults(func=_cmd_lambda_bootstrap_no_training_policy)
     lambda_bootstrap_evidence = lambda_bootstrap_sub.add_parser("evidence-schema")
     lambda_bootstrap_evidence.add_argument("--out", type=Path, required=True)
     lambda_bootstrap_evidence.set_defaults(func=_cmd_lambda_bootstrap_evidence_schema)
@@ -21830,9 +21068,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bootstrap_plan.add_argument("--max-budget", type=float, default=50.0)
     lambda_bootstrap_plan.add_argument("--out", type=Path, required=True)
     lambda_bootstrap_plan.set_defaults(func=_cmd_lambda_bootstrap_metadata_plan)
-    lambda_bootstrap_execution_gate = lambda_bootstrap_sub.add_parser(
-        "execution-gate-check"
-    )
+    lambda_bootstrap_execution_gate = lambda_bootstrap_sub.add_parser("execution-gate-check")
     lambda_bootstrap_execution_gate.add_argument(
         "--metadata-plan",
         type=Path,
@@ -21860,12 +21096,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_bootstrap_execution_gate.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_execution_gate.set_defaults(
-        func=_cmd_lambda_bootstrap_execution_gate_check
-    )
-    lambda_bootstrap_audit = lambda_bootstrap_sub.add_parser(
-        "no-mutation-no-ssh-audit"
-    )
+    lambda_bootstrap_execution_gate.set_defaults(func=_cmd_lambda_bootstrap_execution_gate_check)
+    lambda_bootstrap_audit = lambda_bootstrap_sub.add_parser("no-mutation-no-ssh-audit")
     lambda_bootstrap_audit.add_argument("--metadata-plan", type=Path, required=True)
     lambda_bootstrap_audit.add_argument("--execution-gate", type=Path, required=True)
     lambda_bootstrap_audit.add_argument("--scope", type=Path, required=True)
@@ -21881,12 +21113,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bootstrap_audit.add_argument("--m050-report", type=Path, required=True)
     lambda_bootstrap_audit.add_argument("--ssh-key-selection", type=Path, required=True)
     lambda_bootstrap_audit.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_audit.set_defaults(
-        func=_cmd_lambda_bootstrap_no_mutation_no_ssh_audit
-    )
-    lambda_bootstrap_evidence_pkg = lambda_bootstrap_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_bootstrap_audit.set_defaults(func=_cmd_lambda_bootstrap_no_mutation_no_ssh_audit)
+    lambda_bootstrap_evidence_pkg = lambda_bootstrap_sub.add_parser("evidence-package")
     lambda_bootstrap_evidence_pkg.add_argument("--workdir", type=Path, required=True)
     lambda_bootstrap_evidence_pkg.add_argument(
         "--evidence-schema",
@@ -21899,9 +21127,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_bootstrap_evidence_pkg.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_evidence_pkg.set_defaults(
-        func=_cmd_lambda_bootstrap_evidence_package
-    )
+    lambda_bootstrap_evidence_pkg.set_defaults(func=_cmd_lambda_bootstrap_evidence_package)
     lambda_bootstrap_m051_confirmation = lambda_bootstrap_sub.add_parser(
         "m051-operator-confirmation"
     )
@@ -21942,21 +21168,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_bootstrap_m051_arm.add_argument("--expires-minutes", type=int, required=True)
     lambda_bootstrap_m051_arm.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_m051_arm.set_defaults(
-        func=_cmd_lambda_bootstrap_m051_arm_one_shot
-    )
-    lambda_bootstrap_m051_cmd_binding = lambda_bootstrap_sub.add_parser(
-        "m051-command-binding"
-    )
+    lambda_bootstrap_m051_arm.set_defaults(func=_cmd_lambda_bootstrap_m051_arm_one_shot)
+    lambda_bootstrap_m051_cmd_binding = lambda_bootstrap_sub.add_parser("m051-command-binding")
     lambda_bootstrap_m051_cmd_binding.add_argument(
         "--arming",
         type=Path,
         required=True,
     )
     lambda_bootstrap_m051_cmd_binding.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_m051_cmd_binding.set_defaults(
-        func=_cmd_lambda_bootstrap_m051_command_binding
-    )
+    lambda_bootstrap_m051_cmd_binding.set_defaults(func=_cmd_lambda_bootstrap_m051_command_binding)
     lambda_bootstrap_m051_artifact_binding = lambda_bootstrap_sub.add_parser(
         "m051-artifact-binding"
     )
@@ -21974,9 +21194,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bootstrap_m051_artifact_binding.set_defaults(
         func=_cmd_lambda_bootstrap_m051_artifact_binding
     )
-    lambda_bootstrap_m051_bridge = lambda_bootstrap_sub.add_parser(
-        "m051-reviewer-bridge"
-    )
+    lambda_bootstrap_m051_bridge = lambda_bootstrap_sub.add_parser("m051-reviewer-bridge")
     lambda_bootstrap_m051_bridge.add_argument("--arming", type=Path, required=True)
     lambda_bootstrap_m051_bridge.add_argument(
         "--command-binding",
@@ -21989,12 +21207,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_bootstrap_m051_bridge.add_argument("--out", type=Path, required=True)
-    lambda_bootstrap_m051_bridge.set_defaults(
-        func=_cmd_lambda_bootstrap_m051_reviewer_bridge
-    )
-    lambda_bootstrap_m051_arming_gate = lambda_bootstrap_sub.add_parser(
-        "m051-arming-gate-check"
-    )
+    lambda_bootstrap_m051_bridge.set_defaults(func=_cmd_lambda_bootstrap_m051_reviewer_bridge)
+    lambda_bootstrap_m051_arming_gate = lambda_bootstrap_sub.add_parser("m051-arming-gate-check")
     lambda_bootstrap_m051_arming_gate.add_argument(
         "--reviewer-bridge",
         type=Path,
@@ -22021,40 +21235,28 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_metadata_bootstrap_command",
         required=True,
     )
-    lambda_metadata_success = lambda_metadata_bootstrap_sub.add_parser(
-        "success-record"
-    )
+    lambda_metadata_success = lambda_metadata_bootstrap_sub.add_parser("success-record")
     lambda_metadata_success.add_argument("--workdir", type=Path, required=True)
     lambda_metadata_success.add_argument("--post-discovery", type=Path, required=True)
     lambda_metadata_success.add_argument("--out", type=Path, required=True)
-    lambda_metadata_success.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_success_record
-    )
+    lambda_metadata_success.set_defaults(func=_cmd_lambda_metadata_bootstrap_success_record)
     lambda_metadata_reconcile = lambda_metadata_bootstrap_sub.add_parser("reconcile")
     lambda_metadata_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_metadata_reconcile.add_argument("--success-record", type=Path, required=True)
     lambda_metadata_reconcile.add_argument("--post-discovery", type=Path, required=True)
     lambda_metadata_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_metadata_reconcile.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_reconcile
-    )
-    lambda_metadata_evidence = lambda_metadata_bootstrap_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_metadata_reconcile.set_defaults(func=_cmd_lambda_metadata_bootstrap_reconcile)
+    lambda_metadata_evidence = lambda_metadata_bootstrap_sub.add_parser("evidence-package")
     lambda_metadata_evidence.add_argument("--success-record", type=Path, required=True)
     lambda_metadata_evidence.add_argument("--reconciliation", type=Path, required=True)
     lambda_metadata_evidence.add_argument("--out", type=Path, required=True)
-    lambda_metadata_evidence.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_evidence_package
-    )
+    lambda_metadata_evidence.set_defaults(func=_cmd_lambda_metadata_bootstrap_evidence_package)
     lambda_metadata_closeout = lambda_metadata_bootstrap_sub.add_parser("closeout")
     lambda_metadata_closeout.add_argument("--success-record", type=Path, required=True)
     lambda_metadata_closeout.add_argument("--reconciliation", type=Path, required=True)
     lambda_metadata_closeout.add_argument("--evidence-package", type=Path, required=True)
     lambda_metadata_closeout.add_argument("--out", type=Path, required=True)
-    lambda_metadata_closeout.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_closeout
-    )
+    lambda_metadata_closeout.set_defaults(func=_cmd_lambda_metadata_bootstrap_closeout)
     lambda_metadata_attestation = lambda_metadata_bootstrap_sub.add_parser(
         "no-remote-execution-attestation"
     )
@@ -22063,9 +21265,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_metadata_attestation.set_defaults(
         func=_cmd_lambda_metadata_bootstrap_no_remote_attestation
     )
-    lambda_metadata_compare = lambda_metadata_bootstrap_sub.add_parser(
-        "compare-lifecycle"
-    )
+    lambda_metadata_compare = lambda_metadata_bootstrap_sub.add_parser("compare-lifecycle")
     lambda_metadata_compare.add_argument(
         "--lifecycle-closeout",
         type=Path,
@@ -22087,21 +21287,15 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_metadata_compare.add_argument("--out", type=Path, required=True)
-    lambda_metadata_compare.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_compare_lifecycle
-    )
-    lambda_metadata_strategy = lambda_metadata_bootstrap_sub.add_parser(
-        "strategy-update"
-    )
+    lambda_metadata_compare.set_defaults(func=_cmd_lambda_metadata_bootstrap_compare_lifecycle)
+    lambda_metadata_strategy = lambda_metadata_bootstrap_sub.add_parser("strategy-update")
     lambda_metadata_strategy.add_argument(
         "--metadata-closeout",
         type=Path,
         required=True,
     )
     lambda_metadata_strategy.add_argument("--out", type=Path, required=True)
-    lambda_metadata_strategy.set_defaults(
-        func=_cmd_lambda_metadata_bootstrap_strategy_update
-    )
+    lambda_metadata_strategy.set_defaults(func=_cmd_lambda_metadata_bootstrap_strategy_update)
     lambda_ssh_connectivity = lambda_sub.add_parser("ssh-connectivity")
     lambda_ssh_connectivity_sub = lambda_ssh_connectivity.add_subparsers(
         dest="lambda_ssh_connectivity_command",
@@ -22110,29 +21304,21 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_scope = lambda_ssh_connectivity_sub.add_parser("scope")
     lambda_ssh_scope.add_argument("--out", type=Path, required=True)
     lambda_ssh_scope.set_defaults(func=_cmd_lambda_ssh_connectivity_scope)
-    lambda_ssh_credential = lambda_ssh_connectivity_sub.add_parser(
-        "credential-policy"
-    )
+    lambda_ssh_credential = lambda_ssh_connectivity_sub.add_parser("credential-policy")
     lambda_ssh_credential.add_argument(
         "--ssh-key-selection",
         type=Path,
         required=True,
     )
     lambda_ssh_credential.add_argument("--out", type=Path, required=True)
-    lambda_ssh_credential.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_credential_policy
-    )
+    lambda_ssh_credential.set_defaults(func=_cmd_lambda_ssh_connectivity_credential_policy)
     lambda_ssh_client = lambda_ssh_connectivity_sub.add_parser("client-policy")
     lambda_ssh_client.add_argument("--out", type=Path, required=True)
     lambda_ssh_client.set_defaults(func=_cmd_lambda_ssh_connectivity_client_policy)
     lambda_ssh_evidence = lambda_ssh_connectivity_sub.add_parser("evidence-schema")
     lambda_ssh_evidence.add_argument("--out", type=Path, required=True)
-    lambda_ssh_evidence.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_evidence_schema
-    )
-    lambda_ssh_operator = lambda_ssh_connectivity_sub.add_parser(
-        "operator-approval-template"
-    )
+    lambda_ssh_evidence.set_defaults(func=_cmd_lambda_ssh_connectivity_evidence_schema)
+    lambda_ssh_operator = lambda_ssh_connectivity_sub.add_parser("operator-approval-template")
     lambda_ssh_operator.add_argument(
         "--approve-future-m054",
         action="store_true",
@@ -22140,26 +21326,18 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_operator.add_argument("--decline", action="store_true")
     lambda_ssh_operator.add_argument("--acknowledge-all", action="store_true")
     lambda_ssh_operator.add_argument("--out", type=Path, required=True)
-    lambda_ssh_operator.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_operator_approval
-    )
-    lambda_ssh_remote_command = lambda_ssh_connectivity_sub.add_parser(
-        "remote-command-prohibition"
-    )
+    lambda_ssh_operator.set_defaults(func=_cmd_lambda_ssh_connectivity_operator_approval)
+    lambda_ssh_remote_command = lambda_ssh_connectivity_sub.add_parser("remote-command-prohibition")
     lambda_ssh_remote_command.add_argument("--out", type=Path, required=True)
     lambda_ssh_remote_command.set_defaults(
         func=_cmd_lambda_ssh_connectivity_remote_command_prohibition
     )
-    lambda_ssh_file_transfer = lambda_ssh_connectivity_sub.add_parser(
-        "file-transfer-prohibition"
-    )
+    lambda_ssh_file_transfer = lambda_ssh_connectivity_sub.add_parser("file-transfer-prohibition")
     lambda_ssh_file_transfer.add_argument("--out", type=Path, required=True)
     lambda_ssh_file_transfer.set_defaults(
         func=_cmd_lambda_ssh_connectivity_file_transfer_prohibition
     )
-    lambda_ssh_forwarding = lambda_ssh_connectivity_sub.add_parser(
-        "port-forwarding-prohibition"
-    )
+    lambda_ssh_forwarding = lambda_ssh_connectivity_sub.add_parser("port-forwarding-prohibition")
     lambda_ssh_forwarding.add_argument("--out", type=Path, required=True)
     lambda_ssh_forwarding.set_defaults(
         func=_cmd_lambda_ssh_connectivity_port_forwarding_prohibition
@@ -22193,33 +21371,23 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_authorize = lambda_ssh_connectivity_sub.add_parser("authorize-m054")
     lambda_ssh_authorize.add_argument("--risk-review", type=Path, required=True)
     lambda_ssh_authorize.add_argument("--out", type=Path, required=True)
-    lambda_ssh_authorize.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_authorize_m054
-    )
+    lambda_ssh_authorize.set_defaults(func=_cmd_lambda_ssh_connectivity_authorize_m054)
     lambda_ssh_runbook = lambda_ssh_connectivity_sub.add_parser("runbook-preview")
     lambda_ssh_runbook.add_argument("--authorization", type=Path, required=True)
     lambda_ssh_runbook.add_argument("--out", type=Path, required=True)
-    lambda_ssh_runbook.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_runbook_preview
-    )
+    lambda_ssh_runbook.set_defaults(func=_cmd_lambda_ssh_connectivity_runbook_preview)
     lambda_ssh_execution = lambda_ssh_connectivity_sub.add_parser("execution-plan")
     lambda_ssh_execution.add_argument("--authorization", type=Path, required=True)
     lambda_ssh_execution.add_argument("--out", type=Path, required=True)
-    lambda_ssh_execution.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_execution_plan
-    )
-    lambda_ssh_private_key = lambda_ssh_connectivity_sub.add_parser(
-        "private-key-policy"
-    )
+    lambda_ssh_execution.set_defaults(func=_cmd_lambda_ssh_connectivity_execution_plan)
+    lambda_ssh_private_key = lambda_ssh_connectivity_sub.add_parser("private-key-policy")
     lambda_ssh_private_key.add_argument(
         "--ssh-key-selection",
         type=Path,
         required=True,
     )
     lambda_ssh_private_key.add_argument("--out", type=Path, required=True)
-    lambda_ssh_private_key.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_private_key_policy
-    )
+    lambda_ssh_private_key.set_defaults(func=_cmd_lambda_ssh_connectivity_private_key_policy)
     lambda_ssh_username = lambda_ssh_connectivity_sub.add_parser("username-policy")
     lambda_ssh_username.add_argument("--out", type=Path, required=True)
     lambda_ssh_username.set_defaults(func=_cmd_lambda_ssh_connectivity_username_policy)
@@ -22230,23 +21398,13 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_identity.add_argument("--private-key-policy", type=Path, required=True)
     lambda_ssh_identity.add_argument("--out", type=Path, required=True)
     lambda_ssh_identity.set_defaults(func=_cmd_lambda_ssh_connectivity_identity_policy)
-    lambda_ssh_key_file = lambda_ssh_connectivity_sub.add_parser(
-        "private-key-file-policy"
-    )
+    lambda_ssh_key_file = lambda_ssh_connectivity_sub.add_parser("private-key-file-policy")
     lambda_ssh_key_file.add_argument("--out", type=Path, required=True)
-    lambda_ssh_key_file.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_private_key_file_policy
-    )
-    lambda_ssh_stderr = lambda_ssh_connectivity_sub.add_parser(
-        "stderr-capture-policy"
-    )
+    lambda_ssh_key_file.set_defaults(func=_cmd_lambda_ssh_connectivity_private_key_file_policy)
+    lambda_ssh_stderr = lambda_ssh_connectivity_sub.add_parser("stderr-capture-policy")
     lambda_ssh_stderr.add_argument("--out", type=Path, required=True)
-    lambda_ssh_stderr.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_stderr_capture_policy
-    )
-    lambda_ssh_provider_key = lambda_ssh_connectivity_sub.add_parser(
-        "provider-key-diagnostic"
-    )
+    lambda_ssh_stderr.set_defaults(func=_cmd_lambda_ssh_connectivity_stderr_capture_policy)
+    lambda_ssh_provider_key = lambda_ssh_connectivity_sub.add_parser("provider-key-diagnostic")
     lambda_ssh_provider_key.add_argument(
         "--ssh-key-selection",
         type=Path,
@@ -22259,17 +21417,13 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
     )
     lambda_ssh_provider_key.add_argument("--out", type=Path, required=True)
-    lambda_ssh_provider_key.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_provider_key_diagnostic
-    )
+    lambda_ssh_provider_key.set_defaults(func=_cmd_lambda_ssh_connectivity_provider_key_diagnostic)
     lambda_ssh_diagnose = lambda_ssh_connectivity_sub.add_parser("diagnose-failure")
     lambda_ssh_diagnose.add_argument("--workdir", type=Path, default=None)
     lambda_ssh_diagnose.add_argument("--fallback-report", type=Path, default=None)
     lambda_ssh_diagnose.add_argument("--out", type=Path, required=True)
     lambda_ssh_diagnose.set_defaults(func=_cmd_lambda_ssh_connectivity_diagnose_failure)
-    lambda_ssh_capacity_closeout = lambda_ssh_connectivity_sub.add_parser(
-        "capacity-closeout"
-    )
+    lambda_ssh_capacity_closeout = lambda_ssh_connectivity_sub.add_parser("capacity-closeout")
     lambda_ssh_capacity_closeout.add_argument("--workdir", type=Path, required=True)
     lambda_ssh_capacity_closeout.add_argument(
         "--capacity-closeout",
@@ -22282,42 +21436,30 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_ssh_capacity_closeout.add_argument("--out", type=Path, required=True)
-    lambda_ssh_capacity_closeout.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_capacity_closeout
-    )
-    lambda_ssh_capacity_history = lambda_ssh_connectivity_sub.add_parser(
-        "capacity-history"
-    )
+    lambda_ssh_capacity_closeout.set_defaults(func=_cmd_lambda_ssh_connectivity_capacity_closeout)
+    lambda_ssh_capacity_history = lambda_ssh_connectivity_sub.add_parser("capacity-history")
     lambda_ssh_capacity_history.add_argument(
         "--latest-closeout",
         type=Path,
         required=True,
     )
     lambda_ssh_capacity_history.add_argument("--out", type=Path, required=True)
-    lambda_ssh_capacity_history.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_capacity_history
-    )
-    lambda_ssh_select_live = lambda_ssh_connectivity_sub.add_parser(
-        "select-live-candidate"
-    )
+    lambda_ssh_capacity_history.set_defaults(func=_cmd_lambda_ssh_connectivity_capacity_history)
+    lambda_ssh_select_live = lambda_ssh_connectivity_sub.add_parser("select-live-candidate")
     lambda_ssh_select_live.add_argument("--discovery-report", type=Path, required=True)
     lambda_ssh_select_live.add_argument("--price-snapshot", type=Path, required=True)
     lambda_ssh_select_live.add_argument("--ssh-key-selection", type=Path, required=True)
     lambda_ssh_select_live.add_argument("--capacity-history", type=Path, required=True)
     lambda_ssh_select_live.add_argument("--max-budget", type=float, required=True)
     lambda_ssh_select_live.add_argument("--out", type=Path, required=True)
-    lambda_ssh_select_live.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_select_live_candidate
-    )
+    lambda_ssh_select_live.set_defaults(func=_cmd_lambda_ssh_connectivity_select_live_candidate)
     lambda_ssh_retry = lambda_ssh_connectivity_sub.add_parser("retry-policy")
     lambda_ssh_retry.add_argument("--probe-diagnostic", type=Path, default=None)
     lambda_ssh_retry.add_argument("--capacity-history", type=Path, default=None)
     lambda_ssh_retry.add_argument("--stderr-policy", type=Path, default=None)
     lambda_ssh_retry.add_argument("--out", type=Path, required=True)
     lambda_ssh_retry.set_defaults(func=_cmd_lambda_ssh_connectivity_retry_policy)
-    lambda_ssh_retry_decision = lambda_ssh_connectivity_sub.add_parser(
-        "retry-decision"
-    )
+    lambda_ssh_retry_decision = lambda_ssh_connectivity_sub.add_parser("retry-decision")
     lambda_ssh_retry_decision.add_argument(
         "--candidate-selection",
         type=Path,
@@ -22325,12 +21467,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_ssh_retry_decision.add_argument("--retry-policy", type=Path, required=True)
     lambda_ssh_retry_decision.add_argument("--out", type=Path, required=True)
-    lambda_ssh_retry_decision.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_retry_decision
-    )
-    lambda_ssh_authorize_m056 = lambda_ssh_connectivity_sub.add_parser(
-        "authorize-m056"
-    )
+    lambda_ssh_retry_decision.set_defaults(func=_cmd_lambda_ssh_connectivity_retry_decision)
+    lambda_ssh_authorize_m056 = lambda_ssh_connectivity_sub.add_parser("authorize-m056")
     lambda_ssh_authorize_m056.add_argument(
         "--capacity-closeout",
         type=Path,
@@ -22348,33 +21486,23 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_ssh_authorize_m056.add_argument("--out", type=Path, required=True)
-    lambda_ssh_authorize_m056.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_authorize_m056
-    )
-    lambda_ssh_retry_preview = lambda_ssh_connectivity_sub.add_parser(
-        "retry-command-preview"
-    )
+    lambda_ssh_authorize_m056.set_defaults(func=_cmd_lambda_ssh_connectivity_authorize_m056)
+    lambda_ssh_retry_preview = lambda_ssh_connectivity_sub.add_parser("retry-command-preview")
     lambda_ssh_retry_preview.add_argument(
         "--authorization",
         type=Path,
         required=True,
     )
     lambda_ssh_retry_preview.add_argument("--out", type=Path, required=True)
-    lambda_ssh_retry_preview.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_retry_command_preview
-    )
-    lambda_ssh_safe_command = lambda_ssh_connectivity_sub.add_parser(
-        "safe-client-command"
-    )
+    lambda_ssh_retry_preview.set_defaults(func=_cmd_lambda_ssh_connectivity_retry_command_preview)
+    lambda_ssh_safe_command = lambda_ssh_connectivity_sub.add_parser("safe-client-command")
     lambda_ssh_safe_command.add_argument(
         "--private-key-policy",
         type=Path,
         required=True,
     )
     lambda_ssh_safe_command.add_argument("--out", type=Path, required=True)
-    lambda_ssh_safe_command.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_safe_client_command
-    )
+    lambda_ssh_safe_command.set_defaults(func=_cmd_lambda_ssh_connectivity_safe_client_command)
     lambda_ssh_static = lambda_ssh_connectivity_sub.add_parser("static-validate")
     lambda_ssh_static.add_argument("--execution-plan", type=Path, required=True)
     lambda_ssh_static.add_argument("--private-key-policy", type=Path, required=True)
@@ -22452,9 +21580,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_ssh_m055c_gate.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m055c_gate.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m055c_gate_check
-    )
+    lambda_ssh_m055c_gate.set_defaults(func=_cmd_lambda_ssh_connectivity_m055c_gate_check)
     lambda_ssh_m056_plan = lambda_ssh_connectivity_sub.add_parser("m056-plan")
     lambda_ssh_m056_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_ssh_m056_plan.add_argument("--authorization", type=Path, required=True)
@@ -22491,9 +21617,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_ssh_m056_gate.add_argument("--static-validation", type=Path, required=True)
     lambda_ssh_m056_gate.add_argument("--no-exec-audit", type=Path, required=True)
     lambda_ssh_m056_gate.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m056_gate.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m056_gate_check
-    )
+    lambda_ssh_m056_gate.set_defaults(func=_cmd_lambda_ssh_connectivity_m056_gate_check)
     lambda_ssh_m056_arm = lambda_ssh_connectivity_sub.add_parser("m056-arm-one-shot")
     lambda_ssh_m056_arm.add_argument("--plan", type=Path, required=True)
     lambda_ssh_m056_arm.add_argument("--gate-check", type=Path, required=True)
@@ -22505,35 +21629,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_ssh_m056_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_ssh_m056_arm.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m056_arm.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m056_arm_one_shot
-    )
-    lambda_ssh_m056_bridge = lambda_ssh_connectivity_sub.add_parser(
-        "m056-reviewer-bridge"
-    )
+    lambda_ssh_m056_arm.set_defaults(func=_cmd_lambda_ssh_connectivity_m056_arm_one_shot)
+    lambda_ssh_m056_bridge = lambda_ssh_connectivity_sub.add_parser("m056-reviewer-bridge")
     lambda_ssh_m056_bridge.add_argument("--arming", type=Path, required=True)
     lambda_ssh_m056_bridge.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m056_bridge.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m056_reviewer_bridge
-    )
-    lambda_ssh_m057_operator = lambda_ssh_connectivity_sub.add_parser(
-        "m057-operator-approval"
-    )
+    lambda_ssh_m056_bridge.set_defaults(func=_cmd_lambda_ssh_connectivity_m056_reviewer_bridge)
+    lambda_ssh_m057_operator = lambda_ssh_connectivity_sub.add_parser("m057-operator-approval")
     lambda_ssh_m057_operator.add_argument(
         "--acknowledge-all",
         action="store_true",
     )
     lambda_ssh_m057_operator.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m057_operator.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m057_operator_approval
-    )
-    lambda_ssh_m057_policy = lambda_ssh_connectivity_sub.add_parser(
-        "m057-command-policy"
-    )
+    lambda_ssh_m057_operator.set_defaults(func=_cmd_lambda_ssh_connectivity_m057_operator_approval)
+    lambda_ssh_m057_policy = lambda_ssh_connectivity_sub.add_parser("m057-command-policy")
     lambda_ssh_m057_policy.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m057_policy.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m057_command_policy
-    )
+    lambda_ssh_m057_policy.set_defaults(func=_cmd_lambda_ssh_connectivity_m057_command_policy)
     lambda_ssh_m057_gate = lambda_ssh_connectivity_sub.add_parser("m057-gate-check")
     lambda_ssh_m057_gate.add_argument("--m056-plan", type=Path, required=True)
     lambda_ssh_m057_gate.add_argument("--m056-gate-check", type=Path, required=True)
@@ -22549,9 +21659,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_ssh_m057_gate.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m057_gate.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m057_gate_check
-    )
+    lambda_ssh_m057_gate.set_defaults(func=_cmd_lambda_ssh_connectivity_m057_gate_check)
     lambda_ssh_m057_arm = lambda_ssh_connectivity_sub.add_parser("m057-arm-one-shot")
     lambda_ssh_m057_arm.add_argument("--gate-check", type=Path, required=True)
     lambda_ssh_m057_arm.add_argument(
@@ -22561,17 +21669,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_ssh_m057_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_ssh_m057_arm.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m057_arm.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m057_arm_one_shot
-    )
-    lambda_ssh_m057_bridge = lambda_ssh_connectivity_sub.add_parser(
-        "m057-reviewer-bridge"
-    )
+    lambda_ssh_m057_arm.set_defaults(func=_cmd_lambda_ssh_connectivity_m057_arm_one_shot)
+    lambda_ssh_m057_bridge = lambda_ssh_connectivity_sub.add_parser("m057-reviewer-bridge")
     lambda_ssh_m057_bridge.add_argument("--arming", type=Path, required=True)
     lambda_ssh_m057_bridge.add_argument("--out", type=Path, required=True)
-    lambda_ssh_m057_bridge.set_defaults(
-        func=_cmd_lambda_ssh_connectivity_m057_reviewer_bridge
-    )
+    lambda_ssh_m057_bridge.set_defaults(func=_cmd_lambda_ssh_connectivity_m057_reviewer_bridge)
     lambda_m050 = lambda_sub.add_parser("m050")
     lambda_m050_sub = lambda_m050.add_subparsers(
         dest="lambda_m050_command",
@@ -22757,14 +21859,10 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_stage = lambda_remote_command_sub.add_parser("stage-policy")
     lambda_remote_stage.add_argument("--out", type=Path, required=True)
     lambda_remote_stage.set_defaults(func=_cmd_lambda_remote_command_stage_policy)
-    lambda_remote_review = lambda_remote_command_sub.add_parser(
-        "smallest-useful-review"
-    )
+    lambda_remote_review = lambda_remote_command_sub.add_parser("smallest-useful-review")
     lambda_remote_review.add_argument("--stage-policy", type=Path, required=True)
     lambda_remote_review.add_argument("--out", type=Path, required=True)
-    lambda_remote_review.set_defaults(
-        func=_cmd_lambda_remote_command_smallest_useful_review
-    )
+    lambda_remote_review.set_defaults(func=_cmd_lambda_remote_command_smallest_useful_review)
     lambda_remote_authorize = lambda_remote_command_sub.add_parser("authorize-m059")
     lambda_remote_authorize.add_argument(
         "--ssh-noop-closeout",
@@ -22778,9 +21876,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_preview = lambda_remote_command_sub.add_parser("m059-runbook-preview")
     lambda_remote_preview.add_argument("--authorization", type=Path, required=True)
     lambda_remote_preview.add_argument("--out", type=Path, required=True)
-    lambda_remote_preview.set_defaults(
-        func=_cmd_lambda_remote_command_m059_runbook_preview
-    )
+    lambda_remote_preview.set_defaults(func=_cmd_lambda_remote_command_m059_runbook_preview)
     lambda_remote_m059_plan = lambda_remote_command_sub.add_parser("m059-plan")
     lambda_remote_m059_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_remote_m059_plan.add_argument("--authorization", type=Path, required=True)
@@ -22794,9 +21890,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_m059_gate.add_argument("--plan", type=Path, required=True)
     lambda_remote_m059_gate.add_argument("--authorization", type=Path, required=True)
     lambda_remote_m059_gate.add_argument("--out", type=Path, required=True)
-    lambda_remote_m059_gate.set_defaults(
-        func=_cmd_lambda_remote_command_m059_gate_check
-    )
+    lambda_remote_m059_gate.set_defaults(func=_cmd_lambda_remote_command_m059_gate_check)
     lambda_remote_m059_arm = lambda_remote_command_sub.add_parser("m059-arm-one-shot")
     lambda_remote_m059_arm.add_argument("--gate-check", type=Path, required=True)
     lambda_remote_m059_arm.add_argument(
@@ -22806,20 +21900,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_remote_m059_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_remote_m059_arm.add_argument("--out", type=Path, required=True)
-    lambda_remote_m059_arm.set_defaults(
-        func=_cmd_lambda_remote_command_m059_arm_one_shot
-    )
-    lambda_remote_m059_bridge = lambda_remote_command_sub.add_parser(
-        "m059-reviewer-bridge"
-    )
+    lambda_remote_m059_arm.set_defaults(func=_cmd_lambda_remote_command_m059_arm_one_shot)
+    lambda_remote_m059_bridge = lambda_remote_command_sub.add_parser("m059-reviewer-bridge")
     lambda_remote_m059_bridge.add_argument("--arming", type=Path, required=True)
     lambda_remote_m059_bridge.add_argument("--out", type=Path, required=True)
-    lambda_remote_m059_bridge.set_defaults(
-        func=_cmd_lambda_remote_command_m059_reviewer_bridge
-    )
-    lambda_remote_hostname_success = lambda_remote_command_sub.add_parser(
-        "hostname-success-record"
-    )
+    lambda_remote_m059_bridge.set_defaults(func=_cmd_lambda_remote_command_m059_reviewer_bridge)
+    lambda_remote_hostname_success = lambda_remote_command_sub.add_parser("hostname-success-record")
     lambda_remote_hostname_success.add_argument("--workdir", type=Path, required=True)
     lambda_remote_hostname_success.add_argument(
         "--final-discovery",
@@ -22830,9 +21916,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_hostname_success.set_defaults(
         func=_cmd_lambda_remote_command_hostname_success_record
     )
-    lambda_remote_hostname_reconcile = lambda_remote_command_sub.add_parser(
-        "hostname-reconcile"
-    )
+    lambda_remote_hostname_reconcile = lambda_remote_command_sub.add_parser("hostname-reconcile")
     lambda_remote_hostname_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_remote_hostname_reconcile.add_argument(
         "--success-record",
@@ -22865,9 +21949,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_hostname_evidence.set_defaults(
         func=_cmd_lambda_remote_command_hostname_evidence_package
     )
-    lambda_remote_hostname_closeout = lambda_remote_command_sub.add_parser(
-        "hostname-closeout"
-    )
+    lambda_remote_hostname_closeout = lambda_remote_command_sub.add_parser("hostname-closeout")
     lambda_remote_hostname_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -22884,21 +21966,15 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_hostname_closeout.add_argument("--out", type=Path, required=True)
-    lambda_remote_hostname_closeout.set_defaults(
-        func=_cmd_lambda_remote_command_hostname_closeout
-    )
+    lambda_remote_hostname_closeout.set_defaults(func=_cmd_lambda_remote_command_hostname_closeout)
     lambda_identity_command = lambda_sub.add_parser("identity-command")
     lambda_identity_command_sub = lambda_identity_command.add_subparsers(
         dest="lambda_identity_command_command",
         required=True,
     )
-    lambda_identity_stage_policy = lambda_identity_command_sub.add_parser(
-        "stage-policy"
-    )
+    lambda_identity_stage_policy = lambda_identity_command_sub.add_parser("stage-policy")
     lambda_identity_stage_policy.add_argument("--out", type=Path, required=True)
-    lambda_identity_stage_policy.set_defaults(
-        func=_cmd_lambda_identity_command_stage_policy
-    )
+    lambda_identity_stage_policy.set_defaults(func=_cmd_lambda_identity_command_stage_policy)
     lambda_identity_m061_plan = lambda_identity_command_sub.add_parser("m061-plan")
     lambda_identity_m061_plan.add_argument(
         "--discovery-report",
@@ -22918,12 +21994,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_identity_m061_plan.add_argument("--price-snapshot", type=Path, required=True)
     lambda_identity_m061_plan.add_argument("--out", type=Path, required=True)
-    lambda_identity_m061_plan.set_defaults(
-        func=_cmd_lambda_identity_command_m061_plan
-    )
-    lambda_identity_m061_gate = lambda_identity_command_sub.add_parser(
-        "m061-gate-check"
-    )
+    lambda_identity_m061_plan.set_defaults(func=_cmd_lambda_identity_command_m061_plan)
+    lambda_identity_m061_gate = lambda_identity_command_sub.add_parser("m061-gate-check")
     lambda_identity_m061_gate.add_argument("--plan", type=Path, required=True)
     lambda_identity_m061_gate.add_argument(
         "--authorization",
@@ -22931,12 +22003,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_identity_m061_gate.add_argument("--out", type=Path, required=True)
-    lambda_identity_m061_gate.set_defaults(
-        func=_cmd_lambda_identity_command_m061_gate_check
-    )
-    lambda_identity_m061_arm = lambda_identity_command_sub.add_parser(
-        "m061-arm-one-shot"
-    )
+    lambda_identity_m061_gate.set_defaults(func=_cmd_lambda_identity_command_m061_gate_check)
+    lambda_identity_m061_arm = lambda_identity_command_sub.add_parser("m061-arm-one-shot")
     lambda_identity_m061_arm.add_argument("--gate-check", type=Path, required=True)
     lambda_identity_m061_arm.add_argument(
         "--response-loss-controls",
@@ -22945,17 +22013,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_identity_m061_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_identity_m061_arm.add_argument("--out", type=Path, required=True)
-    lambda_identity_m061_arm.set_defaults(
-        func=_cmd_lambda_identity_command_m061_arm_one_shot
-    )
-    lambda_identity_m061_bridge = lambda_identity_command_sub.add_parser(
-        "m061-reviewer-bridge"
-    )
+    lambda_identity_m061_arm.set_defaults(func=_cmd_lambda_identity_command_m061_arm_one_shot)
+    lambda_identity_m061_bridge = lambda_identity_command_sub.add_parser("m061-reviewer-bridge")
     lambda_identity_m061_bridge.add_argument("--arming", type=Path, required=True)
     lambda_identity_m061_bridge.add_argument("--out", type=Path, required=True)
-    lambda_identity_m061_bridge.set_defaults(
-        func=_cmd_lambda_identity_command_m061_reviewer_bridge
-    )
+    lambda_identity_m061_bridge.set_defaults(func=_cmd_lambda_identity_command_m061_reviewer_bridge)
     lambda_m061 = lambda_sub.add_parser("m061")
     lambda_m061_sub = lambda_m061.add_subparsers(
         dest="lambda_m061_command",
@@ -23006,9 +22068,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     lambda_whoami_success.add_argument("--out", type=Path, required=True)
-    lambda_whoami_success.set_defaults(
-        func=_cmd_lambda_whoami_command_success_record
-    )
+    lambda_whoami_success.set_defaults(func=_cmd_lambda_whoami_command_success_record)
     lambda_whoami_reconcile = lambda_whoami_command_sub.add_parser("reconcile")
     lambda_whoami_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_whoami_reconcile.add_argument(
@@ -23027,9 +22087,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_whoami_evidence.add_argument("--success-record", type=Path, required=True)
     lambda_whoami_evidence.add_argument("--reconciliation", type=Path, required=True)
     lambda_whoami_evidence.add_argument("--out", type=Path, required=True)
-    lambda_whoami_evidence.set_defaults(
-        func=_cmd_lambda_whoami_command_evidence_package
-    )
+    lambda_whoami_evidence.set_defaults(func=_cmd_lambda_whoami_command_evidence_package)
     lambda_whoami_closeout = lambda_whoami_command_sub.add_parser("closeout")
     lambda_whoami_closeout.add_argument("--success-record", type=Path, required=True)
     lambda_whoami_closeout.add_argument("--reconciliation", type=Path, required=True)
@@ -23043,14 +22101,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_gpu_command_policy = lambda_gpu_visibility_sub.add_parser("command-policy")
     lambda_gpu_command_policy.add_argument("--out", type=Path, required=True)
-    lambda_gpu_command_policy.set_defaults(
-        func=_cmd_lambda_gpu_visibility_command_policy
-    )
+    lambda_gpu_command_policy.set_defaults(func=_cmd_lambda_gpu_visibility_command_policy)
     lambda_gpu_output_policy = lambda_gpu_visibility_sub.add_parser("output-policy")
     lambda_gpu_output_policy.add_argument("--out", type=Path, required=True)
-    lambda_gpu_output_policy.set_defaults(
-        func=_cmd_lambda_gpu_visibility_output_policy
-    )
+    lambda_gpu_output_policy.set_defaults(func=_cmd_lambda_gpu_visibility_output_policy)
     lambda_gpu_command_review = lambda_gpu_visibility_sub.add_parser("command-review")
     lambda_gpu_command_review.add_argument(
         "--command-policy",
@@ -23063,9 +22117,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_gpu_command_review.add_argument("--out", type=Path, required=True)
-    lambda_gpu_command_review.set_defaults(
-        func=_cmd_lambda_gpu_visibility_command_review
-    )
+    lambda_gpu_command_review.set_defaults(func=_cmd_lambda_gpu_visibility_command_review)
     lambda_gpu_authorize = lambda_gpu_visibility_sub.add_parser("authorize-m063")
     lambda_gpu_authorize.add_argument(
         "--whoami-closeout",
@@ -23077,14 +22129,10 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_gpu_authorize.add_argument("--command-review", type=Path, required=True)
     lambda_gpu_authorize.add_argument("--out", type=Path, required=True)
     lambda_gpu_authorize.set_defaults(func=_cmd_lambda_gpu_visibility_authorize_m063)
-    lambda_gpu_preview = lambda_gpu_visibility_sub.add_parser(
-        "m063-runbook-preview"
-    )
+    lambda_gpu_preview = lambda_gpu_visibility_sub.add_parser("m063-runbook-preview")
     lambda_gpu_preview.add_argument("--authorization", type=Path, required=True)
     lambda_gpu_preview.add_argument("--out", type=Path, required=True)
-    lambda_gpu_preview.set_defaults(
-        func=_cmd_lambda_gpu_visibility_m063_runbook_preview
-    )
+    lambda_gpu_preview.set_defaults(func=_cmd_lambda_gpu_visibility_m063_runbook_preview)
     lambda_gpu_m063_plan = lambda_gpu_visibility_sub.add_parser("m063-plan")
     lambda_gpu_m063_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_gpu_m063_plan.add_argument("--authorization", type=Path, required=True)
@@ -23111,9 +22159,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_gpu_m063_bridge = lambda_gpu_visibility_sub.add_parser("m063-reviewer-bridge")
     lambda_gpu_m063_bridge.add_argument("--arming", type=Path, required=True)
     lambda_gpu_m063_bridge.add_argument("--out", type=Path, required=True)
-    lambda_gpu_m063_bridge.set_defaults(
-        func=_cmd_lambda_gpu_visibility_m063_reviewer_bridge
-    )
+    lambda_gpu_m063_bridge.set_defaults(func=_cmd_lambda_gpu_visibility_m063_reviewer_bridge)
     lambda_gpu_success = lambda_gpu_visibility_sub.add_parser("success-record")
     lambda_gpu_success.add_argument("--workdir", type=Path, required=True)
     lambda_gpu_success.add_argument(
@@ -23123,9 +22169,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_gpu_success.add_argument("--out", type=Path, required=True)
     lambda_gpu_success.set_defaults(func=_cmd_lambda_gpu_visibility_success_record)
-    lambda_gpu_parsed_audit = lambda_gpu_visibility_sub.add_parser(
-        "parsed-output-audit"
-    )
+    lambda_gpu_parsed_audit = lambda_gpu_visibility_sub.add_parser("parsed-output-audit")
     lambda_gpu_parsed_audit.add_argument(
         "--success-record",
         type=Path,
@@ -23137,9 +22181,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_gpu_parsed_audit.add_argument("--out", type=Path, required=True)
-    lambda_gpu_parsed_audit.set_defaults(
-        func=_cmd_lambda_gpu_visibility_parsed_output_audit
-    )
+    lambda_gpu_parsed_audit.set_defaults(func=_cmd_lambda_gpu_visibility_parsed_output_audit)
     lambda_gpu_reconcile = lambda_gpu_visibility_sub.add_parser("reconcile")
     lambda_gpu_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_gpu_reconcile.add_argument("--success-record", type=Path, required=True)
@@ -23168,21 +22210,13 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_python_runtime_command",
         required=True,
     )
-    lambda_python_command_policy = lambda_python_runtime_sub.add_parser(
-        "command-policy"
-    )
+    lambda_python_command_policy = lambda_python_runtime_sub.add_parser("command-policy")
     lambda_python_command_policy.add_argument("--out", type=Path, required=True)
-    lambda_python_command_policy.set_defaults(
-        func=_cmd_lambda_python_runtime_command_policy
-    )
+    lambda_python_command_policy.set_defaults(func=_cmd_lambda_python_runtime_command_policy)
     lambda_python_output_policy = lambda_python_runtime_sub.add_parser("output-policy")
     lambda_python_output_policy.add_argument("--out", type=Path, required=True)
-    lambda_python_output_policy.set_defaults(
-        func=_cmd_lambda_python_runtime_output_policy
-    )
-    lambda_python_command_review = lambda_python_runtime_sub.add_parser(
-        "command-review"
-    )
+    lambda_python_output_policy.set_defaults(func=_cmd_lambda_python_runtime_output_policy)
+    lambda_python_command_review = lambda_python_runtime_sub.add_parser("command-review")
     lambda_python_command_review.add_argument(
         "--command-policy",
         type=Path,
@@ -23194,9 +22228,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_python_command_review.add_argument("--out", type=Path, required=True)
-    lambda_python_command_review.set_defaults(
-        func=_cmd_lambda_python_runtime_command_review
-    )
+    lambda_python_command_review.set_defaults(func=_cmd_lambda_python_runtime_command_review)
     lambda_python_authorize = lambda_python_runtime_sub.add_parser("authorize-m065")
     lambda_python_authorize.add_argument(
         "--gpu-visibility-closeout",
@@ -23207,17 +22239,11 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_python_authorize.add_argument("--output-policy", type=Path, required=True)
     lambda_python_authorize.add_argument("--command-review", type=Path, required=True)
     lambda_python_authorize.add_argument("--out", type=Path, required=True)
-    lambda_python_authorize.set_defaults(
-        func=_cmd_lambda_python_runtime_authorize_m065
-    )
-    lambda_python_preview = lambda_python_runtime_sub.add_parser(
-        "m065-runbook-preview"
-    )
+    lambda_python_authorize.set_defaults(func=_cmd_lambda_python_runtime_authorize_m065)
+    lambda_python_preview = lambda_python_runtime_sub.add_parser("m065-runbook-preview")
     lambda_python_preview.add_argument("--authorization", type=Path, required=True)
     lambda_python_preview.add_argument("--out", type=Path, required=True)
-    lambda_python_preview.set_defaults(
-        func=_cmd_lambda_python_runtime_m065_runbook_preview
-    )
+    lambda_python_preview.set_defaults(func=_cmd_lambda_python_runtime_m065_runbook_preview)
     lambda_python_m065_plan = lambda_python_runtime_sub.add_parser("m065-plan")
     lambda_python_m065_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_python_m065_plan.add_argument("--authorization", type=Path, required=True)
@@ -23234,9 +22260,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_python_m065_gate.add_argument("--command-policy", type=Path, required=True)
     lambda_python_m065_gate.add_argument("--output-policy", type=Path, required=True)
     lambda_python_m065_gate.add_argument("--out", type=Path, required=True)
-    lambda_python_m065_gate.set_defaults(
-        func=_cmd_lambda_python_runtime_m065_gate_check
-    )
+    lambda_python_m065_gate.set_defaults(func=_cmd_lambda_python_runtime_m065_gate_check)
     lambda_python_m065_arm = lambda_python_runtime_sub.add_parser("m065-arm-one-shot")
     lambda_python_m065_arm.add_argument("--gate-check", type=Path, required=True)
     lambda_python_m065_arm.add_argument(
@@ -23246,17 +22270,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_python_m065_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_python_m065_arm.add_argument("--out", type=Path, required=True)
-    lambda_python_m065_arm.set_defaults(
-        func=_cmd_lambda_python_runtime_m065_arm_one_shot
-    )
-    lambda_python_m065_bridge = lambda_python_runtime_sub.add_parser(
-        "m065-reviewer-bridge"
-    )
+    lambda_python_m065_arm.set_defaults(func=_cmd_lambda_python_runtime_m065_arm_one_shot)
+    lambda_python_m065_bridge = lambda_python_runtime_sub.add_parser("m065-reviewer-bridge")
     lambda_python_m065_bridge.add_argument("--arming", type=Path, required=True)
     lambda_python_m065_bridge.add_argument("--out", type=Path, required=True)
-    lambda_python_m065_bridge.set_defaults(
-        func=_cmd_lambda_python_runtime_m065_reviewer_bridge
-    )
+    lambda_python_m065_bridge.set_defaults(func=_cmd_lambda_python_runtime_m065_reviewer_bridge)
     lambda_dependency = lambda_sub.add_parser("dependency")
     lambda_dependency_sub = lambda_dependency.add_subparsers(
         dest="lambda_dependency_command",
@@ -23290,9 +22308,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="manylinux2014_x86_64",
     )
     lambda_dependency_wheelhouse_plan.add_argument("--out", type=Path, required=True)
-    lambda_dependency_wheelhouse_plan.set_defaults(
-        func=_cmd_lambda_dependency_wheelhouse_plan
-    )
+    lambda_dependency_wheelhouse_plan.set_defaults(func=_cmd_lambda_dependency_wheelhouse_plan)
     lambda_dependency_audit_wheelhouse = lambda_dependency_sub.add_parser(
         "audit-existing-wheelhouse"
     )
@@ -23307,9 +22323,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_dependency_audit_wheelhouse.set_defaults(
         func=_cmd_lambda_dependency_audit_existing_wheelhouse
     )
-    lambda_dependency_build_policy = lambda_dependency_sub.add_parser(
-        "wheelhouse-build-policy"
-    )
+    lambda_dependency_build_policy = lambda_dependency_sub.add_parser("wheelhouse-build-policy")
     lambda_dependency_build_policy.add_argument("--plan", type=Path, required=True)
     lambda_dependency_build_policy.add_argument(
         "--existing-audit",
@@ -23321,12 +22335,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
     )
     lambda_dependency_build_policy.add_argument("--out", type=Path, required=True)
-    lambda_dependency_build_policy.set_defaults(
-        func=_cmd_lambda_dependency_wheelhouse_build_policy
-    )
-    lambda_dependency_download_wheelhouse = lambda_dependency_sub.add_parser(
-        "download-wheelhouse"
-    )
+    lambda_dependency_build_policy.set_defaults(func=_cmd_lambda_dependency_wheelhouse_build_policy)
+    lambda_dependency_download_wheelhouse = lambda_dependency_sub.add_parser("download-wheelhouse")
     lambda_dependency_download_wheelhouse.add_argument("--policy", type=Path, required=True)
     lambda_dependency_download_wheelhouse.add_argument("--plan", type=Path, required=True)
     lambda_dependency_download_wheelhouse.add_argument(
@@ -23338,9 +22348,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_dependency_download_wheelhouse.set_defaults(
         func=_cmd_lambda_dependency_download_wheelhouse
     )
-    lambda_dependency_wheelhouse_manifest = lambda_dependency_sub.add_parser(
-        "wheelhouse-manifest"
-    )
+    lambda_dependency_wheelhouse_manifest = lambda_dependency_sub.add_parser("wheelhouse-manifest")
     lambda_dependency_wheelhouse_manifest.add_argument(
         "--wheelhouse-dir",
         type=Path,
@@ -23359,9 +22367,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_dependency_wheelhouse_manifest.set_defaults(
         func=_cmd_lambda_dependency_wheelhouse_manifest
     )
-    lambda_dependency_wheelhouse_secret = lambda_dependency_sub.add_parser(
-        "wheelhouse-secret-scan"
-    )
+    lambda_dependency_wheelhouse_secret = lambda_dependency_sub.add_parser("wheelhouse-secret-scan")
     lambda_dependency_wheelhouse_secret.add_argument(
         "--wheelhouse-dir",
         type=Path,
@@ -23421,25 +22427,19 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_vslice_policy = lambda_remote_vslice_sub.add_parser("policy")
     lambda_remote_vslice_policy.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_policy.set_defaults(func=_cmd_lambda_remote_vslice_policy)
-    lambda_remote_vslice_manifest = lambda_remote_vslice_sub.add_parser(
-        "default-manifest"
-    )
+    lambda_remote_vslice_manifest = lambda_remote_vslice_sub.add_parser("default-manifest")
     lambda_remote_vslice_manifest.add_argument(
         "--no-profile-summary",
         action="store_true",
     )
     lambda_remote_vslice_manifest.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_manifest.set_defaults(func=_cmd_lambda_remote_vslice_manifest)
-    lambda_remote_source_manifest = lambda_remote_vslice_sub.add_parser(
-        "source-bundle-manifest"
-    )
+    lambda_remote_source_manifest = lambda_remote_vslice_sub.add_parser("source-bundle-manifest")
     lambda_remote_source_manifest.add_argument("--out", type=Path, required=True)
     lambda_remote_source_manifest.set_defaults(
         func=_cmd_lambda_remote_vslice_source_bundle_manifest
     )
-    lambda_remote_build_source = lambda_remote_vslice_sub.add_parser(
-        "build-source-bundle"
-    )
+    lambda_remote_build_source = lambda_remote_vslice_sub.add_parser("build-source-bundle")
     lambda_remote_build_source.add_argument(
         "--project-root",
         type=Path,
@@ -23447,29 +22447,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_remote_build_source.add_argument("--bundle", type=Path, required=True)
     lambda_remote_build_source.add_argument("--manifest-out", type=Path, required=True)
-    lambda_remote_build_source.set_defaults(
-        func=_cmd_lambda_remote_vslice_build_source_bundle
-    )
-    lambda_remote_validate_source = lambda_remote_vslice_sub.add_parser(
-        "validate-source-bundle"
-    )
+    lambda_remote_build_source.set_defaults(func=_cmd_lambda_remote_vslice_build_source_bundle)
+    lambda_remote_validate_source = lambda_remote_vslice_sub.add_parser("validate-source-bundle")
     lambda_remote_validate_source.add_argument("--bundle", type=Path, required=True)
     lambda_remote_validate_source.add_argument("--manifest", type=Path, required=True)
     lambda_remote_validate_source.add_argument("--out", type=Path, required=True)
     lambda_remote_validate_source.set_defaults(
         func=_cmd_lambda_remote_vslice_validate_source_bundle
     )
-    lambda_remote_classify_upload = lambda_remote_vslice_sub.add_parser(
-        "classify-upload-failure"
-    )
+    lambda_remote_classify_upload = lambda_remote_vslice_sub.add_parser("classify-upload-failure")
     lambda_remote_classify_upload.add_argument("--workdir", type=Path, required=True)
     lambda_remote_classify_upload.add_argument("--out", type=Path, required=True)
     lambda_remote_classify_upload.set_defaults(
         func=_cmd_lambda_remote_vslice_classify_upload_failure
     )
-    lambda_remote_upload_closeout = lambda_remote_vslice_sub.add_parser(
-        "upload-closeout"
-    )
+    lambda_remote_upload_closeout = lambda_remote_vslice_sub.add_parser("upload-closeout")
     lambda_remote_upload_closeout.add_argument(
         "--classification",
         type=Path,
@@ -23481,12 +22473,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_upload_closeout.add_argument("--out", type=Path, required=True)
-    lambda_remote_upload_closeout.set_defaults(
-        func=_cmd_lambda_remote_vslice_upload_closeout
-    )
-    lambda_remote_banner_policy = lambda_remote_vslice_sub.add_parser(
-        "ssh-banner-readiness-policy"
-    )
+    lambda_remote_upload_closeout.set_defaults(func=_cmd_lambda_remote_vslice_upload_closeout)
+    lambda_remote_banner_policy = lambda_remote_vslice_sub.add_parser("ssh-banner-readiness-policy")
     lambda_remote_banner_policy.add_argument("--out", type=Path, required=True)
     lambda_remote_banner_policy.set_defaults(
         func=_cmd_lambda_remote_vslice_ssh_banner_readiness_policy
@@ -23511,9 +22499,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_remote_upload_policy.add_argument("--out", type=Path, required=True)
     lambda_remote_upload_policy.set_defaults(func=_cmd_lambda_remote_vslice_upload_policy)
-    lambda_remote_m073r2_authorize = lambda_remote_vslice_sub.add_parser(
-        "authorize-m073r2"
-    )
+    lambda_remote_m073r2_authorize = lambda_remote_vslice_sub.add_parser("authorize-m073r2")
     lambda_remote_m073r2_authorize.add_argument(
         "--upload-closeout",
         type=Path,
@@ -23530,12 +22516,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_m073r2_authorize.add_argument("--out", type=Path, required=True)
-    lambda_remote_m073r2_authorize.set_defaults(
-        func=_cmd_lambda_remote_vslice_authorize_m073r2
-    )
-    lambda_remote_m073r2_runbook = lambda_remote_vslice_sub.add_parser(
-        "m073r2-runbook-preview"
-    )
+    lambda_remote_m073r2_authorize.set_defaults(func=_cmd_lambda_remote_vslice_authorize_m073r2)
+    lambda_remote_m073r2_runbook = lambda_remote_vslice_sub.add_parser("m073r2-runbook-preview")
     lambda_remote_m073r2_runbook.add_argument(
         "--authorization",
         type=Path,
@@ -23547,9 +22529,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_m073r2_runbook.add_argument("--out", type=Path, required=True)
-    lambda_remote_m073r2_runbook.set_defaults(
-        func=_cmd_lambda_remote_vslice_m073r2_runbook_preview
-    )
+    lambda_remote_m073r2_runbook.set_defaults(func=_cmd_lambda_remote_vslice_m073r2_runbook_preview)
     lambda_remote_expected_artifact_policy = lambda_remote_vslice_sub.add_parser(
         "expected-artifact-policy"
     )
@@ -23639,15 +22619,11 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_dependency_manifest.set_defaults(
         func=_cmd_lambda_remote_vslice_dependency_bundle_manifest
     )
-    lambda_remote_vslice_validate = lambda_remote_vslice_sub.add_parser(
-        "validate-manifest"
-    )
+    lambda_remote_vslice_validate = lambda_remote_vslice_sub.add_parser("validate-manifest")
     lambda_remote_vslice_validate.add_argument("--manifest", type=Path, required=True)
     lambda_remote_vslice_validate.add_argument("--policy", type=Path, default=None)
     lambda_remote_vslice_validate.add_argument("--out", type=Path, required=True)
-    lambda_remote_vslice_validate.set_defaults(
-        func=_cmd_lambda_remote_vslice_validate_manifest
-    )
+    lambda_remote_vslice_validate.set_defaults(func=_cmd_lambda_remote_vslice_validate_manifest)
     lambda_remote_vslice_plan = lambda_remote_vslice_sub.add_parser("plan")
     lambda_remote_vslice_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_remote_vslice_plan.add_argument("--manifest", type=Path, required=True)
@@ -23660,9 +22636,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_vslice_plan.add_argument("--price-snapshot", type=Path, required=True)
     lambda_remote_vslice_plan.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_plan.set_defaults(func=_cmd_lambda_remote_vslice_plan)
-    lambda_remote_source_plan = lambda_remote_vslice_sub.add_parser(
-        "source-bundle-plan"
-    )
+    lambda_remote_source_plan = lambda_remote_vslice_sub.add_parser("source-bundle-plan")
     lambda_remote_source_plan.add_argument("--discovery-report", type=Path, required=True)
     lambda_remote_source_plan.add_argument(
         "--source-bundle-validation",
@@ -23682,12 +22656,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_source_plan.add_argument("--ssh-key-selection", type=Path, required=True)
     lambda_remote_source_plan.add_argument("--price-snapshot", type=Path, required=True)
     lambda_remote_source_plan.add_argument("--out", type=Path, required=True)
-    lambda_remote_source_plan.set_defaults(
-        func=_cmd_lambda_remote_vslice_source_bundle_plan
-    )
-    lambda_remote_dependency_plan = lambda_remote_vslice_sub.add_parser(
-        "dependency-bundle-plan"
-    )
+    lambda_remote_source_plan.set_defaults(func=_cmd_lambda_remote_vslice_source_bundle_plan)
+    lambda_remote_dependency_plan = lambda_remote_vslice_sub.add_parser("dependency-bundle-plan")
     lambda_remote_dependency_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -23737,14 +22707,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_remote_vslice_gate.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_gate.set_defaults(func=_cmd_lambda_remote_vslice_gate_check)
-    lambda_remote_source_gate = lambda_remote_vslice_sub.add_parser(
-        "source-bundle-gate-check"
-    )
+    lambda_remote_source_gate = lambda_remote_vslice_sub.add_parser("source-bundle-gate-check")
     lambda_remote_source_gate.add_argument("--plan", type=Path, required=True)
     lambda_remote_source_gate.add_argument("--out", type=Path, required=True)
-    lambda_remote_source_gate.set_defaults(
-        func=_cmd_lambda_remote_vslice_source_bundle_gate_check
-    )
+    lambda_remote_source_gate.set_defaults(func=_cmd_lambda_remote_vslice_source_bundle_gate_check)
     lambda_remote_dependency_gate = lambda_remote_vslice_sub.add_parser(
         "dependency-bundle-gate-check"
     )
@@ -23764,9 +22730,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_vslice_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_remote_vslice_arm.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_arm.set_defaults(func=_cmd_lambda_remote_vslice_arm_one_shot)
-    lambda_remote_source_arm = lambda_remote_vslice_sub.add_parser(
-        "source-bundle-arm-one-shot"
-    )
+    lambda_remote_source_arm = lambda_remote_vslice_sub.add_parser("source-bundle-arm-one-shot")
     lambda_remote_source_arm.add_argument("--gate-check", type=Path, required=True)
     lambda_remote_source_arm.add_argument(
         "--command-manifest",
@@ -23785,9 +22749,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_remote_source_arm.add_argument("--expires-minutes", type=int, default=15)
     lambda_remote_source_arm.add_argument("--out", type=Path, required=True)
-    lambda_remote_source_arm.set_defaults(
-        func=_cmd_lambda_remote_vslice_source_bundle_arm_one_shot
-    )
+    lambda_remote_source_arm.set_defaults(func=_cmd_lambda_remote_vslice_source_bundle_arm_one_shot)
     lambda_remote_dependency_arm = lambda_remote_vslice_sub.add_parser(
         "dependency-bundle-arm-one-shot"
     )
@@ -23845,14 +22807,10 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_dependency_arm.set_defaults(
         func=_cmd_lambda_remote_vslice_dependency_bundle_arm_one_shot
     )
-    lambda_remote_vslice_bridge = lambda_remote_vslice_sub.add_parser(
-        "reviewer-bridge"
-    )
+    lambda_remote_vslice_bridge = lambda_remote_vslice_sub.add_parser("reviewer-bridge")
     lambda_remote_vslice_bridge.add_argument("--arming", type=Path, required=True)
     lambda_remote_vslice_bridge.add_argument("--out", type=Path, required=True)
-    lambda_remote_vslice_bridge.set_defaults(
-        func=_cmd_lambda_remote_vslice_reviewer_bridge
-    )
+    lambda_remote_vslice_bridge.set_defaults(func=_cmd_lambda_remote_vslice_reviewer_bridge)
     lambda_remote_vslice_closeout = lambda_remote_vslice_sub.add_parser("closeout")
     lambda_remote_vslice_closeout.add_argument("--workdir", type=Path, required=True)
     lambda_remote_vslice_closeout.add_argument("--evidence", type=Path, required=True)
@@ -23868,17 +22826,11 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_remote_vslice_reconcile.add_argument("--closeout", type=Path, required=True)
     lambda_remote_vslice_reconcile.add_argument("--out", type=Path, required=True)
     lambda_remote_vslice_reconcile.set_defaults(func=_cmd_lambda_remote_vslice_reconcile)
-    lambda_remote_vslice_ssh_policy = lambda_remote_vslice_sub.add_parser(
-        "ssh-proven-policy"
-    )
+    lambda_remote_vslice_ssh_policy = lambda_remote_vslice_sub.add_parser("ssh-proven-policy")
     lambda_remote_vslice_ssh_policy.add_argument("--history", type=Path, required=True)
     lambda_remote_vslice_ssh_policy.add_argument("--out", type=Path, required=True)
-    lambda_remote_vslice_ssh_policy.set_defaults(
-        func=_cmd_lambda_remote_vslice_ssh_proven_policy
-    )
-    lambda_remote_vslice_selector = lambda_remote_vslice_sub.add_parser(
-        "select-candidate"
-    )
+    lambda_remote_vslice_ssh_policy.set_defaults(func=_cmd_lambda_remote_vslice_ssh_proven_policy)
+    lambda_remote_vslice_selector = lambda_remote_vslice_sub.add_parser("select-candidate")
     lambda_remote_vslice_selector.add_argument(
         "--discovery-report",
         type=Path,
@@ -23900,24 +22852,16 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_vslice_selector.add_argument("--out", type=Path, required=True)
-    lambda_remote_vslice_selector.set_defaults(
-        func=_cmd_lambda_remote_vslice_select_candidate
-    )
-    lambda_remote_vslice_retry_decision = lambda_remote_vslice_sub.add_parser(
-        "retry-decision"
-    )
+    lambda_remote_vslice_selector.set_defaults(func=_cmd_lambda_remote_vslice_select_candidate)
+    lambda_remote_vslice_retry_decision = lambda_remote_vslice_sub.add_parser("retry-decision")
     lambda_remote_vslice_retry_decision.add_argument(
         "--candidate-selection",
         type=Path,
         required=True,
     )
     lambda_remote_vslice_retry_decision.add_argument("--out", type=Path, required=True)
-    lambda_remote_vslice_retry_decision.set_defaults(
-        func=_cmd_lambda_remote_vslice_retry_decision
-    )
-    lambda_remote_vslice_authorize_retry = lambda_remote_vslice_sub.add_parser(
-        "authorize-retry"
-    )
+    lambda_remote_vslice_retry_decision.set_defaults(func=_cmd_lambda_remote_vslice_retry_decision)
+    lambda_remote_vslice_authorize_retry = lambda_remote_vslice_sub.add_parser("authorize-retry")
     lambda_remote_vslice_authorize_retry.add_argument(
         "--decision",
         type=Path,
@@ -23949,9 +22893,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_ssh_readiness_update.add_argument("--workdir", type=Path, required=True)
     lambda_ssh_readiness_update.add_argument("--out", type=Path, required=True)
-    lambda_ssh_readiness_update.set_defaults(
-        func=_cmd_lambda_ssh_readiness_update_history
-    )
+    lambda_ssh_readiness_update.set_defaults(func=_cmd_lambda_ssh_readiness_update_history)
     lambda_m062 = lambda_sub.add_parser("m062")
     lambda_m062_sub = lambda_m062.add_subparsers(
         dest="lambda_m062_command",
@@ -24042,17 +22984,13 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_remote_decodilo_vslice_command",
         required=True,
     )
-    lambda_remote_decodilo_success = lambda_remote_decodilo_sub.add_parser(
-        "success-record"
-    )
+    lambda_remote_decodilo_success = lambda_remote_decodilo_sub.add_parser("success-record")
     lambda_remote_decodilo_success.add_argument("--workdir", type=Path, required=True)
     lambda_remote_decodilo_success.add_argument("--out", type=Path, required=True)
     lambda_remote_decodilo_success.set_defaults(
         func=_cmd_lambda_remote_decodilo_vslice_success_record
     )
-    lambda_remote_decodilo_reconcile = lambda_remote_decodilo_sub.add_parser(
-        "reconcile"
-    )
+    lambda_remote_decodilo_reconcile = lambda_remote_decodilo_sub.add_parser("reconcile")
     lambda_remote_decodilo_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_remote_decodilo_reconcile.add_argument(
         "--success-record",
@@ -24060,12 +22998,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_decodilo_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_remote_decodilo_reconcile.set_defaults(
-        func=_cmd_lambda_remote_decodilo_vslice_reconcile
-    )
-    lambda_remote_decodilo_evidence = lambda_remote_decodilo_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_remote_decodilo_reconcile.set_defaults(func=_cmd_lambda_remote_decodilo_vslice_reconcile)
+    lambda_remote_decodilo_evidence = lambda_remote_decodilo_sub.add_parser("evidence-package")
     lambda_remote_decodilo_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -24097,9 +23031,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_remote_decodilo_closeout.add_argument("--out", type=Path, required=True)
-    lambda_remote_decodilo_closeout.set_defaults(
-        func=_cmd_lambda_remote_decodilo_vslice_closeout
-    )
+    lambda_remote_decodilo_closeout.set_defaults(func=_cmd_lambda_remote_decodilo_vslice_closeout)
 
     lambda_first_experiment = lambda_sub.add_parser("first-experiment")
     lambda_first_experiment_sub = lambda_first_experiment.add_subparsers(
@@ -24135,9 +23067,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_first_evidence.add_argument("--out", type=Path, required=True)
-    lambda_first_evidence.set_defaults(
-        func=_cmd_lambda_first_experiment_evidence_package
-    )
+    lambda_first_evidence.set_defaults(func=_cmd_lambda_first_experiment_evidence_package)
     lambda_first_closeout = lambda_first_experiment_sub.add_parser("closeout")
     lambda_first_closeout.add_argument(
         "--success-record",
@@ -24156,9 +23086,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_first_closeout.add_argument("--out", type=Path, required=True)
     lambda_first_closeout.set_defaults(func=_cmd_lambda_first_experiment_closeout)
-    lambda_first_artifact_audit = lambda_first_experiment_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_first_artifact_audit = lambda_first_experiment_sub.add_parser("artifact-audit")
     lambda_first_artifact_audit.add_argument("--workdir", type=Path, required=True)
     lambda_first_artifact_audit.add_argument(
         "--success-record",
@@ -24166,15 +23094,11 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_first_artifact_audit.add_argument("--out", type=Path, required=True)
-    lambda_first_artifact_audit.set_defaults(
-        func=_cmd_lambda_first_experiment_artifact_audit
-    )
+    lambda_first_artifact_audit.set_defaults(func=_cmd_lambda_first_experiment_artifact_audit)
     lambda_first_discover = lambda_first_experiment_sub.add_parser("discover-command")
     lambda_first_discover.add_argument("--source-root", type=Path, required=True)
     lambda_first_discover.add_argument("--out", type=Path, required=True)
-    lambda_first_discover.set_defaults(
-        func=_cmd_lambda_first_experiment_discover_command
-    )
+    lambda_first_discover.set_defaults(func=_cmd_lambda_first_experiment_discover_command)
     lambda_first_manifest = lambda_first_experiment_sub.add_parser("build-manifest")
     lambda_first_manifest.add_argument(
         "--command-discovery",
@@ -24221,17 +23145,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_first_authorize.add_argument("--manifest", type=Path, required=True)
     lambda_first_authorize.add_argument("--out", type=Path, required=True)
-    lambda_first_authorize.set_defaults(
-        func=_cmd_lambda_first_experiment_authorize_m071r
-    )
-    lambda_first_runbook = lambda_first_experiment_sub.add_parser(
-        "m071r-runbook-preview"
-    )
+    lambda_first_authorize.set_defaults(func=_cmd_lambda_first_experiment_authorize_m071r)
+    lambda_first_runbook = lambda_first_experiment_sub.add_parser("m071r-runbook-preview")
     lambda_first_runbook.add_argument("--authorization", type=Path, required=True)
     lambda_first_runbook.add_argument("--out", type=Path, required=True)
-    lambda_first_runbook.set_defaults(
-        func=_cmd_lambda_first_experiment_m071r_runbook_preview
-    )
+    lambda_first_runbook.set_defaults(func=_cmd_lambda_first_experiment_m071r_runbook_preview)
 
     lambda_m070 = lambda_sub.add_parser("m070")
     lambda_m070_sub = lambda_m070.add_subparsers(
@@ -24256,9 +23174,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_tiny_smoke_discover = lambda_tiny_smoke_sub.add_parser("discover-command")
     lambda_tiny_smoke_discover.add_argument("--source-root", type=Path, required=True)
     lambda_tiny_smoke_discover.add_argument("--out", type=Path, required=True)
-    lambda_tiny_smoke_discover.set_defaults(
-        func=_cmd_lambda_tiny_smoke_discover_command
-    )
+    lambda_tiny_smoke_discover.set_defaults(func=_cmd_lambda_tiny_smoke_discover_command)
     lambda_tiny_smoke_policy = lambda_tiny_smoke_sub.add_parser("policy")
     lambda_tiny_smoke_policy.add_argument(
         "--command-discovery",
@@ -24280,17 +23196,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_tiny_smoke_authorize.add_argument("--policy", type=Path, required=True)
     lambda_tiny_smoke_authorize.add_argument("--out", type=Path, required=True)
-    lambda_tiny_smoke_authorize.set_defaults(
-        func=_cmd_lambda_tiny_smoke_authorize_m073r
-    )
-    lambda_tiny_smoke_runbook = lambda_tiny_smoke_sub.add_parser(
-        "m073r-runbook-preview"
-    )
+    lambda_tiny_smoke_authorize.set_defaults(func=_cmd_lambda_tiny_smoke_authorize_m073r)
+    lambda_tiny_smoke_runbook = lambda_tiny_smoke_sub.add_parser("m073r-runbook-preview")
     lambda_tiny_smoke_runbook.add_argument("--authorization", type=Path, required=True)
     lambda_tiny_smoke_runbook.add_argument("--out", type=Path, required=True)
-    lambda_tiny_smoke_runbook.set_defaults(
-        func=_cmd_lambda_tiny_smoke_m073r_runbook_preview
-    )
+    lambda_tiny_smoke_runbook.set_defaults(func=_cmd_lambda_tiny_smoke_m073r_runbook_preview)
     lambda_tiny_smoke_success = lambda_tiny_smoke_sub.add_parser("success-record")
     lambda_tiny_smoke_success.add_argument("--workdir", type=Path, required=True)
     lambda_tiny_smoke_success.add_argument("--out", type=Path, required=True)
@@ -24316,9 +23226,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_tiny_smoke_evidence.add_argument("--out", type=Path, required=True)
-    lambda_tiny_smoke_evidence.set_defaults(
-        func=_cmd_lambda_tiny_smoke_evidence_package
-    )
+    lambda_tiny_smoke_evidence.set_defaults(func=_cmd_lambda_tiny_smoke_evidence_package)
     lambda_tiny_smoke_closeout = lambda_tiny_smoke_sub.add_parser("closeout")
     lambda_tiny_smoke_closeout.add_argument(
         "--success-record",
@@ -24337,9 +23245,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_tiny_smoke_closeout.add_argument("--out", type=Path, required=True)
     lambda_tiny_smoke_closeout.set_defaults(func=_cmd_lambda_tiny_smoke_closeout)
-    lambda_tiny_smoke_artifact_audit = lambda_tiny_smoke_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_tiny_smoke_artifact_audit = lambda_tiny_smoke_sub.add_parser("artifact-audit")
     lambda_tiny_smoke_artifact_audit.add_argument(
         "--workdir",
         type=Path,
@@ -24351,17 +23257,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_tiny_smoke_artifact_audit.add_argument("--out", type=Path, required=True)
-    lambda_tiny_smoke_artifact_audit.set_defaults(
-        func=_cmd_lambda_tiny_smoke_artifact_audit
-    )
+    lambda_tiny_smoke_artifact_audit.set_defaults(func=_cmd_lambda_tiny_smoke_artifact_audit)
     lambda_runtime_protocol = lambda_sub.add_parser("runtime-protocol-smoke")
     lambda_runtime_protocol_sub = lambda_runtime_protocol.add_subparsers(
         dest="lambda_runtime_protocol_smoke_command",
         required=True,
     )
-    lambda_runtime_protocol_readiness = lambda_runtime_protocol_sub.add_parser(
-        "readiness"
-    )
+    lambda_runtime_protocol_readiness = lambda_runtime_protocol_sub.add_parser("readiness")
     lambda_runtime_protocol_readiness.add_argument(
         "--tiny-smoke-closeout",
         type=Path,
@@ -24371,9 +23273,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_readiness.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_readiness
     )
-    lambda_runtime_protocol_discover = lambda_runtime_protocol_sub.add_parser(
-        "discover-command"
-    )
+    lambda_runtime_protocol_discover = lambda_runtime_protocol_sub.add_parser("discover-command")
     lambda_runtime_protocol_discover.add_argument(
         "--source-root",
         type=Path,
@@ -24390,12 +23290,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_runtime_protocol_policy.add_argument("--out", type=Path, required=True)
-    lambda_runtime_protocol_policy.set_defaults(
-        func=_cmd_lambda_runtime_protocol_smoke_policy
-    )
-    lambda_runtime_protocol_authorize = lambda_runtime_protocol_sub.add_parser(
-        "authorize-m075r"
-    )
+    lambda_runtime_protocol_policy.set_defaults(func=_cmd_lambda_runtime_protocol_smoke_policy)
+    lambda_runtime_protocol_authorize = lambda_runtime_protocol_sub.add_parser("authorize-m075r")
     lambda_runtime_protocol_authorize.add_argument(
         "--tiny-smoke-closeout",
         type=Path,
@@ -24475,12 +23371,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_runtime_protocol_plan.add_argument("--out", type=Path, required=True)
-    lambda_runtime_protocol_plan.set_defaults(
-        func=_cmd_lambda_runtime_protocol_smoke_m075r_plan
-    )
-    lambda_runtime_protocol_gate = lambda_runtime_protocol_sub.add_parser(
-        "m075r-gate-check"
-    )
+    lambda_runtime_protocol_plan.set_defaults(func=_cmd_lambda_runtime_protocol_smoke_m075r_plan)
+    lambda_runtime_protocol_gate = lambda_runtime_protocol_sub.add_parser("m075r-gate-check")
     lambda_runtime_protocol_gate.add_argument("--plan", type=Path, required=True)
     lambda_runtime_protocol_gate.add_argument(
         "--upload-policy",
@@ -24491,9 +23383,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_gate.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_m075r_gate_check
     )
-    lambda_runtime_protocol_m075r2_plan = lambda_runtime_protocol_sub.add_parser(
-        "m075r2-plan"
-    )
+    lambda_runtime_protocol_m075r2_plan = lambda_runtime_protocol_sub.add_parser("m075r2-plan")
     lambda_runtime_protocol_m075r2_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -24565,9 +23455,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_m075r2_gate.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_m075r2_gate_check
     )
-    lambda_runtime_protocol_m075r3_plan = lambda_runtime_protocol_sub.add_parser(
-        "m075r3-plan"
-    )
+    lambda_runtime_protocol_m075r3_plan = lambda_runtime_protocol_sub.add_parser("m075r3-plan")
     lambda_runtime_protocol_m075r3_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -24629,9 +23517,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_m075r3_gate.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_m075r3_gate_check
     )
-    lambda_runtime_protocol_m075r4_plan = lambda_runtime_protocol_sub.add_parser(
-        "m075r4-plan"
-    )
+    lambda_runtime_protocol_m075r4_plan = lambda_runtime_protocol_sub.add_parser("m075r4-plan")
     lambda_runtime_protocol_m075r4_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -24791,8 +23677,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_attempt_closeout.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_attempt_closeout
     )
-    lambda_runtime_protocol_artifact_body_policy = (
-        lambda_runtime_protocol_sub.add_parser("artifact-body-policy")
+    lambda_runtime_protocol_artifact_body_policy = lambda_runtime_protocol_sub.add_parser(
+        "artifact-body-policy"
     )
     lambda_runtime_protocol_artifact_body_policy.add_argument(
         "--expected-artifact-policy",
@@ -24871,8 +23757,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_m075r3_runbook.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_m075r3_runbook_preview
     )
-    lambda_runtime_protocol_update_stream_failure = (
-        lambda_runtime_protocol_sub.add_parser("update-stream-failure-record")
+    lambda_runtime_protocol_update_stream_failure = lambda_runtime_protocol_sub.add_parser(
+        "update-stream-failure-record"
     )
     lambda_runtime_protocol_update_stream_failure.add_argument(
         "--workdir",
@@ -24887,8 +23773,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_update_stream_failure.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_update_stream_failure_record
     )
-    lambda_runtime_protocol_update_stream_closeout = (
-        lambda_runtime_protocol_sub.add_parser("update-stream-closeout")
+    lambda_runtime_protocol_update_stream_closeout = lambda_runtime_protocol_sub.add_parser(
+        "update-stream-closeout"
     )
     lambda_runtime_protocol_update_stream_closeout.add_argument(
         "--failure-record",
@@ -24903,8 +23789,8 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_update_stream_closeout.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_update_stream_closeout
     )
-    lambda_runtime_protocol_update_stream_diagnostic = (
-        lambda_runtime_protocol_sub.add_parser("update-stream-diagnostic")
+    lambda_runtime_protocol_update_stream_diagnostic = lambda_runtime_protocol_sub.add_parser(
+        "update-stream-diagnostic"
     )
     lambda_runtime_protocol_update_stream_diagnostic.add_argument(
         "--failure-record",
@@ -24962,9 +23848,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_m075r4_runbook.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_m075r4_runbook_preview
     )
-    lambda_runtime_protocol_success = lambda_runtime_protocol_sub.add_parser(
-        "success-record"
-    )
+    lambda_runtime_protocol_success = lambda_runtime_protocol_sub.add_parser("success-record")
     lambda_runtime_protocol_success.add_argument(
         "--workdir",
         type=Path,
@@ -24974,9 +23858,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_success.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_success_record
     )
-    lambda_runtime_protocol_reconcile = lambda_runtime_protocol_sub.add_parser(
-        "reconcile"
-    )
+    lambda_runtime_protocol_reconcile = lambda_runtime_protocol_sub.add_parser("reconcile")
     lambda_runtime_protocol_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -24991,9 +23873,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_reconcile.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_reconcile
     )
-    lambda_runtime_protocol_evidence = lambda_runtime_protocol_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_runtime_protocol_evidence = lambda_runtime_protocol_sub.add_parser("evidence-package")
     lambda_runtime_protocol_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -25008,9 +23888,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_runtime_protocol_evidence.set_defaults(
         func=_cmd_lambda_runtime_protocol_smoke_evidence_package
     )
-    lambda_runtime_protocol_closeout = lambda_runtime_protocol_sub.add_parser(
-        "closeout"
-    )
+    lambda_runtime_protocol_closeout = lambda_runtime_protocol_sub.add_parser("closeout")
     lambda_runtime_protocol_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -25027,9 +23905,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_runtime_protocol_closeout.add_argument("--out", type=Path, required=True)
-    lambda_runtime_protocol_closeout.set_defaults(
-        func=_cmd_lambda_runtime_protocol_smoke_closeout
-    )
+    lambda_runtime_protocol_closeout.set_defaults(func=_cmd_lambda_runtime_protocol_smoke_closeout)
     lambda_runtime_protocol_artifact_audit = lambda_runtime_protocol_sub.add_parser(
         "artifact-audit"
     )
@@ -25056,9 +23932,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_first_synthetic_experiment_command",
         required=True,
     )
-    lambda_first_synthetic_readiness = lambda_first_synthetic_sub.add_parser(
-        "readiness"
-    )
+    lambda_first_synthetic_readiness = lambda_first_synthetic_sub.add_parser("readiness")
     lambda_first_synthetic_readiness.add_argument(
         "--runtime-smoke-closeout",
         type=Path,
@@ -25068,9 +23942,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_first_synthetic_readiness.set_defaults(
         func=_cmd_lambda_first_synthetic_experiment_readiness
     )
-    lambda_first_synthetic_discover = lambda_first_synthetic_sub.add_parser(
-        "discover-command"
-    )
+    lambda_first_synthetic_discover = lambda_first_synthetic_sub.add_parser("discover-command")
     lambda_first_synthetic_discover.add_argument(
         "--source-root",
         type=Path,
@@ -25087,12 +23959,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_first_synthetic_policy.add_argument("--out", type=Path, required=True)
-    lambda_first_synthetic_policy.set_defaults(
-        func=_cmd_lambda_first_synthetic_experiment_policy
-    )
-    lambda_first_synthetic_authorize = lambda_first_synthetic_sub.add_parser(
-        "authorize-m077r"
-    )
+    lambda_first_synthetic_policy.set_defaults(func=_cmd_lambda_first_synthetic_experiment_policy)
+    lambda_first_synthetic_authorize = lambda_first_synthetic_sub.add_parser("authorize-m077r")
     lambda_first_synthetic_authorize.add_argument(
         "--runtime-smoke-closeout",
         type=Path,
@@ -25117,9 +23985,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_first_synthetic_authorize.set_defaults(
         func=_cmd_lambda_first_synthetic_experiment_authorize_m077r
     )
-    lambda_first_synthetic_runbook = lambda_first_synthetic_sub.add_parser(
-        "m077r-runbook-preview"
-    )
+    lambda_first_synthetic_runbook = lambda_first_synthetic_sub.add_parser("m077r-runbook-preview")
     lambda_first_synthetic_runbook.add_argument(
         "--authorization",
         type=Path,
@@ -25167,12 +24033,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_first_synthetic_plan.add_argument("--out", type=Path, required=True)
-    lambda_first_synthetic_plan.set_defaults(
-        func=_cmd_lambda_first_synthetic_experiment_m077r_plan
-    )
-    lambda_first_synthetic_gate = lambda_first_synthetic_sub.add_parser(
-        "m077r-gate-check"
-    )
+    lambda_first_synthetic_plan.set_defaults(func=_cmd_lambda_first_synthetic_experiment_m077r_plan)
+    lambda_first_synthetic_gate = lambda_first_synthetic_sub.add_parser("m077r-gate-check")
     lambda_first_synthetic_gate.add_argument("--plan", type=Path, required=True)
     lambda_first_synthetic_gate.add_argument("--out", type=Path, required=True)
     lambda_first_synthetic_gate.set_defaults(
@@ -25186,9 +24048,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_synthetic_success = lambda_synthetic_sub.add_parser("success-record")
     lambda_synthetic_success.add_argument("--workdir", type=Path, required=True)
     lambda_synthetic_success.add_argument("--out", type=Path, required=True)
-    lambda_synthetic_success.set_defaults(
-        func=_cmd_lambda_synthetic_experiment_success_record
-    )
+    lambda_synthetic_success.set_defaults(func=_cmd_lambda_synthetic_experiment_success_record)
     lambda_synthetic_reconcile = lambda_synthetic_sub.add_parser("reconcile")
     lambda_synthetic_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_synthetic_reconcile.add_argument(
@@ -25197,9 +24057,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_synthetic_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_synthetic_reconcile.set_defaults(
-        func=_cmd_lambda_synthetic_experiment_reconcile
-    )
+    lambda_synthetic_reconcile.set_defaults(func=_cmd_lambda_synthetic_experiment_reconcile)
     lambda_synthetic_evidence = lambda_synthetic_sub.add_parser("evidence-package")
     lambda_synthetic_evidence.add_argument(
         "--success-record",
@@ -25212,9 +24070,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_synthetic_evidence.add_argument("--out", type=Path, required=True)
-    lambda_synthetic_evidence.set_defaults(
-        func=_cmd_lambda_synthetic_experiment_evidence_package
-    )
+    lambda_synthetic_evidence.set_defaults(func=_cmd_lambda_synthetic_experiment_evidence_package)
     lambda_synthetic_closeout = lambda_synthetic_sub.add_parser("closeout")
     lambda_synthetic_closeout.add_argument(
         "--success-record",
@@ -25232,9 +24088,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_synthetic_closeout.add_argument("--out", type=Path, required=True)
-    lambda_synthetic_closeout.set_defaults(
-        func=_cmd_lambda_synthetic_experiment_closeout
-    )
+    lambda_synthetic_closeout.set_defaults(func=_cmd_lambda_synthetic_experiment_closeout)
     lambda_synthetic_audit = lambda_synthetic_sub.add_parser("artifact-audit")
     lambda_synthetic_audit.add_argument("--workdir", type=Path, required=True)
     lambda_synthetic_audit.add_argument(
@@ -25243,25 +24097,17 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_synthetic_audit.add_argument("--out", type=Path, required=True)
-    lambda_synthetic_audit.set_defaults(
-        func=_cmd_lambda_synthetic_experiment_artifact_audit
-    )
+    lambda_synthetic_audit.set_defaults(func=_cmd_lambda_synthetic_experiment_artifact_audit)
     lambda_learner_syncer_smoke = lambda_sub.add_parser("learner-syncer-smoke")
     lambda_learner_syncer_smoke_sub = lambda_learner_syncer_smoke.add_subparsers(
         dest="lambda_learner_syncer_smoke_command",
         required=True,
     )
-    lambda_learner_syncer_success = lambda_learner_syncer_smoke_sub.add_parser(
-        "success-record"
-    )
+    lambda_learner_syncer_success = lambda_learner_syncer_smoke_sub.add_parser("success-record")
     lambda_learner_syncer_success.add_argument("--workdir", type=Path, required=True)
     lambda_learner_syncer_success.add_argument("--out", type=Path, required=True)
-    lambda_learner_syncer_success.set_defaults(
-        func=_cmd_lambda_learner_syncer_smoke_success_record
-    )
-    lambda_learner_syncer_reconcile = lambda_learner_syncer_smoke_sub.add_parser(
-        "reconcile"
-    )
+    lambda_learner_syncer_success.set_defaults(func=_cmd_lambda_learner_syncer_smoke_success_record)
+    lambda_learner_syncer_reconcile = lambda_learner_syncer_smoke_sub.add_parser("reconcile")
     lambda_learner_syncer_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -25273,12 +24119,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_learner_syncer_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_learner_syncer_reconcile.set_defaults(
-        func=_cmd_lambda_learner_syncer_smoke_reconcile
-    )
-    lambda_learner_syncer_evidence = lambda_learner_syncer_smoke_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_learner_syncer_reconcile.set_defaults(func=_cmd_lambda_learner_syncer_smoke_reconcile)
+    lambda_learner_syncer_evidence = lambda_learner_syncer_smoke_sub.add_parser("evidence-package")
     lambda_learner_syncer_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -25293,9 +24135,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_learner_syncer_evidence.set_defaults(
         func=_cmd_lambda_learner_syncer_smoke_evidence_package
     )
-    lambda_learner_syncer_closeout = lambda_learner_syncer_smoke_sub.add_parser(
-        "closeout"
-    )
+    lambda_learner_syncer_closeout = lambda_learner_syncer_smoke_sub.add_parser("closeout")
     lambda_learner_syncer_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -25312,12 +24152,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_learner_syncer_closeout.add_argument("--out", type=Path, required=True)
-    lambda_learner_syncer_closeout.set_defaults(
-        func=_cmd_lambda_learner_syncer_smoke_closeout
-    )
-    lambda_learner_syncer_audit = lambda_learner_syncer_smoke_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_learner_syncer_closeout.set_defaults(func=_cmd_lambda_learner_syncer_smoke_closeout)
+    lambda_learner_syncer_audit = lambda_learner_syncer_smoke_sub.add_parser("artifact-audit")
     lambda_learner_syncer_audit.add_argument("--workdir", type=Path, required=True)
     lambda_learner_syncer_audit.add_argument(
         "--success-record",
@@ -25325,17 +24161,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_learner_syncer_audit.add_argument("--out", type=Path, required=True)
-    lambda_learner_syncer_audit.set_defaults(
-        func=_cmd_lambda_learner_syncer_smoke_artifact_audit
-    )
+    lambda_learner_syncer_audit.set_defaults(func=_cmd_lambda_learner_syncer_smoke_artifact_audit)
     lambda_next_synthetic = lambda_sub.add_parser("next-synthetic-experiment")
     lambda_next_synthetic_sub = lambda_next_synthetic.add_subparsers(
         dest="lambda_next_synthetic_experiment_command",
         required=True,
     )
-    lambda_next_synthetic_readiness = lambda_next_synthetic_sub.add_parser(
-        "readiness"
-    )
+    lambda_next_synthetic_readiness = lambda_next_synthetic_sub.add_parser("readiness")
     lambda_next_synthetic_readiness.add_argument(
         "--synthetic-experiment-closeout",
         type=Path,
@@ -25345,9 +24177,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_next_synthetic_readiness.set_defaults(
         func=_cmd_lambda_next_synthetic_experiment_readiness
     )
-    lambda_next_synthetic_discover = lambda_next_synthetic_sub.add_parser(
-        "discover-command"
-    )
+    lambda_next_synthetic_discover = lambda_next_synthetic_sub.add_parser("discover-command")
     lambda_next_synthetic_discover.add_argument(
         "--source-root",
         type=Path,
@@ -25364,12 +24194,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_next_synthetic_policy.add_argument("--out", type=Path, required=True)
-    lambda_next_synthetic_policy.set_defaults(
-        func=_cmd_lambda_next_synthetic_experiment_policy
-    )
-    lambda_next_synthetic_authorize = lambda_next_synthetic_sub.add_parser(
-        "authorize-m079r"
-    )
+    lambda_next_synthetic_policy.set_defaults(func=_cmd_lambda_next_synthetic_experiment_policy)
+    lambda_next_synthetic_authorize = lambda_next_synthetic_sub.add_parser("authorize-m079r")
     lambda_next_synthetic_authorize.add_argument(
         "--synthetic-experiment-closeout",
         type=Path,
@@ -25394,9 +24220,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_next_synthetic_authorize.set_defaults(
         func=_cmd_lambda_next_synthetic_experiment_authorize_m079r
     )
-    lambda_next_synthetic_runbook = lambda_next_synthetic_sub.add_parser(
-        "m079r-runbook-preview"
-    )
+    lambda_next_synthetic_runbook = lambda_next_synthetic_sub.add_parser("m079r-runbook-preview")
     lambda_next_synthetic_runbook.add_argument(
         "--authorization",
         type=Path,
@@ -25490,9 +24314,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_next_synthetic_m079r2_runbook.set_defaults(
         func=_cmd_lambda_next_synthetic_experiment_m079r2_runbook_preview
     )
-    lambda_next_synthetic_m079r2_plan = lambda_next_synthetic_sub.add_parser(
-        "m079r2-plan"
-    )
+    lambda_next_synthetic_m079r2_plan = lambda_next_synthetic_sub.add_parser("m079r2-plan")
     lambda_next_synthetic_m079r2_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -25542,9 +24364,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_next_synthetic_m079r2_plan.set_defaults(
         func=_cmd_lambda_next_synthetic_experiment_m079r2_plan
     )
-    lambda_next_synthetic_m079r2_gate = lambda_next_synthetic_sub.add_parser(
-        "m079r2-gate-check"
-    )
+    lambda_next_synthetic_m079r2_gate = lambda_next_synthetic_sub.add_parser("m079r2-gate-check")
     lambda_next_synthetic_m079r2_gate.add_argument(
         "--plan",
         type=Path,
@@ -25596,12 +24416,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_next_synthetic_plan.add_argument("--out", type=Path, required=True)
-    lambda_next_synthetic_plan.set_defaults(
-        func=_cmd_lambda_next_synthetic_experiment_m079r_plan
-    )
-    lambda_next_synthetic_gate = lambda_next_synthetic_sub.add_parser(
-        "m079r-gate-check"
-    )
+    lambda_next_synthetic_plan.set_defaults(func=_cmd_lambda_next_synthetic_experiment_m079r_plan)
+    lambda_next_synthetic_gate = lambda_next_synthetic_sub.add_parser("m079r-gate-check")
     lambda_next_synthetic_gate.add_argument("--plan", type=Path, required=True)
     lambda_next_synthetic_gate.add_argument("--out", type=Path, required=True)
     lambda_next_synthetic_gate.set_defaults(
@@ -25615,9 +24431,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_diloco_success = lambda_diloco_synthetic_sub.add_parser("success-record")
     lambda_diloco_success.add_argument("--workdir", type=Path, required=True)
     lambda_diloco_success.add_argument("--out", type=Path, required=True)
-    lambda_diloco_success.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_success_record
-    )
+    lambda_diloco_success.set_defaults(func=_cmd_lambda_diloco_synthetic_success_record)
     lambda_diloco_reconcile = lambda_diloco_synthetic_sub.add_parser("reconcile")
     lambda_diloco_reconcile.add_argument("--workdir", type=Path, required=True)
     lambda_diloco_reconcile.add_argument(
@@ -25627,9 +24441,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_diloco_reconcile.add_argument("--out", type=Path, required=True)
     lambda_diloco_reconcile.set_defaults(func=_cmd_lambda_diloco_synthetic_reconcile)
-    lambda_diloco_evidence = lambda_diloco_synthetic_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_diloco_evidence = lambda_diloco_synthetic_sub.add_parser("evidence-package")
     lambda_diloco_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -25641,9 +24453,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_evidence.add_argument("--out", type=Path, required=True)
-    lambda_diloco_evidence.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_evidence_package
-    )
+    lambda_diloco_evidence.set_defaults(func=_cmd_lambda_diloco_synthetic_evidence_package)
     lambda_diloco_closeout = lambda_diloco_synthetic_sub.add_parser("closeout")
     lambda_diloco_closeout.add_argument(
         "--success-record",
@@ -25662,9 +24472,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_diloco_closeout.add_argument("--out", type=Path, required=True)
     lambda_diloco_closeout.set_defaults(func=_cmd_lambda_diloco_synthetic_closeout)
-    lambda_diloco_artifact_audit = lambda_diloco_synthetic_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_diloco_artifact_audit = lambda_diloco_synthetic_sub.add_parser("artifact-audit")
     lambda_diloco_artifact_audit.add_argument(
         "--workdir",
         type=Path,
@@ -25676,9 +24484,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_artifact_audit.add_argument("--out", type=Path, required=True)
-    lambda_diloco_artifact_audit.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_artifact_audit
-    )
+    lambda_diloco_artifact_audit.set_defaults(func=_cmd_lambda_diloco_synthetic_artifact_audit)
     lambda_diloco_readiness = lambda_diloco_synthetic_sub.add_parser("readiness")
     lambda_diloco_readiness.add_argument(
         "--learner-syncer-closeout",
@@ -25687,14 +24493,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_diloco_readiness.add_argument("--out", type=Path, required=True)
     lambda_diloco_readiness.set_defaults(func=_cmd_lambda_diloco_synthetic_readiness)
-    lambda_diloco_discover = lambda_diloco_synthetic_sub.add_parser(
-        "discover-command"
-    )
+    lambda_diloco_discover = lambda_diloco_synthetic_sub.add_parser("discover-command")
     lambda_diloco_discover.add_argument("--source-root", type=Path, required=True)
     lambda_diloco_discover.add_argument("--out", type=Path, required=True)
-    lambda_diloco_discover.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_discover_command
-    )
+    lambda_diloco_discover.set_defaults(func=_cmd_lambda_diloco_synthetic_discover_command)
     lambda_diloco_policy = lambda_diloco_synthetic_sub.add_parser("policy")
     lambda_diloco_policy.add_argument(
         "--command-discovery",
@@ -25703,9 +24505,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_diloco_policy.add_argument("--out", type=Path, required=True)
     lambda_diloco_policy.set_defaults(func=_cmd_lambda_diloco_synthetic_policy)
-    lambda_diloco_authorize = lambda_diloco_synthetic_sub.add_parser(
-        "authorize-m081r"
-    )
+    lambda_diloco_authorize = lambda_diloco_synthetic_sub.add_parser("authorize-m081r")
     lambda_diloco_authorize.add_argument(
         "--learner-syncer-closeout",
         type=Path,
@@ -25719,45 +24519,31 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_diloco_authorize.add_argument("--policy", type=Path, required=True)
     lambda_diloco_authorize.add_argument("--out", type=Path, required=True)
-    lambda_diloco_authorize.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_authorize_m081r
-    )
-    lambda_diloco_runbook = lambda_diloco_synthetic_sub.add_parser(
-        "m081r-runbook-preview"
-    )
+    lambda_diloco_authorize.set_defaults(func=_cmd_lambda_diloco_synthetic_authorize_m081r)
+    lambda_diloco_runbook = lambda_diloco_synthetic_sub.add_parser("m081r-runbook-preview")
     lambda_diloco_runbook.add_argument(
         "--authorization",
         type=Path,
         required=True,
     )
     lambda_diloco_runbook.add_argument("--out", type=Path, required=True)
-    lambda_diloco_runbook.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_m081r_runbook_preview
-    )
-    lambda_diloco_attempt_closeout = lambda_diloco_synthetic_sub.add_parser(
-        "attempt-closeout"
-    )
+    lambda_diloco_runbook.set_defaults(func=_cmd_lambda_diloco_synthetic_m081r_runbook_preview)
+    lambda_diloco_attempt_closeout = lambda_diloco_synthetic_sub.add_parser("attempt-closeout")
     lambda_diloco_attempt_closeout.add_argument(
         "--workdir",
         type=Path,
         required=True,
     )
     lambda_diloco_attempt_closeout.add_argument("--out", type=Path, required=True)
-    lambda_diloco_attempt_closeout.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_attempt_closeout
-    )
-    lambda_diloco_parse_artifact = lambda_diloco_synthetic_sub.add_parser(
-        "parse-artifact-fixture"
-    )
+    lambda_diloco_attempt_closeout.set_defaults(func=_cmd_lambda_diloco_synthetic_attempt_closeout)
+    lambda_diloco_parse_artifact = lambda_diloco_synthetic_sub.add_parser("parse-artifact-fixture")
     lambda_diloco_parse_artifact.add_argument("--fixture", type=Path, required=True)
     lambda_diloco_parse_artifact.add_argument("--policy", type=Path, required=True)
     lambda_diloco_parse_artifact.add_argument("--out", type=Path, required=True)
     lambda_diloco_parse_artifact.set_defaults(
         func=_cmd_lambda_diloco_synthetic_parse_artifact_fixture
     )
-    lambda_diloco_authorize_m081r2 = lambda_diloco_synthetic_sub.add_parser(
-        "authorize-m081r2"
-    )
+    lambda_diloco_authorize_m081r2 = lambda_diloco_synthetic_sub.add_parser("authorize-m081r2")
     lambda_diloco_authorize_m081r2.add_argument(
         "--attempt-closeout",
         type=Path,
@@ -25774,12 +24560,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_authorize_m081r2.add_argument("--out", type=Path, required=True)
-    lambda_diloco_authorize_m081r2.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_authorize_m081r2
-    )
-    lambda_diloco_m081r2_runbook = lambda_diloco_synthetic_sub.add_parser(
-        "m081r2-runbook-preview"
-    )
+    lambda_diloco_authorize_m081r2.set_defaults(func=_cmd_lambda_diloco_synthetic_authorize_m081r2)
+    lambda_diloco_m081r2_runbook = lambda_diloco_synthetic_sub.add_parser("m081r2-runbook-preview")
     lambda_diloco_m081r2_runbook.add_argument(
         "--authorization",
         type=Path,
@@ -25832,17 +24614,11 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_m081r_plan.add_argument("--out", type=Path, required=True)
-    lambda_diloco_m081r_plan.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_m081r_plan
-    )
-    lambda_diloco_m081r_gate = lambda_diloco_synthetic_sub.add_parser(
-        "m081r-gate-check"
-    )
+    lambda_diloco_m081r_plan.set_defaults(func=_cmd_lambda_diloco_synthetic_m081r_plan)
+    lambda_diloco_m081r_gate = lambda_diloco_synthetic_sub.add_parser("m081r-gate-check")
     lambda_diloco_m081r_gate.add_argument("--plan", type=Path, required=True)
     lambda_diloco_m081r_gate.add_argument("--out", type=Path, required=True)
-    lambda_diloco_m081r_gate.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_m081r_gate_check
-    )
+    lambda_diloco_m081r_gate.set_defaults(func=_cmd_lambda_diloco_synthetic_m081r_gate_check)
     lambda_diloco_m081r2_plan = lambda_diloco_synthetic_sub.add_parser("m081r2-plan")
     lambda_diloco_m081r2_plan.add_argument(
         "--discovery-report",
@@ -25886,37 +24662,25 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_m081r2_plan.add_argument("--out", type=Path, required=True)
-    lambda_diloco_m081r2_plan.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_m081r2_plan
-    )
-    lambda_diloco_m081r2_gate = lambda_diloco_synthetic_sub.add_parser(
-        "m081r2-gate-check"
-    )
+    lambda_diloco_m081r2_plan.set_defaults(func=_cmd_lambda_diloco_synthetic_m081r2_plan)
+    lambda_diloco_m081r2_gate = lambda_diloco_synthetic_sub.add_parser("m081r2-gate-check")
     lambda_diloco_m081r2_gate.add_argument("--plan", type=Path, required=True)
     lambda_diloco_m081r2_gate.add_argument("--out", type=Path, required=True)
-    lambda_diloco_m081r2_gate.set_defaults(
-        func=_cmd_lambda_diloco_synthetic_m081r2_gate_check
-    )
+    lambda_diloco_m081r2_gate.set_defaults(func=_cmd_lambda_diloco_synthetic_m081r2_gate_check)
     lambda_diloco_optimizer = lambda_sub.add_parser("diloco-optimizer")
     lambda_diloco_optimizer_sub = lambda_diloco_optimizer.add_subparsers(
         dest="lambda_diloco_optimizer_command",
         required=True,
     )
-    lambda_diloco_optimizer_success = lambda_diloco_optimizer_sub.add_parser(
-        "success-record"
-    )
+    lambda_diloco_optimizer_success = lambda_diloco_optimizer_sub.add_parser("success-record")
     lambda_diloco_optimizer_success.add_argument(
         "--workdir",
         type=Path,
         required=True,
     )
     lambda_diloco_optimizer_success.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_success.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_success_record
-    )
-    lambda_diloco_optimizer_reconcile = lambda_diloco_optimizer_sub.add_parser(
-        "reconcile"
-    )
+    lambda_diloco_optimizer_success.set_defaults(func=_cmd_lambda_diloco_optimizer_success_record)
+    lambda_diloco_optimizer_reconcile = lambda_diloco_optimizer_sub.add_parser("reconcile")
     lambda_diloco_optimizer_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -25928,12 +24692,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_optimizer_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_reconcile.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_reconcile
-    )
-    lambda_diloco_optimizer_evidence = lambda_diloco_optimizer_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_diloco_optimizer_reconcile.set_defaults(func=_cmd_lambda_diloco_optimizer_reconcile)
+    lambda_diloco_optimizer_evidence = lambda_diloco_optimizer_sub.add_parser("evidence-package")
     lambda_diloco_optimizer_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -25948,9 +24708,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_diloco_optimizer_evidence.set_defaults(
         func=_cmd_lambda_diloco_optimizer_evidence_package
     )
-    lambda_diloco_optimizer_closeout = lambda_diloco_optimizer_sub.add_parser(
-        "closeout"
-    )
+    lambda_diloco_optimizer_closeout = lambda_diloco_optimizer_sub.add_parser("closeout")
     lambda_diloco_optimizer_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -25967,12 +24725,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_optimizer_closeout.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_closeout.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_closeout
-    )
-    lambda_diloco_optimizer_audit = lambda_diloco_optimizer_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_diloco_optimizer_closeout.set_defaults(func=_cmd_lambda_diloco_optimizer_closeout)
+    lambda_diloco_optimizer_audit = lambda_diloco_optimizer_sub.add_parser("artifact-audit")
     lambda_diloco_optimizer_audit.add_argument(
         "--workdir",
         type=Path,
@@ -25984,24 +24738,16 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_optimizer_audit.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_audit.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_artifact_audit
-    )
-    lambda_diloco_optimizer_readiness = lambda_diloco_optimizer_sub.add_parser(
-        "readiness"
-    )
+    lambda_diloco_optimizer_audit.set_defaults(func=_cmd_lambda_diloco_optimizer_artifact_audit)
+    lambda_diloco_optimizer_readiness = lambda_diloco_optimizer_sub.add_parser("readiness")
     lambda_diloco_optimizer_readiness.add_argument(
         "--diloco-synthetic-closeout",
         type=Path,
         required=True,
     )
     lambda_diloco_optimizer_readiness.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_readiness.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_readiness
-    )
-    lambda_diloco_optimizer_discover = lambda_diloco_optimizer_sub.add_parser(
-        "discover-command"
-    )
+    lambda_diloco_optimizer_readiness.set_defaults(func=_cmd_lambda_diloco_optimizer_readiness)
+    lambda_diloco_optimizer_discover = lambda_diloco_optimizer_sub.add_parser("discover-command")
     lambda_diloco_optimizer_discover.add_argument(
         "--source-root",
         type=Path,
@@ -26018,12 +24764,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_optimizer_policy.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_policy.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_policy
-    )
-    lambda_diloco_optimizer_authorize = lambda_diloco_optimizer_sub.add_parser(
-        "authorize-m083r"
-    )
+    lambda_diloco_optimizer_policy.set_defaults(func=_cmd_lambda_diloco_optimizer_policy)
+    lambda_diloco_optimizer_authorize = lambda_diloco_optimizer_sub.add_parser("authorize-m083r")
     lambda_diloco_optimizer_authorize.add_argument(
         "--diloco-synthetic-closeout",
         type=Path,
@@ -26056,9 +24798,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_diloco_optimizer_runbook.set_defaults(
         func=_cmd_lambda_diloco_optimizer_m083r_runbook_preview
     )
-    lambda_diloco_optimizer_m083r_plan = lambda_diloco_optimizer_sub.add_parser(
-        "m083r-plan"
-    )
+    lambda_diloco_optimizer_m083r_plan = lambda_diloco_optimizer_sub.add_parser("m083r-plan")
     lambda_diloco_optimizer_m083r_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -26105,12 +24845,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_diloco_optimizer_m083r_plan.add_argument("--out", type=Path, required=True)
-    lambda_diloco_optimizer_m083r_plan.set_defaults(
-        func=_cmd_lambda_diloco_optimizer_m083r_plan
-    )
-    lambda_diloco_optimizer_m083r_gate = lambda_diloco_optimizer_sub.add_parser(
-        "m083r-gate-check"
-    )
+    lambda_diloco_optimizer_m083r_plan.set_defaults(func=_cmd_lambda_diloco_optimizer_m083r_plan)
+    lambda_diloco_optimizer_m083r_gate = lambda_diloco_optimizer_sub.add_parser("m083r-gate-check")
     lambda_diloco_optimizer_m083r_gate.add_argument("--plan", type=Path, required=True)
     lambda_diloco_optimizer_m083r_gate.add_argument("--out", type=Path, required=True)
     lambda_diloco_optimizer_m083r_gate.set_defaults(
@@ -26121,21 +24857,15 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_integrated_diloco_command",
         required=True,
     )
-    lambda_integrated_diloco_success = lambda_integrated_diloco_sub.add_parser(
-        "success-record"
-    )
+    lambda_integrated_diloco_success = lambda_integrated_diloco_sub.add_parser("success-record")
     lambda_integrated_diloco_success.add_argument(
         "--workdir",
         type=Path,
         required=True,
     )
     lambda_integrated_diloco_success.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_success.set_defaults(
-        func=_cmd_lambda_integrated_diloco_success_record
-    )
-    lambda_integrated_diloco_reconcile = lambda_integrated_diloco_sub.add_parser(
-        "reconcile"
-    )
+    lambda_integrated_diloco_success.set_defaults(func=_cmd_lambda_integrated_diloco_success_record)
+    lambda_integrated_diloco_reconcile = lambda_integrated_diloco_sub.add_parser("reconcile")
     lambda_integrated_diloco_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -26147,12 +24877,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_reconcile.set_defaults(
-        func=_cmd_lambda_integrated_diloco_reconcile
-    )
-    lambda_integrated_diloco_evidence = lambda_integrated_diloco_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_integrated_diloco_reconcile.set_defaults(func=_cmd_lambda_integrated_diloco_reconcile)
+    lambda_integrated_diloco_evidence = lambda_integrated_diloco_sub.add_parser("evidence-package")
     lambda_integrated_diloco_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -26167,9 +24893,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_integrated_diloco_evidence.set_defaults(
         func=_cmd_lambda_integrated_diloco_evidence_package
     )
-    lambda_integrated_diloco_closeout = lambda_integrated_diloco_sub.add_parser(
-        "closeout"
-    )
+    lambda_integrated_diloco_closeout = lambda_integrated_diloco_sub.add_parser("closeout")
     lambda_integrated_diloco_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -26186,12 +24910,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_closeout.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_closeout.set_defaults(
-        func=_cmd_lambda_integrated_diloco_closeout
-    )
-    lambda_integrated_diloco_audit = lambda_integrated_diloco_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_integrated_diloco_closeout.set_defaults(func=_cmd_lambda_integrated_diloco_closeout)
+    lambda_integrated_diloco_audit = lambda_integrated_diloco_sub.add_parser("artifact-audit")
     lambda_integrated_diloco_audit.add_argument(
         "--workdir",
         type=Path,
@@ -26203,12 +24923,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_audit.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_audit.set_defaults(
-        func=_cmd_lambda_integrated_diloco_artifact_audit
-    )
-    lambda_integrated_diloco_readiness = lambda_integrated_diloco_sub.add_parser(
-        "readiness"
-    )
+    lambda_integrated_diloco_audit.set_defaults(func=_cmd_lambda_integrated_diloco_artifact_audit)
+    lambda_integrated_diloco_readiness = lambda_integrated_diloco_sub.add_parser("readiness")
     lambda_integrated_diloco_readiness.add_argument(
         "--diloco-synthetic-closeout",
         type=Path,
@@ -26225,12 +24941,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_readiness.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_readiness.set_defaults(
-        func=_cmd_lambda_integrated_diloco_readiness
-    )
-    lambda_integrated_diloco_discover = lambda_integrated_diloco_sub.add_parser(
-        "discover-command"
-    )
+    lambda_integrated_diloco_readiness.set_defaults(func=_cmd_lambda_integrated_diloco_readiness)
+    lambda_integrated_diloco_discover = lambda_integrated_diloco_sub.add_parser("discover-command")
     lambda_integrated_diloco_discover.add_argument(
         "--source-root",
         type=Path,
@@ -26247,12 +24959,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_policy.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_policy.set_defaults(
-        func=_cmd_lambda_integrated_diloco_policy
-    )
-    lambda_integrated_diloco_authorize = lambda_integrated_diloco_sub.add_parser(
-        "authorize-m085r"
-    )
+    lambda_integrated_diloco_policy.set_defaults(func=_cmd_lambda_integrated_diloco_policy)
+    lambda_integrated_diloco_authorize = lambda_integrated_diloco_sub.add_parser("authorize-m085r")
     lambda_integrated_diloco_authorize.add_argument(
         "--readiness",
         type=Path,
@@ -26284,9 +24992,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_integrated_diloco_runbook.set_defaults(
         func=_cmd_lambda_integrated_diloco_m085r_runbook_preview
     )
-    lambda_integrated_diloco_m085r_plan = lambda_integrated_diloco_sub.add_parser(
-        "m085r-plan"
-    )
+    lambda_integrated_diloco_m085r_plan = lambda_integrated_diloco_sub.add_parser("m085r-plan")
     lambda_integrated_diloco_m085r_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -26333,9 +25039,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_integrated_diloco_m085r_plan.add_argument("--out", type=Path, required=True)
-    lambda_integrated_diloco_m085r_plan.set_defaults(
-        func=_cmd_lambda_integrated_diloco_m085r_plan
-    )
+    lambda_integrated_diloco_m085r_plan.set_defaults(func=_cmd_lambda_integrated_diloco_m085r_plan)
     lambda_integrated_diloco_m085r_gate = lambda_integrated_diloco_sub.add_parser(
         "m085r-gate-check"
     )
@@ -26349,9 +25053,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_parameter_fragment_command",
         required=True,
     )
-    lambda_parameter_fragment_success = lambda_parameter_fragment_sub.add_parser(
-        "success-record"
-    )
+    lambda_parameter_fragment_success = lambda_parameter_fragment_sub.add_parser("success-record")
     lambda_parameter_fragment_success.add_argument(
         "--workdir",
         type=Path,
@@ -26361,9 +25063,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_parameter_fragment_success.set_defaults(
         func=_cmd_lambda_parameter_fragment_success_record
     )
-    lambda_parameter_fragment_reconcile = lambda_parameter_fragment_sub.add_parser(
-        "reconcile"
-    )
+    lambda_parameter_fragment_reconcile = lambda_parameter_fragment_sub.add_parser("reconcile")
     lambda_parameter_fragment_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -26375,9 +25075,7 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_parameter_fragment_reconcile.add_argument("--out", type=Path, required=True)
-    lambda_parameter_fragment_reconcile.set_defaults(
-        func=_cmd_lambda_parameter_fragment_reconcile
-    )
+    lambda_parameter_fragment_reconcile.set_defaults(func=_cmd_lambda_parameter_fragment_reconcile)
     lambda_parameter_fragment_evidence = lambda_parameter_fragment_sub.add_parser(
         "evidence-package"
     )
@@ -26395,9 +25093,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_parameter_fragment_evidence.set_defaults(
         func=_cmd_lambda_parameter_fragment_evidence_package
     )
-    lambda_parameter_fragment_closeout = lambda_parameter_fragment_sub.add_parser(
-        "closeout"
-    )
+    lambda_parameter_fragment_closeout = lambda_parameter_fragment_sub.add_parser("closeout")
     lambda_parameter_fragment_closeout.add_argument(
         "--success-record",
         type=Path,
@@ -26414,12 +25110,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_parameter_fragment_closeout.add_argument("--out", type=Path, required=True)
-    lambda_parameter_fragment_closeout.set_defaults(
-        func=_cmd_lambda_parameter_fragment_closeout
-    )
-    lambda_parameter_fragment_audit = lambda_parameter_fragment_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_parameter_fragment_closeout.set_defaults(func=_cmd_lambda_parameter_fragment_closeout)
+    lambda_parameter_fragment_audit = lambda_parameter_fragment_sub.add_parser("artifact-audit")
     lambda_parameter_fragment_audit.add_argument(
         "--workdir",
         type=Path,
@@ -26431,21 +25123,15 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_parameter_fragment_audit.add_argument("--out", type=Path, required=True)
-    lambda_parameter_fragment_audit.set_defaults(
-        func=_cmd_lambda_parameter_fragment_artifact_audit
-    )
-    lambda_parameter_fragment_readiness = lambda_parameter_fragment_sub.add_parser(
-        "readiness"
-    )
+    lambda_parameter_fragment_audit.set_defaults(func=_cmd_lambda_parameter_fragment_artifact_audit)
+    lambda_parameter_fragment_readiness = lambda_parameter_fragment_sub.add_parser("readiness")
     lambda_parameter_fragment_readiness.add_argument(
         "--integrated-diloco-closeout",
         type=Path,
         required=True,
     )
     lambda_parameter_fragment_readiness.add_argument("--out", type=Path, required=True)
-    lambda_parameter_fragment_readiness.set_defaults(
-        func=_cmd_lambda_parameter_fragment_readiness
-    )
+    lambda_parameter_fragment_readiness.set_defaults(func=_cmd_lambda_parameter_fragment_readiness)
     lambda_parameter_fragment_discover = lambda_parameter_fragment_sub.add_parser(
         "discover-command"
     )
@@ -26458,18 +25144,14 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_parameter_fragment_discover.set_defaults(
         func=_cmd_lambda_parameter_fragment_discover_command
     )
-    lambda_parameter_fragment_policy = lambda_parameter_fragment_sub.add_parser(
-        "policy"
-    )
+    lambda_parameter_fragment_policy = lambda_parameter_fragment_sub.add_parser("policy")
     lambda_parameter_fragment_policy.add_argument(
         "--command-discovery",
         type=Path,
         required=True,
     )
     lambda_parameter_fragment_policy.add_argument("--out", type=Path, required=True)
-    lambda_parameter_fragment_policy.set_defaults(
-        func=_cmd_lambda_parameter_fragment_policy
-    )
+    lambda_parameter_fragment_policy.set_defaults(func=_cmd_lambda_parameter_fragment_policy)
     lambda_parameter_fragment_authorize = lambda_parameter_fragment_sub.add_parser(
         "authorize-m087r"
     )
@@ -26504,9 +25186,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_parameter_fragment_runbook.set_defaults(
         func=_cmd_lambda_parameter_fragment_m087r_runbook_preview
     )
-    lambda_parameter_fragment_m087r_plan = lambda_parameter_fragment_sub.add_parser(
-        "m087r-plan"
-    )
+    lambda_parameter_fragment_m087r_plan = lambda_parameter_fragment_sub.add_parser("m087r-plan")
     lambda_parameter_fragment_m087r_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -26574,9 +25254,7 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_scaffold_complete_command",
         required=True,
     )
-    lambda_scaffold_complete_decision = lambda_scaffold_complete_sub.add_parser(
-        "decision"
-    )
+    lambda_scaffold_complete_decision = lambda_scaffold_complete_sub.add_parser("decision")
     lambda_scaffold_complete_decision.add_argument(
         "--runtime-smoke-closeout",
         type=Path,
@@ -26608,12 +25286,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_scaffold_complete_decision.add_argument("--out", type=Path, required=True)
-    lambda_scaffold_complete_decision.set_defaults(
-        func=_cmd_lambda_scaffold_complete_decision
-    )
-    lambda_scaffold_complete_final = lambda_scaffold_complete_sub.add_parser(
-        "final-decision"
-    )
+    lambda_scaffold_complete_decision.set_defaults(func=_cmd_lambda_scaffold_complete_decision)
+    lambda_scaffold_complete_final = lambda_scaffold_complete_sub.add_parser("final-decision")
     lambda_scaffold_complete_final.add_argument(
         "--bounded-closeout",
         type=Path,
@@ -26625,17 +25299,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_scaffold_complete_final.add_argument("--out", type=Path, required=True)
-    lambda_scaffold_complete_final.set_defaults(
-        func=_cmd_lambda_scaffold_complete_final_decision
-    )
+    lambda_scaffold_complete_final.set_defaults(func=_cmd_lambda_scaffold_complete_final_decision)
     lambda_bounded_diloco = lambda_sub.add_parser("bounded-diloco-experiment")
     lambda_bounded_diloco_sub = lambda_bounded_diloco.add_subparsers(
         dest="lambda_bounded_diloco_experiment_command",
         required=True,
     )
-    lambda_bounded_diloco_success = lambda_bounded_diloco_sub.add_parser(
-        "success-record"
-    )
+    lambda_bounded_diloco_success = lambda_bounded_diloco_sub.add_parser("success-record")
     lambda_bounded_diloco_success.add_argument(
         "--workdir",
         type=Path,
@@ -26645,9 +25315,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_success.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_success_record
     )
-    lambda_bounded_diloco_reconcile = lambda_bounded_diloco_sub.add_parser(
-        "reconcile"
-    )
+    lambda_bounded_diloco_reconcile = lambda_bounded_diloco_sub.add_parser("reconcile")
     lambda_bounded_diloco_reconcile.add_argument(
         "--workdir",
         type=Path,
@@ -26662,9 +25330,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_reconcile.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_reconcile
     )
-    lambda_bounded_diloco_evidence = lambda_bounded_diloco_sub.add_parser(
-        "evidence-package"
-    )
+    lambda_bounded_diloco_evidence = lambda_bounded_diloco_sub.add_parser("evidence-package")
     lambda_bounded_diloco_evidence.add_argument(
         "--success-record",
         type=Path,
@@ -26696,12 +25362,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_bounded_diloco_closeout.add_argument("--out", type=Path, required=True)
-    lambda_bounded_diloco_closeout.set_defaults(
-        func=_cmd_lambda_bounded_diloco_experiment_closeout
-    )
-    lambda_bounded_diloco_audit = lambda_bounded_diloco_sub.add_parser(
-        "artifact-audit"
-    )
+    lambda_bounded_diloco_closeout.set_defaults(func=_cmd_lambda_bounded_diloco_experiment_closeout)
+    lambda_bounded_diloco_audit = lambda_bounded_diloco_sub.add_parser("artifact-audit")
     lambda_bounded_diloco_audit.add_argument(
         "--workdir",
         type=Path,
@@ -26716,9 +25378,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_audit.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_artifact_audit
     )
-    lambda_bounded_diloco_result_summary = lambda_bounded_diloco_sub.add_parser(
-        "result-summary"
-    )
+    lambda_bounded_diloco_result_summary = lambda_bounded_diloco_sub.add_parser("result-summary")
     lambda_bounded_diloco_result_summary.add_argument(
         "--success-record",
         type=Path,
@@ -26768,9 +25428,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_interpretation.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_evidence_interpretation
     )
-    lambda_bounded_diloco_readiness = lambda_bounded_diloco_sub.add_parser(
-        "readiness"
-    )
+    lambda_bounded_diloco_readiness = lambda_bounded_diloco_sub.add_parser("readiness")
     lambda_bounded_diloco_readiness.add_argument(
         "--scaffold-decision",
         type=Path,
@@ -26780,9 +25438,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_readiness.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_readiness
     )
-    lambda_bounded_diloco_discover = lambda_bounded_diloco_sub.add_parser(
-        "discover-command"
-    )
+    lambda_bounded_diloco_discover = lambda_bounded_diloco_sub.add_parser("discover-command")
     lambda_bounded_diloco_discover.add_argument(
         "--source-root",
         type=Path,
@@ -26799,12 +25455,8 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_bounded_diloco_policy.add_argument("--out", type=Path, required=True)
-    lambda_bounded_diloco_policy.set_defaults(
-        func=_cmd_lambda_bounded_diloco_experiment_policy
-    )
-    lambda_bounded_diloco_authorize = lambda_bounded_diloco_sub.add_parser(
-        "authorize-m089r"
-    )
+    lambda_bounded_diloco_policy.set_defaults(func=_cmd_lambda_bounded_diloco_experiment_policy)
+    lambda_bounded_diloco_authorize = lambda_bounded_diloco_sub.add_parser("authorize-m089r")
     lambda_bounded_diloco_authorize.add_argument(
         "--readiness",
         type=Path,
@@ -26824,9 +25476,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_authorize.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_authorize_m089r
     )
-    lambda_bounded_diloco_runbook = lambda_bounded_diloco_sub.add_parser(
-        "m089r-runbook-preview"
-    )
+    lambda_bounded_diloco_runbook = lambda_bounded_diloco_sub.add_parser("m089r-runbook-preview")
     lambda_bounded_diloco_runbook.add_argument(
         "--authorization",
         type=Path,
@@ -26836,9 +25486,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_runbook.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_m089r_runbook_preview
     )
-    lambda_bounded_diloco_m089r_plan = lambda_bounded_diloco_sub.add_parser(
-        "m089r-plan"
-    )
+    lambda_bounded_diloco_m089r_plan = lambda_bounded_diloco_sub.add_parser("m089r-plan")
     lambda_bounded_diloco_m089r_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -26893,9 +25541,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_bounded_diloco_m089r_plan.set_defaults(
         func=_cmd_lambda_bounded_diloco_experiment_m089r_plan
     )
-    lambda_bounded_diloco_m089r_gate = lambda_bounded_diloco_sub.add_parser(
-        "m089r-gate-check"
-    )
+    lambda_bounded_diloco_m089r_gate = lambda_bounded_diloco_sub.add_parser("m089r-gate-check")
     lambda_bounded_diloco_m089r_gate.add_argument("--plan", type=Path, required=True)
     lambda_bounded_diloco_m089r_gate.add_argument("--out", type=Path, required=True)
     lambda_bounded_diloco_m089r_gate.set_defaults(
@@ -26906,26 +25552,20 @@ def build_parser() -> argparse.ArgumentParser:
         dest="lambda_scientific_gap_command",
         required=True,
     )
-    lambda_scientific_gap_assessment = lambda_scientific_gap_sub.add_parser(
-        "assessment"
-    )
+    lambda_scientific_gap_assessment = lambda_scientific_gap_sub.add_parser("assessment")
     lambda_scientific_gap_assessment.add_argument(
         "--bounded-artifact-audit",
         type=Path,
         required=True,
     )
     lambda_scientific_gap_assessment.add_argument("--out", type=Path, required=True)
-    lambda_scientific_gap_assessment.set_defaults(
-        func=_cmd_lambda_scientific_gap_assessment
-    )
+    lambda_scientific_gap_assessment.set_defaults(func=_cmd_lambda_scientific_gap_assessment)
     lambda_scientific_claim = lambda_sub.add_parser("scientific-claim")
     lambda_scientific_claim_sub = lambda_scientific_claim.add_subparsers(
         dest="lambda_scientific_claim_command",
         required=True,
     )
-    lambda_scientific_claim_boundaries = lambda_scientific_claim_sub.add_parser(
-        "boundaries"
-    )
+    lambda_scientific_claim_boundaries = lambda_scientific_claim_sub.add_parser("boundaries")
     lambda_scientific_claim_boundaries.add_argument(
         "--evidence-interpretation",
         type=Path,
@@ -26937,17 +25577,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_scientific_claim_boundaries.add_argument("--out", type=Path, required=True)
-    lambda_scientific_claim_boundaries.set_defaults(
-        func=_cmd_lambda_scientific_claim_boundaries
-    )
+    lambda_scientific_claim_boundaries.set_defaults(func=_cmd_lambda_scientific_claim_boundaries)
     lambda_remaining_gap = lambda_sub.add_parser("remaining-gap")
     lambda_remaining_gap_sub = lambda_remaining_gap.add_subparsers(
         dest="lambda_remaining_gap_command",
         required=True,
     )
-    lambda_remaining_gap_prioritization = lambda_remaining_gap_sub.add_parser(
-        "prioritization"
-    )
+    lambda_remaining_gap_prioritization = lambda_remaining_gap_sub.add_parser("prioritization")
     lambda_remaining_gap_prioritization.add_argument(
         "--scientific-gap-assessment",
         type=Path,
@@ -26963,9 +25599,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         required=True,
     )
-    lambda_remaining_gap_prioritization.set_defaults(
-        func=_cmd_lambda_remaining_gap_prioritization
-    )
+    lambda_remaining_gap_prioritization.set_defaults(func=_cmd_lambda_remaining_gap_prioritization)
     lambda_post_m089 = lambda_sub.add_parser("post-m089")
     lambda_post_m089_sub = lambda_post_m089.add_subparsers(
         dest="lambda_post_m089_command",
@@ -26983,17 +25617,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_post_m089_next.add_argument("--out", type=Path, required=True)
-    lambda_post_m089_next.set_defaults(
-        func=_cmd_lambda_post_m089_next_step_decision
-    )
+    lambda_post_m089_next.set_defaults(func=_cmd_lambda_post_m089_next_step_decision)
     lambda_post_m090 = lambda_sub.add_parser("post-m090")
     lambda_post_m090_sub = lambda_post_m090.add_subparsers(
         dest="lambda_post_m090_command",
         required=True,
     )
-    lambda_post_m090_next = lambda_post_m090_sub.add_parser(
-        "next-branch-decision"
-    )
+    lambda_post_m090_next = lambda_post_m090_sub.add_parser("next-branch-decision")
     lambda_post_m090_next.add_argument(
         "--gap-prioritization",
         type=Path,
@@ -27005,26 +25635,20 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
     lambda_post_m090_next.add_argument("--out", type=Path, required=True)
-    lambda_post_m090_next.set_defaults(
-        func=_cmd_lambda_post_m090_next_branch_decision
-    )
+    lambda_post_m090_next.set_defaults(func=_cmd_lambda_post_m090_next_branch_decision)
     lambda_tiny_real_training = lambda_sub.add_parser("tiny-real-training")
     lambda_tiny_real_training_sub = lambda_tiny_real_training.add_subparsers(
         dest="lambda_tiny_real_training_command",
         required=True,
     )
-    lambda_tiny_real_training_readiness = lambda_tiny_real_training_sub.add_parser(
-        "readiness"
-    )
+    lambda_tiny_real_training_readiness = lambda_tiny_real_training_sub.add_parser("readiness")
     lambda_tiny_real_training_readiness.add_argument(
         "--m091-report",
         type=Path,
         required=True,
     )
     lambda_tiny_real_training_readiness.add_argument("--out", type=Path, required=True)
-    lambda_tiny_real_training_readiness.set_defaults(
-        func=_cmd_lambda_tiny_real_training_readiness
-    )
+    lambda_tiny_real_training_readiness.set_defaults(func=_cmd_lambda_tiny_real_training_readiness)
     lambda_tiny_real_training_discover = lambda_tiny_real_training_sub.add_parser(
         "discover-command"
     )
@@ -27037,18 +25661,14 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_tiny_real_training_discover.set_defaults(
         func=_cmd_lambda_tiny_real_training_discover_command
     )
-    lambda_tiny_real_training_policy = lambda_tiny_real_training_sub.add_parser(
-        "policy"
-    )
+    lambda_tiny_real_training_policy = lambda_tiny_real_training_sub.add_parser("policy")
     lambda_tiny_real_training_policy.add_argument(
         "--command-discovery",
         type=Path,
         required=True,
     )
     lambda_tiny_real_training_policy.add_argument("--out", type=Path, required=True)
-    lambda_tiny_real_training_policy.set_defaults(
-        func=_cmd_lambda_tiny_real_training_policy
-    )
+    lambda_tiny_real_training_policy.set_defaults(func=_cmd_lambda_tiny_real_training_policy)
     lambda_tiny_real_training_authorize = lambda_tiny_real_training_sub.add_parser(
         "authorize-m093r"
     )
@@ -27083,9 +25703,7 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_tiny_real_training_runbook.set_defaults(
         func=_cmd_lambda_tiny_real_training_m093r_runbook_preview
     )
-    lambda_tiny_real_training_m093r_plan = lambda_tiny_real_training_sub.add_parser(
-        "m093r-plan"
-    )
+    lambda_tiny_real_training_m093r_plan = lambda_tiny_real_training_sub.add_parser("m093r-plan")
     lambda_tiny_real_training_m093r_plan.add_argument(
         "--discovery-report",
         type=Path,
@@ -27743,21 +26361,15 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_second_mitigation.add_argument("--incident-report", type=Path, required=True)
     lambda_second_mitigation.add_argument("--prior-m029-report", type=Path, required=True)
     lambda_second_mitigation.add_argument("--out", type=Path, required=True)
-    lambda_second_mitigation.set_defaults(
-        func=_cmd_lambda_second_attempt_mitigation_review
-    )
+    lambda_second_mitigation.set_defaults(func=_cmd_lambda_second_attempt_mitigation_review)
     lambda_second_correlation = lambda_second_sub.add_parser("correlation-plan")
     lambda_second_correlation.add_argument("--prior-m029-report", type=Path, required=True)
     lambda_second_correlation.add_argument("--m029-authorization", type=Path, required=True)
     lambda_second_correlation.add_argument("--out", type=Path, required=True)
-    lambda_second_correlation.set_defaults(
-        func=_cmd_lambda_second_attempt_correlation_plan
-    )
+    lambda_second_correlation.set_defaults(func=_cmd_lambda_second_attempt_correlation_plan)
     lambda_second_reconciliation = lambda_second_sub.add_parser("reconciliation-plan")
     lambda_second_reconciliation.add_argument("--out", type=Path, required=True)
-    lambda_second_reconciliation.set_defaults(
-        func=_cmd_lambda_second_attempt_reconciliation_plan
-    )
+    lambda_second_reconciliation.set_defaults(func=_cmd_lambda_second_attempt_reconciliation_plan)
     lambda_second_authorize = lambda_second_sub.add_parser("authorize")
     lambda_second_authorize.add_argument("--incident-report", type=Path, required=True)
     lambda_second_authorize.add_argument("--risk-review", type=Path, required=True)
@@ -27782,16 +26394,12 @@ def build_parser() -> argparse.ArgumentParser:
     lambda_third_endpoint.add_argument("--confirmation-time-utc", default=None)
     lambda_third_endpoint.add_argument("--notes", default=None)
     lambda_third_endpoint.add_argument("--out", type=Path, required=True)
-    lambda_third_endpoint.set_defaults(
-        func=_cmd_lambda_third_attempt_endpoint_confirmation
-    )
+    lambda_third_endpoint.set_defaults(func=_cmd_lambda_third_attempt_endpoint_confirmation)
     lambda_third_capture = lambda_third_sub.add_parser("response-capture-lock")
     lambda_third_capture.add_argument("--body-sample-enabled", action="store_true")
     lambda_third_capture.add_argument("--max-body-sample-bytes", type=int, default=None)
     lambda_third_capture.add_argument("--out", type=Path, required=True)
-    lambda_third_capture.set_defaults(
-        func=_cmd_lambda_third_attempt_response_capture_lock
-    )
+    lambda_third_capture.set_defaults(func=_cmd_lambda_third_attempt_response_capture_lock)
     lambda_third_timeout = lambda_third_sub.add_parser("timeout-policy")
     lambda_third_timeout.add_argument("--launch-timeout-seconds", type=float, default=30.0)
     lambda_third_timeout.add_argument(
@@ -27831,9 +26439,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lambda_third_correlation.add_argument("--timeout-policy", type=Path, required=True)
     lambda_third_correlation.add_argument("--out", type=Path, required=True)
-    lambda_third_correlation.set_defaults(
-        func=_cmd_lambda_third_attempt_correlation_plan
-    )
+    lambda_third_correlation.set_defaults(func=_cmd_lambda_third_attempt_correlation_plan)
     lambda_third_reconciliation = lambda_third_sub.add_parser("reconciliation-plan")
     lambda_third_reconciliation.add_argument(
         "--candidate-confidence",
@@ -27841,9 +26447,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["exact", "high", "medium", "low", "none"],
     )
     lambda_third_reconciliation.add_argument("--out", type=Path, required=True)
-    lambda_third_reconciliation.set_defaults(
-        func=_cmd_lambda_third_attempt_reconciliation_plan
-    )
+    lambda_third_reconciliation.set_defaults(func=_cmd_lambda_third_attempt_reconciliation_plan)
     lambda_third_authorize = lambda_third_sub.add_parser("authorize")
     lambda_third_authorize.add_argument("--m031d-closeout", type=Path, required=True)
     lambda_third_authorize.add_argument(

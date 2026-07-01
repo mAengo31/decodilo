@@ -125,13 +125,13 @@ pytest -m quick                                                56 passed
 manual remote s3-preflight                                     blocked as expected: client_not_injected
 ```
 
-Broad non-live profile result:
+Broad non-live profile update after P1 hardening:
 
 ```text
-72 failed, 2196 passed, 45 deselected
+2269 passed, 45 deselected
 ```
 
-Those failures are mainly older Lambda fake lifecycle/gating tests plus unrelated learner inflight/local process tests. They are not currently treated as caused by the S3 slice, but they are production-readiness blockers.
+The previously failing Lambda fake lifecycle/gating tests, stale price-fixture tests, async learner inflight tests, local recovery flake, and durable replay mismatch were fixed in the follow-up hardening commit.
 
 ## Remaining blockers and priority
 
@@ -142,9 +142,13 @@ Those failures are mainly older Lambda fake lifecycle/gating tests plus unrelate
 
 ### P1 — Resolve or quarantine broad-suite failures
 
-- Lambda fake lifecycle/gating tests are failing.
-- `tests/test_learner_worker_inflight.py` appears stale against async `_handle_global_payload` behavior.
-- `tests/test_local_process_failure.py` has flaky/retry failure where restarted learner does not contribute post-recovery.
+Status: completed after follow-up hardening.
+
+- Fixed stale Lambda price-fixture timestamps by generating fresh test timestamps.
+- Fixed async learner inflight tests to await `_handle_global_payload`.
+- Hardened local recovery test with enough post-restart runtime for the restarted learner to contribute.
+- Fixed remote-command evidence field handling for optional `downloads_attempted` and related safety booleans.
+- Fixed FragmentStore commit atomicity so failed chunked artifact writing cannot advance `global_version` or leave orphan `sync_round_started` events.
 
 ### P2 — Real external object-store smoke
 
