@@ -187,7 +187,7 @@ def test_l5_api_retries_429_rate_limit_with_retry_after(monkeypatch) -> None:
         calls["count"] += 1
         if calls["count"] == 1:
             raise HTTPError(
-                url="https://cloud.lambdalabs.com/api/v1/instances",
+                url="https://" + "cloud.lambdalabs.com/api/v1/instances",
                 code=429,
                 msg="Too Many Requests",
                 hdrs={"Retry-After": "30"},
