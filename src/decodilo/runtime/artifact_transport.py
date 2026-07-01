@@ -28,7 +28,7 @@ class ArtifactRef(BaseModel):
     content_root_hash: str | None = None
     run_id: str
     created_by: str
-    storage_backend: Literal["local_filesystem"] = "local_filesystem"
+    storage_backend: Literal["local_filesystem", "syncer_object_store"] = "local_filesystem"
     relative_to_workdir: bool = True
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -49,6 +49,7 @@ class ArtifactTransportPolicy(BaseModel):
     workdir: str
     artifact_root: str | None = None
     allow_absolute_paths: bool = False
+    storage_backend: Literal["local_filesystem", "syncer_object_store"] = "local_filesystem"
 
 
 class LocalArtifactTransport:
@@ -116,14 +117,15 @@ class LocalArtifactTransport:
             content_root_hash=manifest.root_hash,
             run_id=manifest.run_id,
             created_by=created_by,
+            storage_backend=self.policy.storage_backend,
             relative_to_workdir=True,
             metadata=metadata or manifest.metadata,
         )
 
     def validate_ref(self, ref: ArtifactRef | dict[str, Any]) -> StorageArtifactManifest:
         artifact_ref = ref if isinstance(ref, ArtifactRef) else ArtifactRef.model_validate(ref)
-        if artifact_ref.storage_backend != "local_filesystem":
-            raise InvariantViolation("only local_filesystem artifact refs are supported")
+        if artifact_ref.storage_backend not in {"local_filesystem", "syncer_object_store"}:
+            raise InvariantViolation("unsupported artifact storage backend")
         manifest_path = self._resolve_ref_path(artifact_ref.manifest_path)
         chunk_root = self._resolve_ref_path(artifact_ref.chunk_root)
         if not manifest_path.exists() or not manifest_path.is_file():

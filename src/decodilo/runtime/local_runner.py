@@ -120,6 +120,7 @@ class LocalRunConfig:
     tensor_artifact_codec: str = "json_safe"
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
+    artifact_transfer_mode: str = "bundle"
 
 
 class LocalRunner:
@@ -283,6 +284,8 @@ class LocalRunner:
             self.config.fragment_artifact_codec,
             "--checkpoint-artifact-codec",
             self.config.checkpoint_artifact_codec,
+            "--artifact-transfer-mode",
+            self.config.artifact_transfer_mode,
         ]
         if recover:
             command.append("--recover-from-checkpoint")
@@ -358,6 +361,8 @@ class LocalRunner:
             self.config.tensor_artifact_codec,
             "--checkpoint-artifact-codec",
             self.config.checkpoint_artifact_codec,
+            "--artifact-transfer-mode",
+            self.config.artifact_transfer_mode,
         ]
         proc = subprocess.Popen(
             command,
@@ -775,6 +780,12 @@ class LocalRunner:
             started_at_utc=started_at,
             finished_at_utc=datetime.now(UTC).isoformat(),
             code_version=__version__ or None,
+            artifact_transfer_mode=str(
+                syncer_summary.get("artifact_transfer_mode", self.config.artifact_transfer_mode)
+            ),
+            artifact_storage_backend=str(
+                syncer_summary.get("artifact_storage_backend", "local_filesystem")
+            ),
         )
         return report.model_copy(
             update={
@@ -1177,6 +1188,7 @@ def build_config_from_args(args: argparse.Namespace) -> LocalRunConfig:
         tensor_artifact_codec=args.tensor_artifact_codec,
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
     )
 
 

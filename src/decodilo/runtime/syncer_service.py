@@ -25,7 +25,10 @@ from decodilo.runtime.chunked_payloads import default_artifact_root, default_chu
 from decodilo.runtime.chunked_runtime_modes import validate_runtime_modes
 from decodilo.runtime.remote_artifact_fetch import (
     artifact_bundle_from_ref,
+    artifact_chunk_from_ref,
+    artifact_metadata_from_ref,
     materialize_artifact_bundle,
+    materialize_artifact_chunk_upload,
 )
 from decodilo.runtime.syncer_checkpoint import (
     load_chunked_syncer_checkpoint,
@@ -110,6 +113,7 @@ class SyncerServiceConfig:
     tensor_artifact_codec: str = "json_safe"
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
+    artifact_transfer_mode: str = "bundle"
 
 
 class SyncerService:
@@ -137,6 +141,11 @@ class SyncerService:
             policy=ArtifactTransportPolicy(
                 workdir=str(config.workdir),
                 artifact_root=str(self.artifact_root),
+                storage_backend=(
+                    "syncer_object_store"
+                    if config.artifact_transfer_mode == "object_store"
+                    else "local_filesystem"
+                ),
             )
         )
         self.event_log = EventLog(
@@ -294,6 +303,10 @@ class SyncerService:
                 return self._handle_global_update_ack(envelope)
             if envelope.message_type == MessageType.FETCH_ARTIFACT:
                 return self._handle_fetch_artifact(envelope)
+            if envelope.message_type == MessageType.FETCH_ARTIFACT_CHUNK:
+                return self._handle_fetch_artifact_chunk(envelope)
+            if envelope.message_type == MessageType.UPLOAD_ARTIFACT_CHUNK:
+                return self._handle_upload_artifact_chunk(envelope)
             if envelope.message_type == MessageType.SUBMIT_FRAGMENT:
                 return self._handle_submit_fragment(envelope)
             if envelope.message_type == MessageType.LEARNER_SHUTDOWN:
@@ -438,11 +451,42 @@ class SyncerService:
         artifact_ref = envelope.payload.get("artifact_ref")
         if artifact_ref is None:
             raise InvariantViolation("fetch_artifact requires artifact_ref")
-        bundle = artifact_bundle_from_ref(artifact_ref, transport=self.artifact_transport)
+        response_mode = str(envelope.payload.get("response_mode", "bundle"))
+        payload = (
+            artifact_metadata_from_ref(artifact_ref, transport=self.artifact_transport)
+            if response_mode == "metadata_only"
+            else artifact_bundle_from_ref(artifact_ref, transport=self.artifact_transport)
+        )
         return self._envelope(
             message_type=MessageType.FETCH_ARTIFACT_RESPONSE,
             recipient_id=envelope.sender_id,
-            payload=bundle,
+            payload=payload,
+        )
+
+    def _handle_fetch_artifact_chunk(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        artifact_ref = envelope.payload.get("artifact_ref")
+        chunk_hash = envelope.payload.get("sha256")
+        if artifact_ref is None or not chunk_hash:
+            raise InvariantViolation("fetch_artifact_chunk requires artifact_ref and sha256")
+        return self._envelope(
+            message_type=MessageType.FETCH_ARTIFACT_CHUNK_RESPONSE,
+            recipient_id=envelope.sender_id,
+            payload=artifact_chunk_from_ref(
+                artifact_ref,
+                chunk_hash=str(chunk_hash),
+                transport=self.artifact_transport,
+            ),
+        )
+
+    def _handle_upload_artifact_chunk(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        result = materialize_artifact_chunk_upload(
+            envelope.payload,
+            transport=self.artifact_transport,
+        )
+        return self._envelope(
+            message_type=MessageType.UPLOAD_ARTIFACT_CHUNK_ACK,
+            recipient_id=envelope.sender_id,
+            payload=result,
         )
 
     def _handle_global_update_ack(self, envelope: TransportEnvelope) -> TransportEnvelope:
@@ -1136,10 +1180,14 @@ class SyncerService:
                 self.store.global_version,
             )
             payload["global_vector_artifact_ref"] = ref
-            payload["global_vector_artifact_bundle"] = artifact_bundle_from_ref(
-                ref, transport=self.artifact_transport
-            )
+            if self.config.artifact_transfer_mode == "object_store":
+                payload["global_vector_artifact_transfer"] = "fetch_chunks"
+            else:
+                payload["global_vector_artifact_bundle"] = artifact_bundle_from_ref(
+                    ref, transport=self.artifact_transport
+                )
             payload["global_update_storage_mode"] = "chunked"
+            payload["artifact_transfer_mode"] = self.config.artifact_transfer_mode
         else:
             payload["global_vector"] = self.store.global_vector.tolist()
         if extra:
@@ -1370,6 +1418,8 @@ class SyncerService:
             "unhealthy_learners": sorted(self.unhealthy_learners),
             "recovery_source": self.recovery_source,
             "event_log_path": str(self.config.workdir / "events.jsonl"),
+            "artifact_transfer_mode": self.config.artifact_transfer_mode,
+            "artifact_storage_backend": self.artifact_transport.policy.storage_backend,
             "code_version": __version__ or None,
         }
 
@@ -1428,6 +1478,7 @@ def build_config_from_args(args: argparse.Namespace) -> SyncerServiceConfig:
         tensor_artifact_codec=args.tensor_artifact_codec,
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
     )
 
 

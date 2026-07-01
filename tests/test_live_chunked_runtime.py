@@ -25,6 +25,7 @@ def _run_local(
     restart: bool = False,
     steps: int = 40,
     run_id: str | None = None,
+    artifact_transfer_mode: str = "bundle",
 ) -> dict:
     args = [
         sys.executable,
@@ -69,6 +70,8 @@ def _run_local(
                 "--memory-budget-mb",
                 "1",
                 "--allow-spill-to-disk",
+                "--artifact-transfer-mode",
+                artifact_transfer_mode,
             ]
         )
     if restart:
@@ -140,6 +143,19 @@ def test_chunked_syncer_control_commit_payloads_do_not_inline_vectors(tmp_path) 
     assert "global_vector" not in serialized_payload
     assert "weighted_delta" not in serialized_payload
     assert len(serialized_payload.encode("utf-8")) < 2048
+
+
+
+@pytest.mark.integration
+def test_live_chunked_runtime_supports_syncer_object_store_transfer(tmp_path) -> None:
+    report = _run_local(tmp_path, chunked=True, artifact_transfer_mode="object_store")
+    metrics = report["metrics"]
+
+    assert report["artifact_transfer_mode"] == "object_store"
+    assert report["artifact_storage_backend"] == "syncer_object_store"
+    assert report["replay_validation"]["replay_passed"] is True
+    assert report["metric_validation"]["passed"] is True
+    assert metrics["chunked_fragment_submissions"] > 0
 
 @pytest.mark.integration
 def test_live_chunked_fragment_submission_update_delivery_and_replay(tmp_path) -> None:

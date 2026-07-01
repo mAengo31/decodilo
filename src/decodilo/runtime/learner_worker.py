@@ -23,6 +23,7 @@ from decodilo.runtime.learner_checkpoint import (
 from decodilo.runtime.remote_artifact_fetch import (
     artifact_bundle_from_ref,
     materialize_artifact_bundle,
+    materialize_artifact_chunk_upload,
 )
 from decodilo.trainer.fragment_artifacts import write_fragment_artifact
 from decodilo.trainer.interface import TrainerAdapter
@@ -62,6 +63,7 @@ class LearnerWorker:
         fragment_artifact_codec: str = "json_safe",
         tensor_artifact_codec: str = "json_safe",
         checkpoint_artifact_codec: str = "json_safe",
+        artifact_transfer_mode: str = "bundle",
     ) -> None:
         self.learner_id = learner_id
         self.run_id = run_id
@@ -86,10 +88,16 @@ class LearnerWorker:
         self.fragment_artifact_codec = fragment_artifact_codec
         self.tensor_artifact_codec = tensor_artifact_codec
         self.checkpoint_artifact_codec = checkpoint_artifact_codec
+        self.artifact_transfer_mode = artifact_transfer_mode
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(workdir),
                 artifact_root=str(self.artifact_root),
+                storage_backend=(
+                    "syncer_object_store"
+                    if artifact_transfer_mode == "object_store"
+                    else "local_filesystem"
+                ),
             )
         )
         self.log_path = workdir / f"{learner_id}.log"
@@ -397,15 +405,19 @@ class LearnerWorker:
                 "trainer_state_checksum": state.checksum,
                 "trainer_state_kind": state.trainer_state_kind,
                 "trainer_fragment_artifact_ref": ref.model_dump(mode="json"),
-                "trainer_fragment_artifact_bundle": artifact_bundle_from_ref(
-                    ref, transport=self.artifact_transport
-                ),
                 "storage_kind": "artifact_ref",
+                "artifact_transfer_mode": self.artifact_transfer_mode,
                 "payload_bytes": ref.total_bytes,
                 "checksum": fragment.checksum,
                 "dtype": fragment.dtype,
                 "shape": fragment.shape,
             }
+            if self.artifact_transfer_mode == "object_store":
+                await self._upload_artifact_ref_to_syncer(ref.model_dump(mode="json"))
+            else:
+                payload["trainer_fragment_artifact_bundle"] = artifact_bundle_from_ref(
+                    ref, transport=self.artifact_transport
+                )
             payload["payload_bytes"] = max(
                 ref.total_bytes,
                 len(json.dumps(payload, sort_keys=True).encode("utf-8")),
@@ -516,22 +528,89 @@ class LearnerWorker:
         )
         write_checkpoint_atomic(self.checkpoint_path, checkpoint)
 
-    async def _apply_update_ref_to_vector(self, ref: dict[str, Any]) -> tuple[np.ndarray, int]:
-        try:
-            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
-        except Exception as exc:
+    async def _upload_artifact_ref_to_syncer(self, ref: dict[str, Any]) -> None:
+        bundle = artifact_bundle_from_ref(ref, transport=self.artifact_transport)
+        chunks = list(bundle.get("chunks") or [])
+        for index, chunk in enumerate(chunks):
             response = await self._request(
                 make_envelope(
                     run_id=self.run_id,
                     sender_id=self.learner_id,
                     recipient_id="syncer",
-                    message_type=MessageType.FETCH_ARTIFACT,
-                    payload={"artifact_ref": ref},
+                    message_type=MessageType.UPLOAD_ARTIFACT_CHUNK,
+                    payload={
+                        "artifact_ref": bundle["artifact_ref"],
+                        "manifest": bundle["manifest"],
+                        "chunk": chunk,
+                        "chunk_index": index,
+                        "total_chunks": len(chunks),
+                        "final": index == len(chunks) - 1,
+                    },
                 )
             )
-            if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
-                raise RuntimeError(f"artifact fetch failed: {response.payload}") from exc
-            materialize_artifact_bundle(response.payload, transport=self.artifact_transport)
+            if response.message_type != MessageType.UPLOAD_ARTIFACT_CHUNK_ACK:
+                raise RuntimeError(f"artifact upload failed: {response.payload}")
+            if index == len(chunks) - 1 and not response.payload.get("complete"):
+                raise RuntimeError("artifact upload did not complete")
+
+    async def _fetch_artifact_ref_from_syncer(self, ref: dict[str, Any]) -> None:
+        response = await self._request(
+            make_envelope(
+                run_id=self.run_id,
+                sender_id=self.learner_id,
+                recipient_id="syncer",
+                message_type=MessageType.FETCH_ARTIFACT,
+                payload={"artifact_ref": ref, "response_mode": "metadata_only"},
+            )
+        )
+        if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
+            raise RuntimeError(f"artifact metadata fetch failed: {response.payload}")
+        metadata = response.payload
+        chunks = list(metadata.get("chunks") or [])
+        for index, chunk_meta in enumerate(chunks):
+            chunk_response = await self._request(
+                make_envelope(
+                    run_id=self.run_id,
+                    sender_id=self.learner_id,
+                    recipient_id="syncer",
+                    message_type=MessageType.FETCH_ARTIFACT_CHUNK,
+                    payload={
+                        "artifact_ref": metadata["artifact_ref"],
+                        "sha256": chunk_meta["sha256"],
+                    },
+                )
+            )
+            if chunk_response.message_type != MessageType.FETCH_ARTIFACT_CHUNK_RESPONSE:
+                raise RuntimeError(f"artifact chunk fetch failed: {chunk_response.payload}")
+            materialize_artifact_chunk_upload(
+                {
+                    "artifact_ref": metadata["artifact_ref"],
+                    "manifest": metadata["manifest"],
+                    "chunk": chunk_response.payload,
+                    "final": index == len(chunks) - 1,
+                },
+                transport=self.artifact_transport,
+            )
+
+    async def _apply_update_ref_to_vector(self, ref: dict[str, Any]) -> tuple[np.ndarray, int]:
+        try:
+            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+        except Exception as exc:
+            if self.artifact_transfer_mode == "object_store":
+                await self._fetch_artifact_ref_from_syncer(ref)
+            else:
+                response = await self._request(
+                    make_envelope(
+                        run_id=self.run_id,
+                        sender_id=self.learner_id,
+                        recipient_id="syncer",
+                        message_type=MessageType.FETCH_ARTIFACT,
+                        payload={"artifact_ref": ref},
+                    )
+                )
+                if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
+                    raise RuntimeError(f"artifact fetch failed: {response.payload}") from exc
+                materialize_artifact_bundle(response.payload, transport=self.artifact_transport)
             return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
 
     async def _handle_global_payload(self, payload: dict[str, Any]) -> None:
@@ -627,6 +706,7 @@ async def async_main(args: argparse.Namespace) -> int:
         fragment_artifact_codec=args.fragment_artifact_codec,
         tensor_artifact_codec=args.tensor_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
     )
     return await worker.run()
 

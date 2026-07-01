@@ -68,4 +68,6 @@ class LocalRuntimeReport(BaseModel):
     launch_allowed: bool = False
     billable_action_performed: bool = False
     remote_backend_enabled: bool = False
+    artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "local_filesystem"
     network_scope: str = "localhost_only"
