@@ -86,6 +86,12 @@ def main() -> int:
     parser.add_argument("--checkpoint-artifact-codec", default="binary_v1")
     parser.add_argument("--artifact-transfer-mode", default="bundle")
     parser.add_argument("--artifact-storage-backend", default="auto")
+    parser.add_argument(
+        "--launch-delay-seconds",
+        type=float,
+        default=0.0,
+        help="Optional pacing delay between sequential Lambda launch requests",
+    )
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
 
@@ -106,14 +112,7 @@ def main() -> int:
         _assert_no_live_instances(api_key)
         firewall_original_rules = _get_firewall_rules(api_key)
         evidence_dir.mkdir(parents=True, exist_ok=True)
-        roles = _all_roles(args)
-        for role in roles:
-            instance_id = _launch_instance(api_key, args.region, args.instance_type, ssh_key_name)
-            owned.append(Instance(role, instance_id, "", args.region, args.instance_type))
-            print(
-                json.dumps({"event": "launched", "role": role, "instance_id": instance_id}),
-                flush=True,
-            )
+        owned = _launch_owned_instances(api_key, args, ssh_key_name)
         owned = _wait_for_ips(api_key, owned)
         for inst in owned:
             _wait_for_ssh(inst.ip, args.ssh_private_key)
@@ -178,6 +177,24 @@ def main() -> int:
     return 1
 
 
+
+def _launch_owned_instances(
+    api_key: str,
+    args: argparse.Namespace,
+    ssh_key_name: str,
+) -> list[Instance]:
+    owned: list[Instance] = []
+    for index, role in enumerate(_all_roles(args)):
+        if index > 0 and float(args.launch_delay_seconds) > 0:
+            time.sleep(float(args.launch_delay_seconds))
+        instance_id = _launch_instance(api_key, args.region, args.instance_type, ssh_key_name)
+        owned.append(Instance(role, instance_id, "", args.region, args.instance_type))
+        print(
+            json.dumps({"event": "launched", "role": role, "instance_id": instance_id}),
+            flush=True,
+        )
+    return owned
+
 def _load_env(path: Path) -> tuple[str, str | None]:
     values: dict[str, str] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -210,13 +227,41 @@ def _api(api_key: str, method: str, path: str, payload: dict[str, Any] | None = 
         except HTTPError as exc:
             body = exc.read().decode("utf-8", errors="replace")
             last_error = RuntimeError(f"Lambda API {method} {path} failed: {exc.code} {body}")
-            if exc.code < 500:
+            if exc.code != 429 and exc.code < 500:
                 raise last_error from exc
+            if exc.code == 429:
+                retry_after = _retry_after_seconds(exc, body)
+                time.sleep(retry_after if retry_after is not None else min(30 * attempt, 120))
+                continue
         except (TimeoutError, URLError) as exc:
             last_error = exc
         time.sleep(min(2 * attempt, 10))
     raise RuntimeError(f"Lambda API {method} {path} failed after retries: {last_error}")
 
+
+
+def _retry_after_seconds(exc: HTTPError, body: str) -> float | None:
+    header = exc.headers.get("Retry-After") if exc.headers is not None else None
+    for value in (header, _retry_after_from_body(body)):
+        if value is None:
+            continue
+        try:
+            seconds = float(value)
+        except (TypeError, ValueError):
+            continue
+        if seconds >= 0:
+            return min(seconds, 300.0)
+    return None
+
+
+def _retry_after_from_body(body: str) -> Any | None:
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError:
+        return None
+    if isinstance(payload, dict):
+        return payload.get("retry_after")
+    return None
 
 def _assert_no_live_instances(api_key: str) -> None:
     instances = _list_instances(api_key)

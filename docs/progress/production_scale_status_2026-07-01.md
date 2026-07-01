@@ -196,6 +196,33 @@ pre-push HEAD: 09f052121dc8cc28f9f147edaebfcf1110581697
 
 Push result will be recorded in the final assistant response after the push completes.
 
+## Latest Lambda scale experiment — 6 learners
+
+Run ID: `lambda-sixlearner-gpu-paced-20260701144626`
+Evidence root: `docs/evidence/lambda_pathway_gpu_six_learner/lambda-sixlearner-gpu-paced-20260701144626/`
+
+Result:
+
+```text
+remote_instance_count=7
+remote_process_roles=syncer + learner-0..learner-5
+committed_sync_rounds=5
+accepted_updates=20
+inner_optimizer_semantics=adamw
+outer_optimizer_semantics=nesterov
+pseudo_gradient_numeric_check_passed=true
+restart_recovered=true
+direct_tcp_probe_passed=true
+firewall_rules_restored=true
+final_instance_count=0
+lambda_l5_restart_recovery_direct_tcp_passed=true
+production_scale_ready=false
+pathway_operation_layer_ready=false
+billable_action_performed=true
+```
+
+A prior unpaced 6-learner attempt was blocked by Lambda/Cloudflare HTTP 429 rate limiting during rapid sequential launches. The runner now supports `--launch-delay-seconds`; the successful run used paced launches.
+
 ## Safety flags
 
 ```text

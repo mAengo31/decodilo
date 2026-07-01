@@ -161,3 +161,70 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
         assert "--artifact-storage-backend durable_filesystem_object_store" in command
     assert "--checkpoint-storage-mode chunked" in syncer_command
     assert "--merge-mode streaming_chunked" in syncer_command
+
+
+def test_l5_api_retries_429_rate_limit_with_retry_after(monkeypatch) -> None:
+    import io
+    from urllib.error import HTTPError
+
+    runner = _load_runner()
+    calls = {"count": 0}
+    sleeps: list[float] = []
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self):
+            return b'{"data": {}}'
+
+    def fake_urlopen(_req, timeout):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise HTTPError(
+                url="https://cloud.lambdalabs.com/api/v1/instances",
+                code=429,
+                msg="Too Many Requests",
+                hdrs={"Retry-After": "30"},
+                fp=io.BytesIO(b'{"retry_after": 30}'),
+            )
+        return _Response()
+
+    monkeypatch.setattr(runner, "urlopen", fake_urlopen)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._api("api-key", "GET", "/instances") == {"data": {}}
+    assert calls["count"] == 2
+    assert sleeps == [30.0]
+
+
+def test_l5_launch_owned_instances_can_be_paced(monkeypatch) -> None:
+    runner = _load_runner()
+    sleeps: list[float] = []
+    launched: list[tuple[str, str, str]] = []
+    args = type(
+        "Args",
+        (),
+        {
+            "learners": 2,
+            "region": "us-east-1",
+            "instance_type": "gpu_1x_a10",
+            "launch_delay_seconds": 45.0,
+        },
+    )()
+
+    def fake_launch(_api_key, region, instance_type, _ssh_key_name):
+        launched.append((region, instance_type, f"id-{len(launched)}"))
+        return launched[-1][2]
+
+    monkeypatch.setattr(runner, "_launch_instance", fake_launch)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    owned = runner._launch_owned_instances("api-key", args, "ssh-key")
+
+    assert [item.role for item in owned] == ["syncer", "learner-0", "learner-1"]
+    assert [item.instance_id for item in owned] == ["id-0", "id-1", "id-2"]
+    assert sleeps == [45.0, 45.0]
