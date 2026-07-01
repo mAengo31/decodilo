@@ -709,7 +709,7 @@ class SyncerService:
         }
         if commit is not None:
             response_payload["outcome"] = "committed"
-            response_payload["commit"] = commit.model_dump(mode="json")
+            response_payload["commit"] = self._control_commit_payload(commit)
         message_type = MessageType.SUBMIT_FRAGMENT_ACK
         self.idempotency[key] = {
             "message_type": message_type.value,
@@ -797,6 +797,32 @@ class SyncerService:
             chunk_elements=chunk_elements,
         )
 
+    def _uses_chunked_control_plane(self) -> bool:
+        return (
+            self.config.payload_storage_mode in {"chunked", "auto"}
+            or self.config.global_update_storage_mode in {"chunked", "auto"}
+            or self.config.checkpoint_storage_mode in {"chunked", "dual"}
+            or self.config.merge_mode == "streaming_chunked"
+        )
+
+    def _control_commit_payload(self, commit) -> dict[str, Any]:
+        payload = commit.model_dump(mode="json")
+        if not self._uses_chunked_control_plane():
+            return payload
+        return {
+            "round_id": payload["round_id"],
+            "previous_global_version": payload["previous_global_version"],
+            "new_global_version": payload["new_global_version"],
+            "accepted_learner_ids": payload["accepted_learner_ids"],
+            "token_weights": payload["token_weights"],
+            "useful_tokens": payload["useful_tokens"],
+            "outer_optimizer": payload["outer_optimizer"],
+            "outer_lr": payload["outer_lr"],
+            "outer_momentum": payload.get("outer_momentum"),
+            "control_payload_compacted": True,
+            "vector_payload_location": "global_update_payload_or_artifacts",
+        }
+
     def _handle_syncer_shutdown(self, envelope: TransportEnvelope) -> TransportEnvelope:
         self._write_syncer_checkpoint()
         self.store.write_checkpoint(checkpoint_id="final", logical_time=self._time())
@@ -815,7 +841,7 @@ class SyncerService:
             | self.update_stream.stale_learners(current_version=self.store.global_version),
         )
         if commit is not None:
-            self.last_commit_payload = commit.model_dump(mode="json")
+            self.last_commit_payload = self._control_commit_payload(commit)
             self.update_stream.notify_commit(global_version=self.store.global_version)
             interval = self.config.syncer_checkpoint_interval_rounds
             if interval > 0 and self.store.metrics.sync_rounds_committed % interval == 0:
