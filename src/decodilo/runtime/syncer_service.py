@@ -114,6 +114,13 @@ class SyncerServiceConfig:
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
     artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "auto"
+
+
+def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
+    if storage_backend != "auto":
+        return storage_backend
+    return "syncer_object_store" if transfer_mode == "object_store" else "local_filesystem"
 
 
 class SyncerService:
@@ -141,10 +148,9 @@ class SyncerService:
             policy=ArtifactTransportPolicy(
                 workdir=str(config.workdir),
                 artifact_root=str(self.artifact_root),
-                storage_backend=(
-                    "syncer_object_store"
-                    if config.artifact_transfer_mode == "object_store"
-                    else "local_filesystem"
+                storage_backend=_artifact_storage_backend(
+                    transfer_mode=config.artifact_transfer_mode,
+                    storage_backend=config.artifact_storage_backend,
                 ),
             )
         )
@@ -1497,6 +1503,7 @@ def build_config_from_args(args: argparse.Namespace) -> SyncerServiceConfig:
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
         artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
     )
 
 

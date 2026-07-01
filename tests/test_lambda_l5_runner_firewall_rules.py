@@ -136,6 +136,7 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "chunk_size_mb": 1,
             "inline_payload_max_bytes": 1024,
             "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "durable_filesystem_object_store",
         },
     )()
 
@@ -157,5 +158,6 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
         assert "--global-update-storage-mode chunked" in command
         assert "--chunk-size" in command or "--chunk-size-bytes" in command
         assert "--artifact-transfer-mode object_store" in command
+        assert "--artifact-storage-backend durable_filesystem_object_store" in command
     assert "--checkpoint-storage-mode chunked" in syncer_command
     assert "--merge-mode streaming_chunked" in syncer_command

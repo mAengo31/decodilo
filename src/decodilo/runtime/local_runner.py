@@ -121,6 +121,7 @@ class LocalRunConfig:
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
     artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "auto"
 
 
 class LocalRunner:
@@ -286,6 +287,8 @@ class LocalRunner:
             self.config.checkpoint_artifact_codec,
             "--artifact-transfer-mode",
             self.config.artifact_transfer_mode,
+            "--artifact-storage-backend",
+            self.config.artifact_storage_backend,
         ]
         if recover:
             command.append("--recover-from-checkpoint")
@@ -363,6 +366,8 @@ class LocalRunner:
             self.config.checkpoint_artifact_codec,
             "--artifact-transfer-mode",
             self.config.artifact_transfer_mode,
+            "--artifact-storage-backend",
+            self.config.artifact_storage_backend,
         ]
         proc = subprocess.Popen(
             command,
@@ -1189,6 +1194,7 @@ def build_config_from_args(args: argparse.Namespace) -> LocalRunConfig:
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
         artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
     )
 
 

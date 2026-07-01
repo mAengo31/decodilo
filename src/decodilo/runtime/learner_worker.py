@@ -34,6 +34,12 @@ from decodilo.transport.envelope import MessageType, make_envelope
 from decodilo.transport.tcp_client import JsonlTcpClient
 
 
+def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
+    if storage_backend != "auto":
+        return storage_backend
+    return "syncer_object_store" if transfer_mode == "object_store" else "local_filesystem"
+
+
 class LearnerWorker:
     """Connects one fake learner process to the syncer service."""
 
@@ -64,6 +70,7 @@ class LearnerWorker:
         tensor_artifact_codec: str = "json_safe",
         checkpoint_artifact_codec: str = "json_safe",
         artifact_transfer_mode: str = "bundle",
+        artifact_storage_backend: str = "auto",
     ) -> None:
         self.learner_id = learner_id
         self.run_id = run_id
@@ -89,14 +96,14 @@ class LearnerWorker:
         self.tensor_artifact_codec = tensor_artifact_codec
         self.checkpoint_artifact_codec = checkpoint_artifact_codec
         self.artifact_transfer_mode = artifact_transfer_mode
+        self.artifact_storage_backend = artifact_storage_backend
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(workdir),
                 artifact_root=str(self.artifact_root),
-                storage_backend=(
-                    "syncer_object_store"
-                    if artifact_transfer_mode == "object_store"
-                    else "local_filesystem"
+                storage_backend=_artifact_storage_backend(
+                    transfer_mode=artifact_transfer_mode,
+                    storage_backend=artifact_storage_backend,
                 ),
             )
         )
@@ -717,6 +724,7 @@ async def async_main(args: argparse.Namespace) -> int:
         tensor_artifact_codec=args.tensor_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
         artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
     )
     return await worker.run()
 

@@ -4,14 +4,21 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from decodilo.errors import InvariantViolation
 from decodilo.storage.chunk_store import ChunkStore
+from decodilo.storage.durable_object_backend import DurableFilesystemObjectStoreBackend
 from decodilo.storage.errors import StorageError
 from decodilo.storage.manifest import StorageArtifactManifest
+
+ArtifactStorageBackend: TypeAlias = Literal[
+    "local_filesystem",
+    "syncer_object_store",
+    "durable_filesystem_object_store",
+]
 
 
 class ArtifactRef(BaseModel):
@@ -28,7 +35,7 @@ class ArtifactRef(BaseModel):
     content_root_hash: str | None = None
     run_id: str
     created_by: str
-    storage_backend: Literal["local_filesystem", "syncer_object_store"] = "local_filesystem"
+    storage_backend: ArtifactStorageBackend = "local_filesystem"
     relative_to_workdir: bool = True
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -49,7 +56,8 @@ class ArtifactTransportPolicy(BaseModel):
     workdir: str
     artifact_root: str | None = None
     allow_absolute_paths: bool = False
-    storage_backend: Literal["local_filesystem", "syncer_object_store"] = "local_filesystem"
+    storage_backend: ArtifactStorageBackend = "local_filesystem"
+    durable_backend_root: str | None = None
 
 
 class LocalArtifactTransport:
@@ -107,7 +115,7 @@ class LocalArtifactTransport:
         chunk_target = Path(chunk_root).resolve()
         self._ensure_inside_allowed_root(manifest_target, label="manifest_path")
         self._ensure_inside_allowed_root(chunk_target, label="chunk_root")
-        return ArtifactRef(
+        ref = ArtifactRef(
             artifact_id=manifest.artifact_id,
             artifact_type=manifest.artifact_type,
             manifest_path=self._to_ref_path(manifest_target),
@@ -121,10 +129,17 @@ class LocalArtifactTransport:
             relative_to_workdir=True,
             metadata=metadata or manifest.metadata,
         )
+        if ref.storage_backend == "durable_filesystem_object_store":
+            self._mirror_to_durable_backend(ref, manifest, chunk_target)
+        return ref
 
     def validate_ref(self, ref: ArtifactRef | dict[str, Any]) -> StorageArtifactManifest:
         artifact_ref = ref if isinstance(ref, ArtifactRef) else ArtifactRef.model_validate(ref)
-        if artifact_ref.storage_backend not in {"local_filesystem", "syncer_object_store"}:
+        if artifact_ref.storage_backend not in {
+            "local_filesystem",
+            "syncer_object_store",
+            "durable_filesystem_object_store",
+        }:
             raise InvariantViolation("unsupported artifact storage backend")
         manifest_path = self._resolve_ref_path(artifact_ref.manifest_path)
         chunk_root = self._resolve_ref_path(artifact_ref.chunk_root)
@@ -146,7 +161,83 @@ class LocalArtifactTransport:
             raise InvariantViolation("artifact total_bytes mismatch")
         if manifest.run_id != artifact_ref.run_id:
             raise InvariantViolation("artifact run_id mismatch")
+        if artifact_ref.storage_backend == "durable_filesystem_object_store":
+            self._validate_durable_backend_mirror(artifact_ref, manifest, chunk_root)
         return manifest
+
+    def _durable_backend(self, *, run_id: str) -> DurableFilesystemObjectStoreBackend:
+        root = (
+            Path(self.policy.durable_backend_root).resolve()
+            if self.policy.durable_backend_root is not None
+            else (self.artifact_root / "durable_objects").resolve()
+        )
+        return DurableFilesystemObjectStoreBackend(root, namespace=run_id)
+
+    def _manifest_bytes(self, manifest: StorageArtifactManifest) -> bytes:
+        return (
+            json.dumps(manifest.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+            + "\n"
+        ).encode("utf-8")
+
+    def _manifest_object_id(self, artifact_id: str) -> str:
+        return f"{artifact_id}:manifest"
+
+    def _chunk_object_id(self, artifact_id: str, chunk_hash: str) -> str:
+        return f"{artifact_id}:chunk:{chunk_hash}"
+
+    def _mirror_to_durable_backend(
+        self,
+        ref: ArtifactRef,
+        manifest: StorageArtifactManifest,
+        chunk_root: Path,
+    ) -> None:
+        backend = self._durable_backend(run_id=manifest.run_id)
+        backend.write_bytes(
+            artifact_id=self._manifest_object_id(ref.artifact_id),
+            data=self._manifest_bytes(manifest),
+        )
+        store = ChunkStore(chunk_root)
+        for chunk_hash in manifest.chunk_hashes:
+            backend.write_bytes(
+                artifact_id=self._chunk_object_id(ref.artifact_id, chunk_hash),
+                data=store.cas.get_bytes(chunk_hash),
+            )
+
+    def _validate_durable_backend_mirror(
+        self,
+        ref: ArtifactRef,
+        manifest: StorageArtifactManifest,
+        chunk_root: Path,
+    ) -> None:
+        backend = self._durable_backend(run_id=manifest.run_id)
+        manifest_ref = next(
+            (
+                item
+                for item in backend.list_refs()
+                if item.artifact_id == self._manifest_object_id(ref.artifact_id)
+            ),
+            None,
+        )
+        if (
+            manifest_ref is None
+            or backend.read_bytes(manifest_ref) != self._manifest_bytes(manifest)
+        ):
+            raise InvariantViolation("durable artifact manifest mirror mismatch")
+        store = ChunkStore(chunk_root)
+        for chunk_hash in manifest.chunk_hashes:
+            chunk_ref = next(
+                (
+                    item
+                    for item in backend.list_refs()
+                    if item.artifact_id == self._chunk_object_id(ref.artifact_id, chunk_hash)
+                ),
+                None,
+            )
+            if (
+                chunk_ref is None
+                or backend.read_bytes(chunk_ref) != store.cas.get_bytes(chunk_hash)
+            ):
+                raise InvariantViolation(f"durable artifact chunk mirror mismatch {chunk_hash}")
 
     def resolve_ref_paths(self, ref: ArtifactRef | dict[str, Any]) -> tuple[Path, Path]:
         """Return validated manifest and chunk-root paths for a local artifact ref."""

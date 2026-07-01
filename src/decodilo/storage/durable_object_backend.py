@@ -21,7 +21,6 @@ from decodilo.storage.checksums import sha256_bytes
 from decodilo.storage.chunk_store import ChunkStore
 from decodilo.storage.content_addressed import ContentAddressedStore
 from decodilo.storage.manifest import StorageArtifactManifest
-from decodilo.storage.range_reader import read_manifest_range
 from decodilo.storage.remote_backend_contract import RemoteArtifactBackendCapabilities
 
 
@@ -128,12 +127,10 @@ class DurableFilesystemObjectStoreBackend:
             if offset + length > len(data):
                 raise ValueError("invalid artifact range")
             return data[offset : offset + length]
-        return read_manifest_range(
-            manifest=ref_or_manifest,
-            chunk_root=chunk_root or self.objects_root,
-            offset=offset,
-            length=length,
-        ).data
+        data = b"".join(self.iter_chunks(ref_or_manifest, chunk_root=chunk_root))
+        if offset + length > len(data):
+            raise ValueError("invalid artifact range")
+        return data[offset : offset + length]
 
     def validate_manifest(
         self,

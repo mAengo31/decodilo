@@ -85,6 +85,7 @@ def main() -> int:
     parser.add_argument("--fragment-artifact-codec", default="binary_v1")
     parser.add_argument("--checkpoint-artifact-codec", default="binary_v1")
     parser.add_argument("--artifact-transfer-mode", default="bundle")
+    parser.add_argument("--artifact-storage-backend", default="auto")
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
 
@@ -407,6 +408,8 @@ def _runtime_mode_args(args: argparse.Namespace, *, include_syncer_only: bool) -
             str(getattr(args, "fragment_artifact_codec", "binary_v1")),
             "--artifact-transfer-mode",
             str(getattr(args, "artifact_transfer_mode", "bundle")),
+            "--artifact-storage-backend",
+            str(getattr(args, "artifact_storage_backend", "auto")),
         ]
     )
     return values

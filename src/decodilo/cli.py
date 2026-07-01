@@ -18425,6 +18425,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="json_safe",
     )
     local_run.add_argument("--artifact-transfer-mode", default="bundle")
+    local_run.add_argument("--artifact-storage-backend", default="auto")
     local_run.add_argument("--syncer-checkpoint-interval-rounds", type=int, default=0)
     local_run.add_argument("--restart-syncer-after-round", type=int, default=None)
     local_run.add_argument("--syncer-restart-timeout-seconds", type=float, default=3.0)
@@ -28122,6 +28123,7 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--fragment-artifact-codec", default="json_safe")
     serve.add_argument("--checkpoint-artifact-codec", default="json_safe")
     serve.add_argument("--artifact-transfer-mode", default="bundle")
+    serve.add_argument("--artifact-storage-backend", default="auto")
     serve.set_defaults(func=_cmd_syncer_serve)
 
     learner = subparsers.add_parser("learner", help=argparse.SUPPRESS)
@@ -28151,6 +28153,7 @@ def build_parser() -> argparse.ArgumentParser:
     learner_run.add_argument("--fragment-artifact-codec", default="json_safe")
     learner_run.add_argument("--checkpoint-artifact-codec", default="json_safe")
     learner_run.add_argument("--artifact-transfer-mode", default="bundle")
+    learner_run.add_argument("--artifact-storage-backend", default="auto")
     learner_run.set_defaults(func=_cmd_learner_run)
 
     scaling = subparsers.add_parser("scaling", help="Scaling estimators")
