@@ -284,6 +284,27 @@ Blocked larger attempts:
 
 Interpretation: 42k params is proven live. 85k+ params now appears to need the external durable object store and/or stronger operation-layer restart orchestration rather than more blind retries.
 
+## Fresh verification on stop hook
+
+Checked at: `2026-07-01T17:44:23.275896+00:00`
+
+```text
+git_status=clean
+HEAD=7697612ea14c281ccde31467b97381ca229e4b9e
+upstream_HEAD=7697612ea14c281ccde31467b97381ca229e4b9e
+LIVE_INSTANCE_COUNT=0
+LAMBDA_FILE_SYSTEM_COUNT=0
+OBJECT_STORE_RELATED_ENV_KEYS=[]
+S3_PREFLIGHT_STATUS=blocked
+S3_PREFLIGHT_BLOCKERS=[client_not_injected]
+focused_tests=31 passed
+quick_profile=56 passed, 2265 deselected
+py_compile=passed
+ruff=passed
+```
+
+Current blocker remains external object storage: no Lambda filesystem/S3-compatible bucket is visible and no local object-store provider config is present.
+
 ## Safety flags
 
 ```text
