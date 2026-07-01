@@ -1,0 +1,110 @@
+{
+  "request": {
+    "data": [
+      {
+        "description": "Allow SSH connections from any IP",
+        "port_range": [
+          22,
+          22
+        ],
+        "protocol": "tcp",
+        "source_network": "0.0.0.0/0"
+      },
+      {
+        "description": "Allow Ping from any IP",
+        "protocol": "icmp",
+        "source_network": "0.0.0.0/0"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-0 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "132.145.182.91/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-1 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "150.136.38.133/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-2 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "150.136.212.141/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-3 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "129.213.183.86/32"
+      }
+    ]
+  },
+  "response": {
+    "data": [
+      {
+        "description": "Allow SSH connections from any IP",
+        "port_range": [
+          22,
+          22
+        ],
+        "protocol": "tcp",
+        "source_network": "0.0.0.0/0"
+      },
+      {
+        "description": "Allow Ping from any IP",
+        "protocol": "icmp",
+        "source_network": "0.0.0.0/0"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-0 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "132.145.182.91/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-1 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "150.136.38.133/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-2 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "150.136.212.141/32"
+      },
+      {
+        "description": "Temporary Decodilo L5 learner-3 direct TCP syncer access",
+        "port_range": [
+          28080,
+          28080
+        ],
+        "protocol": "tcp",
+        "source_network": "129.213.183.86/32"
+      }
+    ]
+  }
+}

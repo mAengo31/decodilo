@@ -250,6 +250,40 @@ billable_action_performed=true
 
 This is now the largest live Lambda GPU Decoupled-DiLoCo proof in the repo. It still does not prove production scale because it uses the current direct-TCP/syncer object-store path, not an external durable S3-compatible backend or full scheduler.
 
+## Latest Lambda larger-model experiment — 42k parameters
+
+Run ID: `lambda-largermodel-42k-gpu-20260701172033`
+Evidence root: `docs/evidence/lambda_pathway_gpu_larger_model/lambda-largermodel-42k-gpu-20260701172033/`
+
+Result:
+
+```text
+model_parameters=42816
+scale_vs_13216_param_baseline≈3.2x
+remote_instance_count=5
+remote_process_roles=syncer + learner-0..learner-3
+committed_sync_rounds=4
+accepted_updates=12
+inner_optimizer_semantics=adamw
+outer_optimizer_semantics=nesterov
+pseudo_gradient_numeric_check_passed=true
+restart_recovered=true
+direct_tcp_probe_passed=true
+firewall_rules_restored=true
+final_instance_count=0
+lambda_l5_restart_recovery_direct_tcp_passed=true
+production_scale_ready=false
+pathway_operation_layer_ready=false
+billable_action_performed=true
+```
+
+Blocked larger attempts:
+
+- `lambda-largermodel-gpu-20260701153926` attempted 334,848 params and failed before recovery acceptance.
+- `lambda-largermodel-85k-gpu-retry-20260701161031` and follow-ups attempted 85,504 params; runner hardening improved setup/polling, but the current direct-TCP/syncer-object-store path still showed learner reconnect/artifact availability failures around syncer restart.
+
+Interpretation: 42k params is proven live. 85k+ params now appears to need the external durable object store and/or stronger operation-layer restart orchestration rather than more blind retries.
+
 ## Safety flags
 
 ```text

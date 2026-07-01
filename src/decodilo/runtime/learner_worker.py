@@ -72,6 +72,7 @@ class LearnerWorker:
         checkpoint_artifact_codec: str = "json_safe",
         artifact_transfer_mode: str = "bundle",
         artifact_storage_backend: str = "auto",
+        reconnect_timeout_seconds: float = 15.0,
         s3_artifact_backend: S3CompatibleArtifactBackend | None = None,
     ) -> None:
         self.learner_id = learner_id
@@ -99,6 +100,7 @@ class LearnerWorker:
         self.checkpoint_artifact_codec = checkpoint_artifact_codec
         self.artifact_transfer_mode = artifact_transfer_mode
         self.artifact_storage_backend = artifact_storage_backend
+        self.reconnect_timeout_seconds = reconnect_timeout_seconds
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(workdir),
@@ -168,7 +170,7 @@ class LearnerWorker:
 
     async def _reconnect(self) -> None:
         ready_path = self.workdir / "syncer_ready.json"
-        deadline = time.monotonic() + 15.0
+        deadline = time.monotonic() + self.reconnect_timeout_seconds
         last_error: Exception | None = None
         await self.client.close()
         while time.monotonic() < deadline:
@@ -728,6 +730,7 @@ async def async_main(args: argparse.Namespace) -> int:
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
         artifact_transfer_mode=args.artifact_transfer_mode,
         artifact_storage_backend=args.artifact_storage_backend,
+        reconnect_timeout_seconds=args.reconnect_timeout_seconds,
     )
     return await worker.run()
 

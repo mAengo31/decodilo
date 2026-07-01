@@ -28224,6 +28224,7 @@ def build_parser() -> argparse.ArgumentParser:
     learner_run.add_argument("--checkpoint-artifact-codec", default="json_safe")
     learner_run.add_argument("--artifact-transfer-mode", default="bundle")
     learner_run.add_argument("--artifact-storage-backend", default="auto")
+    learner_run.add_argument("--reconnect-timeout-seconds", type=float, default=15.0)
     learner_run.set_defaults(func=_cmd_learner_run)
 
     scaling = subparsers.add_parser("scaling", help="Scaling estimators")

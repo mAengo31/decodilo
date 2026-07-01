@@ -37,10 +37,14 @@ class JsonlTcpClient:
 
     async def close(self) -> None:
         if self.writer is not None:
-            self.writer.close()
-            await self.writer.wait_closed()
-            self.writer = None
-            self.reader = None
+            try:
+                self.writer.close()
+                await self.writer.wait_closed()
+            except (ConnectionResetError, BrokenPipeError, OSError):
+                pass
+            finally:
+                self.writer = None
+                self.reader = None
 
     async def request(self, envelope: TransportEnvelope) -> TransportEnvelope:
         if self.reader is None or self.writer is None:

@@ -137,6 +137,8 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "inline_payload_max_bytes": 1024,
             "artifact_transfer_mode": "object_store",
             "artifact_storage_backend": "durable_filesystem_object_store",
+            "learner_reconnect_timeout_seconds": 90.0,
+            "learner_run_timeout_seconds": 300.0,
         },
     )()
 
@@ -228,3 +230,113 @@ def test_l5_launch_owned_instances_can_be_paced(monkeypatch) -> None:
     assert [item.role for item in owned] == ["syncer", "learner-0", "learner-1"]
     assert [item.instance_id for item in owned] == ["id-0", "id-1", "id-2"]
     assert sleeps == [45.0, 45.0]
+
+
+def test_l5_retry_operation_retries_transient_subprocess_failure(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def flaky_operation():
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(255, ["ssh"])
+        return "ok"
+
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._retry_operation("flaky", flaky_operation, attempts=2, delay_seconds=7) == "ok"
+    assert attempts["count"] == 2
+    assert sleeps == [7]
+
+
+def test_l5_runner_learner_command_includes_reconnect_timeout() -> None:
+    runner = _load_runner()
+    args = type(
+        "Args",
+        (),
+        {
+            "port": 28080,
+            "run_id": "lambda-l5-reconnect",
+            "trainer_type": "torch_causal_lm",
+            "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
+            "steps": 8,
+            "local_steps_per_sync": 1,
+            "payload_storage_mode": "chunked",
+            "checkpoint_storage_mode": "chunked",
+            "merge_mode": "streaming_chunked",
+            "global_update_storage_mode": "chunked",
+            "chunk_size_mb": 1,
+            "inline_payload_max_bytes": 1024,
+            "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "auto",
+            "learner_reconnect_timeout_seconds": 90.0,
+        },
+    )()
+
+    command = runner._learner_command(args, "learner-0", "127.0.0.1")
+
+    assert "--reconnect-timeout-seconds 90.0" in command
+
+
+def test_l5_remote_committed_rounds_retries_transient_ssh(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "id", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type("Args", (), {"ssh_private_key": "key"})()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def fake_ssh(_ip, _key, _command, *, timeout):
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(255, ["ssh"])
+        return type("Result", (), {"stdout": "3\n"})()
+
+    monkeypatch.setattr(runner, "_ssh", fake_ssh)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._remote_committed_rounds(syncer, args) == 3
+    assert attempts["count"] == 2
+    assert sleeps == [2.0]
+
+
+def test_l5_runner_uses_configurable_learner_run_timeout(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    waits: list[int] = []
+
+    class Proc:
+        def poll(self):
+            return 0
+
+        def wait(self, timeout):
+            waits.append(timeout)
+            return 0
+
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "learner_run_timeout_seconds": 900.0,
+            "restart_after_round": 1,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_learner_command", lambda *_args: "true")
+    monkeypatch.setattr(runner.subprocess, "Popen", lambda *_args, **_kwargs: Proc())
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 2)
+    monkeypatch.setattr(runner, "_shutdown_syncer", lambda *_args: None)
+    monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: None)
+    monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: None)
+
+    runner._run_learners_with_restart([syncer, learner], syncer, args, tmp_path)
+
+    assert waits == [900]

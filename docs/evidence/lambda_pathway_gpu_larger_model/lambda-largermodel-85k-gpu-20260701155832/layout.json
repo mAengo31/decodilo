@@ -1,0 +1,38 @@
+{
+  "network_path": "lambda_firewall_direct_tcp",
+  "remote_instance_count": 5,
+  "roles": {
+    "learner-0": {
+      "instance_id": "16aafddbed4f4644ba7f5a8e19f5db50",
+      "instance_type": "gpu_1x_a10",
+      "ip": "157.151.222.205",
+      "region": "us-east-1"
+    },
+    "learner-1": {
+      "instance_id": "0ac169221f514b28aa6a2e16c22faceb",
+      "instance_type": "gpu_1x_a10",
+      "ip": "150.136.219.33",
+      "region": "us-east-1"
+    },
+    "learner-2": {
+      "instance_id": "f336116cbfb7420eacccb419af58bdad",
+      "instance_type": "gpu_1x_a10",
+      "ip": "150.136.119.197",
+      "region": "us-east-1"
+    },
+    "learner-3": {
+      "instance_id": "59cf70e3938f431d82168764efc6021c",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.213.86.188",
+      "region": "us-east-1"
+    },
+    "syncer": {
+      "instance_id": "d09e34982ec544b7a08f7f03c064eaf7",
+      "instance_type": "gpu_1x_a10",
+      "ip": "132.145.135.69",
+      "region": "us-east-1"
+    }
+  },
+  "run_id": "lambda-largermodel-85k-gpu-20260701155832",
+  "syncer_port": 28080
+}

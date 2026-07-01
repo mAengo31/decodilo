@@ -92,6 +92,18 @@ def main() -> int:
         default=0.0,
         help="Optional pacing delay between sequential Lambda launch requests",
     )
+    parser.add_argument(
+        "--learner-reconnect-timeout-seconds",
+        type=float,
+        default=15.0,
+        help="Learner reconnect window after syncer restart/recovery",
+    )
+    parser.add_argument(
+        "--learner-run-timeout-seconds",
+        type=float,
+        default=300.0,
+        help="Maximum wall-clock time to wait for learner SSH commands",
+    )
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
 
@@ -377,32 +389,67 @@ def _make_source_bundle(root: Path, run_id: str) -> Path:
     return bundle
 
 
+
+def _retry_operation(label: str, operation, *, attempts: int = 3, delay_seconds: float = 10.0):
+    last_error: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            return operation()
+        except (
+            subprocess.CalledProcessError,
+            subprocess.TimeoutExpired,
+            TimeoutError,
+            URLError,
+        ) as exc:
+            last_error = exc
+            if attempt == attempts:
+                break
+            print(
+                json.dumps({"event": "retry", "label": label, "attempt": attempt}),
+                flush=True,
+            )
+            time.sleep(delay_seconds * attempt)
+    raise RuntimeError(f"{label} failed after {attempts} attempts: {last_error}") from last_error
+
 def _install_source(ip: str, key: Path, bundle: Path) -> None:
-    _ssh(ip, key, f"rm -rf {REMOTE_SRC} {REMOTE_RUN} && mkdir -p {REMOTE_SRC} {REMOTE_RUN}")
-    subprocess.run(
-        [
-            "scp",
-            "-i",
-            str(key),
-            "-o",
-            "StrictHostKeyChecking=no",
-            "-o",
-            "UserKnownHostsFile=/dev/null",
-            str(bundle),
-            f"ubuntu@{ip}:/home/ubuntu/diloco_l5_src.tar.gz",
-        ],
-        check=True,
-    )
-    _ssh(
-        ip,
-        key,
-        (
-            f"tar -xzf /home/ubuntu/diloco_l5_src.tar.gz -C {REMOTE_SRC} "
-            "&& python3 -m pip install --user 'pydantic>=2,<3' "
-            f"&& cd {REMOTE_SRC} && PYTHONPATH=src python3 -c "
-            + shlex.quote("import decodilo, numpy, pydantic; print('deps-ok')")
+    _retry_operation(
+        "prepare_remote_source_dir",
+        lambda: _ssh(
+            ip,
+            key,
+            f"rm -rf {REMOTE_SRC} {REMOTE_RUN} && mkdir -p {REMOTE_SRC} {REMOTE_RUN}",
         ),
-        timeout=240,
+    )
+    _retry_operation(
+        "upload_source_bundle",
+        lambda: subprocess.run(
+            [
+                "scp",
+                "-i",
+                str(key),
+                "-o",
+                "StrictHostKeyChecking=no",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                str(bundle),
+                f"ubuntu@{ip}:/home/ubuntu/diloco_l5_src.tar.gz",
+            ],
+            check=True,
+        ),
+    )
+    _retry_operation(
+        "install_remote_source",
+        lambda: _ssh(
+            ip,
+            key,
+            (
+                f"tar -xzf /home/ubuntu/diloco_l5_src.tar.gz -C {REMOTE_SRC} "
+                "&& python3 -m pip install --user 'pydantic>=2,<3' "
+                f"&& cd {REMOTE_SRC} && PYTHONPATH=src python3 -c "
+                + shlex.quote("import decodilo, numpy, pydantic; print('deps-ok')")
+            ),
+            timeout=240,
+        ),
     )
 
 
@@ -551,6 +598,8 @@ def _learner_command(args: argparse.Namespace, learner_id: str, syncer_ip: str) 
             args.trainer_config_json,
             "--seed",
             "123",
+            "--reconnect-timeout-seconds",
+            str(getattr(args, "learner_reconnect_timeout_seconds", 15.0)),
             *_runtime_mode_args(args, include_syncer_only=False),
         ]
     )
@@ -742,7 +791,7 @@ def _run_learners_with_restart(
     recovered = False
     restart_error: str | None = None
     try:
-        deadline = time.time() + 300
+        deadline = time.time() + float(args.learner_run_timeout_seconds)
         while time.time() < deadline:
             live = [proc for _, proc in procs if proc.poll() is None]
             current_round = _remote_committed_rounds(syncer, args)
@@ -766,7 +815,7 @@ def _run_learners_with_restart(
             time.sleep(0.5)
         failures = []
         for learner_id, proc in procs:
-            code = proc.wait(timeout=30)
+            code = proc.wait(timeout=max(30, int(args.learner_run_timeout_seconds)))
             if code != 0:
                 failures.append((learner_id, code))
         final_round = _remote_committed_rounds(syncer, args)
@@ -826,7 +875,15 @@ def _remote_committed_rounds(syncer: Instance, args: argparse.Namespace) -> int:
         f"grep -c '\"event_type\":\"sync_round_committed\"' "
         f"{REMOTE_RUN}/events.jsonl 2>/dev/null || echo 0"
     )
-    result = _ssh(syncer.ip, args.ssh_private_key, command, timeout=15)
+    try:
+        result = _retry_operation(
+            "remote_committed_rounds",
+            lambda: _ssh(syncer.ip, args.ssh_private_key, command, timeout=15),
+            attempts=3,
+            delay_seconds=2.0,
+        )
+    except RuntimeError:
+        return 0
     try:
         return int(result.stdout.strip().splitlines()[-1])
     except Exception:

@@ -1,0 +1,27 @@
+{
+  "attempted": false,
+  "final_round_before_shutdown": 0,
+  "late_learner_failures_ignored": false,
+  "learner_failures": [
+    {
+      "exit_code": 1,
+      "learner_id": "learner-0"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-1"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-2"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-3"
+    }
+  ],
+  "recovered": false,
+  "restart_error": null,
+  "restart_round": null,
+  "rounds_after_restart": 0
+}
