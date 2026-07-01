@@ -1166,9 +1166,27 @@ class SyncerService:
     def _global_state_payload(self, extra: dict[str, Any] | None = None) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "global_version": self.store.global_version,
-            "target_vector": self.target_vector.tolist(),
             "unhealthy_learners": sorted(self.unhealthy_learners),
         }
+        use_chunked_target_vector = (
+            self.config.artifact_transfer_mode == "object_store"
+            or self.target_vector.nbytes > self.config.inline_payload_max_bytes
+        )
+        if use_chunked_target_vector:
+            target_ref = self._write_global_vector_artifact(
+                "target_vector",
+                self.target_vector,
+                self.store.global_version,
+            )
+            payload["target_vector_artifact_ref"] = target_ref
+            if self.config.artifact_transfer_mode == "object_store":
+                payload["target_vector_artifact_transfer"] = "fetch_chunks"
+            else:
+                payload["target_vector_artifact_bundle"] = artifact_bundle_from_ref(
+                    target_ref, transport=self.artifact_transport
+                )
+        else:
+            payload["target_vector"] = self.target_vector.tolist()
         use_chunked_global_update = self.config.global_update_storage_mode == "chunked" or (
             self.config.global_update_storage_mode == "auto"
             and self.store.global_vector.nbytes > self.config.inline_payload_max_bytes

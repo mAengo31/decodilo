@@ -68,6 +68,7 @@ class LambdaOperationPlan:
     global_update_storage_mode: str
     inline_payload_max_bytes: int
     chunk_size_bytes: int
+    artifact_transfer_mode: str = "bundle"
     launch_ready: bool = False
     launch_allowed: bool = False
 
@@ -99,6 +100,7 @@ class LambdaOperationPlan:
             "global_update_storage_mode": self.global_update_storage_mode,
             "inline_payload_max_bytes": self.inline_payload_max_bytes,
             "chunk_size_bytes": self.chunk_size_bytes,
+            "artifact_transfer_mode": getattr(self, "artifact_transfer_mode", "bundle"),
             "launch_ready": self.launch_ready,
             "launch_allowed": self.launch_allowed,
         }
@@ -132,7 +134,7 @@ def build_lambda_operation_plan(
         evidence_package_path=evidence_package_path,
         command=command,
         redacted_command=redact_lambda_command(command),
-        remote_roles=["syncer", "learner-0", "learner-1"],
+        remote_roles=["syncer", *[f"learner-{index}" for index in range(spec.learners)]],
         network_path="lambda_firewall_direct_tcp",
         restart_strategy="syncer_checkpoint_restart",
         restart_after_round=config.restart_after_round,
@@ -156,6 +158,7 @@ def build_lambda_operation_plan(
         global_update_storage_mode=spec.global_update_storage_mode,
         inline_payload_max_bytes=spec.inline_payload_max_bytes,
         chunk_size_bytes=spec.chunk_size_bytes,
+        artifact_transfer_mode=spec.artifact_transfer_mode,
     )
 
 
@@ -214,6 +217,8 @@ def build_lambda_l5_runner_command(
         str(spec.inline_payload_max_bytes),
         "--chunk-size-mb",
         str(max(1, spec.chunk_size_bytes // (1024 * 1024))),
+        "--artifact-transfer-mode",
+        spec.artifact_transfer_mode,
     ]
     if config.ssh_key_name:
         command.extend(["--ssh-key-name", config.ssh_key_name])

@@ -1,0 +1,87 @@
+{
+  "billable_action_performed": true,
+  "launch_allowed": false,
+  "launch_ready": false,
+  "live_lambda": {
+    "accepted_updates": 18,
+    "committed_sync_rounds": 9,
+    "final_instance_count": 0,
+    "firewall_rules_restored": true,
+    "inner_optimizer_semantics": "adamw",
+    "lambda_l5_restart_recovery_direct_tcp_passed": true,
+    "outer_optimizer_semantics": "nesterov",
+    "restart_recovered": true,
+    "run_id": "lambda-sixstep-gpu-20260701173950"
+  },
+  "production_scale_ready": false,
+  "remaining_production_blockers": [
+    "external durable object store not implemented",
+    "production-scale model sizes not proven",
+    "more than 4 learners not proven",
+    "full Pathway scheduler not implemented",
+    "long-duration/cost/performance characterization not complete"
+  ],
+  "schema_version": 1,
+  "six_step_candidate_complete": true,
+  "steps": {
+    "artifact_checkpoint_pressure": {
+      "accepted_updates": 18,
+      "artifact_storage_backend": "syncer_object_store",
+      "artifact_transfer_mode": "object_store",
+      "live_run_id": "lambda-sixstep-gpu-20260701173950",
+      "passed": true,
+      "pseudo_gradient_numeric_rounds_checked": 9
+    },
+    "durable_backend": {
+      "backend": "syncer_object_store",
+      "external_vendor_backend_enabled": false,
+      "honest_limitation": "syncer_object_store is run-local and provider-neutral; S3/GCS/R2 is not implemented yet",
+      "passed": true
+    },
+    "failure_matrix": {
+      "learner_restart": {
+        "committed_sync_rounds": 5,
+        "killed_learners": [
+          "learner-0"
+        ],
+        "restarted_learners": [
+          "learner-0"
+        ]
+      },
+      "passed": true,
+      "slow_restore": {
+        "committed_sync_rounds": 6,
+        "restored_learners": [
+          "learner-1"
+        ],
+        "slowed_learners": [
+          "learner-1"
+        ]
+      }
+    },
+    "larger_model_scale_up": {
+      "artifact_storage_backend": "syncer_object_store",
+      "artifact_transfer_mode": "object_store",
+      "committed_sync_rounds": 3,
+      "passed": true,
+      "trainer_num_parameters": 29424,
+      "vector_dim": 29424
+    },
+    "more_learners": {
+      "committed_sync_rounds": 2,
+      "learners": 4,
+      "min_quorum": 3,
+      "passed": true
+    },
+    "pathway_operation_layer": {
+      "fail_closed": true,
+      "managed_profiles": [
+        "larger_model",
+        "more_learners",
+        "failure_matrix"
+      ],
+      "passed": true,
+      "pathway_operation_layer_ready": false
+    }
+  }
+}

@@ -103,3 +103,52 @@ def test_pathway_chunked_lambda_backend_is_fail_closed_but_preserves_plan(tmp_pa
     assert "--payload-storage-mode" in command
     assert command[command.index("--payload-storage-mode") + 1] == "chunked"
     assert command[command.index("--global-update-storage-mode") + 1] == "chunked"
+
+
+def test_pathway_compiles_six_step_production_candidate_profiles(tmp_path) -> None:
+    from decodilo.operation.pathway import compile_six_step_production_candidate
+
+    plans = compile_six_step_production_candidate(
+        workdir=tmp_path,
+        lambda_config=LambdaOperationBackendConfig(
+            run_id="six-step-dry-run",
+            evidence_root=tmp_path / "evidence",
+            ssh_key_name="test-key",
+            ssh_private_key=tmp_path / "private-key.pem",
+            restart_after_round=2,
+        ),
+    )
+
+    assert set(plans) == {"larger_model", "more_learners", "failure_matrix"}
+    larger = plans["larger_model"]
+    assert larger.pathway_layer == "pathway_lite_six_step_candidate"
+    assert larger.operation_spec.vector_dim == 29_424
+    assert larger.operation_spec.artifact_transfer_mode == "object_store"
+    assert larger.operation_spec.production_step_tags == [
+        "larger_model",
+        "artifact_pressure",
+        "object_store",
+    ]
+    assert larger.lambda_plan.command[
+        larger.lambda_plan.command.index("--artifact-transfer-mode") + 1
+    ] == "object_store"
+    assert larger.lambda_plan.launch_ready is False
+    assert larger.lambda_plan.launch_allowed is False
+    assert "larger_model_above_13k_parameters" in larger.required_evidence
+    assert "external_durable_backend_not_claimed" in larger.required_evidence
+
+    more = plans["more_learners"]
+    assert more.operation_spec.learners == 4
+    assert more.operation_spec.min_quorum == 3
+    assert more.operation_spec.artifact_transfer_mode == "object_store"
+    assert more.lambda_plan.remote_roles == [
+        "syncer",
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3",
+    ]
+
+    failure = plans["failure_matrix"]
+    assert "failure_matrix" in failure.operation_spec.production_step_tags
+    assert failure.operation_spec.restart_syncer_after_round == 2

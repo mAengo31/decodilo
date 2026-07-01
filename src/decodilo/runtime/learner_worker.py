@@ -202,7 +202,17 @@ class LearnerWorker:
         else:
             global_vector = np.asarray(response.payload["global_vector"], dtype=np.float64)
             response_version = int(response.payload["global_version"])
-        target_vector = np.asarray(response.payload["target_vector"], dtype=np.float64)
+        if "target_vector_artifact_ref" in response.payload:
+            if "target_vector_artifact_bundle" in response.payload:
+                materialize_artifact_bundle(
+                    response.payload["target_vector_artifact_bundle"],
+                    transport=self.artifact_transport,
+                )
+            target_vector, _ = await self._apply_update_ref_to_vector(
+                response.payload["target_vector_artifact_ref"]
+            )
+        else:
+            target_vector = np.asarray(response.payload["target_vector"], dtype=np.float64)
         checkpoint = None
         initial_state: TrainerState | None = None
         if self.checkpoint_path.exists():

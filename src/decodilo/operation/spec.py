@@ -72,6 +72,8 @@ class OperationSpec(BaseModel):
     global_update_storage_mode: str = "inline"
     inline_payload_max_bytes: int = Field(default=1_000_000, ge=1)
     chunk_size_bytes: int = Field(default=1024 * 1024, ge=1)
+    artifact_transfer_mode: str = "bundle"
+    production_step_tags: list[str] = Field(default_factory=list)
     safety: OperationSafetyEnvelope = Field(default_factory=OperationSafetyEnvelope)
 
     @classmethod
@@ -105,6 +107,8 @@ class OperationSpec(BaseModel):
         global_update_storage_mode: str = "inline",
         inline_payload_max_bytes: int = 1_000_000,
         chunk_size_mb: int = 1,
+        artifact_transfer_mode: str = "bundle",
+        production_step_tags: list[str] | None = None,
     ) -> OperationSpec:
         """Build an operation spec for the real torch causal-LM trainer path.
 
@@ -159,6 +163,8 @@ class OperationSpec(BaseModel):
             global_update_storage_mode=global_update_storage_mode,
             inline_payload_max_bytes=inline_payload_max_bytes,
             chunk_size_bytes=chunk_size_bytes_from_mb(chunk_size_mb),
+            artifact_transfer_mode=artifact_transfer_mode,
+            production_step_tags=production_step_tags or [],
         )
 
     @model_validator(mode="after")
@@ -169,6 +175,8 @@ class OperationSpec(BaseModel):
             merge_mode=self.merge_mode,
             global_update_storage_mode=self.global_update_storage_mode,
         )
+        if self.artifact_transfer_mode not in {"bundle", "object_store"}:
+            raise ValueError(f"unsupported artifact_transfer_mode {self.artifact_transfer_mode!r}")
         if self.min_quorum > self.learners:
             raise ValueError("min_quorum cannot exceed learners")
         if self.inner_optimizer != "adamw":
