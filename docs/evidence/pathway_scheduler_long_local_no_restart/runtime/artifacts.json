@@ -1,0 +1,1961 @@
+{
+  "artifacts": {
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/checkpoint_global_vector-v26-570.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/checkpoint_global_vector-v26-570.artifact.json",
+      "sha256": "31390edb5e3753b1a86a9954737713132517237494f9422eccba53cc42cf647a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-1.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-1.artifact.json",
+      "sha256": "e447fb68cacd2a678769fba610e51a5e09c2a224e11cecf9681dac3ba12f058a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-2.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-2.artifact.json",
+      "sha256": "e447fb68cacd2a678769fba610e51a5e09c2a224e11cecf9681dac3ba12f058a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-6.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-6.artifact.json",
+      "sha256": "e447fb68cacd2a678769fba610e51a5e09c2a224e11cecf9681dac3ba12f058a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-9.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-9.artifact.json",
+      "sha256": "e447fb68cacd2a678769fba610e51a5e09c2a224e11cecf9681dac3ba12f058a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-32.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-32.artifact.json",
+      "sha256": "86996b4be97ac7f6317c12b46f633940c8066b470bfe88fd678c465fee05182a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-33.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-33.artifact.json",
+      "sha256": "86996b4be97ac7f6317c12b46f633940c8066b470bfe88fd678c465fee05182a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-35.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-35.artifact.json",
+      "sha256": "86996b4be97ac7f6317c12b46f633940c8066b470bfe88fd678c465fee05182a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-40.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-40.artifact.json",
+      "sha256": "86996b4be97ac7f6317c12b46f633940c8066b470bfe88fd678c465fee05182a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-226.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-226.artifact.json",
+      "sha256": "6add423b0f9f79fada81fe8d63ce7186a495bc601d7117fd7e38f2464d8425d6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-229.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-229.artifact.json",
+      "sha256": "6add423b0f9f79fada81fe8d63ce7186a495bc601d7117fd7e38f2464d8425d6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-232.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-232.artifact.json",
+      "sha256": "6add423b0f9f79fada81fe8d63ce7186a495bc601d7117fd7e38f2464d8425d6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-234.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-234.artifact.json",
+      "sha256": "6add423b0f9f79fada81fe8d63ce7186a495bc601d7117fd7e38f2464d8425d6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-242.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-242.artifact.json",
+      "sha256": "550806b613891ac6299450afe2a808130a68e34a51fb1d110928fe8fed456594"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-245.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-245.artifact.json",
+      "sha256": "550806b613891ac6299450afe2a808130a68e34a51fb1d110928fe8fed456594"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-247.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-247.artifact.json",
+      "sha256": "550806b613891ac6299450afe2a808130a68e34a51fb1d110928fe8fed456594"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-250.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-250.artifact.json",
+      "sha256": "550806b613891ac6299450afe2a808130a68e34a51fb1d110928fe8fed456594"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-264.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-264.artifact.json",
+      "sha256": "203c520d9b517f1a5da627e9c025c0485e4bfd6c6ea92bba465be4eab8c9f3c9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-267.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-267.artifact.json",
+      "sha256": "203c520d9b517f1a5da627e9c025c0485e4bfd6c6ea92bba465be4eab8c9f3c9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-269.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-269.artifact.json",
+      "sha256": "203c520d9b517f1a5da627e9c025c0485e4bfd6c6ea92bba465be4eab8c9f3c9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-273.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-273.artifact.json",
+      "sha256": "203c520d9b517f1a5da627e9c025c0485e4bfd6c6ea92bba465be4eab8c9f3c9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-289.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-289.artifact.json",
+      "sha256": "d966c804b8ad3f4714fc27f1d89452192b3d09de137e302cd5a71bf4097066a3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-291.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-291.artifact.json",
+      "sha256": "d966c804b8ad3f4714fc27f1d89452192b3d09de137e302cd5a71bf4097066a3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-294.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-294.artifact.json",
+      "sha256": "d966c804b8ad3f4714fc27f1d89452192b3d09de137e302cd5a71bf4097066a3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-297.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-297.artifact.json",
+      "sha256": "d966c804b8ad3f4714fc27f1d89452192b3d09de137e302cd5a71bf4097066a3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-314.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-314.artifact.json",
+      "sha256": "d4c9f1ee1836bc45f86a0b88df0e5b4f966cc62b4be563e565b76014b388ec02"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-316.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-316.artifact.json",
+      "sha256": "d4c9f1ee1836bc45f86a0b88df0e5b4f966cc62b4be563e565b76014b388ec02"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-321.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-321.artifact.json",
+      "sha256": "d4c9f1ee1836bc45f86a0b88df0e5b4f966cc62b4be563e565b76014b388ec02"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-322.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-322.artifact.json",
+      "sha256": "d4c9f1ee1836bc45f86a0b88df0e5b4f966cc62b4be563e565b76014b388ec02"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-333.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-333.artifact.json",
+      "sha256": "1bb19948a3867338625537967481c1fa18dc6cb07aa46d2c90d97bb01a971f54"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-339.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-339.artifact.json",
+      "sha256": "1bb19948a3867338625537967481c1fa18dc6cb07aa46d2c90d97bb01a971f54"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-341.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-341.artifact.json",
+      "sha256": "1bb19948a3867338625537967481c1fa18dc6cb07aa46d2c90d97bb01a971f54"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-349.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-349.artifact.json",
+      "sha256": "2e39a6bff17ab87e433a0e1e94fecc986335d8adf0030b915be28edca14a10be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-352.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-352.artifact.json",
+      "sha256": "2e39a6bff17ab87e433a0e1e94fecc986335d8adf0030b915be28edca14a10be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-358.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-358.artifact.json",
+      "sha256": "2e39a6bff17ab87e433a0e1e94fecc986335d8adf0030b915be28edca14a10be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-359.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-359.artifact.json",
+      "sha256": "2e39a6bff17ab87e433a0e1e94fecc986335d8adf0030b915be28edca14a10be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-376.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-376.artifact.json",
+      "sha256": "0e4d6ca56da32bdb753f0b628b7ec49d4c10dc9deffa8443c7781bfaf2c7e449"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-377.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-377.artifact.json",
+      "sha256": "0e4d6ca56da32bdb753f0b628b7ec49d4c10dc9deffa8443c7781bfaf2c7e449"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-381.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-381.artifact.json",
+      "sha256": "0e4d6ca56da32bdb753f0b628b7ec49d4c10dc9deffa8443c7781bfaf2c7e449"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-384.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-384.artifact.json",
+      "sha256": "0e4d6ca56da32bdb753f0b628b7ec49d4c10dc9deffa8443c7781bfaf2c7e449"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-400.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-400.artifact.json",
+      "sha256": "27c66b65770d61060f86f4b3e81e31b02ec1691bc909a6347886ca3d9f71eca6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-402.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-402.artifact.json",
+      "sha256": "27c66b65770d61060f86f4b3e81e31b02ec1691bc909a6347886ca3d9f71eca6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-405.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-405.artifact.json",
+      "sha256": "27c66b65770d61060f86f4b3e81e31b02ec1691bc909a6347886ca3d9f71eca6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-409.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-409.artifact.json",
+      "sha256": "27c66b65770d61060f86f4b3e81e31b02ec1691bc909a6347886ca3d9f71eca6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-422.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-422.artifact.json",
+      "sha256": "425addd8e78b07ff171dbe4d0e80e1f21f78eb0acec79b5c7f72efafde760a4d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-425.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-425.artifact.json",
+      "sha256": "425addd8e78b07ff171dbe4d0e80e1f21f78eb0acec79b5c7f72efafde760a4d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-56.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-56.artifact.json",
+      "sha256": "9f0242836bc50ca6cf22b95b50e5e82669f76ec52b27adfdbd5727bfb4d45674"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-58.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-58.artifact.json",
+      "sha256": "9f0242836bc50ca6cf22b95b50e5e82669f76ec52b27adfdbd5727bfb4d45674"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-61.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-61.artifact.json",
+      "sha256": "9f0242836bc50ca6cf22b95b50e5e82669f76ec52b27adfdbd5727bfb4d45674"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-65.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-65.artifact.json",
+      "sha256": "9f0242836bc50ca6cf22b95b50e5e82669f76ec52b27adfdbd5727bfb4d45674"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-432.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-432.artifact.json",
+      "sha256": "9fdc2cc417f5e5729655e196bde107c50ba1ff6eae5f5e9f73896829484d75f2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-435.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-435.artifact.json",
+      "sha256": "9fdc2cc417f5e5729655e196bde107c50ba1ff6eae5f5e9f73896829484d75f2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-438.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-438.artifact.json",
+      "sha256": "9fdc2cc417f5e5729655e196bde107c50ba1ff6eae5f5e9f73896829484d75f2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-452.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-452.artifact.json",
+      "sha256": "b0b497dad365ce18464e46b4a628d95cc0ab513f4d1581939e132f511519b8f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-458.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-458.artifact.json",
+      "sha256": "b0b497dad365ce18464e46b4a628d95cc0ab513f4d1581939e132f511519b8f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-461.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-461.artifact.json",
+      "sha256": "b0b497dad365ce18464e46b4a628d95cc0ab513f4d1581939e132f511519b8f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-464.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-464.artifact.json",
+      "sha256": "b0b497dad365ce18464e46b4a628d95cc0ab513f4d1581939e132f511519b8f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-474.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-474.artifact.json",
+      "sha256": "b7126bcb5cd4d7535274f6044a78954c1556c94f86be3c4f3bddf38f767f1a73"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-484.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-484.artifact.json",
+      "sha256": "747fe8a50147eed163ec8a2d884bf92bf861161c7dee7272443bf20ee346ab77"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-487.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-487.artifact.json",
+      "sha256": "747fe8a50147eed163ec8a2d884bf92bf861161c7dee7272443bf20ee346ab77"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-489.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-489.artifact.json",
+      "sha256": "747fe8a50147eed163ec8a2d884bf92bf861161c7dee7272443bf20ee346ab77"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-504.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-504.artifact.json",
+      "sha256": "ac5e834fa91566bd8ed3432c24caa36cfc149d34ac80cc193de4bca941805c61"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-507.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-507.artifact.json",
+      "sha256": "ac5e834fa91566bd8ed3432c24caa36cfc149d34ac80cc193de4bca941805c61"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-509.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-509.artifact.json",
+      "sha256": "ac5e834fa91566bd8ed3432c24caa36cfc149d34ac80cc193de4bca941805c61"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-513.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-513.artifact.json",
+      "sha256": "ac5e834fa91566bd8ed3432c24caa36cfc149d34ac80cc193de4bca941805c61"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-523.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-523.artifact.json",
+      "sha256": "9bf5e9b066c15108741d7aa547a08abaa3b54fa20cbd575052e01f39f2dbb3ce"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-525.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-525.artifact.json",
+      "sha256": "9bf5e9b066c15108741d7aa547a08abaa3b54fa20cbd575052e01f39f2dbb3ce"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-536.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-536.artifact.json",
+      "sha256": "31b9d55def55aedb28af4b4231add0ea99db00a22655fd37bc37806fb6d8e84c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-539.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-539.artifact.json",
+      "sha256": "31b9d55def55aedb28af4b4231add0ea99db00a22655fd37bc37806fb6d8e84c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-542.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-542.artifact.json",
+      "sha256": "31b9d55def55aedb28af4b4231add0ea99db00a22655fd37bc37806fb6d8e84c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-546.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-546.artifact.json",
+      "sha256": "31b9d55def55aedb28af4b4231add0ea99db00a22655fd37bc37806fb6d8e84c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v26-558.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v26-558.artifact.json",
+      "sha256": "e0e49561c696bf8de1c8bdacf4eece4675945cbece5cc007bcb25ac393533ead"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v3-78.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v3-78.artifact.json",
+      "sha256": "39cab409a4d6e777fda7fd9201641d722b0525655cddc64ffc490ed50c9bb55c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-87.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-87.artifact.json",
+      "sha256": "8d765ed69b6644f4a00b6d7753d599997c0df2a1e184018592d106253ac7ee67"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-88.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-88.artifact.json",
+      "sha256": "8d765ed69b6644f4a00b6d7753d599997c0df2a1e184018592d106253ac7ee67"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-89.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-89.artifact.json",
+      "sha256": "8d765ed69b6644f4a00b6d7753d599997c0df2a1e184018592d106253ac7ee67"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-94.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-94.artifact.json",
+      "sha256": "8d765ed69b6644f4a00b6d7753d599997c0df2a1e184018592d106253ac7ee67"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-113.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-113.artifact.json",
+      "sha256": "0f481917de9ef31d845c4f779633c01e7bb6ff04d319308a668ca0c852b579bf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-116.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-116.artifact.json",
+      "sha256": "0f481917de9ef31d845c4f779633c01e7bb6ff04d319308a668ca0c852b579bf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-120.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-120.artifact.json",
+      "sha256": "0f481917de9ef31d845c4f779633c01e7bb6ff04d319308a668ca0c852b579bf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-121.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-121.artifact.json",
+      "sha256": "0f481917de9ef31d845c4f779633c01e7bb6ff04d319308a668ca0c852b579bf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-138.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-138.artifact.json",
+      "sha256": "3e0fa7754a32ab57685e2d43067389174fb7fe4ea28a57b7b603db502b1ac489"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-140.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-140.artifact.json",
+      "sha256": "3e0fa7754a32ab57685e2d43067389174fb7fe4ea28a57b7b603db502b1ac489"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-145.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-145.artifact.json",
+      "sha256": "3e0fa7754a32ab57685e2d43067389174fb7fe4ea28a57b7b603db502b1ac489"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-146.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-146.artifact.json",
+      "sha256": "3e0fa7754a32ab57685e2d43067389174fb7fe4ea28a57b7b603db502b1ac489"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-154.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-154.artifact.json",
+      "sha256": "34890f3b7e4450673fb7a39656575d328f76bd6aa7bcc5b26b89d5be4b58a5f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-157.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-157.artifact.json",
+      "sha256": "34890f3b7e4450673fb7a39656575d328f76bd6aa7bcc5b26b89d5be4b58a5f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-159.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-159.artifact.json",
+      "sha256": "34890f3b7e4450673fb7a39656575d328f76bd6aa7bcc5b26b89d5be4b58a5f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-162.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-162.artifact.json",
+      "sha256": "34890f3b7e4450673fb7a39656575d328f76bd6aa7bcc5b26b89d5be4b58a5f9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-176.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-176.artifact.json",
+      "sha256": "51ba1bf0805e4f4f06915f5beaf0491b1d74f4ff8ab6a8ac0298240919bb2bf5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-180.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-180.artifact.json",
+      "sha256": "51ba1bf0805e4f4f06915f5beaf0491b1d74f4ff8ab6a8ac0298240919bb2bf5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-181.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-181.artifact.json",
+      "sha256": "51ba1bf0805e4f4f06915f5beaf0491b1d74f4ff8ab6a8ac0298240919bb2bf5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-183.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-183.artifact.json",
+      "sha256": "51ba1bf0805e4f4f06915f5beaf0491b1d74f4ff8ab6a8ac0298240919bb2bf5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-201.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-201.artifact.json",
+      "sha256": "5a705dde132401847ef187bce6293f7cb986407e212859d271e09ea6624355e9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-205.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-205.artifact.json",
+      "sha256": "5a705dde132401847ef187bce6293f7cb986407e212859d271e09ea6624355e9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-206.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-206.artifact.json",
+      "sha256": "5a705dde132401847ef187bce6293f7cb986407e212859d271e09ea6624355e9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-209.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-209.artifact.json",
+      "sha256": "5a705dde132401847ef187bce6293f7cb986407e212859d271e09ea6624355e9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v1-24.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v1-24.artifact.json",
+      "sha256": "6e9a961d642f0e5151fb0b220a9ca0097d6230b7f1b5119c973aa3ebaa63fd08"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v10-216.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v10-216.artifact.json",
+      "sha256": "5c9e4780aec5bbf7b684d2af070f1ffb51e3cded3b346b24ceb86017ac57f56d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v11-238.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v11-238.artifact.json",
+      "sha256": "ee9a0cf685644b9732dd8e6689ccd16d84ca0616a47de86de772a6bd1ba93ed5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v12-260.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v12-260.artifact.json",
+      "sha256": "9745564828ddc6e0dba39d4e3dca50d23db2ffe5613b56a0577f6ff302b9246e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v13-282.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v13-282.artifact.json",
+      "sha256": "97e333ac27318f84abce140c8331b5bd4125b1d4810ca40397fec6aef0a713d1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v14-304.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v14-304.artifact.json",
+      "sha256": "65bd84f1f89c362d196e9e745db453e62dc6e81b768cce0b07a4530018280f6c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v15-326.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v15-326.artifact.json",
+      "sha256": "fe7c25d73c0e51753162877681a74ae38b1c0744997e7a33c7e5690f472a24cc"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v16-345.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v16-345.artifact.json",
+      "sha256": "6e9fffbabcf0d5a3c8ce5219f26fce7682115dfb23642c445678601d0ce684ff"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v17-368.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v17-368.artifact.json",
+      "sha256": "e8b80249c7953d86aa6b96956050fdbacaf1f46fc31208a56c70503796720e98"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v18-390.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v18-390.artifact.json",
+      "sha256": "f3097a40e96786e7e508fd7f1f09cd330d2dd81153b6b6ec30e0f9dfaf2a8a50"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v19-412.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v19-412.artifact.json",
+      "sha256": "a562630c685ef94637609de30d3f2e9723aae0533102fdf61a36ac0405459be9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v2-45.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v2-45.artifact.json",
+      "sha256": "ca9e4e8b5b96c8d11fb953b583791e45e3eb2b541b19222a3b5fd3363e9a30a3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v20-427.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v20-427.artifact.json",
+      "sha256": "2bd5acb4877c5f1e3e33b129eb48faa608737ce38f0611e03d17b1da1f7787f1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v21-447.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v21-447.artifact.json",
+      "sha256": "f3449fe49eadd40f50e74474b8845c7955eae4a47956384202cdc4e4d6f58c32"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v22-472.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v22-472.artifact.json",
+      "sha256": "1ccd92160e15876fdeb5c68a532153115e8cce012037b64b3a2cc83bf3c19d85"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v23-494.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v23-494.artifact.json",
+      "sha256": "5dd0d6517596a7406b65e23db0be3098f4159e727f5562f84f723deb6115dc26"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v24-516.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v24-516.artifact.json",
+      "sha256": "c924aa447bfadbb603905bc4aa110fc7522e27efd53c82b0c7050db3d9ba16ea"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v25-531.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v25-531.artifact.json",
+      "sha256": "f7214ff5e2462307fd0f3e4480a13483336694fc28d339086741a83e3d4994b0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v26-556.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v26-556.artifact.json",
+      "sha256": "6f074ccf29d7bb579286073d54aed8793d6f8e3da8b949000a6304c8c2ff29a7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v3-68.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v3-68.artifact.json",
+      "sha256": "6ab0b2e79b14b4a41ea957b35f6caca4508691aaaa5942545a059cfd78fe99a2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v4-81.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v4-81.artifact.json",
+      "sha256": "8187bf9fd26f52781e1dd00440f88cd5ff3590c5ff6a1e6fa70a6900cea84d79"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v5-105.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v5-105.artifact.json",
+      "sha256": "d012f5a4c48cf4ca9130bf855b5b980d49baf9d38bc4c4e951b860b7488a82be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v6-128.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v6-128.artifact.json",
+      "sha256": "ee0274b06bd7cef70e6d52479cf207e051e580a690f6e3b817b18a08e5971297"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v7-150.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v7-150.artifact.json",
+      "sha256": "0f59ca5d92a0bffd9938f7990a4d97f0a8b5a394f94e91fb3bc7a7134ccc8b18"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v8-170.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v8-170.artifact.json",
+      "sha256": "df68e5e1c1c62e2ec6ecc07f6dc8aa2feec88d932247220cb7f8a32ddca56cfe"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v9-194.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v9-194.artifact.json",
+      "sha256": "b43f2b25c01933d18be9722325a1fce719225d0a37ea191ad837ec45aeb7877f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v0-24.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v0-24.artifact.json",
+      "sha256": "d82539922d0f0bdeb19c47abd71874e667a6f0a182d93a6502ecbd89414b1c8a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v1-45.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v1-45.artifact.json",
+      "sha256": "18c3c57118cd2d3c65cef783f4b75f697f754c4b26edbb9f4d22b43d64abe2fa"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v10-238.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v10-238.artifact.json",
+      "sha256": "dc2e1739163b922b2c77f453a4f0cfee43703e60a843302bb20bc2c23ac238b9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v11-260.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v11-260.artifact.json",
+      "sha256": "e1e909b6f5245c2b2d82fd5ffc2a6b83be16808b50d4411a1d383893183f45ed"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v12-282.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v12-282.artifact.json",
+      "sha256": "249d794fc655729c75156a797c079a19acfdc5e43128423593887669739c785f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v13-304.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v13-304.artifact.json",
+      "sha256": "8b4a7fcd60d2f196402b34a6efd05b422ddd5ea3a93b4056d5251b01d7ab5f8e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v14-326.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v14-326.artifact.json",
+      "sha256": "34d76a10b0cdbce3d31b808182d955e32643806d03c03e466d9625ffafe9f110"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v15-345.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v15-345.artifact.json",
+      "sha256": "1813fcfe5e44d9ab8c152c66bd90121826dcd9861992b6a5edb0b119cc7dd436"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v16-368.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v16-368.artifact.json",
+      "sha256": "40deab6bb2942c0ac4efa474bdb3c9ec51aad5d99d8320c4746a63c7bfd3b7b3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v17-390.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v17-390.artifact.json",
+      "sha256": "0196ff1baf5246834e36e47a606880f1cdcd1d83271fb6372ddb92ee5a3141da"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v18-412.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v18-412.artifact.json",
+      "sha256": "f5c00e45a3661f3abadde323c96c02f3851e38cf1ab18702b2cd65fcc04c52a5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v19-427.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v19-427.artifact.json",
+      "sha256": "5ac9f0f63de5babbc2b2e826793d50513c8fd9971eaa3177a970fc12a2cbdddf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v2-68.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v2-68.artifact.json",
+      "sha256": "489b67246d628e43e109a5aa56c4ab77efe62c115f1780a388f25ee10ee9501f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v20-447.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v20-447.artifact.json",
+      "sha256": "c87ec8eeec889300299e08bf3a8057558e32dbe67b743658a4e2461800da2c7b"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v21-472.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v21-472.artifact.json",
+      "sha256": "2279f5bf10b5e7fe9fba0c5d766c566a0b0322d93d13cfd61bb19479bfe7678a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v22-494.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v22-494.artifact.json",
+      "sha256": "63401e404eb19b8b8267b4b0d9d0ad9b0e0d5d8100edb3789ee29f38656bcd3c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v23-516.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v23-516.artifact.json",
+      "sha256": "cde507ccfb4e6e4da31805c6ac99be3f15d913edcf6b84e490928e2ea7230d47"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v24-531.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v24-531.artifact.json",
+      "sha256": "98fdac5b1f921d44079126d5aa306354fc7e3109e7dc2426808c61a04ad5b5de"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v25-556.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v25-556.artifact.json",
+      "sha256": "f8eca4305fa9dbfbbbc304a1f29f55c07d0d1db826395c969f37cc1ba3382ff7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v3-81.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v3-81.artifact.json",
+      "sha256": "7ee7da79e6b9c210a140d07fa704167117233d0adb8ff70b181a6d8870c926cd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v4-105.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v4-105.artifact.json",
+      "sha256": "2493ad08abc1dfc0a44e1898d2570d9ffb734d912bdad8241b76f505c28608b6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v5-128.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v5-128.artifact.json",
+      "sha256": "1504736aa8fba1866f604f0b31d3031a176e58696748c945f95f16b21ca9bbf3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v6-150.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v6-150.artifact.json",
+      "sha256": "4dc2f6e382c87a3dcb2267d8f2567efe13b0aa2a17916a04526a5349e25b5cc7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v7-170.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v7-170.artifact.json",
+      "sha256": "f754b91b5aae3591fbd296c18b654c434fc987620d0f79f89a04c2f0f9bb3277"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v8-194.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v8-194.artifact.json",
+      "sha256": "ed465d45bc17c3180069ffeda2e457efbaadff8e8d8c62952cc255a43030c316"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v9-216.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v9-216.artifact.json",
+      "sha256": "c6e616bb4cb736ee66340c98b6fe561ad9f18b4228ba5176540dbc24c37794ce"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v1-24.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v1-24.artifact.json",
+      "sha256": "c4fc7e843e61f0a5ff0b81e1fa517f06377888ecb835b46035fca7ca17c086ae"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v10-216.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v10-216.artifact.json",
+      "sha256": "c8a2cb769d71a3a76196f5bbcf34a074d3f6e8f2c177dfd276684ab02d24edfb"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v11-238.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v11-238.artifact.json",
+      "sha256": "142ec31bd4e8825ebfb243bbb105ee7510e4ecaad2ac6522dce444ce990bb535"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v12-260.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v12-260.artifact.json",
+      "sha256": "ff02fab1b2ca449ade1b113507ac27b82729b29830421d15c5ba6f27c9c9c4c2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v13-282.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v13-282.artifact.json",
+      "sha256": "ca6384d2d329cd1302ea4ea2540325bcb3b33f189ff4bc5e58e7dbee912e3611"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v14-304.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v14-304.artifact.json",
+      "sha256": "0d7e92dec5df74353f4390d842cb87e762144272cd744a0f243a731b1ee807c9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v15-326.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v15-326.artifact.json",
+      "sha256": "248029a8e4b36dc07a300d7a7714bb0e6832cd89b2c7f99d85d7080a8f35ef6a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v16-345.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v16-345.artifact.json",
+      "sha256": "5844ab7c00700302a36786a4c76b9ba596631b7294bcd43c3f4fe9a5bb1486d3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v17-368.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v17-368.artifact.json",
+      "sha256": "92a047e1d416058f4e325a36160e93643edce13aa6c0f17d56c38648a6236b95"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v18-390.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v18-390.artifact.json",
+      "sha256": "b59c89ad4c70a3a97aa037084e96c09c0ad3248a8cfb61cf5981d9ffe3b21119"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v19-412.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v19-412.artifact.json",
+      "sha256": "95d6f38135ff1f38fc288ebc1acc510478f485ad350b86f2f214768a1594fe84"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v2-45.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v2-45.artifact.json",
+      "sha256": "4f5b1ce4bec2e1db1c8372fa9ba2d3b11b39b5b71856b15dd6044d6245799e1a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v20-427.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v20-427.artifact.json",
+      "sha256": "886c0c7a8e99b15c4bd66c345fcad56f5d5afde10a548c9631d5aa2e4a244e1f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v21-447.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v21-447.artifact.json",
+      "sha256": "10a4c78bf7d91a4455ae9ef471fe1287604e6a1cef18574dcaa22c32c0412c93"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v22-472.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v22-472.artifact.json",
+      "sha256": "44477c42fbde1780d340ddff2967f4cecfa014e7544e2c7bb1a3dbe5e4092c7a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v23-494.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v23-494.artifact.json",
+      "sha256": "0c0159093e1dad4d91f062e407d9cc5d52a04cb568b89ab4d7b68a495bc500c3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v24-516.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v24-516.artifact.json",
+      "sha256": "65b6a98516401b5684aeb9132db374724fe65c857202c29f6bed981c59e5f7dd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v25-531.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v25-531.artifact.json",
+      "sha256": "83f839367a0c4ba3a768395add6a12bb605e7fc0433a86cdd4e73cfdcb81b8a9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v26-556.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v26-556.artifact.json",
+      "sha256": "61fd1ecd0e39091f9663b1866d06a8469764357570da76ae0eaf0dbfc806b200"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v3-68.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v3-68.artifact.json",
+      "sha256": "bc4fa282c3de0ac361cd31be3469dd2c1b2d6453e5123afc7b67e01e735f26e6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v4-81.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v4-81.artifact.json",
+      "sha256": "6c0caef7db52fa752d6ad4bd44b1b619ecb134a35f5e240acb745a333cd1d46d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v5-105.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v5-105.artifact.json",
+      "sha256": "c1bdf88f188f91bb89368963c7e69e20bc471a3f57d6634ff29f2b352b15851e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v6-128.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v6-128.artifact.json",
+      "sha256": "b5980faa114b3978fea3fc7d9951c0c28d997583dfd1cf421bd7934a60c10d34"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v7-150.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v7-150.artifact.json",
+      "sha256": "c0b2510a6715a0300d06767f2f740a14914c57204e53c3133caf611636e193ef"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v8-170.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v8-170.artifact.json",
+      "sha256": "7b697249bba0aacd8792241b924a95a02f35b17a57913b012e6addf8f53a3802"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v9-194.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v9-194.artifact.json",
+      "sha256": "9139ff1a95da2ab55dc50d13f643c656af4d4e93e432e63c081136358a36cdaf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-10-v0.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-10-v0.artifact.json",
+      "sha256": "cf52cf531b5f7e544530691860c0ce1f9ad9189012716252f179148c658798ca"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-100-v12.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-100-v12.artifact.json",
+      "sha256": "50a62dacdbba3c9b78aef83ed4922d8359ac12e4f2fe8957ccbd1fe9d2cbc6dd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-110-v13.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-110-v13.artifact.json",
+      "sha256": "6d781c4d7e5f83a596af6f223c3f20dfe77ba4483af98caad61b8bff57adab58"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-120-v14.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-120-v14.artifact.json",
+      "sha256": "bb96ae94ecf8ffa249e2775c957c32097266e0a4669608048814e4c276c9097f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-130-v16.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-130-v16.artifact.json",
+      "sha256": "99c5be27019cfeace3643e6c47f036bd98f12b029ade621e10d552862a946ed2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-140-v17.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-140-v17.artifact.json",
+      "sha256": "655d262d9332998e954a830c1733917cd0daaf695c2cd42ae987147f94af7f59"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-150-v18.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-150-v18.artifact.json",
+      "sha256": "d18ca7ac42dc755a09214d0b1789ad0db47fdd7937c7ada616bc337b4f976eb0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-160-v19.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-160-v19.artifact.json",
+      "sha256": "23c082db9635b546ce2e25d8c8bbb4c2c005f388dd0c91a60585c661c1e1d033"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-170-v21.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-170-v21.artifact.json",
+      "sha256": "ccf7982518d3e86ba096836a6d23818eb941c2b6056395eb107bd748cabd6af5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-180-v22.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-180-v22.artifact.json",
+      "sha256": "f3b48405b7f0d20c21da47f0070c3848b22e0565adf796dbfa5b1ba7d46c595b"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-190-v23.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-190-v23.artifact.json",
+      "sha256": "2e4408283d80e398f9296c4d4b2c102afa6820823db82fca3088f9eafe9bde48"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-20-v1.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-20-v1.artifact.json",
+      "sha256": "ce656713421f737de5448b9bfc308e61d5e4f15e23bfc8384e8e608d5e18627d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-200-v25.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-200-v25.artifact.json",
+      "sha256": "8df87984b9a88466dfe2e01940f850951742d241a3925ef33880943d6c565592"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-30-v2.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-30-v2.artifact.json",
+      "sha256": "679bc226ed7e8b096bb60bfded6d46ed50e618da63a0def68c7e94999a8f6cd8"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-40-v4.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-40-v4.artifact.json",
+      "sha256": "2fb41fa520ae26919386e6a66124844a3d818e3bd8a93459b1f1b527ea670d5e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-50-v5.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-50-v5.artifact.json",
+      "sha256": "87c8a00b07472afc916394bd199723ca9b74518176203a4589e6d348dcc0d578"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-60-v6.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-60-v6.artifact.json",
+      "sha256": "3ff15afb5a293fc829dbe17054fd8085540fa0e2cfa708f0ab435061b891c30d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-70-v8.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-70-v8.artifact.json",
+      "sha256": "5a4f82e9d0bd80f9d1edee0ec8c2005dcfec495e1a69c37d708e301a9f22d645"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-80-v9.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-80-v9.artifact.json",
+      "sha256": "68f6c69475b0867b5f79984bd38e9700edd1bc0fab3d8779543eb4226f601865"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-90-v10.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-90-v10.artifact.json",
+      "sha256": "94f15b24d4f310f83d5d3674fd6a2da9bd853438ac2fd6fefd245f39bad159d6"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-10-v0.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-10-v0.artifact.json",
+      "sha256": "4b25744ad2e0b90ef8a9f563a3704c28756f41f8acbcdf3084ddfdd010007dcf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-100-v12.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-100-v12.artifact.json",
+      "sha256": "2b6abbcb17ecf4bc9e89d15169f3f0e880f60fd6bf091a42fc71b4ab0781d745"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-110-v13.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-110-v13.artifact.json",
+      "sha256": "e89c33918eeb4b1542df6d529a26eb68f2afa57eab5ec61a7589583ad137bd6f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-120-v14.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-120-v14.artifact.json",
+      "sha256": "8843e6ec877daf9dd68ca242fc67f77073767df9b57620922c68a88ef3a26533"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-130-v16.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-130-v16.artifact.json",
+      "sha256": "4dbd9538a9a8956f6707da47337472afa376279f383d0ac763c2f823af3b03d5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-140-v17.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-140-v17.artifact.json",
+      "sha256": "a5b08b71f15698d50ce81e4dbfeae67b7611b88b4d4cba772699adcc362b4468"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-150-v18.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-150-v18.artifact.json",
+      "sha256": "bbc130dc92f19888ad2496d11bf78c72badff6a1d7821dd10b644ddb4782d32d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-160-v20.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-160-v20.artifact.json",
+      "sha256": "b1d4807ca436a66cc3e9471d10544b102ff66105a678e2fa6b335a05149e8490"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-170-v21.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-170-v21.artifact.json",
+      "sha256": "54d2b34e565f5072cbc210aafa810cf759c601212c18d8e3787dd1d63a6f8f1f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-180-v22.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-180-v22.artifact.json",
+      "sha256": "953ab6bfc725a9c0fc72e29a4dc4059ce59701910cb5fd2c9ea469ef8f5754fd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-190-v23.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-190-v23.artifact.json",
+      "sha256": "779c5a0f72ab721cfc47dbbce2008df3eb5b7aa55ae53b75301a15132ed47a4c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-20-v1.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-20-v1.artifact.json",
+      "sha256": "757082707723f32c7cab8dcc68e9204d58f0c42ecc9b897587982b264174fb42"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-200-v25.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-200-v25.artifact.json",
+      "sha256": "cee998c353da0abfcf4e3274f91816c6a2e56eb171c7271ef99f740838b2774b"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-30-v3.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-30-v3.artifact.json",
+      "sha256": "5fc42387891498a07c4122dbd8b9b60b53b388857e78d86da9f2c06c1b304a0e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-40-v4.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-40-v4.artifact.json",
+      "sha256": "cc89bc4202f20eb1971a50da21de91e4c92c7852a218ef3599d9ff7f283fd637"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-50-v5.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-50-v5.artifact.json",
+      "sha256": "d4f2ec82f130bc2eaa19eedd4c14935375fdd12a925235a4fc643daab3adb1db"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-60-v7.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-60-v7.artifact.json",
+      "sha256": "12cd03e7cc1d8d30519f6b7c69fd7f3c51bcd47e6ceb8a564c6e1af84738b1c1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-70-v8.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-70-v8.artifact.json",
+      "sha256": "e6badb580663e09f6e8b54ed8b722cfa171f990d3a5b05271957ed9051337a43"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-80-v9.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-80-v9.artifact.json",
+      "sha256": "21f42047ec17fed387f67a90b987e3c0280aca04c573db28d3915c5bd14413d3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-90-v11.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-90-v11.artifact.json",
+      "sha256": "a1afce40c4910be6902d16407565a610d06656158a1e53212310f4949dff71af"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-10-v0.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-10-v0.artifact.json",
+      "sha256": "02cef40db828fdbfe6ece2bd9af23f67e47174a885d7b10f39a6dfc6f6920803"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-100-v12.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-100-v12.artifact.json",
+      "sha256": "289e4cbf102c754213061cdd57bbd5b7fd5a41f88d456c471e5e9d2f932a7e52"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-110-v13.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-110-v13.artifact.json",
+      "sha256": "594fe3f69a95f43cfcdbc41381e9ae7ce38dc4f32866a24aada2214eee2b3f0c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-120-v15.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-120-v15.artifact.json",
+      "sha256": "f28d8c11c0d32f3f330ad18f0aac8fd6e8cf68d6ab76cd2efff093984dbfd77e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-130-v16.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-130-v16.artifact.json",
+      "sha256": "69de6d858166aa84c1ec15e706c81ed1331b5294db47deef4ee90c0c97af15c1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-140-v17.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-140-v17.artifact.json",
+      "sha256": "5e2b9f43bd75e0b5e2b5ccce7397e8a251cbae299d542231c95f74dc57701d43"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-150-v19.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-150-v19.artifact.json",
+      "sha256": "d9a6bebef7231b3ea02e9ccc169d9318df2f53fb14aeb8b4f78f25f55b78d554"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-160-v20.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-160-v20.artifact.json",
+      "sha256": "5bb8813451b2b963112450be39733afbc6551de4b90a026ac3dde9f675d15986"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-170-v21.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-170-v21.artifact.json",
+      "sha256": "53a77c9c4dd7d9a1d2448d17e898efe65837efcdc44aa2ff8adb45e94b7b67fd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-180-v22.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-180-v22.artifact.json",
+      "sha256": "d3b08715248818c94cfcf2d57f0873f2c21988601e30ff84574dc820027e707c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-190-v24.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-190-v24.artifact.json",
+      "sha256": "17ee0dda7c45f1ee52ba7cc75ac10370073a8528905fb8354de46ec84f528ab0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-20-v1.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-20-v1.artifact.json",
+      "sha256": "7355e0113912d9017dd06b1c81f49d2f04dc4c1c7849cc307826178d9294fbb1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-200-v25.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-200-v25.artifact.json",
+      "sha256": "2ea1f350f9de8f959cde347ae4f2761d67d479e68105b344eb632581a37d8709"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-30-v2.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-30-v2.artifact.json",
+      "sha256": "11b8c25cbfbec7ce59bcb8ff185b34b085b7ee31e16c952af2dab6ba231c9cb0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-40-v4.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-40-v4.artifact.json",
+      "sha256": "ace7cae5025f2d2c2fdc0c3ca1908bbac0c636c4ecd8cbdd5b597fe9ce60f453"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-50-v5.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-50-v5.artifact.json",
+      "sha256": "fc1035a0235b30a55c2c76de3f1c621a5f9873d71bc7e6bd1c885393fba9837f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-60-v7.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-60-v7.artifact.json",
+      "sha256": "863bc8215fb6f2b076f2562494e1c06c929299e5e6f5b76f6188cb5e0c0865ea"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-70-v8.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-70-v8.artifact.json",
+      "sha256": "912883885c1a780481e0a9855eafdb7484bbb8672313bfaeb79e38de42e55e69"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-80-v9.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-80-v9.artifact.json",
+      "sha256": "1a7f709e195902fe1070de5823a78ecc7dce48c8da53502070b8acf8fbc6fa0c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-90-v11.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-90-v11.artifact.json",
+      "sha256": "a1924bab5698c78d743abf9affb9a37fc2037055677d320b06acf693c4e5f9b0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-10-v0.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-10-v0.artifact.json",
+      "sha256": "b238c7fa3bbfd5a423104b38ba503551abc4a96b7024a49ffda90fe7a105a9f5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-100-v12.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-100-v12.artifact.json",
+      "sha256": "5c046563a37ebdf1ca259c2644eb20bbd52df891504650f11704fcd00cf1f784"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-110-v13.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-110-v13.artifact.json",
+      "sha256": "fbff6c16a15cefeec665b1c7b701052242df819cabfec6a8e99e9f2ebc13fae0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-120-v14.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-120-v14.artifact.json",
+      "sha256": "f7eb5b81ec4c911486f6449fd4d697e0a189403e0a8e3120324ff9749e19db0d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-130-v16.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-130-v16.artifact.json",
+      "sha256": "61587a46225b7b544058a98468de54e04a8b1b9e27e2d1e52a17405c1a52db93"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-140-v17.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-140-v17.artifact.json",
+      "sha256": "b49a656aeb469fe9d75687dd4a3a0873cdf80348773e384f2bb59060241664be"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-150-v18.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-150-v18.artifact.json",
+      "sha256": "cd6b4a8ccfed4233b3d9b9fc3c3f80274d4fc3ef0468f48764ad750cf1d0ee12"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-160-v20.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-160-v20.artifact.json",
+      "sha256": "86ae5e862e9ffdccc52e5c86e6a7a1a6b7abf49a1ec3f103ebbaab4137a1c861"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-170-v22.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-170-v22.artifact.json",
+      "sha256": "5695973f0f7443391a970da5e571e9919a252c01fc8dac01cd4ce0f28536a16d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-190-v23.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-190-v23.artifact.json",
+      "sha256": "6dbae3d210d6a5c190e0dac22392deb97e7e1155bb304a9e84a64e184364fc9f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-20-v1.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-20-v1.artifact.json",
+      "sha256": "90fb8520be97131466de912ebc1ed1d77e1ac1d5a994b27cec15eb82ce2386e7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-200-v26.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-200-v26.artifact.json",
+      "sha256": "7ccef2d2c5d6c20a47280ed0a9a14d48172f8dd76cb8c2ea713b0051fb6a2c42"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-30-v2.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-30-v2.artifact.json",
+      "sha256": "0fcef4a22621751d091255d62a8de472f19d94f2a43a985241b0371b72e9560a"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-40-v4.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-40-v4.artifact.json",
+      "sha256": "20e416338e601a33ba666bd64dfe239dfad4167eb5b440e16d2224896b4595d1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-50-v5.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-50-v5.artifact.json",
+      "sha256": "093f36c4574514d6b24534004928af8fa9dfdcb481f7cce65fecf966cc745b32"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-60-v7.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-60-v7.artifact.json",
+      "sha256": "a7cb7508e6c782ec6bd68d6bed788ca6936448c5d2e1131b31250999ed8261f3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-70-v8.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-70-v8.artifact.json",
+      "sha256": "212c8e21be29239e7f539bedf6e3726b88bbfc3ee0c0bd441496eaca365b4007"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-80-v9.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-80-v9.artifact.json",
+      "sha256": "12a55805e368bbd3617a7eef2f55976a5c49ca4485a2463ba899514c78dbb1e1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-90-v11.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-90-v11.artifact.json",
+      "sha256": "02b52636f252f4de545f967f144fa5fe3bb398c49c28213a16e3f6673b51fb2d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-0.checkpoint.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-0.checkpoint.artifact.json",
+      "sha256": "63941ae3dd105c8427ccda949de55543aeb415602c2d23564e6bea49a16179f5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-1.checkpoint.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-1.checkpoint.artifact.json",
+      "sha256": "04fd38771b83b9a6367e9a8f30539fb5e03ffb46182b0b5bc474bde9fe1ea9c5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-2.checkpoint.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-2.checkpoint.artifact.json",
+      "sha256": "b71d4fb432fefcbed36262f4726b8c46c87d5f86c0fa0ec2ea464aa003130071"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-3.checkpoint.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-3.checkpoint.artifact.json",
+      "sha256": "431b5b4fdf061834bc8411fd49d85451ea6e0a678ff646a0ef82c121b65e0d5f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/events.jsonl": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/events.jsonl",
+      "sha256": "e1a3bbcf986297e83d59bb21f65a71b2b14b93d82cac2b65632040b1c999faac"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.checkpoint.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.checkpoint.json",
+      "sha256": "189d1eb13db8946cbe3360373c5f50f3ea4c7284db33098650523324d8dce12b"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.log": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.log",
+      "sha256": "6e18940bcfedd1724a1d911614db173dec1d1142769c2e107fe1995418c9ab3c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.checkpoint.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.checkpoint.json",
+      "sha256": "94006da786f3019e0ea8b9a4bf6f52a50d2e789d120620212efcda29f5a5db79"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.log": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.log",
+      "sha256": "9cf1d3b6153b44024d7a31be29704a25eddb318b1d6043b9804500442c23cb25"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.checkpoint.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.checkpoint.json",
+      "sha256": "dcd7083ea970010cab522276937ab2918c18a03ade7447f9078af8189cf029e5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.log": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.log",
+      "sha256": "b93ec8b582810f584aec4c67a3ecb310b9d40f105fa3249a505e77c3bc7c0636"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.checkpoint.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.checkpoint.json",
+      "sha256": "49db35e4b3f9593f79b8571874512ddcf3748e746fd5a3bf7d9eb86a4276f3d4"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.log": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.log",
+      "sha256": "7007949ca897abeb4a8177ed6396e9c14984ddcfddf54039d99d2d2631df5e86"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000001-t00000024.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000001-t00000024.artifact.json",
+      "sha256": "6d939582ca93081fedea22c74604648e51710873024bd457ca2ba697294905d7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000002-t00000045.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000002-t00000045.artifact.json",
+      "sha256": "bf6ed7c2938755ad0abbf9c72c59e5e8449ba69064cfa4fef88af85dd97181c3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000003-t00000068.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000003-t00000068.artifact.json",
+      "sha256": "7bed2ff97a36d4917e465c751427f1abd43b4a4ee38d93d0e5781b808c28f7b1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000004-t00000081.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000004-t00000081.artifact.json",
+      "sha256": "e1a6bc09ebb2a8e738ebb7897281ea803d20169cdc2502730e85d6590980cecd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000005-t00000105.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000005-t00000105.artifact.json",
+      "sha256": "2920b136af17f33e301bec39fdaca6898ee6daa2ba632d0cfb065d5fc1477f3e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000006-t00000128.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000006-t00000128.artifact.json",
+      "sha256": "1f78e7914696876f96ebfbdf7cf675e1fbeacb1a874d53e5fa8f3a2b2b4ebaab"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000007-t00000150.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000007-t00000150.artifact.json",
+      "sha256": "ee5f09bbd94cc2eed4bd9419156662a8c8d3a10a46b2b8882e3048e2e2ec6156"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000008-t00000170.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000008-t00000170.artifact.json",
+      "sha256": "ddb817590dac226fb76e8c1cf87861693fffc0f14c5402edc0afe5fe1b421618"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000009-t00000194.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000009-t00000194.artifact.json",
+      "sha256": "ecda6cb66213d9de93277282d79097b6b8ebe8b8bd841f84e6f0c40549eff6c7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000010-t00000216.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000010-t00000216.artifact.json",
+      "sha256": "9e1ad02f2b3f6ff6a23058dad7b4f3cca47b460a03286e908e3822255f75cd5b"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000011-t00000238.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000011-t00000238.artifact.json",
+      "sha256": "934b57fff7a855fc4261d93e7c25d7f097c79afac2fb857f00888ab81a11644c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000012-t00000260.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000012-t00000260.artifact.json",
+      "sha256": "c3d8c81adb111ea2a9ed43ec1282feaa302766f4af4a4872305221d9a3b8d6a9"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000013-t00000282.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000013-t00000282.artifact.json",
+      "sha256": "0b0bbd569507b555e5b3bd15a7b3fc7e8c47293095d306997426d68a123c4b4f"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000014-t00000304.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000014-t00000304.artifact.json",
+      "sha256": "f8c74b2ea44490fddbdcf1e10f643d22987fd66d0cc356b5e804ff39c00dcd07"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000015-t00000326.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000015-t00000326.artifact.json",
+      "sha256": "07712e07e8573c1514588af553c41abeada451bc67c97f246be207e0d765c0d3"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000016-t00000345.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000016-t00000345.artifact.json",
+      "sha256": "05b285525217e32d4ecb00635632a9c12198c4498b6979c9e788d5ac227ef024"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000017-t00000368.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000017-t00000368.artifact.json",
+      "sha256": "65a671e8239709a78548cd14745ac73066c530eb01954abd3dfdacdb79de8a53"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000018-t00000390.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000018-t00000390.artifact.json",
+      "sha256": "921e4a80c3a0d85c07a4cc13e1fc5d37ccb99e5bd1488cae1aaec689195e0583"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000019-t00000412.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000019-t00000412.artifact.json",
+      "sha256": "1dbe6fef364fb76709cb9c316f6c25bef25ce196e0e54b6f623135b5d5e53af7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000020-t00000427.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000020-t00000427.artifact.json",
+      "sha256": "d84b3462d0a7de7e4cc3e839ee381777439669107450e1e6be451e2381a42619"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000021-t00000447.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000021-t00000447.artifact.json",
+      "sha256": "93721d52313921aa5f78a409f5d83d6ac50df6257437cfd95a032f8b6b2e6afa"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000022-t00000472.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000022-t00000472.artifact.json",
+      "sha256": "cb194297ae0baf9834b815826aa31b75a87995e9a2218b0c5751fd761bafe1ba"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000023-t00000494.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000023-t00000494.artifact.json",
+      "sha256": "c79b1a8077735ec4d8ec3e8cf83f21c089aee4506c7ca7e281ff4b40c3dc6677"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000024-t00000516.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000024-t00000516.artifact.json",
+      "sha256": "717cc81610ba195abcd9e86ea3909202e68010da420dd6ce0ff59151822dbc26"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000025-t00000531.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000025-t00000531.artifact.json",
+      "sha256": "aabb41e1f2c0e68d548d453df5ec37836716d818c4280eeb1bff824f03f2bdd5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000556.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000556.artifact.json",
+      "sha256": "db4ce2c8a848060e62f692decd6521509698f3ced59548ffb26da9c47c6bf817"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000568.artifact.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000568.artifact.json",
+      "sha256": "bca7f087ea4dfe428df66b586561325cf3d971e0c21e0f4582c7aa66961a70bf"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifest.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifest.json",
+      "sha256": "e61a5647c9fa81fee53eb86a90ee29c770231d9ec5d9838da5266deaadf739e1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000001-t00000025.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000001-t00000025.json",
+      "sha256": "67cc8e9af39db32aaa51eb19e59af7a5ef1b9b6a45207c728e520a65f1178937"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000002-t00000046.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000002-t00000046.json",
+      "sha256": "eaaf51b50b5cf91daa81b7adbcfcb22e07fbf33ceb4e427c936b19fd887cade8"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000003-t00000069.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000003-t00000069.json",
+      "sha256": "cf203cbd1390253edfef823c86780fb8012eae59223924c942cce0f47255ceb0"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000004-t00000082.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000004-t00000082.json",
+      "sha256": "0b167d51bd1910a33e3e655aa3cf3d8bf48692f6e72c2267048e136842d745ba"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000005-t00000106.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000005-t00000106.json",
+      "sha256": "50c4a57d86c3908ece000b3b7e3f0bcca52be0cfe47152f7e8338639c5d203e7"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000006-t00000129.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000006-t00000129.json",
+      "sha256": "8351fa498e5e7483210d6ee862f8d5062c6c933ed27034c8fc621d1b28880092"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000007-t00000151.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000007-t00000151.json",
+      "sha256": "828f19af3702b58de343dc736e0db6344c25f91cfa84725e2c713a7fff4a44ff"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000008-t00000171.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000008-t00000171.json",
+      "sha256": "7447e3a4f24fa26f09081b10f367c8f2b6f4829b04c67f70cc0c2c78d6f0c51d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000009-t00000195.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000009-t00000195.json",
+      "sha256": "fe092ea9cc47be0024a6240c223c67873fa879d4905093bf45be2d523966a559"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000010-t00000217.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000010-t00000217.json",
+      "sha256": "b896b62a6b94f32bf033b8c8ec8b45739774987cefae5b7efa11d9641c85c8e8"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000011-t00000239.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000011-t00000239.json",
+      "sha256": "f5073bc9200bf28cd1481c0260332cfdbd23838cbbc784f237221f7ddf5d4ddd"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000012-t00000261.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000012-t00000261.json",
+      "sha256": "444445db733a72e46f17ac66240c2df70bb5ec972dc6999ab80e433a7ea69bdc"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000013-t00000283.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000013-t00000283.json",
+      "sha256": "0b289591ed0af2d5d2381d97fc9c5a7fc1b60e9b6b2ecce2f9ab1fc33368ea3e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000014-t00000305.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000014-t00000305.json",
+      "sha256": "fe0766a8e486a6493b39a036db87d6666bae7f7e4b1ec4abd8e595812ff4307e"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000015-t00000327.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000015-t00000327.json",
+      "sha256": "16577b5560d2bd3d93b3a2d5761f350c737ca6cd4858603c2adc71cacafefd9d"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000016-t00000346.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000016-t00000346.json",
+      "sha256": "dcdd9748f803ee77c02dd1f732d564b958518142c7c4a58db444a2f6bff826b2"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000017-t00000369.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000017-t00000369.json",
+      "sha256": "63b27c8a3ac60c88d11ffb66a299bd1ed92ab50ad2303ed839e26524892fd476"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000018-t00000391.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000018-t00000391.json",
+      "sha256": "076a09bcf3fc6a51ee0487f4d1d7fd245fb966ddd333702a8af596930d253b52"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000019-t00000413.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000019-t00000413.json",
+      "sha256": "591b5fbca9005b4584611462cd6f22d88538bc13aa88b9098c3f39d935a83b16"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000020-t00000428.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000020-t00000428.json",
+      "sha256": "3e8739d10388325e9e32af72fdb2943e96fd3877018a73b0840e4c741fe97935"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000021-t00000448.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000021-t00000448.json",
+      "sha256": "bfe9eae9293f19f4a6bf30176faa5418599397bc718c742d6f3083eaffe13864"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000022-t00000473.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000022-t00000473.json",
+      "sha256": "1dd7dcebc1b18b093966a11332c6ca575012440cef60cf3768e073374f03484c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000023-t00000495.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000023-t00000495.json",
+      "sha256": "f7e2ebf46c0a2bf34ae137852a90dd01547a5ba1e3620b8b6a757eee3ac18111"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000024-t00000517.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000024-t00000517.json",
+      "sha256": "1970c411eee4a2bd948fb925d76ee0e3603c9a521297372def45a94b858033ef"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000025-t00000532.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000025-t00000532.json",
+      "sha256": "c581656acfcd1f82815d5260260861252b933d2f344e691805173080a5d4396c"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000557.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000557.json",
+      "sha256": "1f0688b34f24463a4d684586dc91726e9e79d19e0bd31482eeeb144c37fa25e5"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000569.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000569.json",
+      "sha256": "e61a5647c9fa81fee53eb86a90ee29c770231d9ec5d9838da5266deaadf739e1"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/report.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/report.json",
+      "sha256": "e4e3ad9d5377a0859176ad7ed9116d62c83f186fadb740435b570e7693fd6534"
+    },
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/run_spec.json": {
+      "exists": true,
+      "path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/run_spec.json",
+      "sha256": "821222f5ea81eb68262c1453be8e75ac7dcdf4260cc51498ce1019cd15fc0b2c"
+    }
+  },
+  "budget_manifest_path": null,
+  "created_at_utc": "2026-07-02T05:52:16Z",
+  "event_log_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/events.jsonl",
+  "learner_checkpoint_paths": [
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.checkpoint.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.checkpoint.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.checkpoint.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.checkpoint.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-0.checkpoint.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-1.checkpoint.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-2.checkpoint.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/chunked_checkpoints/learner-3.checkpoint.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000001-t00000024.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000002-t00000045.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000003-t00000068.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000004-t00000081.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000005-t00000105.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000006-t00000128.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000007-t00000150.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000008-t00000170.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000009-t00000194.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000010-t00000216.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000011-t00000238.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000012-t00000260.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000013-t00000282.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000014-t00000304.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000015-t00000326.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000016-t00000345.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000017-t00000368.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000018-t00000390.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000019-t00000412.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000020-t00000427.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000021-t00000447.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000022-t00000472.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000023-t00000494.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000024-t00000516.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000025-t00000531.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000556.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000026-t00000568.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/checkpoint_global_vector-v26-570.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-1.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-2.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-6.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v0-9.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-32.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-33.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-35.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v1-40.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-226.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-229.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-232.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v10-234.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-242.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-245.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-247.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v11-250.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-264.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-267.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-269.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v12-273.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-289.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-291.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-294.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v13-297.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-314.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-316.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-321.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v14-322.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-333.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-339.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v15-341.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-349.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-352.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-358.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v16-359.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-376.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-377.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-381.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v17-384.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-400.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-402.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-405.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v18-409.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-422.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v19-425.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-56.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-58.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-61.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v2-65.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-432.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-435.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v20-438.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-452.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-458.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-461.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v21-464.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-474.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-484.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-487.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v22-489.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-504.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-507.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-509.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v23-513.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-523.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v24-525.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-536.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-539.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-542.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v25-546.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v26-558.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v3-78.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-87.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-88.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-89.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v4-94.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-113.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-116.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-120.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v5-121.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-138.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-140.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-145.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v6-146.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-154.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-157.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-159.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v7-162.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-176.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-180.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-181.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v8-183.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-201.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-205.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-206.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/global_update-v9-209.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v1-24.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v10-216.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v11-238.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v12-260.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v13-282.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v14-304.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v15-326.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v16-345.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v17-368.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v18-390.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v19-412.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v2-45.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v20-427.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v21-447.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v22-472.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v23-494.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v24-516.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v25-531.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v26-556.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v3-68.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v4-81.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v5-105.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v6-128.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v7-150.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v8-170.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/new_global_vector-v9-194.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v0-24.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v1-45.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v10-238.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v11-260.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v12-282.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v13-304.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v14-326.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v15-345.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v16-368.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v17-390.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v18-412.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v19-427.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v2-68.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v20-447.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v21-472.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v22-494.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v23-516.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v24-531.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v25-556.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v3-81.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v4-105.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v5-128.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v6-150.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v7-170.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v8-194.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/old_global_vector-v9-216.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v1-24.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v10-216.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v11-238.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v12-260.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v13-282.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v14-304.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v15-326.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v16-345.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v17-368.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v18-390.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v19-412.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v2-45.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v20-427.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v21-447.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v22-472.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v23-494.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v24-516.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v25-531.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v26-556.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v3-68.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v4-81.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v5-105.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v6-128.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v7-150.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v8-170.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/global/weighted_delta-v9-194.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-10-v0.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-100-v12.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-110-v13.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-120-v14.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-130-v16.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-140-v17.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-150-v18.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-160-v19.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-170-v21.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-180-v22.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-190-v23.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-20-v1.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-200-v25.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-30-v2.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-40-v4.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-50-v5.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-60-v6.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-70-v8.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-80-v9.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-0/fragment-step-90-v10.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-10-v0.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-100-v12.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-110-v13.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-120-v14.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-130-v16.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-140-v17.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-150-v18.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-160-v20.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-170-v21.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-180-v22.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-190-v23.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-20-v1.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-200-v25.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-30-v3.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-40-v4.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-50-v5.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-60-v7.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-70-v8.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-80-v9.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-1/fragment-step-90-v11.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-10-v0.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-100-v12.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-110-v13.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-120-v15.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-130-v16.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-140-v17.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-150-v19.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-160-v20.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-170-v21.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-180-v22.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-190-v24.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-20-v1.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-200-v25.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-30-v2.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-40-v4.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-50-v5.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-60-v7.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-70-v8.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-80-v9.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-2/fragment-step-90-v11.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-10-v0.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-100-v12.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-110-v13.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-120-v14.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-130-v16.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-140-v17.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-150-v18.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-160-v20.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-170-v22.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-190-v23.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-20-v1.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-200-v26.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-30-v2.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-40-v4.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-50-v5.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-60-v7.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-70-v8.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-80-v9.artifact.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/artifacts/learner-3/fragment-step-90-v11.artifact.json"
+  ],
+  "learner_log_paths": [
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-0.log",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-1.log",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-2.log",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/learner-3.log"
+  ],
+  "lifecycle_artifact_paths": [
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000001-t00000025.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000002-t00000046.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000003-t00000069.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000004-t00000082.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000005-t00000106.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000006-t00000129.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000007-t00000151.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000008-t00000171.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000009-t00000195.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000010-t00000217.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000011-t00000239.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000012-t00000261.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000013-t00000283.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000014-t00000305.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000015-t00000327.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000016-t00000346.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000017-t00000369.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000018-t00000391.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000019-t00000413.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000020-t00000428.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000021-t00000448.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000022-t00000473.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000023-t00000495.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000024-t00000517.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000025-t00000532.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000557.json",
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifests/recovery-v00000026-t00000569.json"
+  ],
+  "price_snapshot_paths": [],
+  "recovery_manifest_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/recovery_manifest.json",
+  "report_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/report.json",
+  "run_id": "run-6ed12141800e",
+  "run_spec_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/run_spec.json",
+  "spill_artifact_paths": [],
+  "syncer_checkpoint_paths": [],
+  "workdir": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime"
+}

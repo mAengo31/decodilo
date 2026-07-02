@@ -391,6 +391,71 @@ billable_action_performed=true
 
 This combines the previously separate 8-learner direct-TCP proof and 4-learner S3-backed proof: 8 Lambda GPU learners now work with the S3-compatible artifact backend. It is still not production-scale because the run is short, single-region, small-model, and not managed by a full Pathway-style scheduler.
 
+## Latest Pathway-style scheduler core and long local run
+
+Evidence root: `docs/evidence/pathway_scheduler_long_local_no_restart/`
+
+Result:
+
+```text
+pathway_scheduler_core=implemented
+artifact_futures=true
+dag_dependencies=true
+retry_policy=true
+fail_closed_remote_tasks=true
+local_runtime_wrapped_by_scheduler=true
+learners=4
+steps=200
+sync_rounds=26
+replay_passed=true
+metric_validation_passed=true
+production_scale_ready=false
+```
+
+This is a real scheduler core over the local learner/syncer runtime, not a full Google Pathways clone. It adds DAG scheduling and artifact futures, but still lacks production placement, autoscaling, multi-region orchestration, and a full remote task executor.
+
+## Latest Lambda S3-backed 42k model experiment
+
+Run ID: `lambda-s3-42k-gpu-20260702055255`
+Evidence root: `docs/evidence/lambda_s3_gpu_larger_model/lambda-s3-42k-gpu-20260702055255/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+model_parameters=42816
+remote_instance_count=5
+remote_process_roles=syncer + learner-0..learner-3
+committed_sync_rounds=2
+accepted_updates=6
+useful_tokens_accepted=320
+inner_optimizer_semantics=adamw
+outer_optimizer_semantics=nesterov
+pseudo_gradient_numeric_check_passed=true
+restart_recovered=true
+final_instance_count=0
+lambda_l5_restart_recovery_direct_tcp_passed=true
+production_scale_ready=false
+```
+
+## Latest Lambda S3-backed 85k model attempt
+
+Run ID: `lambda-s3-85k-gpu-20260702061211`
+Evidence root: `docs/evidence/lambda_s3_gpu_85k_model/lambda-s3-85k-gpu-20260702061211/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+model_parameters=85504
+remote_instance_count=5
+final_instance_count=0
+status=failed
+reason=syncer shutdown/restart failed under 85k S3 artifact pressure; learners lost direct TCP syncer connection before recovery acceptance
+```
+
+Interpretation: 85k+ model scale is still blocked. The failure is now specifically in restart/orchestration under larger S3 artifact pressure, not in basic S3 object storage or small-model training.
+
 ## Safety flags
 
 ```text

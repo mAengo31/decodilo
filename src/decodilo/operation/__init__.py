@@ -29,6 +29,15 @@ from decodilo.operation.pathway import (
     compile_pathway_managed_experiment,
     compile_six_step_production_candidate,
 )
+from decodilo.operation.pathway_scheduler import (
+    PathwayArtifactFuture,
+    PathwayExecutionContext,
+    PathwayResourcePolicy,
+    PathwayScheduler,
+    PathwaySchedulerError,
+    PathwayScheduleResult,
+    PathwayTask,
+)
 from decodilo.operation.result import OperationResult
 from decodilo.operation.runner import run_operation
 from decodilo.operation.spec import (
@@ -50,5 +59,12 @@ __all__ = [
     "OperationSafetyEnvelope",
     "OperationSpec",
     "OperationResult",
+    "PathwayArtifactFuture",
+    "PathwayExecutionContext",
+    "PathwayResourcePolicy",
+    "PathwayScheduleResult",
+    "PathwayScheduler",
+    "PathwaySchedulerError",
+    "PathwayTask",
     "run_operation",
 ]

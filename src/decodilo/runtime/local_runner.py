@@ -473,7 +473,14 @@ class LocalRunner:
                 try:
                     ready = json.loads(self.ready_file.read_text(encoding="utf-8"))
                     asyncio.run(self._shutdown_syncer(ready))
-                    self.syncer_proc.wait(timeout=self.config.syncer_restart_timeout_seconds)
+                    self.syncer_proc.wait(
+                        timeout=max(
+                            self.config.syncer_restart_timeout_seconds,
+                            15.0
+                            if self.config.checkpoint_storage_mode in {"chunked", "dual"}
+                            else self.config.syncer_restart_timeout_seconds,
+                        )
+                    )
                     clean_stop = True
                 except Exception:
                     clean_stop = False
@@ -519,9 +526,10 @@ class LocalRunner:
     async def _shutdown_syncer(self, ready: dict[str, Any]) -> dict[str, Any]:
         last_error: Exception | None = None
         response = None
-        shutdown_timeout = min(
-            2.0,
-            max(0.5, self.config.heartbeat_timeout_seconds + 0.5),
+        shutdown_timeout = (
+            15.0
+            if self.config.checkpoint_storage_mode in {"chunked", "dual"}
+            else min(2.0, max(0.5, self.config.heartbeat_timeout_seconds + 0.5))
         )
         for _ in range(3):
             try:
