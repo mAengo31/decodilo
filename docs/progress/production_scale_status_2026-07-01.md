@@ -343,6 +343,24 @@ This is the first successful live Lambda GPU run in the repo that uses the S3-co
 
 The run is still not production-scale: it is a 4-learner proof, not an 8+ learner S3 run, not 85k+ model scale, and not a full Pathway-style scheduler.
 
+## Latest Lambda S3-backed scale attempt — 8 learners
+
+Run ID: `lambda-s3-eight-gpu-20260702020303`
+Evidence root: `docs/evidence/lambda_s3_gpu_eight_learner/lambda-s3-eight-gpu-20260702020303/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+remote_instance_count=9
+remote_process_roles=syncer + learner-0..learner-7
+final_instance_count=0
+status=failed
+reason=all learners lost direct TCP syncer connection before recovery acceptance
+```
+
+Interpretation: the S3-backed artifact backend works and the 4-learner S3 proof passes, but combining S3 artifacts with 8 learners exposed a remaining direct-TCP/restart orchestration limit. The next fix is not more blind retrying; it is to harden the operation layer around syncer restart/readiness and learner reconnect behavior under S3-backed artifact pressure.
+
 ## Safety flags
 
 ```text
