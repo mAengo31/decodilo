@@ -170,6 +170,8 @@ class LearnerWorker:
         self.log_path = workdir / f"{learner_id}.log"
         self.checkpoint_path = workdir / f"{learner_id}.checkpoint.json"
         self.control_path = workdir / f"{learner_id}.control.json"
+        self.pause_path = workdir / f"{learner_id}.pause.json"
+        self.pause_ack_path = workdir / f"{learner_id}.paused.json"
         self.request_timeout_seconds = (
             60.0
             if payload_storage_mode == "chunked" or global_update_storage_mode == "chunked"
@@ -559,6 +561,7 @@ class LearnerWorker:
 
     async def _apply_control_if_present(self) -> None:
         assert self.trainer is not None
+        await self._wait_while_paused_if_requested()
         if not self.control_path.exists():
             return
         try:
@@ -580,6 +583,29 @@ class LearnerWorker:
             self.pending_control_event = {"control_event": "learner_speed_restored"}
             self._log("learner_speed_restored")
             await self._heartbeat()
+
+    async def _wait_while_paused_if_requested(self) -> None:
+        assert self.trainer is not None
+        if not self.pause_path.exists():
+            self.pause_ack_path.unlink(missing_ok=True)
+            return
+        health = self.trainer.health()
+        payload = {
+            "learner_id": self.learner_id,
+            "local_step": int(getattr(health, "local_step", 0)),
+            "global_version": int(getattr(health, "global_version", 0)),
+            "paused": True,
+        }
+        self.pause_ack_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        self._write_checkpoint()
+        self._log("paused", payload)
+        while self.pause_path.exists():
+            await asyncio.sleep(0.05)
+        self.pause_ack_path.unlink(missing_ok=True)
+        self._log("resumed", {"learner_id": self.learner_id})
 
     def _write_checkpoint(self) -> None:
         assert self.trainer is not None

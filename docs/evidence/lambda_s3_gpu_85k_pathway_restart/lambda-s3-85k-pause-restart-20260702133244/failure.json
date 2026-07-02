@@ -1,0 +1,3 @@
+{
+  "error": "Command '['scp', '-r', '-i', '/Users/edward/.ssh/diloco_lambda', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', 'ubuntu@129.80.130.130:/home/ubuntu/lambda_l5_run/artifacts', 'docs/evidence/lambda_s3_gpu_85k_pathway_restart/lambda-s3-85k-pause-restart-20260702133244/syncer/artifacts']' timed out after 180 seconds"
+}

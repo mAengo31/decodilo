@@ -1,0 +1,93 @@
+{
+  "artifacts": {
+    "checkpoint_round": {
+      "artifact_id": "checkpoint_round",
+      "producer_task_id": "checkpoint_fence",
+      "value": 3
+    },
+    "direct_tcp_ready": {
+      "artifact_id": "direct_tcp_ready",
+      "producer_task_id": "direct_tcp_fence",
+      "value": true
+    },
+    "learners_resumed": {
+      "artifact_id": "learners_resumed",
+      "producer_task_id": "resume_learners",
+      "value": true
+    },
+    "pause_requested": {
+      "artifact_id": "pause_requested",
+      "producer_task_id": "pause_learners",
+      "value": true
+    },
+    "paused_learners": {
+      "artifact_id": "paused_learners",
+      "producer_task_id": "pause_fence",
+      "value": [
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3"
+      ]
+    },
+    "post_restart_round": {
+      "artifact_id": "post_restart_round",
+      "producer_task_id": "post_restart_round_fence",
+      "value": 3
+    },
+    "ready_file": {
+      "artifact_id": "ready_file",
+      "producer_task_id": "ready_fence",
+      "value": "/home/ubuntu/lambda_l5_run/syncer_ready.json"
+    },
+    "recover_start": {
+      "artifact_id": "recover_start",
+      "producer_task_id": "start_recovered_syncer",
+      "value": true
+    },
+    "shutdown_error": {
+      "artifact_id": "shutdown_error",
+      "producer_task_id": "shutdown_syncer",
+      "value": null
+    },
+    "stop_result": {
+      "artifact_id": "stop_result",
+      "producer_task_id": "stop_fence",
+      "value": {
+        "forced": false,
+        "graceful_shutdown_error": null,
+        "stopped": true
+      }
+    }
+  },
+  "execution_order": [
+    "pause_learners",
+    "pause_fence",
+    "checkpoint_fence",
+    "shutdown_syncer",
+    "stop_fence",
+    "start_recovered_syncer",
+    "ready_fence",
+    "direct_tcp_fence",
+    "resume_learners",
+    "post_restart_round_fence"
+  ],
+  "launch_allowed": false,
+  "launch_ready": false,
+  "pathway_restart_orchestration": true,
+  "production_scale_ready": false,
+  "restart_round": 2,
+  "status": "completed",
+  "task_attempts": {
+    "checkpoint_fence": 1,
+    "direct_tcp_fence": 1,
+    "pause_fence": 1,
+    "pause_learners": 1,
+    "post_restart_round_fence": 1,
+    "ready_fence": 1,
+    "resume_learners": 1,
+    "shutdown_syncer": 1,
+    "start_recovered_syncer": 1,
+    "stop_fence": 1
+  }
+}

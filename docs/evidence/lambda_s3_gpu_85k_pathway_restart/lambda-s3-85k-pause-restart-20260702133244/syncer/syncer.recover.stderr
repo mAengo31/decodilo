@@ -1,0 +1,14 @@
+Task exception was never retrieved
+future: <Task finished name='Task-218' coro=<JsonlTcpServer._handle_client() done, defined at /home/ubuntu/diloco_l5_src/src/decodilo/transport/tcp_server.py:81> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/tcp_server.py", line 104, in _handle_client
+    await write_envelope(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/jsonl.py", line 73, in write_envelope
+    await asyncio.wait_for(writer.drain(), timeout=timeout_seconds)
+  File "/usr/lib/python3.10/asyncio/tasks.py", line 445, in wait_for
+    return fut.result()
+  File "/usr/lib/python3.10/asyncio/streams.py", line 371, in drain
+    await self._protocol._drain_helper()
+  File "/usr/lib/python3.10/asyncio/streams.py", line 167, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost

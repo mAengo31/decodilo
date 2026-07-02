@@ -82,3 +82,34 @@ def test_learner_does_not_repeatedly_mark_same_commit_after_inflight_cleared() -
 
     assert trainer.accepted == 0
     assert worker.in_flight_idempotency_key is None
+
+
+def test_learner_waits_while_pause_file_exists(tmp_path) -> None:
+    worker = LearnerWorker.__new__(LearnerWorker)
+    worker.learner_id = "learner-0"
+    worker.workdir = tmp_path
+    worker.pause_path = tmp_path / "learner-0.pause.json"
+    worker.pause_ack_path = tmp_path / "learner-0.paused.json"
+    worker.trainer = SimpleNamespace(
+        health=lambda: SimpleNamespace(local_step=7, global_version=3),
+    )
+    worker._write_checkpoint = lambda: None
+    events: list[tuple[str, dict]] = []
+    worker._log = lambda event_type, payload=None: events.append((event_type, payload or {}))
+
+    async def scenario() -> None:
+        worker.pause_path.write_text('{"reason":"restart"}', encoding="utf-8")
+        task = asyncio.create_task(worker._wait_while_paused_if_requested())
+        for _ in range(20):
+            if worker.pause_ack_path.exists():
+                break
+            await asyncio.sleep(0.01)
+        assert worker.pause_ack_path.exists()
+        worker.pause_path.unlink()
+        await asyncio.wait_for(task, timeout=1.0)
+
+    asyncio.run(scenario())
+
+    assert not worker.pause_ack_path.exists()
+    assert events[0][0] == "paused"
+    assert events[-1][0] == "resumed"

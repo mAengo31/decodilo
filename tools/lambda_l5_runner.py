@@ -133,6 +133,12 @@ def main() -> int:
         help="Maximum wall-clock time to wait for learner SSH commands",
     )
     parser.add_argument(
+        "--learner-pause-timeout-seconds",
+        type=float,
+        default=120.0,
+        help="Maximum wall-clock time to wait for all learners to acknowledge pause",
+    )
+    parser.add_argument(
         "--syncer-stop-timeout-seconds",
         type=float,
         default=90.0,
@@ -1109,8 +1115,31 @@ def _pathway_restart_syncer(
     scheduler = PathwayScheduler(resource_policy=PathwayResourcePolicy(local_only=True))
     scheduler.add_task(
         PathwayTask(
+            task_id="pause_learners",
+            op="request_learners_pause",
+            produces=["pause_requested"],
+            run=lambda _ctx: (
+                _request_learners_pause(owned, args, restart_round=restart_round)
+                or {"pause_requested": True}
+            ),
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="pause_fence",
+            op="wait_learners_paused",
+            depends_on=["pause_learners"],
+            consumes=["pause_requested"],
+            produces=["paused_learners"],
+            run=lambda _ctx: {"paused_learners": _wait_learners_paused(owned, args)},
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
             task_id="checkpoint_fence",
             op="wait_syncer_checkpoint_at_restart_round",
+            depends_on=["pause_fence"],
+            consumes=["paused_learners"],
             produces=["checkpoint_round"],
             run=lambda _ctx: {
                 "checkpoint_round": _wait_remote_checkpoint_at_least(
@@ -1208,10 +1237,20 @@ def _pathway_restart_syncer(
     )
     scheduler.add_task(
         PathwayTask(
-            task_id="post_restart_round_fence",
-            op="wait_post_restart_committed_round",
+            task_id="resume_learners",
+            op="resume_paused_learners",
             depends_on=["direct_tcp_fence"],
             consumes=["direct_tcp_ready"],
+            produces=["learners_resumed"],
+            run=lambda _ctx: _resume_learners(owned, args) or {"learners_resumed": True},
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="post_restart_round_fence",
+            op="wait_post_restart_committed_round",
+            depends_on=["resume_learners"],
+            consumes=["learners_resumed"],
             produces=["post_restart_round"],
             run=lambda _ctx: {
                 "post_restart_round": _wait_post_restart_round(
@@ -1332,7 +1371,7 @@ def _run_learners(owned: list[Instance], syncer_ip: str, args: argparse.Namespac
 
 
 def _force_stop_syncer(syncer: Instance, args: argparse.Namespace) -> None:
-    pattern = "decodilo.cli syncer serve"
+    pattern = _syncer_process_pattern()
     command = (
         "pkill -TERM -f "
         + shlex.quote(pattern)
@@ -1343,6 +1382,81 @@ def _force_stop_syncer(syncer: Instance, args: argparse.Namespace) -> None:
         + " || true"
     )
     _ssh(syncer.ip, args.ssh_private_key, command, timeout=30)
+
+
+def _syncer_process_pattern() -> str:
+    return "[d]ecodilo.cli syncer serve"
+
+
+def _request_learners_pause(
+    owned: list[Instance],
+    args: argparse.Namespace,
+    *,
+    restart_round: int,
+) -> None:
+    for learner_id in _learner_roles(args):
+        inst = _by_role(owned, learner_id)
+        pause_payload = json.dumps(
+            {
+                "pause": True,
+                "reason": "pathway_restart_recovery",
+                "restart_round": restart_round,
+                "run_id": args.run_id,
+            },
+            sort_keys=True,
+        )
+        remote = (
+            f"mkdir -p {REMOTE_RUN} && "
+            f"cat > {REMOTE_RUN}/{learner_id}.pause.json <<'JSON'\n"
+            f"{pause_payload}\n"
+            "JSON\n"
+        )
+        _ssh(inst.ip, args.ssh_private_key, remote, timeout=15)
+
+
+def _wait_learners_paused(
+    owned: list[Instance],
+    args: argparse.Namespace,
+) -> list[str]:
+    paused: set[str] = set()
+    deadline = time.time() + float(getattr(args, "learner_pause_timeout_seconds", 120.0))
+    errors: dict[str, str] = {}
+    while time.time() < deadline:
+        for learner_id in _learner_roles(args):
+            if learner_id in paused:
+                continue
+            inst = _by_role(owned, learner_id)
+            try:
+                _ssh(
+                    inst.ip,
+                    args.ssh_private_key,
+                    f"test -s {REMOTE_RUN}/{learner_id}.paused.json",
+                    timeout=10,
+                )
+                paused.add(learner_id)
+            except Exception as exc:  # noqa: BLE001 - learners may still be reaching pause point
+                errors[learner_id] = str(exc)
+        if len(paused) == int(args.learners):
+            return sorted(paused)
+        time.sleep(1)
+    raise TimeoutError(
+        f"timed out waiting for learners to pause: paused={sorted(paused)}, "
+        f"errors={errors}"
+    )
+
+
+def _resume_learners(owned: list[Instance], args: argparse.Namespace) -> None:
+    for learner_id in _learner_roles(args):
+        inst = _by_role(owned, learner_id)
+        _ssh(
+            inst.ip,
+            args.ssh_private_key,
+            (
+                f"rm -f {REMOTE_RUN}/{learner_id}.pause.json "
+                f"{REMOTE_RUN}/{learner_id}.paused.json"
+            ),
+            timeout=15,
+        )
 
 
 def _wait_remote_checkpoint_at_least(
@@ -1429,7 +1543,7 @@ def _wait_syncer_stopped_or_force(
 
 
 def _syncer_process_running(syncer: Instance, args: argparse.Namespace) -> bool:
-    pattern = "decodilo.cli syncer serve"
+    pattern = _syncer_process_pattern()
     try:
         _ssh(
             syncer.ip,
@@ -1598,6 +1712,8 @@ def _collect_evidence(owned: list[Instance], args: argparse.Namespace, evidence_
             "syncer.recover.stderr",
             f"{inst.role}.checkpoint.json",
             f"{inst.role}.log",
+            f"{inst.role}.pause.json",
+            f"{inst.role}.paused.json",
             f"{inst.role}.stdout",
             f"{inst.role}.stderr",
         ]
@@ -1619,7 +1735,10 @@ def _collect_evidence(owned: list[Instance], args: argparse.Namespace, evidence_
                 stderr=subprocess.DEVNULL,
                 check=False,
             )
-        if inst.role == "syncer":
+        if (
+            inst.role == "syncer"
+            and getattr(args, "artifact_storage_backend", "auto") != "s3_compatible"
+        ):
             for dirname in ["artifacts", "live_checkpoints"]:
                 remote = f"{REMOTE_RUN}/{dirname}"
                 subprocess.run(

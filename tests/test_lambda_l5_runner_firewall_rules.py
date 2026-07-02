@@ -536,6 +536,12 @@ def test_l5_pathway_restart_orchestrates_fenced_recovery(monkeypatch, tmp_path) 
 
     monkeypatch.setattr(
         runner,
+        "_request_learners_pause",
+        lambda *_args, **_kwargs: calls.append("pause"),
+    )
+    monkeypatch.setattr(runner, "_wait_learners_paused", lambda *_args: calls.append("paused"))
+    monkeypatch.setattr(
+        runner,
         "_wait_remote_checkpoint_at_least",
         lambda *_args: calls.append("checkpoint_fence"),
     )
@@ -556,6 +562,7 @@ def test_l5_pathway_restart_orchestrates_fenced_recovery(monkeypatch, tmp_path) 
     )
     monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: calls.append("ready"))
     monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: calls.append("tcp"))
+    monkeypatch.setattr(runner, "_resume_learners", lambda *_args: calls.append("resume"))
     monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: next(rounds))
 
     recovered = runner._pathway_restart_syncer(
@@ -568,22 +575,28 @@ def test_l5_pathway_restart_orchestrates_fenced_recovery(monkeypatch, tmp_path) 
 
     assert recovered is True
     assert calls == [
+        "pause",
+        "paused",
         "checkpoint_fence",
         "shutdown",
         "stopped_or_force",
         "start_recover",
         "ready",
         "tcp",
+        "resume",
     ]
     audit = __import__("json").loads((tmp_path / "pathway_restart_audit.json").read_text())
     assert audit["status"] == "completed"
     assert audit["execution_order"] == [
+        "pause_learners",
+        "pause_fence",
         "checkpoint_fence",
         "shutdown_syncer",
         "stop_fence",
         "start_recovered_syncer",
         "ready_fence",
         "direct_tcp_fence",
+        "resume_learners",
         "post_restart_round_fence",
     ]
     assert audit["artifacts"]["post_restart_round"]["value"] == 3
@@ -606,12 +619,15 @@ def test_l5_pathway_restart_records_failure_audit(monkeypatch, tmp_path) -> None
         },
     )()
 
+    monkeypatch.setattr(runner, "_request_learners_pause", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(runner, "_wait_learners_paused", lambda *_args: None)
     monkeypatch.setattr(runner, "_wait_remote_checkpoint_at_least", lambda *_args: None)
     monkeypatch.setattr(runner, "_request_syncer_shutdown_for_restart", lambda *_args: None)
     monkeypatch.setattr(runner, "_wait_syncer_stopped_or_force", lambda *_args: None)
     monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: None)
     monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: None)
+    monkeypatch.setattr(runner, "_resume_learners", lambda *_args: None)
     monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 2)
 
     recovered = runner._pathway_restart_syncer(
@@ -659,3 +675,82 @@ def test_l5_stop_fence_polls_after_force_stop_ssh_failure(monkeypatch, tmp_path)
     assert result["stopped"] is True
     assert result["forced"] is True
     assert result["force_stop_error"] is not None
+
+
+def test_l5_syncer_process_pattern_excludes_probe_command() -> None:
+    runner = _load_runner()
+
+    pattern = runner._syncer_process_pattern()
+
+    assert pattern == "[d]ecodilo.cli syncer serve"
+    assert "decodilo.cli syncer serve" not in pattern
+
+
+def test_l5_force_stop_uses_self_excluding_pattern(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type("Args", (), {"ssh_private_key": tmp_path / "key"})()
+    commands: list[str] = []
+
+    monkeypatch.setattr(
+        runner,
+        "_ssh",
+        lambda _ip, _key, command, *, timeout: commands.append(command),
+    )
+
+    runner._force_stop_syncer(syncer, args)
+
+    assert commands
+    assert "[d]ecodilo.cli syncer serve" in commands[0]
+    assert "pkill -KILL -f" in commands[0]
+
+
+def test_l5_collect_evidence_skips_recursive_artifact_copy_for_s3(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 0,
+            "artifact_storage_backend": "s3_compatible",
+        },
+    )()
+    calls: list[list[str]] = []
+
+    def fake_run(command, **_kwargs):
+        calls.append(list(command))
+        return type("Completed", (), {"returncode": 0})()
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+
+    runner._collect_evidence([syncer], args, tmp_path)
+
+    assert calls
+    assert not any("-r" in command for command in calls)
+
+
+def test_l5_collect_evidence_recurses_artifacts_for_non_s3(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 0,
+            "artifact_storage_backend": "durable_filesystem_object_store",
+        },
+    )()
+    calls: list[list[str]] = []
+
+    def fake_run(command, **_kwargs):
+        calls.append(list(command))
+        return type("Completed", (), {"returncode": 0})()
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+
+    runner._collect_evidence([syncer], args, tmp_path)
+
+    assert any("-r" in command for command in calls)

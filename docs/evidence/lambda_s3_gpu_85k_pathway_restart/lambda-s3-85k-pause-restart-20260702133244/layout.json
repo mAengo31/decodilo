@@ -1,0 +1,39 @@
+{
+  "experiment_mode": "restart_recovery",
+  "network_path": "lambda_firewall_direct_tcp",
+  "remote_instance_count": 5,
+  "roles": {
+    "learner-0": {
+      "instance_id": "183f87d9fadd41b58857c0c6f7c070f4",
+      "instance_type": "gpu_1x_a10",
+      "ip": "193.122.230.122",
+      "region": "us-east-1"
+    },
+    "learner-1": {
+      "instance_id": "baf93f9f30c94942a3ff99c7e361968c",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.153.156.75",
+      "region": "us-east-1"
+    },
+    "learner-2": {
+      "instance_id": "006eb51b355a4838bc251f6664a1a6c0",
+      "instance_type": "gpu_1x_a10",
+      "ip": "132.226.37.232",
+      "region": "us-east-1"
+    },
+    "learner-3": {
+      "instance_id": "716f8cb0e8424553932a9ef277199437",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.80.137.233",
+      "region": "us-east-1"
+    },
+    "syncer": {
+      "instance_id": "0bb860fdb9be434fb164c3b38701e7e8",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.80.130.130",
+      "region": "us-east-1"
+    }
+  },
+  "run_id": "lambda-s3-85k-pause-restart-20260702133244",
+  "syncer_port": 28080
+}
