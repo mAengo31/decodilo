@@ -1021,7 +1021,7 @@ import asyncio, json
 from decodilo.transport.tcp_client import JsonlTcpClient
 from decodilo.transport.envelope import MessageType, make_envelope
 async def main():
-    async with JsonlTcpClient(host='127.0.0.1', port={args.port}, timeout_seconds=5) as client:
+    async with JsonlTcpClient(host='127.0.0.1', port={args.port}, timeout_seconds=30) as client:
         envelope = make_envelope(
             run_id={args.run_id!r},
             sender_id='l2-supervisor',
@@ -1038,8 +1038,13 @@ asyncio.run(main())
         + script
         + "PY\n"
     )
-    _ssh(syncer.ip, args.ssh_private_key, remote, timeout=60)
-    _wait_for_background_procs(timeout=15)
+    _retry_operation(
+        "shutdown_syncer",
+        lambda: _ssh(syncer.ip, args.ssh_private_key, remote, timeout=120),
+        attempts=3,
+        delay_seconds=5.0,
+    )
+    _wait_for_background_procs(timeout=30)
 
 
 def _wait_remote_file(ip: str, key: Path, path: str) -> None:

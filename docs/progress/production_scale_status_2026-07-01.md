@@ -361,6 +361,36 @@ reason=all learners lost direct TCP syncer connection before recovery acceptance
 
 Interpretation: the S3-backed artifact backend works and the 4-learner S3 proof passes, but combining S3 artifacts with 8 learners exposed a remaining direct-TCP/restart orchestration limit. The next fix is not more blind retrying; it is to harden the operation layer around syncer restart/readiness and learner reconnect behavior under S3-backed artifact pressure.
 
+## Latest Lambda S3-backed scale experiment — 8 learners
+
+Run ID: `lambda-s3-eight-gpu-hardened-20260702024523`
+Evidence root: `docs/evidence/lambda_s3_gpu_eight_learner/lambda-s3-eight-gpu-hardened-20260702024523/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+artifact_transfer_mode=object_store
+remote_instance_count=9
+remote_process_roles=syncer + learner-0..learner-7
+committed_sync_rounds=2
+accepted_updates=12
+useful_tokens_accepted=672
+inner_optimizer_semantics=adamw
+outer_optimizer_semantics=nesterov
+pseudo_gradient_numeric_check_passed=true
+restart_recovered=true
+direct_tcp_probe_passed=true
+firewall_rules_restored=true
+final_instance_count=0
+lambda_l5_restart_recovery_direct_tcp_passed=true
+production_scale_ready=false
+pathway_operation_layer_ready=false
+billable_action_performed=true
+```
+
+This combines the previously separate 8-learner direct-TCP proof and 4-learner S3-backed proof: 8 Lambda GPU learners now work with the S3-compatible artifact backend. It is still not production-scale because the run is short, single-region, small-model, and not managed by a full Pathway-style scheduler.
+
 ## Safety flags
 
 ```text

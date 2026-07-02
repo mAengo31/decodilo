@@ -408,3 +408,30 @@ def test_l5_remote_dependency_install_includes_boto3_for_s3_backend() -> None:
 
     assert "pydantic" in command
     assert "boto3" in command
+
+
+def test_l5_shutdown_syncer_retries_transient_shutdown_failure(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "id", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type("Args", (), {"ssh_private_key": "key", "port": 28080, "run_id": "run"})()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def fake_ssh(_ip, _key, remote, *, timeout):
+        attempts["count"] += 1
+        assert "timeout_seconds=30" in remote
+        assert timeout == 120
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(1, ["ssh"])
+        return type("Result", (), {"stdout": "{}"})()
+
+    monkeypatch.setattr(runner, "_ssh", fake_ssh)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+    monkeypatch.setattr(runner, "_wait_for_background_procs", lambda *, timeout: None)
+
+    runner._shutdown_syncer(syncer, args)
+
+    assert attempts["count"] == 2
+    assert sleeps == [5.0]

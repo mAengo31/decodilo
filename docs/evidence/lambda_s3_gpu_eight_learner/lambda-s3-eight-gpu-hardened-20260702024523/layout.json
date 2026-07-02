@@ -1,0 +1,62 @@
+{
+  "network_path": "lambda_firewall_direct_tcp",
+  "remote_instance_count": 9,
+  "roles": {
+    "learner-0": {
+      "instance_id": "3aaf1bc3097e4cfc8e221cde06bdb20e",
+      "instance_type": "gpu_1x_a10",
+      "ip": "132.145.178.182",
+      "region": "us-east-1"
+    },
+    "learner-1": {
+      "instance_id": "8cd5cb3d65b84ea09cae3207acdc1319",
+      "instance_type": "gpu_1x_a10",
+      "ip": "132.145.183.242",
+      "region": "us-east-1"
+    },
+    "learner-2": {
+      "instance_id": "ff913080282c43709b4fac71d5a86eb0",
+      "instance_type": "gpu_1x_a10",
+      "ip": "132.145.179.143",
+      "region": "us-east-1"
+    },
+    "learner-3": {
+      "instance_id": "7a844c94448e4694baa5f62c98b9e727",
+      "instance_type": "gpu_1x_a10",
+      "ip": "150.136.42.116",
+      "region": "us-east-1"
+    },
+    "learner-4": {
+      "instance_id": "ef13a7f2cb5941e185a52706161aa508",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.213.80.213",
+      "region": "us-east-1"
+    },
+    "learner-5": {
+      "instance_id": "ce8840b86e354d1cb885d114c2578634",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.153.163.58",
+      "region": "us-east-1"
+    },
+    "learner-6": {
+      "instance_id": "59f318935528407eb3aeb8425e660d67",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.213.162.199",
+      "region": "us-east-1"
+    },
+    "learner-7": {
+      "instance_id": "7a3d019ed2424e3b95981a6983055605",
+      "instance_type": "gpu_1x_a10",
+      "ip": "141.148.44.227",
+      "region": "us-east-1"
+    },
+    "syncer": {
+      "instance_id": "2ce5b9d74c124042a14bed86200632d4",
+      "instance_type": "gpu_1x_a10",
+      "ip": "129.80.80.148",
+      "region": "us-east-1"
+    }
+  },
+  "run_id": "lambda-s3-eight-gpu-hardened-20260702024523",
+  "syncer_port": 28080
+}
