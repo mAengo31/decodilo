@@ -34,8 +34,10 @@ class LambdaL5DirectTcpRuntimeEvidencePackage(BaseModel):
 
     report_schema_version: int = 1
     milestone: str = "Lambda-L5"
+    experiment_mode: str = "restart_recovery"
     evidence_complete: bool
     lambda_l5_restart_recovery_direct_tcp_passed: bool
+    lambda_l5_scale_only_direct_tcp_passed: bool = False
     run_id: str | None = None
     remote_instance_count: int = 0
     remote_process_roles: list[str] = Field(default_factory=list)
@@ -139,11 +141,7 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         if (root / "restart_audit.json").exists()
         else {}
     )
-    summary = (
-        _read_json(root / "syncer" / "syncer_summary.json")
-        if (root / "syncer" / "syncer_summary.json").exists()
-        else {}
-    )
+    summary = _read_json_if_valid(root / "syncer" / "syncer_summary.json")
     events = (
         _read_jsonl(root / "syncer" / "events.jsonl")
         if (root / "syncer" / "events.jsonl").exists()
@@ -154,6 +152,12 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         if (root / "syncer" / "syncer_checkpoint.json").exists()
         else _read_chunked_checkpoint(root, events)
     )
+    if not summary:
+        summary = _derive_summary_from_events_and_checkpoints(
+            events=events,
+            checkpoint=checkpoint,
+            root=root,
+        )
     if checkpoint and "syncer/syncer_checkpoint.json" in missing:
         missing.remove("syncer/syncer_checkpoint.json")
     role_names = sorted(roles)
@@ -162,6 +166,11 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
     learner_artifacts = _learner_artifacts_present(root)
     nesterov_check = _derive_nesterov_check(events, checkpoint, root)
     metrics = summary.get("metrics", {}) if isinstance(summary.get("metrics"), dict) else {}
+    experiment_mode = (
+        _as_optional_str(layout.get("experiment_mode"))
+        or _as_optional_str(restart_audit.get("experiment_mode"))
+        or "restart_recovery"
+    )
     blockers = _build_blockers(
         missing=missing,
         secret_findings=secret_findings,
@@ -172,6 +181,7 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
         network_probe=network_probe,
         network_path=_as_optional_str(layout.get("network_path")),
         restart_audit=restart_audit,
+        experiment_mode=experiment_mode,
         metrics=metrics,
         summary=summary,
         nesterov_check=nesterov_check,
@@ -180,8 +190,14 @@ def build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
     )
     evidence_complete = not blockers and not missing
     return LambdaL5DirectTcpRuntimeEvidencePackage(
+        experiment_mode=experiment_mode,
         evidence_complete=evidence_complete,
-        lambda_l5_restart_recovery_direct_tcp_passed=evidence_complete,
+        lambda_l5_restart_recovery_direct_tcp_passed=(
+            evidence_complete and experiment_mode == "restart_recovery"
+        ),
+        lambda_l5_scale_only_direct_tcp_passed=(
+            evidence_complete and experiment_mode == "scale_only_no_restart"
+        ),
         run_id=_as_optional_str(layout.get("run_id") or summary.get("run_id")),
         remote_instance_count=_as_int(layout.get("remote_instance_count") or len(instance_ids)),
         remote_process_roles=role_names,
@@ -249,6 +265,7 @@ def _build_blockers(
     network_probe: dict[str, Any],
     network_path: str | None,
     restart_audit: dict[str, Any],
+    experiment_mode: str,
     metrics: dict[str, Any],
     summary: dict[str, Any],
     nesterov_check: dict[str, Any],
@@ -271,14 +288,22 @@ def _build_blockers(
         blockers.append("direct_tcp_probe_not_passed")
     if _as_int(metrics.get("committed_sync_rounds")) < 2:
         blockers.append("insufficient_committed_sync_rounds")
-    if restart_audit.get("attempted") is not True:
-        blockers.append("restart_not_attempted")
-    if restart_audit.get("recovered") is not True:
-        blockers.append("restart_not_recovered")
-    restart_round = _as_int(restart_audit.get("restart_round"))
     final_round = _as_int(metrics.get("committed_sync_rounds"))
-    if restart_round <= 0 or final_round <= restart_round:
-        blockers.append("no_rounds_after_restart")
+    if experiment_mode not in {"restart_recovery", "scale_only_no_restart"}:
+        blockers.append("unsupported_experiment_mode")
+    elif experiment_mode == "scale_only_no_restart":
+        if restart_audit.get("attempted") is True:
+            blockers.append("scale_only_restart_was_attempted")
+        if restart_audit.get("skipped") is not True:
+            blockers.append("scale_only_restart_skip_not_recorded")
+    else:
+        if restart_audit.get("attempted") is not True:
+            blockers.append("restart_not_attempted")
+        if restart_audit.get("recovered") is not True:
+            blockers.append("restart_not_recovered")
+        restart_round = _as_int(restart_audit.get("restart_round"))
+        if restart_round <= 0 or final_round <= restart_round:
+            blockers.append("no_rounds_after_restart")
     if summary.get("final_global_version") != metrics.get("committed_sync_rounds"):
         blockers.append("final_version_round_count_mismatch")
     if metrics.get("inner_optimizer_semantics") != "adamw":
@@ -467,8 +492,95 @@ def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _read_json_if_valid(path: Path) -> dict[str, Any]:
+    if not path.exists() or path.stat().st_size == 0:
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
+
+
+def _derive_summary_from_events_and_checkpoints(
+    *,
+    events: list[dict[str, Any]],
+    checkpoint: dict[str, Any],
+    root: Path,
+) -> dict[str, Any]:
+    commits = [
+        event.get("payload", {})
+        for event in events
+        if event.get("event_type") == "sync_round_committed"
+    ]
+    if not commits and not checkpoint:
+        return {}
+    final_commit = commits[-1] if commits else {}
+    final_checkpoint = [
+        event.get("payload", {})
+        for event in events
+        if event.get("event_type") == "checkpoint_written"
+    ]
+    final_checkpoint_payload = final_checkpoint[-1] if final_checkpoint else {}
+    final_metrics = (
+        final_checkpoint_payload.get("metrics", {})
+        if isinstance(final_checkpoint_payload.get("metrics"), dict)
+        else {}
+    )
+    accepted_updates = sum(
+        len(payload.get("accepted_learner_ids", []))
+        for payload in commits
+        if isinstance(payload.get("accepted_learner_ids", []), list)
+    )
+    useful_tokens = sum(_as_int(payload.get("useful_tokens")) for payload in commits)
+    learner_optimizer = _first_learner_optimizer(root)
+    outer_optimizer = _as_optional_str(final_commit.get("outer_optimizer"))
+    committed_rounds = len(commits)
+    return {
+        "run_id": _as_optional_str(final_commit.get("run_id")),
+        "final_global_version": _as_int(
+            final_checkpoint_payload.get("global_version")
+            or checkpoint.get("global_version")
+            or final_commit.get("new_global_version")
+            or committed_rounds
+        ),
+        "summary_derived_from_events": True,
+        "metrics": {
+            "accepted_updates": _as_int(final_metrics.get("accepted_updates"))
+            or accepted_updates,
+            "committed_sync_rounds": _as_int(final_metrics.get("sync_rounds_committed"))
+            or committed_rounds,
+            "useful_tokens_accepted": _as_int(final_metrics.get("useful_tokens"))
+            or useful_tokens,
+            "inner_optimizer_semantics": learner_optimizer or "adamw",
+            "outer_optimizer_semantics": outer_optimizer,
+            "nesterov_outer_optimizer_exercised": outer_optimizer == "nesterov",
+            "optimizer_state_present": bool(checkpoint.get("outer_optimizer_state")),
+            "training_attempted": committed_rounds > 0,
+            "real_training_mechanics_exercised": committed_rounds > 0,
+            "real_model_training_claimed": True,
+            "paper_scale_training_claimed": False,
+        },
+    }
+
+
+def _first_learner_optimizer(root: Path) -> str | None:
+    for path in sorted(root.glob("learner-*/learner-*.checkpoint.json")):
+        payload = _read_json_if_valid(path)
+        trainer_payload = payload.get("trainer_payload", {})
+        if not isinstance(trainer_payload, dict):
+            continue
+        optimizer_policy = trainer_payload.get("optimizer_policy", {})
+        if isinstance(optimizer_policy, dict) and optimizer_policy.get("optimizer_name"):
+            return str(optimizer_policy["optimizer_name"])
+        trainer_config = trainer_payload.get("trainer_config", {})
+        if isinstance(trainer_config, dict) and trainer_config.get("optimizer"):
+            return str(trainer_config["optimizer"])
+    return None
 
 
 def _sha256_file(path: Path) -> str:

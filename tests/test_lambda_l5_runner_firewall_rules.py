@@ -484,3 +484,44 @@ def test_l5_restart_falls_back_to_force_stop_when_graceful_shutdown_fails(
     runner._run_learners_with_restart([syncer, learner], syncer, args, tmp_path)
 
     assert calls[:5] == ["shutdown", "force", "start", "ready", "tcp"]
+
+
+def test_l5_runner_scale_only_mode_skips_restart_and_records_audit(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+
+    class Proc:
+        def poll(self):
+            return 0
+
+        def wait(self, timeout):
+            return 0
+
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "learner_run_timeout_seconds": 60.0,
+            "experiment_mode": "scale_only_no_restart",
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_learner_command", lambda *_args: "true")
+    monkeypatch.setattr(runner.subprocess, "Popen", lambda *_args, **_kwargs: Proc())
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 3)
+    monkeypatch.setattr(runner, "_shutdown_syncer", lambda *_args: calls.append("shutdown"))
+    monkeypatch.setattr(runner, "_force_stop_syncer", lambda *_args: calls.append("force"))
+    monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: calls.append("start"))
+
+    runner._run_learners_for_experiment_mode([syncer, learner], syncer, args, tmp_path)
+
+    audit = __import__("json").loads((tmp_path / "restart_audit.json").read_text())
+    assert calls == []
+    assert audit["attempted"] is False
+    assert audit["skipped"] is True
+    assert audit["skip_reason"] == "scale_only_no_restart"
+    assert audit["final_round_before_shutdown"] == 3

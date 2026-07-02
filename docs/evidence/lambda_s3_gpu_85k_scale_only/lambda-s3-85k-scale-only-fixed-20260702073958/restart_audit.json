@@ -1,0 +1,14 @@
+{
+  "attempted": false,
+  "experiment_mode": "scale_only_no_restart",
+  "final_round_before_shutdown": 4,
+  "graceful_shutdown_error": null,
+  "late_learner_failures_ignored": false,
+  "learner_failures": [],
+  "recovered": false,
+  "restart_error": null,
+  "restart_round": null,
+  "rounds_after_restart": 0,
+  "skip_reason": "scale_only_no_restart",
+  "skipped": true
+}

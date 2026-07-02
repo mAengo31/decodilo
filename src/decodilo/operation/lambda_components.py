@@ -33,8 +33,17 @@ class LambdaOperationBackendConfig:
     instance_type: str = "gpu_1x_a10"
     port: int = 28080
     restart_after_round: int = 20
+    experiment_mode: str = "restart_recovery"
     evidence_root: Path | None = None
     runner_script: Path = Path("tools/lambda_l5_runner.py")
+    artifact_storage_backend: str = "auto"
+    s3_endpoint_url: str | None = None
+    s3_bucket: str | None = None
+    s3_prefix: str = "decodilo-artifacts"
+    s3_region: str | None = None
+    s3_access_key_ref: str | None = None
+    s3_secret_key_ref: str | None = None
+    s3_session_token_ref: str | None = None
 
 
 @dataclass(frozen=True)
@@ -52,6 +61,7 @@ class LambdaOperationPlan:
     network_path: str
     restart_strategy: str
     restart_after_round: int
+    experiment_mode: str
     trainer_type: str
     trainer_config_json: str
     vector_dim: int
@@ -69,6 +79,7 @@ class LambdaOperationPlan:
     inline_payload_max_bytes: int
     chunk_size_bytes: int
     artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "auto"
     launch_ready: bool = False
     launch_allowed: bool = False
 
@@ -84,6 +95,7 @@ class LambdaOperationPlan:
             "network_path": self.network_path,
             "restart_strategy": self.restart_strategy,
             "restart_after_round": self.restart_after_round,
+            "experiment_mode": self.experiment_mode,
             "trainer_type": self.trainer_type,
             "trainer_config_json": self.trainer_config_json,
             "vector_dim": self.vector_dim,
@@ -101,6 +113,7 @@ class LambdaOperationPlan:
             "inline_payload_max_bytes": self.inline_payload_max_bytes,
             "chunk_size_bytes": self.chunk_size_bytes,
             "artifact_transfer_mode": getattr(self, "artifact_transfer_mode", "bundle"),
+            "artifact_storage_backend": self.artifact_storage_backend,
             "launch_ready": self.launch_ready,
             "launch_allowed": self.launch_allowed,
         }
@@ -136,8 +149,13 @@ def build_lambda_operation_plan(
         redacted_command=redact_lambda_command(command),
         remote_roles=["syncer", *[f"learner-{index}" for index in range(spec.learners)]],
         network_path="lambda_firewall_direct_tcp",
-        restart_strategy="syncer_checkpoint_restart",
+        restart_strategy=(
+            "none_scale_only"
+            if config.experiment_mode == "scale_only_no_restart"
+            else "syncer_checkpoint_restart"
+        ),
         restart_after_round=config.restart_after_round,
+        experiment_mode=config.experiment_mode,
         trainer_type=spec.trainer_type,
         trainer_config_json=trainer_config_json,
         vector_dim=spec.vector_dim,
@@ -159,6 +177,7 @@ def build_lambda_operation_plan(
         inline_payload_max_bytes=spec.inline_payload_max_bytes,
         chunk_size_bytes=spec.chunk_size_bytes,
         artifact_transfer_mode=spec.artifact_transfer_mode,
+        artifact_storage_backend=config.artifact_storage_backend,
     )
 
 
@@ -189,6 +208,8 @@ def build_lambda_l5_runner_command(
         str(evidence_root),
         "--restart-after-round",
         str(config.restart_after_round),
+        "--experiment-mode",
+        config.experiment_mode,
         "--trainer-type",
         spec.trainer_type,
         "--trainer-config-json",
@@ -219,7 +240,23 @@ def build_lambda_l5_runner_command(
         str(max(1, spec.chunk_size_bytes // (1024 * 1024))),
         "--artifact-transfer-mode",
         spec.artifact_transfer_mode,
+        "--artifact-storage-backend",
+        config.artifact_storage_backend,
     ]
+    if config.s3_endpoint_url:
+        command.extend(["--s3-endpoint-url", config.s3_endpoint_url])
+    if config.s3_bucket:
+        command.extend(["--s3-bucket", config.s3_bucket])
+    if config.s3_prefix:
+        command.extend(["--s3-prefix", config.s3_prefix])
+    if config.s3_region:
+        command.extend(["--s3-region", config.s3_region])
+    if config.s3_access_key_ref:
+        command.extend(["--s3-access-key-ref", config.s3_access_key_ref])
+    if config.s3_secret_key_ref:
+        command.extend(["--s3-secret-key-ref", config.s3_secret_key_ref])
+    if config.s3_session_token_ref:
+        command.extend(["--s3-session-token-ref", config.s3_session_token_ref])
     if config.ssh_key_name:
         command.extend(["--ssh-key-name", config.ssh_key_name])
     return command
@@ -249,7 +286,14 @@ def lambda_operation_result_from_l5_package(
     return OperationResult(
         operation_name=spec.name,
         backend="lambda",
-        status="completed" if package.lambda_l5_restart_recovery_direct_tcp_passed else "failed",
+        status=(
+            "completed"
+            if (
+                package.lambda_l5_restart_recovery_direct_tcp_passed
+                or package.lambda_l5_scale_only_direct_tcp_passed
+            )
+            else "failed"
+        ),
         inner_optimizer_semantics=package.inner_optimizer_semantics,
         outer_optimizer_semantics=package.outer_optimizer_semantics,
         outer_momentum=spec.outer_momentum,
@@ -287,5 +331,7 @@ def lambda_operation_result_from_l5_package(
             "stdout_tail": completed.stdout[-4000:] if completed.stdout else "",
             "stderr_tail": completed.stderr[-4000:] if completed.stderr else "",
             "blockers": package.blockers,
+            "experiment_mode": package.experiment_mode,
+            "scale_only_no_restart_passed": package.lambda_l5_scale_only_direct_tcp_passed,
         },
     )

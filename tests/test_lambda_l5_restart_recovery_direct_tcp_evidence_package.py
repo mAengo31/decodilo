@@ -8,7 +8,12 @@ from decodilo.lambda_cloud.l5_restart_recovery_direct_tcp_evidence_package impor
 )
 
 
-def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
+def _write_minimal_l5_evidence(
+    root: Path,
+    *,
+    learners: int = 2,
+    experiment_mode: str = "restart_recovery",
+) -> None:
     (root / "syncer").mkdir(parents=True)
     for index in range(learners):
         (root / f"learner-{index}").mkdir()
@@ -29,6 +34,7 @@ def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
                 "syncer_port": 28080,
                 "remote_instance_count": learners + 1,
                 "network_path": "lambda_firewall_direct_tcp",
+                "experiment_mode": experiment_mode,
             }
         ),
         encoding="utf-8",
@@ -48,6 +54,7 @@ def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
                 "recovered": True,
                 "restart_round": 1,
                 "rounds_after_restart": 1,
+                "experiment_mode": experiment_mode,
             }
         ),
         encoding="utf-8",
@@ -77,6 +84,7 @@ def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
             "outer_momentum": 0.9,
             "outer_optimizer": "nesterov",
             "useful_tokens": 210,
+            "accepted_learner_ids": ["learner-0"],
         },
     }
     commit2 = {
@@ -91,6 +99,7 @@ def _write_minimal_l5_evidence(root: Path, *, learners: int = 2) -> None:
             "outer_momentum": 0.9,
             "outer_optimizer": "nesterov",
             "useful_tokens": 210,
+            "accepted_learner_ids": ["learner-1"],
         },
     }
     (root / "syncer" / "events.jsonl").write_text(
@@ -196,6 +205,69 @@ def test_lambda_l5_evidence_package_accepts_four_learner_roles(tmp_path: Path) -
         "learner-2",
         "learner-3",
     ]
+
+
+def test_lambda_l5_evidence_package_accepts_scale_only_no_restart(
+    tmp_path: Path,
+) -> None:
+    _write_minimal_l5_evidence(tmp_path, learners=4, experiment_mode="scale_only_no_restart")
+    (tmp_path / "restart_audit.json").write_text(
+        json.dumps(
+            {
+                "attempted": False,
+                "recovered": False,
+                "skipped": True,
+                "skip_reason": "scale_only_no_restart",
+                "experiment_mode": "scale_only_no_restart",
+                "restart_round": None,
+                "rounds_after_restart": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    package = build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(tmp_path)
+
+    assert package.evidence_complete is True
+    assert package.experiment_mode == "scale_only_no_restart"
+    assert package.lambda_l5_restart_recovery_direct_tcp_passed is False
+    assert package.lambda_l5_scale_only_direct_tcp_passed is True
+    assert package.restart_attempted is False
+    assert package.restart_recovered is False
+    assert package.committed_sync_rounds == 2
+    assert package.pseudo_gradient_numeric_check_passed is True
+    assert package.blockers == []
+
+
+def test_lambda_l5_scale_only_evidence_can_derive_empty_summary(
+    tmp_path: Path,
+) -> None:
+    _write_minimal_l5_evidence(tmp_path, learners=4, experiment_mode="scale_only_no_restart")
+    (tmp_path / "restart_audit.json").write_text(
+        json.dumps(
+            {
+                "attempted": False,
+                "recovered": False,
+                "skipped": True,
+                "skip_reason": "scale_only_no_restart",
+                "experiment_mode": "scale_only_no_restart",
+                "restart_round": None,
+                "rounds_after_restart": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "syncer" / "syncer_summary.json").write_text("", encoding="utf-8")
+
+    package = build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(tmp_path)
+
+    assert package.evidence_complete is True
+    assert package.lambda_l5_scale_only_direct_tcp_passed is True
+    assert package.committed_sync_rounds == 2
+    assert package.accepted_updates == 2
+    assert package.useful_tokens_accepted == 420
+    assert package.inner_optimizer_semantics == "adamw"
+    assert package.outer_optimizer_semantics == "nesterov"
 
 def test_lambda_l5_restart_recovery_direct_tcp_evidence_package_rejects_collocated_roles(
     tmp_path: Path,

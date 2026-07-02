@@ -68,6 +68,20 @@ def main() -> int:
         default=Path("docs/evidence/lambda_l5_restart_recovery_direct_tcp_adamw_nesterov"),
     )
     parser.add_argument("--restart-after-round", type=int, default=20)
+    parser.add_argument(
+        "--experiment-mode",
+        choices=["restart_recovery", "scale_only_no_restart"],
+        default="restart_recovery",
+        help=(
+            "restart_recovery performs the planned syncer restart; "
+            "scale_only_no_restart proves model/artifact scale without a mid-run restart"
+        ),
+    )
+    parser.add_argument(
+        "--no-restart",
+        action="store_true",
+        help="Alias for --experiment-mode scale_only_no_restart",
+    )
     parser.add_argument("--trainer-type", default="tiny_adamw")
     parser.add_argument("--trainer-config-json", default=json.dumps({"optimizer": "adamw"}))
     parser.add_argument("--vector-dim", type=int, default=8)
@@ -114,6 +128,8 @@ def main() -> int:
     )
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
+    if args.no_restart or args.restart_after_round <= 0:
+        args.experiment_mode = "scale_only_no_restart"
 
     api_key, env_ssh_key = _load_env(args.env_file)
     ssh_key_name = args.ssh_key_name or env_ssh_key
@@ -149,8 +165,8 @@ def main() -> int:
         _start_syncer(syncer, args)
         _wait_remote_file(syncer.ip, args.ssh_private_key, f"{REMOTE_RUN}/syncer_ready.json")
         _wait_direct_tcp(owned, syncer.ip, args, evidence_dir)
-        _run_learners_with_restart(owned, syncer, args, evidence_dir)
-        _shutdown_syncer(syncer, args)
+        _run_learners_for_experiment_mode(owned, syncer, args, evidence_dir)
+        _shutdown_syncer_after_experiment(syncer, args, evidence_dir)
         evidence_dir.mkdir(parents=True, exist_ok=True)
         _collect_evidence(owned, args, evidence_dir)
         _write_layout(owned, args, evidence_dir)
@@ -185,6 +201,7 @@ def main() -> int:
             evidence_dir.mkdir(parents=True, exist_ok=True)
             _write_termination(owned, final_count, evidence_dir)
     if owned:
+        _install_local_s3_runtime_env_for_package(args)
         package = build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir(
             evidence_dir
         )
@@ -193,7 +210,11 @@ def main() -> int:
             package,
         )
         print(package.to_json(), end="")
-        return 0 if package.lambda_l5_restart_recovery_direct_tcp_passed else 2
+        passed = (
+            package.lambda_l5_restart_recovery_direct_tcp_passed
+            or package.lambda_l5_scale_only_direct_tcp_passed
+        )
+        return 0 if passed else 2
     return 1
 
 
@@ -478,6 +499,12 @@ def _s3_runtime_env_values(args: argparse.Namespace) -> dict[str, str]:
             raise RuntimeError(f"missing local S3 env ref {ref!r}")
         values[str(ref)] = env_values[str(ref)]
     return values
+
+
+def _install_local_s3_runtime_env_for_package(args: argparse.Namespace) -> None:
+    if getattr(args, "artifact_storage_backend", "auto") != "s3_compatible":
+        return
+    os.environ.update(_s3_runtime_env_values(args))
 
 
 def _remote_env_prefix(args: argparse.Namespace) -> str:
@@ -866,6 +893,18 @@ def _wait_direct_tcp(
         raise TimeoutError(f"direct TCP probe failed: {errors}")
 
 
+def _run_learners_for_experiment_mode(
+    owned: list[Instance],
+    syncer: Instance,
+    args: argparse.Namespace,
+    evidence_dir: Path,
+) -> None:
+    if getattr(args, "experiment_mode", "restart_recovery") == "scale_only_no_restart":
+        _run_learners_scale_only(owned, syncer, args, evidence_dir)
+        return
+    _run_learners_with_restart(owned, syncer, args, evidence_dir)
+
+
 def _run_learners_with_restart(
     owned: list[Instance],
     syncer: Instance,
@@ -979,6 +1018,67 @@ def _run_learners_with_restart(
         )
 
 
+def _run_learners_scale_only(
+    owned: list[Instance],
+    syncer: Instance,
+    args: argparse.Namespace,
+    evidence_dir: Path,
+) -> None:
+    procs: list[tuple[str, subprocess.Popen[bytes]]] = []
+    for learner_id in _learner_roles(args):
+        inst = _by_role(owned, learner_id)
+        cmd = _learner_command(args, learner_id, syncer.ip)
+        remote = (
+            f"cd {REMOTE_SRC} && {_remote_env_prefix(args)}{cmd} "
+            f"> {REMOTE_RUN}/{learner_id}.stdout "
+            f"2> {REMOTE_RUN}/{learner_id}.stderr"
+        )
+        procs.append(
+            (
+                learner_id,
+                subprocess.Popen([*_ssh_base(inst.ip, args.ssh_private_key), remote]),
+            )
+        )
+
+    failures: list[tuple[str, int]] = []
+    try:
+        deadline = time.time() + float(args.learner_run_timeout_seconds)
+        while time.time() < deadline:
+            if all(proc.poll() is not None for _, proc in procs):
+                break
+            time.sleep(0.5)
+        for learner_id, proc in procs:
+            code = proc.wait(timeout=max(30, int(args.learner_run_timeout_seconds)))
+            if code != 0:
+                failures.append((learner_id, code))
+        if failures:
+            raise RuntimeError(f"learner failures: {failures}")
+    finally:
+        final_round = _remote_committed_rounds(syncer, args)
+        restart_payload = {
+            "attempted": False,
+            "recovered": False,
+            "skipped": True,
+            "skip_reason": "scale_only_no_restart",
+            "experiment_mode": "scale_only_no_restart",
+            "restart_round": None,
+            "final_round_before_shutdown": final_round,
+            "rounds_after_restart": 0,
+            "restart_error": None,
+            "graceful_shutdown_error": None,
+            "late_learner_failures_ignored": False,
+            "learner_failures": [
+                {"learner_id": learner_id, "exit_code": code}
+                for learner_id, code in failures
+            ],
+        }
+        evidence_dir.mkdir(parents=True, exist_ok=True)
+        (evidence_dir / "restart_audit.json").write_text(
+            json.dumps(restart_payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+
 def _restart_recovery_sufficient(
     *,
     restart_round: int | None,
@@ -1047,6 +1147,53 @@ def _force_stop_syncer(syncer: Instance, args: argparse.Namespace) -> None:
     _ssh(syncer.ip, args.ssh_private_key, command, timeout=30)
 
 
+def _shutdown_syncer_after_experiment(
+    syncer: Instance,
+    args: argparse.Namespace,
+    evidence_dir: Path,
+) -> None:
+    try:
+        _shutdown_syncer(syncer, args)
+    except Exception as exc:
+        evidence_dir.mkdir(parents=True, exist_ok=True)
+        (evidence_dir / "syncer_shutdown_audit.json").write_text(
+            json.dumps(
+                {
+                    "shutdown_succeeded": False,
+                    "error": str(exc),
+                    "experiment_mode": getattr(args, "experiment_mode", "restart_recovery"),
+                    "accepted_as_nonfatal": (
+                        getattr(args, "experiment_mode", "restart_recovery")
+                        == "scale_only_no_restart"
+                    ),
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        if getattr(args, "experiment_mode", "restart_recovery") == "scale_only_no_restart":
+            return
+        raise
+    else:
+        evidence_dir.mkdir(parents=True, exist_ok=True)
+        (evidence_dir / "syncer_shutdown_audit.json").write_text(
+            json.dumps(
+                {
+                    "shutdown_succeeded": True,
+                    "error": None,
+                    "experiment_mode": getattr(args, "experiment_mode", "restart_recovery"),
+                    "accepted_as_nonfatal": False,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+
 def _shutdown_syncer(syncer: Instance, args: argparse.Namespace) -> None:
     script = f"""
 import asyncio, json
@@ -1066,9 +1213,10 @@ async def main():
 asyncio.run(main())
 """
     remote = (
-        f"cd {REMOTE_SRC} && PYTHONPATH=src python3 - <<'PY' > {REMOTE_RUN}/syncer_summary.json\n"
+        f"cd {REMOTE_SRC} && PYTHONPATH=src python3 - <<'PY' > "
+        f"{REMOTE_RUN}/syncer_summary.json.tmp\n"
         + script
-        + "PY\n"
+        + f"PY\nmv {REMOTE_RUN}/syncer_summary.json.tmp {REMOTE_RUN}/syncer_summary.json\n"
     )
     _retry_operation(
         "shutdown_syncer",
@@ -1184,6 +1332,7 @@ def _write_layout(owned: list[Instance], args: argparse.Namespace, evidence_dir:
                 "syncer_port": args.port,
                 "remote_instance_count": len(owned),
                 "network_path": "lambda_firewall_direct_tcp",
+                "experiment_mode": getattr(args, "experiment_mode", "restart_recovery"),
             },
             indent=2,
             sort_keys=True,
@@ -1280,7 +1429,15 @@ def _print_planned_commands(
     ssh_key_name: str,
     evidence_dir: Path,
 ) -> None:
-    print(json.dumps({"ssh_key_configured": bool(ssh_key_name), "evidence_dir": str(evidence_dir)}))
+    print(
+        json.dumps(
+            {
+                "ssh_key_configured": bool(ssh_key_name),
+                "evidence_dir": str(evidence_dir),
+                "experiment_mode": getattr(args, "experiment_mode", "restart_recovery"),
+            }
+        )
+    )
     print(_syncer_command(args))
     for learner_id in _learner_roles(args):
         print(_learner_command(args, learner_id, "<syncer-ip>"))

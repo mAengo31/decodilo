@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "description": "Allow SSH connections from any IP",
+      "port_range": [
+        22,
+        22
+      ],
+      "protocol": "tcp",
+      "source_network": "0.0.0.0/0"
+    },
+    {
+      "description": "Allow Ping from any IP",
+      "protocol": "icmp",
+      "source_network": "0.0.0.0/0"
+    }
+  ]
+}
