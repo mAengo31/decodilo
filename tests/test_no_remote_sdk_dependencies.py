@@ -21,6 +21,8 @@ def test_no_remote_sdk_imports_or_cloud_env_reads_in_remote_modules() -> None:
         *Path("src/decodilo/storage").glob("remote_backend*.py"),
         *Path("src/decodilo/cloud").glob("remote_backend*.py"),
         *Path("src/decodilo/runtime").glob("remote_backend*.py"),
+        Path("src/decodilo/storage/s3_compatible_backend.py"),
+        Path("src/decodilo/storage/s3_client_factory.py"),
     ]
 
     for path in paths:

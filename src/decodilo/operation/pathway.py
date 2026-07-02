@@ -146,3 +146,109 @@ def compile_pathway_managed_experiment(
         lambda_plan=lambda_plan,
         required_evidence=list(PATHWAY_LITE_REQUIRED_EVIDENCE),
     )
+
+SIX_STEP_PRODUCTION_CANDIDATE = "lambda_gpu_six_step_production_candidate"
+SIX_STEP_REQUIRED_EVIDENCE = PATHWAY_LITE_REQUIRED_EVIDENCE + [
+    "larger_model_above_13k_parameters",
+    "artifact_transfer_mode_object_store",
+    "artifact_storage_backend_syncer_object_store",
+    "four_learner_local_profile",
+    "failure_matrix_profile",
+    "external_durable_backend_not_claimed",
+    "production_scale_ready_false",
+]
+
+
+def build_six_step_production_candidate_experiments(
+    *,
+    seed: int = 123,
+    device: str = "cuda",
+) -> dict[str, OperationSpec]:
+    """Return fail-closed managed profiles for the six production-readiness steps.
+
+    These profiles intentionally advance scale pressure while preserving honest
+    boundaries: they are production-shaped candidates, not production-scale
+    readiness claims. The live profile remains bounded; larger/more-learner and
+    failure profiles are intended for local verification first.
+    """
+
+    common = {
+        "seed": seed,
+        "device": device,
+        "payload_storage_mode": "chunked",
+        "checkpoint_storage_mode": "chunked",
+        "merge_mode": "streaming_chunked",
+        "global_update_storage_mode": "chunked",
+        "inline_payload_max_bytes": 1024,
+        "chunk_size_mb": 1,
+        "artifact_transfer_mode": "object_store",
+    }
+    return {
+        "larger_model": OperationSpec.torch_causal_lm_profile(
+            name="six-step-larger-model-object-store",
+            learners=2,
+            steps=12,
+            min_quorum=2,
+            local_steps_per_sync=1,
+            vocab_size=96,
+            seq_len=24,
+            batch_size=2,
+            d_model=48,
+            num_layers=1,
+            num_heads=4,
+            restart_syncer_after_round=2,
+            production_step_tags=["larger_model", "artifact_pressure", "object_store"],
+            **common,
+        ),
+        "more_learners": OperationSpec.torch_causal_lm_profile(
+            name="six-step-four-learner-object-store",
+            learners=4,
+            steps=20,
+            min_quorum=3,
+            local_steps_per_sync=5,
+            vocab_size=64,
+            seq_len=16,
+            batch_size=2,
+            d_model=32,
+            num_layers=1,
+            num_heads=4,
+            production_step_tags=["more_learners", "object_store"],
+            **common,
+        ),
+        "failure_matrix": OperationSpec.torch_causal_lm_profile(
+            name="six-step-failure-matrix-object-store",
+            learners=3,
+            steps=20,
+            min_quorum=2,
+            local_steps_per_sync=5,
+            vocab_size=64,
+            seq_len=16,
+            batch_size=2,
+            d_model=32,
+            num_layers=1,
+            num_heads=4,
+            restart_syncer_after_round=2,
+            production_step_tags=["failure_matrix", "syncer_restart", "slow_learner"],
+            **common,
+        ),
+    }
+
+
+def compile_six_step_production_candidate(
+    *,
+    workdir: Path,
+    lambda_config: LambdaOperationBackendConfig | None = None,
+) -> dict[str, PathwayManagedExperimentPlan]:
+    """Compile all six-step candidate profiles into fail-closed Lambda plans."""
+
+    config = lambda_config or LambdaOperationBackendConfig()
+    return {
+        name: PathwayManagedExperimentPlan(
+            pathway_layer="pathway_lite_six_step_candidate",
+            next_managed_experiment=SIX_STEP_PRODUCTION_CANDIDATE,
+            operation_spec=spec,
+            lambda_plan=build_lambda_operation_plan(spec, config=config, workdir=workdir),
+            required_evidence=list(SIX_STEP_REQUIRED_EVIDENCE),
+        )
+        for name, spec in build_six_step_production_candidate_experiments().items()
+    }

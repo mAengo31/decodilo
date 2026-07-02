@@ -1,0 +1,123 @@
+{
+  "artifacts": {
+    "operation_result": {
+      "artifact_id": "operation_result",
+      "producer_task_id": "run_long_local",
+      "value": {
+        "backend": "local",
+        "backend_report": {
+          "mode": "local_multiprocess",
+          "report_json_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/report.json",
+          "run_id": "run-6ed12141800e"
+        },
+        "billable_action_performed": false,
+        "direct_tcp_probe_passed": null,
+        "final_global_version": 26,
+        "final_instance_count": null,
+        "firewall_rules_restored": null,
+        "inner_optimizer_semantics": "adamw",
+        "learners": 4,
+        "metric_validation_passed": true,
+        "nesterov_outer_optimizer_exercised": true,
+        "network_path": null,
+        "operation_name": "tiny-diloco-operation",
+        "optimizer_state_present": true,
+        "outer_momentum": 0.9,
+        "outer_optimizer_semantics": "nesterov",
+        "outer_optimizer_semantics_checked": true,
+        "pseudo_gradient_check_passed": null,
+        "pseudo_gradient_numeric_check_passed": null,
+        "pseudo_gradient_numeric_check_reason": "inline_vectors_unavailable",
+        "pseudo_gradient_numeric_rounds_checked": 0,
+        "real_training_mechanics_exercised": true,
+        "remote_backend_enabled": false,
+        "remote_instance_count": 0,
+        "replay_passed": true,
+        "restart_round": null,
+        "result_schema_version": 1,
+        "rounds_after_restart": 0,
+        "safety": {
+          "billable_action_performed": false,
+          "launch_allowed": false,
+          "launch_ready": false,
+          "network_scope": "localhost_only",
+          "paper_scale_training_claimed": false,
+          "real_model_training_claimed": false,
+          "remote_backend_enabled": false
+        },
+        "status": "completed",
+        "sync_rounds_committed": 26,
+        "syncer_recovered": false,
+        "trainer_final_loss": 0.002526152647288703,
+        "training_attempted": true
+      }
+    },
+    "operation_spec": {
+      "artifact_id": "operation_spec",
+      "producer_task_id": "compile_spec",
+      "value": {
+        "artifact_transfer_mode": "object_store",
+        "checkpoint_storage_mode": "chunked",
+        "chunk_size_bytes": 1048576,
+        "fragments": 1,
+        "global_update_storage_mode": "chunked",
+        "inline_payload_max_bytes": 1024,
+        "inner_optimizer": "adamw",
+        "learners": 4,
+        "local_steps_per_sync": 10,
+        "merge_mode": "streaming_chunked",
+        "min_quorum": 3,
+        "name": "tiny-diloco-operation",
+        "operation_schema_version": 1,
+        "outer_lr": 0.5,
+        "outer_momentum": 0.9,
+        "outer_optimizer": "nesterov",
+        "payload_storage_mode": "chunked",
+        "production_step_tags": [],
+        "restart_syncer_after_round": null,
+        "safety": {
+          "billable_action_performed": false,
+          "launch_allowed": false,
+          "launch_ready": false,
+          "network_scope": "localhost_only",
+          "paper_scale_training_claimed": false,
+          "real_model_training_claimed": false,
+          "remote_backend_enabled": false
+        },
+        "seed": 123,
+        "steps": 200,
+        "syncer_checkpoint_interval_rounds": 1,
+        "trainer_config": {
+          "optimizer": "adamw"
+        },
+        "trainer_type": "tiny_adamw",
+        "vector_dim": 8
+      }
+    },
+    "validation_report": {
+      "artifact_id": "validation_report",
+      "producer_task_id": "validate",
+      "value": {
+        "learners": 4,
+        "metric_validation_passed": true,
+        "replay_passed": true,
+        "status": "completed",
+        "sync_rounds": 26
+      }
+    }
+  },
+  "execution_order": [
+    "compile_spec",
+    "run_long_local",
+    "validate"
+  ],
+  "launch_allowed": false,
+  "launch_ready": false,
+  "production_scale_ready": false,
+  "status": "completed",
+  "task_attempts": {
+    "compile_spec": 1,
+    "run_long_local": 1,
+    "validate": 1
+  }
+}

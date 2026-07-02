@@ -100,6 +100,7 @@ def test_l5_runner_commands_accept_torch_causal_lm_args(tmp_path: Path) -> None:
         },
     )()
 
+
     syncer_command = runner._syncer_command(args)
     learner_command = runner._learner_command(args, "learner-0", "127.0.0.1")
 
@@ -123,7 +124,7 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "trainer_type": "torch_causal_lm",
             "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
             "vector_dim": 3408,
-            "learners": 2,
+            "learners": 4,
             "steps": 16,
             "min_quorum": 2,
             "local_steps_per_sync": 1,
@@ -134,8 +135,22 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
             "global_update_storage_mode": "chunked",
             "chunk_size_mb": 1,
             "inline_payload_max_bytes": 1024,
+            "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "durable_filesystem_object_store",
+            "learner_reconnect_timeout_seconds": 90.0,
+            "learner_run_timeout_seconds": 300.0,
         },
     )()
+
+
+    assert runner._learner_roles(args) == ["learner-0", "learner-1", "learner-2", "learner-3"]
+    assert runner._all_roles(args) == [
+        "syncer",
+        "learner-0",
+        "learner-1",
+        "learner-2",
+        "learner-3",
+    ]
 
     syncer_command = runner._syncer_command(args)
     learner_command = runner._learner_command(args, "learner-0", "127.0.0.1")
@@ -144,5 +159,503 @@ def test_l5_runner_commands_accept_chunked_transport_args(tmp_path: Path) -> Non
         assert "--payload-storage-mode chunked" in command
         assert "--global-update-storage-mode chunked" in command
         assert "--chunk-size" in command or "--chunk-size-bytes" in command
+        assert "--artifact-transfer-mode object_store" in command
+        assert "--artifact-storage-backend durable_filesystem_object_store" in command
     assert "--checkpoint-storage-mode chunked" in syncer_command
     assert "--merge-mode streaming_chunked" in syncer_command
+
+
+def test_l5_api_retries_429_rate_limit_with_retry_after(monkeypatch) -> None:
+    import io
+    from urllib.error import HTTPError
+
+    runner = _load_runner()
+    calls = {"count": 0}
+    sleeps: list[float] = []
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self):
+            return b'{"data": {}}'
+
+    def fake_urlopen(_req, timeout):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise HTTPError(
+                url="https://" + "cloud.lambdalabs.com/api/v1/instances",
+                code=429,
+                msg="Too Many Requests",
+                hdrs={"Retry-After": "30"},
+                fp=io.BytesIO(b'{"retry_after": 30}'),
+            )
+        return _Response()
+
+    monkeypatch.setattr(runner, "urlopen", fake_urlopen)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._api("api-key", "GET", "/instances") == {"data": {}}
+    assert calls["count"] == 2
+    assert sleeps == [30.0]
+
+
+def test_l5_launch_owned_instances_can_be_paced(monkeypatch) -> None:
+    runner = _load_runner()
+    sleeps: list[float] = []
+    launched: list[tuple[str, str, str]] = []
+    args = type(
+        "Args",
+        (),
+        {
+            "learners": 2,
+            "region": "us-east-1",
+            "instance_type": "gpu_1x_a10",
+            "launch_delay_seconds": 45.0,
+        },
+    )()
+
+    def fake_launch(_api_key, region, instance_type, _ssh_key_name):
+        launched.append((region, instance_type, f"id-{len(launched)}"))
+        return launched[-1][2]
+
+    monkeypatch.setattr(runner, "_launch_instance", fake_launch)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    owned = runner._launch_owned_instances("api-key", args, "ssh-key")
+
+    assert [item.role for item in owned] == ["syncer", "learner-0", "learner-1"]
+    assert [item.instance_id for item in owned] == ["id-0", "id-1", "id-2"]
+    assert sleeps == [45.0, 45.0]
+
+
+def test_l5_retry_operation_retries_transient_subprocess_failure(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def flaky_operation():
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(255, ["ssh"])
+        return "ok"
+
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._retry_operation("flaky", flaky_operation, attempts=2, delay_seconds=7) == "ok"
+    assert attempts["count"] == 2
+    assert sleeps == [7]
+
+
+def test_l5_runner_learner_command_includes_reconnect_timeout() -> None:
+    runner = _load_runner()
+    args = type(
+        "Args",
+        (),
+        {
+            "port": 28080,
+            "run_id": "lambda-l5-reconnect",
+            "trainer_type": "torch_causal_lm",
+            "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
+            "steps": 8,
+            "local_steps_per_sync": 1,
+            "payload_storage_mode": "chunked",
+            "checkpoint_storage_mode": "chunked",
+            "merge_mode": "streaming_chunked",
+            "global_update_storage_mode": "chunked",
+            "chunk_size_mb": 1,
+            "inline_payload_max_bytes": 1024,
+            "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "auto",
+            "learner_reconnect_timeout_seconds": 90.0,
+        },
+    )()
+
+    command = runner._learner_command(args, "learner-0", "127.0.0.1")
+
+    assert "--reconnect-timeout-seconds 90.0" in command
+
+
+def test_l5_remote_committed_rounds_retries_transient_ssh(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "id", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type("Args", (), {"ssh_private_key": "key"})()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def fake_ssh(_ip, _key, _command, *, timeout):
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(255, ["ssh"])
+        return type("Result", (), {"stdout": "3\n"})()
+
+    monkeypatch.setattr(runner, "_ssh", fake_ssh)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+
+    assert runner._remote_committed_rounds(syncer, args) == 3
+    assert attempts["count"] == 2
+    assert sleeps == [2.0]
+
+
+def test_l5_runner_uses_configurable_learner_run_timeout(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    waits: list[int] = []
+
+    class Proc:
+        def poll(self):
+            return 0
+
+        def wait(self, timeout):
+            waits.append(timeout)
+            return 0
+
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "learner_run_timeout_seconds": 900.0,
+            "restart_after_round": 1,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_learner_command", lambda *_args: "true")
+    monkeypatch.setattr(runner.subprocess, "Popen", lambda *_args, **_kwargs: Proc())
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 2)
+    monkeypatch.setattr(runner, "_pathway_restart_syncer", lambda *_args, **_kwargs: True)
+
+    runner._run_learners_with_restart([syncer, learner], syncer, args, tmp_path)
+
+    assert waits == [900]
+
+
+def test_l5_runner_commands_include_s3_runtime_args_when_enabled() -> None:
+    runner = _load_runner()
+    args = type(
+        "Args",
+        (),
+        {
+            "port": 28080,
+            "run_id": "lambda-l5-s3",
+            "trainer_type": "torch_causal_lm",
+            "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
+            "vector_dim": 1234,
+            "learners": 2,
+            "steps": 8,
+            "min_quorum": 2,
+            "local_steps_per_sync": 1,
+            "fragments": 1,
+            "payload_storage_mode": "chunked",
+            "checkpoint_storage_mode": "chunked",
+            "merge_mode": "streaming_chunked",
+            "global_update_storage_mode": "chunked",
+            "chunk_size_mb": 1,
+            "inline_payload_max_bytes": 1024,
+            "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "s3_compatible",
+            "s3_endpoint_url": "https://object.example.invalid",
+            "s3_bucket": "bucket",
+            "s3_prefix": "runs/test",
+            "s3_region": "us-east-1",
+            "s3_access_key_ref": "AWS_ACCESS_KEY_ID",
+            "s3_secret_key_ref": "AWS_SECRET_ACCESS_KEY",
+            "s3_session_token_ref": None,
+            "learner_reconnect_timeout_seconds": 90.0,
+        },
+    )()
+
+    commands = [
+        runner._syncer_command(args),
+        runner._learner_command(args, "learner-0", "127.0.0.1"),
+    ]
+    for command in commands:
+        assert "--artifact-storage-backend s3_compatible" in command
+        assert "--s3-endpoint-url https://object.example.invalid" in command
+        assert "--s3-bucket bucket" in command
+        assert "--s3-prefix runs/test" in command
+        assert "--s3-access-key-ref AWS_ACCESS_KEY_ID" in command
+        assert "--s3-secret-key-ref AWS_SECRET_ACCESS_KEY" in command
+
+
+def test_l5_s3_runtime_env_prefix_is_used_without_secret_values() -> None:
+    runner = _load_runner()
+    args = type("Args", (), {"artifact_storage_backend": "s3_compatible"})()
+
+    prefix = runner._remote_env_prefix(args)
+
+    assert "s3_runtime_env.sh" in prefix
+    assert "AWS_SECRET_ACCESS_KEY=" not in prefix
+
+
+def test_l5_remote_dependency_install_includes_boto3_for_s3_backend() -> None:
+    runner = _load_runner()
+    args = type("Args", (), {"artifact_storage_backend": "s3_compatible"})()
+
+    command = runner._remote_dependency_install_command(args)
+
+    assert "pydantic" in command
+    assert "boto3" in command
+
+
+def test_l5_shutdown_syncer_retries_transient_shutdown_failure(monkeypatch) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "id", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    args = type("Args", (), {"ssh_private_key": "key", "port": 28080, "run_id": "run"})()
+    attempts = {"count": 0}
+    sleeps: list[float] = []
+
+    def fake_ssh(_ip, _key, remote, *, timeout):
+        attempts["count"] += 1
+        assert "timeout_seconds=30" in remote
+        assert timeout == 120
+        if attempts["count"] == 1:
+            raise subprocess.CalledProcessError(1, ["ssh"])
+        return type("Result", (), {"stdout": "{}"})()
+
+    monkeypatch.setattr(runner, "_ssh", fake_ssh)
+    monkeypatch.setattr(runner.time, "sleep", sleeps.append)
+    monkeypatch.setattr(runner, "_wait_for_background_procs", lambda *, timeout: None)
+
+    runner._shutdown_syncer(syncer, args)
+
+    assert attempts["count"] == 2
+    assert sleeps == [5.0]
+
+
+def test_l5_restart_falls_back_to_force_stop_when_graceful_shutdown_fails(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+    running_checks = iter([True, False])
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "syncer_stop_timeout_seconds": 0.0,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_syncer_process_running", lambda *_args: next(running_checks))
+    monkeypatch.setattr(runner, "_force_stop_syncer", lambda *_args: calls.append("force"))
+    monkeypatch.setattr(runner.time, "sleep", lambda *_args: None)
+
+    result = runner._wait_syncer_stopped_or_force(
+        syncer,
+        args,
+        "graceful failed",
+    )
+
+    assert calls == ["force"]
+    assert result == {
+        "stopped": True,
+        "forced": True,
+        "graceful_shutdown_error": "graceful failed",
+        "force_stop_error": None,
+    }
+
+
+def test_l5_runner_scale_only_mode_skips_restart_and_records_audit(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+
+    class Proc:
+        def poll(self):
+            return 0
+
+        def wait(self, timeout):
+            return 0
+
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "learner_run_timeout_seconds": 60.0,
+            "experiment_mode": "scale_only_no_restart",
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_learner_command", lambda *_args: "true")
+    monkeypatch.setattr(runner.subprocess, "Popen", lambda *_args, **_kwargs: Proc())
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 3)
+    monkeypatch.setattr(
+        runner,
+        "_request_syncer_shutdown_for_restart",
+        lambda *_args: calls.append("shutdown"),
+    )
+    monkeypatch.setattr(runner, "_force_stop_syncer", lambda *_args: calls.append("force"))
+    monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: calls.append("start"))
+
+    runner._run_learners_for_experiment_mode([syncer, learner], syncer, args, tmp_path)
+
+    audit = __import__("json").loads((tmp_path / "restart_audit.json").read_text())
+    assert calls == []
+    assert audit["attempted"] is False
+    assert audit["skipped"] is True
+    assert audit["skip_reason"] == "scale_only_no_restart"
+    assert audit["final_round_before_shutdown"] == 3
+
+
+def test_l5_pathway_restart_orchestrates_fenced_recovery(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+    rounds = iter([2, 2, 3])
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "port": 28080,
+            "run_id": "restart-plan",
+            "syncer_stop_timeout_seconds": 30.0,
+            "learner_reconnect_timeout_seconds": 5.0,
+        },
+    )()
+
+    monkeypatch.setattr(
+        runner,
+        "_wait_remote_checkpoint_at_least",
+        lambda *_args: calls.append("checkpoint_fence"),
+    )
+    monkeypatch.setattr(
+        runner,
+        "_request_syncer_shutdown_for_restart",
+        lambda *_args: calls.append("shutdown"),
+    )
+    monkeypatch.setattr(
+        runner,
+        "_wait_syncer_stopped_or_force",
+        lambda *_args: calls.append("stopped_or_force"),
+    )
+    monkeypatch.setattr(
+        runner,
+        "_start_syncer",
+        lambda *_args, **_kwargs: calls.append("start_recover"),
+    )
+    monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: calls.append("ready"))
+    monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: calls.append("tcp"))
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: next(rounds))
+
+    recovered = runner._pathway_restart_syncer(
+        [syncer, learner],
+        syncer,
+        args,
+        tmp_path,
+        restart_round=2,
+    )
+
+    assert recovered is True
+    assert calls == [
+        "checkpoint_fence",
+        "shutdown",
+        "stopped_or_force",
+        "start_recover",
+        "ready",
+        "tcp",
+    ]
+    audit = __import__("json").loads((tmp_path / "pathway_restart_audit.json").read_text())
+    assert audit["status"] == "completed"
+    assert audit["execution_order"] == [
+        "checkpoint_fence",
+        "shutdown_syncer",
+        "stop_fence",
+        "start_recovered_syncer",
+        "ready_fence",
+        "direct_tcp_fence",
+        "post_restart_round_fence",
+    ]
+    assert audit["artifacts"]["post_restart_round"]["value"] == 3
+
+
+def test_l5_pathway_restart_records_failure_audit(monkeypatch, tmp_path) -> None:
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "port": 28080,
+            "run_id": "restart-plan-fail",
+            "syncer_stop_timeout_seconds": 30.0,
+            "learner_reconnect_timeout_seconds": 0.0,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_wait_remote_checkpoint_at_least", lambda *_args: None)
+    monkeypatch.setattr(runner, "_request_syncer_shutdown_for_restart", lambda *_args: None)
+    monkeypatch.setattr(runner, "_wait_syncer_stopped_or_force", lambda *_args: None)
+    monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: None)
+    monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: None)
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 2)
+
+    recovered = runner._pathway_restart_syncer(
+        [syncer, learner],
+        syncer,
+        args,
+        tmp_path,
+        restart_round=2,
+    )
+
+    assert recovered is False
+    audit = __import__("json").loads((tmp_path / "pathway_restart_audit.json").read_text())
+    assert audit["status"] == "failed"
+    assert "post_restart_round_fence" in audit["failed_task"]
+
+
+def test_l5_stop_fence_polls_after_force_stop_ssh_failure(monkeypatch, tmp_path) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+    running_checks = iter([True, False])
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "syncer_stop_timeout_seconds": 0.0,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_syncer_process_running", lambda *_args: next(running_checks))
+
+    def fail_force(*_args):
+        calls.append("force")
+        raise subprocess.CalledProcessError(255, ["ssh"])
+
+    monkeypatch.setattr(runner, "_force_stop_syncer", fail_force)
+    monkeypatch.setattr(runner.time, "sleep", lambda *_args: None)
+
+    result = runner._wait_syncer_stopped_or_force(syncer, args, "graceful failed")
+
+    assert calls == ["force"]
+    assert result["stopped"] is True
+    assert result["forced"] is True
+    assert result["force_stop_error"] is not None

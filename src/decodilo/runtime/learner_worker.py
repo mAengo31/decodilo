@@ -20,6 +20,15 @@ from decodilo.runtime.learner_checkpoint import (
     make_checkpoint,
     write_checkpoint_atomic,
 )
+from decodilo.runtime.remote_artifact_fetch import (
+    artifact_bundle_from_ref,
+    materialize_artifact_bundle,
+    materialize_artifact_chunk_upload,
+)
+from decodilo.storage.s3_compatible_backend import (
+    S3CompatibleArtifactBackend,
+    S3CompatibleBackendConfig,
+)
 from decodilo.trainer.fragment_artifacts import write_fragment_artifact
 from decodilo.trainer.interface import TrainerAdapter
 from decodilo.trainer.registry import create_trainer
@@ -27,6 +36,47 @@ from decodilo.trainer.state import TrainerConfig, TrainerState
 from decodilo.trainer.state_codec import decode_state, make_fragment, validate_fragment
 from decodilo.transport.envelope import MessageType, make_envelope
 from decodilo.transport.tcp_client import JsonlTcpClient
+
+
+def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
+    if storage_backend != "auto":
+        return storage_backend
+    return "syncer_object_store" if transfer_mode == "object_store" else "local_filesystem"
+
+
+
+def _runtime_s3_backend_from_args(
+    *,
+    artifact_storage_backend: str,
+    endpoint_url: str | None,
+    bucket: str | None,
+    prefix: str,
+    region: str | None,
+    access_key_ref: str | None,
+    secret_key_ref: str | None,
+    session_token_ref: str | None,
+) -> S3CompatibleArtifactBackend | None:
+    if artifact_storage_backend != "s3_compatible":
+        return None
+    if not endpoint_url or not bucket:
+        return None
+    import os
+
+    from decodilo.storage.s3_runtime import create_boto3_s3_compatible_backend_from_env
+
+    return create_boto3_s3_compatible_backend_from_env(
+        S3CompatibleBackendConfig(
+            endpoint_url=endpoint_url,
+            bucket=bucket,
+            prefix=prefix,
+            region=region,
+            access_key_ref=access_key_ref,
+            secret_key_ref=secret_key_ref,
+            session_token_ref=session_token_ref,
+        ),
+        environ=os.environ,
+        require_probe=True,
+    )
 
 
 class LearnerWorker:
@@ -58,6 +108,17 @@ class LearnerWorker:
         fragment_artifact_codec: str = "json_safe",
         tensor_artifact_codec: str = "json_safe",
         checkpoint_artifact_codec: str = "json_safe",
+        artifact_transfer_mode: str = "bundle",
+        artifact_storage_backend: str = "auto",
+        reconnect_timeout_seconds: float = 15.0,
+        s3_artifact_backend: S3CompatibleArtifactBackend | None = None,
+        s3_endpoint_url: str | None = None,
+        s3_bucket: str | None = None,
+        s3_prefix: str = "decodilo-artifacts",
+        s3_region: str | None = None,
+        s3_access_key_ref: str | None = None,
+        s3_secret_key_ref: str | None = None,
+        s3_session_token_ref: str | None = None,
     ) -> None:
         self.learner_id = learner_id
         self.run_id = run_id
@@ -82,16 +143,41 @@ class LearnerWorker:
         self.fragment_artifact_codec = fragment_artifact_codec
         self.tensor_artifact_codec = tensor_artifact_codec
         self.checkpoint_artifact_codec = checkpoint_artifact_codec
+        self.artifact_transfer_mode = artifact_transfer_mode
+        self.artifact_storage_backend = artifact_storage_backend
+        self.reconnect_timeout_seconds = reconnect_timeout_seconds
+        s3_backend = s3_artifact_backend or _runtime_s3_backend_from_args(
+            artifact_storage_backend=artifact_storage_backend,
+            endpoint_url=s3_endpoint_url,
+            bucket=s3_bucket,
+            prefix=s3_prefix,
+            region=s3_region,
+            access_key_ref=s3_access_key_ref,
+            secret_key_ref=s3_secret_key_ref,
+            session_token_ref=s3_session_token_ref,
+        )
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(workdir),
                 artifact_root=str(self.artifact_root),
-            )
+                storage_backend=_artifact_storage_backend(
+                    transfer_mode=artifact_transfer_mode,
+                    storage_backend=artifact_storage_backend,
+                ),
+            ),
+            s3_backend=s3_backend,
         )
         self.log_path = workdir / f"{learner_id}.log"
         self.checkpoint_path = workdir / f"{learner_id}.checkpoint.json"
         self.control_path = workdir / f"{learner_id}.control.json"
-        self.client = JsonlTcpClient(host=host, port=port, timeout_seconds=2.0)
+        self.request_timeout_seconds = (
+            60.0
+            if payload_storage_mode == "chunked" or global_update_storage_mode == "chunked"
+            else 2.0
+        )
+        self.client = JsonlTcpClient(
+            host=host, port=port, timeout_seconds=self.request_timeout_seconds
+        )
         self.trainer: TrainerAdapter | None = None
         self.baseline_throughput_tokens_per_step = (
             100 + int(self.learner_id.rsplit("-", 1)[-1]) * 10
@@ -139,7 +225,7 @@ class LearnerWorker:
 
     async def _reconnect(self) -> None:
         ready_path = self.workdir / "syncer_ready.json"
-        deadline = time.monotonic() + 15.0
+        deadline = time.monotonic() + self.reconnect_timeout_seconds
         last_error: Exception | None = None
         await self.client.close()
         while time.monotonic() < deadline:
@@ -147,7 +233,11 @@ class LearnerWorker:
                 ready = json.loads(ready_path.read_text(encoding="utf-8"))
                 self.host = str(ready["host"])
                 self.port = int(ready["port"])
-            self.client = JsonlTcpClient(host=self.host, port=self.port, timeout_seconds=2.0)
+            self.client = JsonlTcpClient(
+                host=self.host,
+                port=self.port,
+                timeout_seconds=self.request_timeout_seconds,
+            )
             try:
                 await self.client.connect()
                 break
@@ -173,14 +263,23 @@ class LearnerWorker:
         if response.message_type != MessageType.REGISTER_LEARNER_ACK:
             raise RuntimeError(f"registration failed: {response.payload}")
         if "global_vector_artifact_ref" in response.payload:
-            global_vector, response_version = apply_update_ref_to_vector(
-                ref=response.payload["global_vector_artifact_ref"],
-                transport=self.artifact_transport,
+            global_vector, response_version = await self._apply_update_ref_to_vector(
+                response.payload["global_vector_artifact_ref"]
             )
         else:
             global_vector = np.asarray(response.payload["global_vector"], dtype=np.float64)
             response_version = int(response.payload["global_version"])
-        target_vector = np.asarray(response.payload["target_vector"], dtype=np.float64)
+        if "target_vector_artifact_ref" in response.payload:
+            if "target_vector_artifact_bundle" in response.payload:
+                materialize_artifact_bundle(
+                    response.payload["target_vector_artifact_bundle"],
+                    transport=self.artifact_transport,
+                )
+            target_vector, _ = await self._apply_update_ref_to_vector(
+                response.payload["target_vector_artifact_ref"]
+            )
+        else:
+            target_vector = np.asarray(response.payload["target_vector"], dtype=np.float64)
         checkpoint = None
         initial_state: TrainerState | None = None
         if self.checkpoint_path.exists():
@@ -307,7 +406,7 @@ class LearnerWorker:
                 payload=payload,
             )
         )
-        self._handle_global_payload(response.payload)
+        await self._handle_global_payload(response.payload)
         await self._ack_update_if_needed()
         await self._poll_update(timeout_expected=True)
         self._write_checkpoint()
@@ -384,11 +483,18 @@ class LearnerWorker:
                 "trainer_state_kind": state.trainer_state_kind,
                 "trainer_fragment_artifact_ref": ref.model_dump(mode="json"),
                 "storage_kind": "artifact_ref",
+                "artifact_transfer_mode": self.artifact_transfer_mode,
                 "payload_bytes": ref.total_bytes,
                 "checksum": fragment.checksum,
                 "dtype": fragment.dtype,
                 "shape": fragment.shape,
             }
+            if self.artifact_transfer_mode == "object_store":
+                await self._upload_artifact_ref_to_syncer(ref.model_dump(mode="json"))
+            else:
+                payload["trainer_fragment_artifact_bundle"] = artifact_bundle_from_ref(
+                    ref, transport=self.artifact_transport
+                )
             payload["payload_bytes"] = max(
                 ref.total_bytes,
                 len(json.dumps(payload, sort_keys=True).encode("utf-8")),
@@ -407,7 +513,7 @@ class LearnerWorker:
         )
         if response.message_type == MessageType.SUBMIT_FRAGMENT_REJECTED:
             self.in_flight_idempotency_key = None
-        self._handle_global_payload(response.payload)
+        await self._handle_global_payload(response.payload)
         await self._ack_update_if_needed()
         self._write_checkpoint()
         self._log(
@@ -416,6 +522,7 @@ class LearnerWorker:
                 "idempotency_key": key,
                 "response_type": response.message_type.value,
                 "outcome": response.payload.get("outcome"),
+                "response_payload": response.payload,
             },
         )
 
@@ -434,7 +541,7 @@ class LearnerWorker:
             )
         )
         if response.message_type == MessageType.GLOBAL_UPDATE_PAYLOAD:
-            self._handle_global_payload(response.payload)
+            await self._handle_global_payload(response.payload)
             await self._ack_update_if_needed()
             self._write_checkpoint()
 
@@ -498,7 +605,92 @@ class LearnerWorker:
         )
         write_checkpoint_atomic(self.checkpoint_path, checkpoint)
 
-    def _handle_global_payload(self, payload: dict[str, Any]) -> None:
+    async def _upload_artifact_ref_to_syncer(self, ref: dict[str, Any]) -> None:
+        bundle = artifact_bundle_from_ref(ref, transport=self.artifact_transport)
+        chunks = list(bundle.get("chunks") or [])
+        for index, chunk in enumerate(chunks):
+            response = await self._request(
+                make_envelope(
+                    run_id=self.run_id,
+                    sender_id=self.learner_id,
+                    recipient_id="syncer",
+                    message_type=MessageType.UPLOAD_ARTIFACT_CHUNK,
+                    payload={
+                        "artifact_ref": bundle["artifact_ref"],
+                        "manifest": bundle["manifest"],
+                        "chunk": chunk,
+                        "chunk_index": index,
+                        "total_chunks": len(chunks),
+                        "final": index == len(chunks) - 1,
+                    },
+                )
+            )
+            if response.message_type != MessageType.UPLOAD_ARTIFACT_CHUNK_ACK:
+                raise RuntimeError(f"artifact upload failed: {response.payload}")
+            if index == len(chunks) - 1 and not response.payload.get("complete"):
+                raise RuntimeError("artifact upload did not complete")
+
+    async def _fetch_artifact_ref_from_syncer(self, ref: dict[str, Any]) -> None:
+        response = await self._request(
+            make_envelope(
+                run_id=self.run_id,
+                sender_id=self.learner_id,
+                recipient_id="syncer",
+                message_type=MessageType.FETCH_ARTIFACT,
+                payload={"artifact_ref": ref, "response_mode": "metadata_only"},
+            )
+        )
+        if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
+            raise RuntimeError(f"artifact metadata fetch failed: {response.payload}")
+        metadata = response.payload
+        chunks = list(metadata.get("chunks") or [])
+        for index, chunk_meta in enumerate(chunks):
+            chunk_response = await self._request(
+                make_envelope(
+                    run_id=self.run_id,
+                    sender_id=self.learner_id,
+                    recipient_id="syncer",
+                    message_type=MessageType.FETCH_ARTIFACT_CHUNK,
+                    payload={
+                        "artifact_ref": metadata["artifact_ref"],
+                        "sha256": chunk_meta["sha256"],
+                    },
+                )
+            )
+            if chunk_response.message_type != MessageType.FETCH_ARTIFACT_CHUNK_RESPONSE:
+                raise RuntimeError(f"artifact chunk fetch failed: {chunk_response.payload}")
+            materialize_artifact_chunk_upload(
+                {
+                    "artifact_ref": metadata["artifact_ref"],
+                    "manifest": metadata["manifest"],
+                    "chunk": chunk_response.payload,
+                    "final": index == len(chunks) - 1,
+                },
+                transport=self.artifact_transport,
+            )
+
+    async def _apply_update_ref_to_vector(self, ref: dict[str, Any]) -> tuple[np.ndarray, int]:
+        try:
+            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+        except Exception as exc:
+            if self.artifact_transfer_mode == "object_store":
+                await self._fetch_artifact_ref_from_syncer(ref)
+            else:
+                response = await self._request(
+                    make_envelope(
+                        run_id=self.run_id,
+                        sender_id=self.learner_id,
+                        recipient_id="syncer",
+                        message_type=MessageType.FETCH_ARTIFACT,
+                        payload={"artifact_ref": ref},
+                    )
+                )
+                if response.message_type != MessageType.FETCH_ARTIFACT_RESPONSE:
+                    raise RuntimeError(f"artifact fetch failed: {response.payload}") from exc
+                materialize_artifact_bundle(response.payload, transport=self.artifact_transport)
+            return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+
+    async def _handle_global_payload(self, payload: dict[str, Any]) -> None:
         assert self.trainer is not None
         last_commit = payload.get("last_commit") or payload.get("commit")
         if (
@@ -512,11 +704,11 @@ class LearnerWorker:
         global_version = payload.get("global_version")
         global_vector = payload.get("global_vector")
         global_vector_ref = payload.get("global_vector_artifact_ref")
+        global_vector_bundle = payload.get("global_vector_artifact_bundle")
         if global_version is not None and global_vector_ref is not None:
-            vector, artifact_version = apply_update_ref_to_vector(
-                ref=global_vector_ref,
-                transport=self.artifact_transport,
-            )
+            if global_vector_bundle is not None:
+                materialize_artifact_bundle(global_vector_bundle, transport=self.artifact_transport)
+            vector, artifact_version = await self._apply_update_ref_to_vector(global_vector_ref)
             if artifact_version != int(global_version):
                 raise RuntimeError("global update artifact version mismatch")
             if int(global_version) > self.trainer.health().global_version:
@@ -591,6 +783,16 @@ async def async_main(args: argparse.Namespace) -> int:
         fragment_artifact_codec=args.fragment_artifact_codec,
         tensor_artifact_codec=args.tensor_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
+        reconnect_timeout_seconds=args.reconnect_timeout_seconds,
+        s3_endpoint_url=args.s3_endpoint_url,
+        s3_bucket=args.s3_bucket,
+        s3_prefix=args.s3_prefix,
+        s3_region=args.s3_region,
+        s3_access_key_ref=args.s3_access_key_ref,
+        s3_secret_key_ref=args.s3_secret_key_ref,
+        s3_session_token_ref=args.s3_session_token_ref,
     )
     return await worker.run()
 

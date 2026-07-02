@@ -1,0 +1,3 @@
+{"event_type": "starting", "learner_id": "learner-1", "payload": {}}
+{"event_type": "registered", "learner_id": "learner-1", "payload": {"global_version": 0, "reconnected": false, "slow_factor": 1.0, "trainer_type": "torch_causal_lm"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-s3-85k-force-restart-20260702064002:learner-1:step-2:v-0", "outcome": "queued", "response_payload": {"global_version": 0, "idempotency_key": "lambda-s3-85k-force-restart-20260702064002:learner-1:step-2:v-0", "last_commit": null, "outcome": "queued"}, "response_type": "submit_fragment_ack"}}

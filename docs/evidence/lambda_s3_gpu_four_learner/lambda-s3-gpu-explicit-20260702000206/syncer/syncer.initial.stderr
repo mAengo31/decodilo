@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28386, in <module>
+    raise SystemExit(main())
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28382, in main
+    return int(args.func(args))
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 17763, in _cmd_syncer_serve
+    return syncer_service.main(args)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/syncer_service.py", line 1565, in main
+    return asyncio.run(async_main(args))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/syncer_service.py", line 1559, in async_main
+    service = SyncerService(config)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/syncer_service.py", line 185, in __init__
+    s3_backend = config.s3_artifact_backend or _runtime_s3_backend_from_config(config)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/syncer_service.py", line 144, in _runtime_s3_backend_from_config
+    return create_boto3_s3_compatible_backend_from_env(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/storage/s3_runtime.py", line 30, in create_boto3_s3_compatible_backend_from_env
+    access_key = _resolve_env_ref(config.access_key_ref, environ, "access_key_ref")
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/storage/s3_runtime.py", line 71, in _resolve_env_ref
+    raise S3CompatibleBackendNotConfigured(f"S3 env ref {ref!r} is not set")
+decodilo.storage.s3_compatible_backend.S3CompatibleBackendNotConfigured: S3 env ref 'AWS_ACCESS_KEY_ID' is not set

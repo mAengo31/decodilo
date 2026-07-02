@@ -23,6 +23,13 @@ from decodilo.runtime.artifact_transport import (
 from decodilo.runtime.backpressure import BackpressureConfig, BackpressureState
 from decodilo.runtime.chunked_payloads import default_artifact_root, default_chunk_store_root
 from decodilo.runtime.chunked_runtime_modes import validate_runtime_modes
+from decodilo.runtime.remote_artifact_fetch import (
+    artifact_bundle_from_ref,
+    artifact_chunk_from_ref,
+    artifact_metadata_from_ref,
+    materialize_artifact_bundle,
+    materialize_artifact_chunk_upload,
+)
 from decodilo.runtime.syncer_checkpoint import (
     load_chunked_syncer_checkpoint,
     load_syncer_checkpoint,
@@ -37,6 +44,10 @@ from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.checksums import sha256_file
 from decodilo.storage.chunk_store import ChunkStore
 from decodilo.storage.codec_registry import validate_artifact_codec
+from decodilo.storage.s3_compatible_backend import (
+    S3CompatibleArtifactBackend,
+    S3CompatibleBackendConfig,
+)
 from decodilo.syncer.binary_streaming_merge import binary_streaming_token_weighted_merge
 from decodilo.syncer.event_log import EventLog, EventType
 from decodilo.syncer.fragment_store import FragmentStore
@@ -106,6 +117,48 @@ class SyncerServiceConfig:
     tensor_artifact_codec: str = "json_safe"
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
+    artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "auto"
+    s3_artifact_backend: S3CompatibleArtifactBackend | None = None
+    s3_endpoint_url: str | None = None
+    s3_bucket: str | None = None
+    s3_prefix: str = "decodilo-artifacts"
+    s3_region: str | None = None
+    s3_access_key_ref: str | None = None
+    s3_secret_key_ref: str | None = None
+    s3_session_token_ref: str | None = None
+
+
+
+def _runtime_s3_backend_from_config(
+    config: SyncerServiceConfig,
+) -> S3CompatibleArtifactBackend | None:
+    if config.artifact_storage_backend != "s3_compatible":
+        return None
+    if not config.s3_endpoint_url or not config.s3_bucket:
+        return None
+    import os
+
+    from decodilo.storage.s3_runtime import create_boto3_s3_compatible_backend_from_env
+
+    return create_boto3_s3_compatible_backend_from_env(
+        S3CompatibleBackendConfig(
+            endpoint_url=config.s3_endpoint_url,
+            bucket=config.s3_bucket,
+            prefix=config.s3_prefix,
+            region=config.s3_region,
+            access_key_ref=config.s3_access_key_ref,
+            secret_key_ref=config.s3_secret_key_ref,
+            session_token_ref=config.s3_session_token_ref,
+        ),
+        environ=os.environ,
+        require_probe=True,
+    )
+
+def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
+    if storage_backend != "auto":
+        return storage_backend
+    return "syncer_object_store" if transfer_mode == "object_store" else "local_filesystem"
 
 
 class SyncerService:
@@ -129,11 +182,17 @@ class SyncerService:
         validate_artifact_codec(config.checkpoint_artifact_codec)
         self.artifact_root = config.artifact_root or default_artifact_root(config.workdir)
         self.chunk_store_root = config.chunk_store_root or default_chunk_store_root(config.workdir)
+        s3_backend = config.s3_artifact_backend or _runtime_s3_backend_from_config(config)
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(config.workdir),
                 artifact_root=str(self.artifact_root),
-            )
+                storage_backend=_artifact_storage_backend(
+                    transfer_mode=config.artifact_transfer_mode,
+                    storage_backend=config.artifact_storage_backend,
+                ),
+            ),
+            s3_backend=s3_backend,
         )
         self.event_log = EventLog(
             self.config.workdir / "events.jsonl",
@@ -288,12 +347,18 @@ class SyncerService:
                 return await self._handle_subscribe_updates(envelope)
             if envelope.message_type == MessageType.GLOBAL_UPDATE_ACK:
                 return self._handle_global_update_ack(envelope)
+            if envelope.message_type == MessageType.FETCH_ARTIFACT:
+                return self._handle_fetch_artifact(envelope)
+            if envelope.message_type == MessageType.FETCH_ARTIFACT_CHUNK:
+                return self._handle_fetch_artifact_chunk(envelope)
+            if envelope.message_type == MessageType.UPLOAD_ARTIFACT_CHUNK:
+                return self._handle_upload_artifact_chunk(envelope)
             if envelope.message_type == MessageType.SUBMIT_FRAGMENT:
                 return self._handle_submit_fragment(envelope)
             if envelope.message_type == MessageType.LEARNER_SHUTDOWN:
                 return self._handle_learner_shutdown(envelope)
             if envelope.message_type == MessageType.SYNCER_SHUTDOWN:
-                return self._handle_syncer_shutdown(envelope)
+                return await self._handle_syncer_shutdown(envelope)
         except Exception as exc:  # noqa: BLE001 - returned to local caller as protocol error
             return self._envelope(
                 message_type=MessageType.ERROR,
@@ -427,6 +492,49 @@ class SyncerService:
             payload=self._global_state_payload({"last_commit": self.last_commit_payload}),
         )
 
+
+    def _handle_fetch_artifact(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        artifact_ref = envelope.payload.get("artifact_ref")
+        if artifact_ref is None:
+            raise InvariantViolation("fetch_artifact requires artifact_ref")
+        response_mode = str(envelope.payload.get("response_mode", "bundle"))
+        payload = (
+            artifact_metadata_from_ref(artifact_ref, transport=self.artifact_transport)
+            if response_mode == "metadata_only"
+            else artifact_bundle_from_ref(artifact_ref, transport=self.artifact_transport)
+        )
+        return self._envelope(
+            message_type=MessageType.FETCH_ARTIFACT_RESPONSE,
+            recipient_id=envelope.sender_id,
+            payload=payload,
+        )
+
+    def _handle_fetch_artifact_chunk(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        artifact_ref = envelope.payload.get("artifact_ref")
+        chunk_hash = envelope.payload.get("sha256")
+        if artifact_ref is None or not chunk_hash:
+            raise InvariantViolation("fetch_artifact_chunk requires artifact_ref and sha256")
+        return self._envelope(
+            message_type=MessageType.FETCH_ARTIFACT_CHUNK_RESPONSE,
+            recipient_id=envelope.sender_id,
+            payload=artifact_chunk_from_ref(
+                artifact_ref,
+                chunk_hash=str(chunk_hash),
+                transport=self.artifact_transport,
+            ),
+        )
+
+    def _handle_upload_artifact_chunk(self, envelope: TransportEnvelope) -> TransportEnvelope:
+        result = materialize_artifact_chunk_upload(
+            envelope.payload,
+            transport=self.artifact_transport,
+        )
+        return self._envelope(
+            message_type=MessageType.UPLOAD_ARTIFACT_CHUNK_ACK,
+            recipient_id=envelope.sender_id,
+            payload=result,
+        )
+
     def _handle_global_update_ack(self, envelope: TransportEnvelope) -> TransportEnvelope:
         version = int(envelope.payload["global_version"])
         self.update_stream.ack(
@@ -546,6 +654,7 @@ class SyncerService:
         self._record_trainer_metrics(learner_id, payload)
         trainer_fragment_payload = payload.get("trainer_fragment")
         artifact_ref_payload = payload.get("trainer_fragment_artifact_ref")
+        artifact_bundle_payload = payload.get("trainer_fragment_artifact_bundle")
         self.trainer_state_kind = str(payload.get("trainer_state_kind", self.trainer_state_kind))
         trainer_fragment: TrainerFragment | None = None
         artifact_ref_for_event: dict[str, Any] | None = None
@@ -553,11 +662,22 @@ class SyncerService:
             validation_started = time.perf_counter()
             self.store.metrics.artifact_ref_validations += 1
             try:
+                if artifact_bundle_payload is not None:
+                    materialize_artifact_bundle(
+                        artifact_bundle_payload,
+                        transport=self.artifact_transport,
+                    )
                 artifact_manifest = self.artifact_transport.validate_ref(artifact_ref_payload)
                 trainer_fragment = read_fragment_artifact(
                     ref=artifact_ref_payload,
                     transport=self.artifact_transport,
                 )
+                if not isinstance(trainer_fragment.data, np.ndarray):
+                    trainer_fragment = trainer_fragment.model_copy(
+                        update={
+                            "data": np.asarray(trainer_fragment.data, dtype=np.float64),
+                        }
+                    )
                 self.store.metrics.artifact_validation_seconds += (
                     time.perf_counter() - validation_started
                 )
@@ -679,7 +799,7 @@ class SyncerService:
         }
         if commit is not None:
             response_payload["outcome"] = "committed"
-            response_payload["commit"] = commit.model_dump(mode="json")
+            response_payload["commit"] = self._control_commit_payload(commit)
         message_type = MessageType.SUBMIT_FRAGMENT_ACK
         self.idempotency[key] = {
             "message_type": message_type.value,
@@ -767,11 +887,41 @@ class SyncerService:
             chunk_elements=chunk_elements,
         )
 
-    def _handle_syncer_shutdown(self, envelope: TransportEnvelope) -> TransportEnvelope:
+    def _uses_chunked_control_plane(self) -> bool:
+        return (
+            self.config.payload_storage_mode in {"chunked", "auto"}
+            or self.config.global_update_storage_mode in {"chunked", "auto"}
+            or self.config.checkpoint_storage_mode in {"chunked", "dual"}
+            or self.config.merge_mode == "streaming_chunked"
+        )
+
+    def _control_commit_payload(self, commit) -> dict[str, Any]:
+        payload = commit.model_dump(mode="json")
+        if not self._uses_chunked_control_plane():
+            return payload
+        return {
+            "round_id": payload["round_id"],
+            "previous_global_version": payload["previous_global_version"],
+            "new_global_version": payload["new_global_version"],
+            "accepted_learner_ids": payload["accepted_learner_ids"],
+            "token_weights": payload["token_weights"],
+            "useful_tokens": payload["useful_tokens"],
+            "outer_optimizer": payload["outer_optimizer"],
+            "outer_lr": payload["outer_lr"],
+            "outer_momentum": payload.get("outer_momentum"),
+            "control_payload_compacted": True,
+            "vector_payload_location": "global_update_payload_or_artifacts",
+        }
+
+    async def _handle_syncer_shutdown(self, envelope: TransportEnvelope) -> TransportEnvelope:
         self._write_syncer_checkpoint()
         self.store.write_checkpoint(checkpoint_id="final", logical_time=self._time())
         payload = self.build_summary()
-        asyncio.get_running_loop().call_soon(asyncio.create_task, self.stop())
+        if envelope.payload.get("immediate_server_close") is True:
+            self.stop_event.set()
+            await self.server.close()
+        else:
+            asyncio.get_running_loop().call_soon(asyncio.create_task, self.stop())
         return self._envelope(
             message_type=MessageType.SYNCER_SHUTDOWN,
             recipient_id=envelope.sender_id,
@@ -785,7 +935,7 @@ class SyncerService:
             | self.update_stream.stale_learners(current_version=self.store.global_version),
         )
         if commit is not None:
-            self.last_commit_payload = commit.model_dump(mode="json")
+            self.last_commit_payload = self._control_commit_payload(commit)
             self.update_stream.notify_commit(global_version=self.store.global_version)
             interval = self.config.syncer_checkpoint_interval_rounds
             if interval > 0 and self.store.metrics.sync_rounds_committed % interval == 0:
@@ -1066,9 +1216,27 @@ class SyncerService:
     def _global_state_payload(self, extra: dict[str, Any] | None = None) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "global_version": self.store.global_version,
-            "target_vector": self.target_vector.tolist(),
             "unhealthy_learners": sorted(self.unhealthy_learners),
         }
+        use_chunked_target_vector = (
+            self.config.artifact_transfer_mode == "object_store"
+            or self.target_vector.nbytes > self.config.inline_payload_max_bytes
+        )
+        if use_chunked_target_vector:
+            target_ref = self._write_global_vector_artifact(
+                "target_vector",
+                self.target_vector,
+                self.store.global_version,
+            )
+            payload["target_vector_artifact_ref"] = target_ref
+            if self.config.artifact_transfer_mode == "object_store":
+                payload["target_vector_artifact_transfer"] = "fetch_chunks"
+            else:
+                payload["target_vector_artifact_bundle"] = artifact_bundle_from_ref(
+                    target_ref, transport=self.artifact_transport
+                )
+        else:
+            payload["target_vector"] = self.target_vector.tolist()
         use_chunked_global_update = self.config.global_update_storage_mode == "chunked" or (
             self.config.global_update_storage_mode == "auto"
             and self.store.global_vector.nbytes > self.config.inline_payload_max_bytes
@@ -1080,7 +1248,14 @@ class SyncerService:
                 self.store.global_version,
             )
             payload["global_vector_artifact_ref"] = ref
+            if self.config.artifact_transfer_mode == "object_store":
+                payload["global_vector_artifact_transfer"] = "fetch_chunks"
+            else:
+                payload["global_vector_artifact_bundle"] = artifact_bundle_from_ref(
+                    ref, transport=self.artifact_transport
+                )
             payload["global_update_storage_mode"] = "chunked"
+            payload["artifact_transfer_mode"] = self.config.artifact_transfer_mode
         else:
             payload["global_vector"] = self.store.global_vector.tolist()
         if extra:
@@ -1311,6 +1486,8 @@ class SyncerService:
             "unhealthy_learners": sorted(self.unhealthy_learners),
             "recovery_source": self.recovery_source,
             "event_log_path": str(self.config.workdir / "events.jsonl"),
+            "artifact_transfer_mode": self.config.artifact_transfer_mode,
+            "artifact_storage_backend": self.artifact_transport.policy.storage_backend,
             "code_version": __version__ or None,
         }
 
@@ -1369,6 +1546,15 @@ def build_config_from_args(args: argparse.Namespace) -> SyncerServiceConfig:
         tensor_artifact_codec=args.tensor_artifact_codec,
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
+        s3_endpoint_url=args.s3_endpoint_url,
+        s3_bucket=args.s3_bucket,
+        s3_prefix=args.s3_prefix,
+        s3_region=args.s3_region,
+        s3_access_key_ref=args.s3_access_key_ref,
+        s3_secret_key_ref=args.s3_secret_key_ref,
+        s3_session_token_ref=args.s3_session_token_ref,
     )
 
 

@@ -36,6 +36,7 @@ class JsonlTcpServer:
         self.server: asyncio.AbstractServer | None = None
         self.bound_host: str | None = None
         self.bound_port: int | None = None
+        self._active_writers: set[asyncio.StreamWriter] = set()
 
     async def start(self) -> None:
         self.server = await asyncio.start_server(
@@ -61,7 +62,20 @@ class JsonlTcpServer:
     async def close(self) -> None:
         if self.server is not None:
             self.server.close()
-            await self.server.wait_closed()
+            for writer in list(self._active_writers):
+                writer.close()
+                transport = getattr(writer, "transport", None)
+                if transport is not None:
+                    transport.abort()
+            for writer in list(self._active_writers):
+                try:
+                    await asyncio.wait_for(writer.wait_closed(), timeout=0.2)
+                except (asyncio.TimeoutError, TimeoutError, ConnectionError, OSError):
+                    pass
+            try:
+                await asyncio.wait_for(self.server.wait_closed(), timeout=0.2)
+            except (asyncio.TimeoutError, TimeoutError):
+                pass
             self.server = None
 
     async def _handle_client(
@@ -69,6 +83,7 @@ class JsonlTcpServer:
         reader: asyncio.StreamReader,
         writer: asyncio.StreamWriter,
     ) -> None:
+        self._active_writers.add(writer)
         try:
             while not reader.at_eof():
                 try:
@@ -92,6 +107,9 @@ class JsonlTcpServer:
                         timeout_seconds=self.timeout_seconds,
                     )
         finally:
+            self._active_writers.discard(writer)
             writer.close()
-            await writer.wait_closed()
-
+            try:
+                await writer.wait_closed()
+            except (ConnectionError, OSError):
+                pass

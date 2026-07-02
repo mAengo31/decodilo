@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28358, in <module>
+    raise SystemExit(main())
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28354, in main
+    return int(args.func(args))
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 17743, in _cmd_learner_run
+    return learner_worker.main(args)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 739, in main
+    return asyncio.run(async_main(args))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 735, in async_main
+    return await worker.run()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 160, in run
+    await self.client.close()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/tcp_client.py", line 41, in close
+    await self.writer.wait_closed()
+  File "/usr/lib/python3.10/asyncio/streams.py", line 343, in wait_closed
+    await self._protocol._get_close_waiter(self)
+ConnectionResetError: [Errno 104] Connection reset by peer

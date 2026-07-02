@@ -1,0 +1,29 @@
+{
+  "artifact_manifest_ref": null,
+  "checkpoint_ref": {
+    "artifact_id": "run-6ed12141800e:syncer_checkpoint:19",
+    "chunk_root": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/store",
+    "manifest_hash": "f29b2e791d4067e37c01bcd47371b3b44e7a4e82928050593f262a3995e0ae8b",
+    "manifest_path": "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000019-t00000412.artifact.json"
+  },
+  "checkpoint_storage_mode": "chunked",
+  "compaction_watermarks": {
+    "event_log_offset": 431,
+    "idempotency_records": 56
+  },
+  "created_logical_time": 413,
+  "event_segment_refs": [],
+  "global_state_refs": [],
+  "global_version": 19,
+  "idempotency_store_ref": null,
+  "manifest_hash": "c5f2b734a8ff050b5452470eae539c6206a1c5188503542d324a555602ca6e3c",
+  "manifest_id": "run-6ed12141800e:recovery:19",
+  "previous_recovery_manifest_hash": "2fd19fb0ada1468f5665a28104f63abc29dd217481525b87438c23115ef23883",
+  "recovery_source": "chunked",
+  "replay_snapshot_ref": null,
+  "required_artifact_hashes": {
+    "docs/evidence/pathway_scheduler_long_local_no_restart/runtime/live_checkpoints/syncer_checkpoint-v00000019-t00000412.artifact.json": "1dbe6fef364fb76709cb9c316f6c25bef25ce196e0e54b6f623135b5d5e53af7"
+  },
+  "run_id": "run-6ed12141800e",
+  "schema_version": "v1"
+}

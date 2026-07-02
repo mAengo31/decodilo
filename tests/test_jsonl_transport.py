@@ -167,3 +167,27 @@ def test_tcp_client_can_read_response_larger_than_asyncio_default_line_limit() -
         assert response.payload == payload
 
     asyncio.run(scenario())
+
+
+def test_client_close_ignores_connection_reset() -> None:
+    class _Writer:
+        def __init__(self) -> None:
+            self.closed = False
+
+        def close(self) -> None:
+            self.closed = True
+
+        async def wait_closed(self) -> None:
+            raise ConnectionResetError("peer reset during close")
+
+    async def scenario() -> None:
+        client = JsonlTcpClient(host="127.0.0.1", port=1)
+        client.writer = _Writer()  # type: ignore[assignment]
+        client.reader = object()  # type: ignore[assignment]
+
+        await client.close()
+
+        assert client.writer is None
+        assert client.reader is None
+
+    asyncio.run(scenario())

@@ -108,6 +108,41 @@ def test_lambda_operation_result_mapping_uses_l5_evidence(tmp_path: Path) -> Non
     assert result.backend_report["evidence_package_path"] == str(plan.evidence_package_path)
 
 
+def test_lambda_operation_result_mapping_accepts_scale_only_success(tmp_path: Path) -> None:
+    spec = OperationSpec(name="l6-scale-only")
+    config = LambdaOperationBackendConfig(
+        run_id="lambda-l6-scale-only",
+        experiment_mode="scale_only_no_restart",
+        restart_after_round=0,
+    )
+    plan = build_lambda_operation_plan(spec, config=config, workdir=tmp_path)
+    completed = subprocess.CompletedProcess(plan.command, 0, "stdout", "stderr")
+    package = _fake_l5_package().model_copy(
+        update={
+            "experiment_mode": "scale_only_no_restart",
+            "lambda_l5_restart_recovery_direct_tcp_passed": False,
+            "lambda_l5_scale_only_direct_tcp_passed": True,
+            "restart_attempted": False,
+            "restart_recovered": False,
+            "restart_round": None,
+            "rounds_after_restart": 0,
+        }
+    )
+
+    result = lambda_operation_result_from_l5_package(
+        spec=spec,
+        package=package,
+        plan=plan,
+        completed=completed,
+    )
+
+    assert result.status == "completed"
+    assert result.syncer_recovered is False
+    assert result.restart_round is None
+    assert result.backend_report["experiment_mode"] == "scale_only_no_restart"
+    assert result.backend_report["scale_only_no_restart_passed"] is True
+
+
 
 def test_lambda_operation_plan_carries_torch_causal_lm_trainer_config(tmp_path: Path) -> None:
     spec = OperationSpec.torch_causal_lm_profile(
@@ -194,3 +229,55 @@ def test_lambda_operation_plan_carries_chunked_transport_modes(tmp_path: Path) -
     preview = plan.to_preview_dict()
     assert preview["payload_storage_mode"] == "chunked"
     assert preview["global_update_storage_mode"] == "chunked"
+
+
+def test_lambda_operation_plan_carries_s3_scale_only_mode(tmp_path: Path) -> None:
+    spec = OperationSpec.torch_causal_lm_profile(
+        name="lambda-gpu-s3-scale-only",
+        learners=4,
+        min_quorum=3,
+        steps=8,
+        device="cuda",
+        vocab_size=256,
+        seq_len=16,
+        batch_size=2,
+        d_model=64,
+        num_layers=2,
+        num_heads=4,
+        payload_storage_mode="chunked",
+        checkpoint_storage_mode="chunked",
+        merge_mode="streaming_chunked",
+        global_update_storage_mode="chunked",
+        artifact_transfer_mode="object_store",
+    )
+    config = LambdaOperationBackendConfig(
+        run_id="lambda-l6-s3-scale-only",
+        evidence_root=tmp_path / "evidence",
+        env_file=tmp_path / ".env",
+        ssh_key_name="test-key",
+        ssh_private_key=tmp_path / "private-key.pem",
+        restart_after_round=0,
+        experiment_mode="scale_only_no_restart",
+        artifact_storage_backend="s3_compatible",
+        s3_endpoint_url="https://object.example.invalid",
+        s3_bucket="bucket",
+        s3_prefix="runs/test",
+        s3_region="us-east-1",
+        s3_access_key_ref="AWS_ACCESS_KEY_ID",
+        s3_secret_key_ref="AWS_SECRET_ACCESS_KEY",
+    )
+
+    plan = build_lambda_operation_plan(spec, config=config, workdir=tmp_path)
+    command = plan.command
+    preview = plan.to_preview_dict()
+
+    assert command[command.index("--experiment-mode") + 1] == "scale_only_no_restart"
+    assert command[command.index("--artifact-storage-backend") + 1] == "s3_compatible"
+    assert command[command.index("--s3-endpoint-url") + 1] == "https://object.example.invalid"
+    assert command[command.index("--s3-bucket") + 1] == "bucket"
+    assert command[command.index("--s3-prefix") + 1] == "runs/test"
+    assert command[command.index("--s3-access-key-ref") + 1] == "AWS_ACCESS_KEY_ID"
+    assert command[command.index("--s3-secret-key-ref") + 1] == "AWS_SECRET_ACCESS_KEY"
+    assert plan.restart_strategy == "none_scale_only"
+    assert preview["experiment_mode"] == "scale_only_no_restart"
+    assert preview["artifact_storage_backend"] == "s3_compatible"

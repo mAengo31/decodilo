@@ -1,0 +1,7 @@
+{
+  "learners": 4,
+  "metric_validation_passed": true,
+  "replay_passed": true,
+  "status": "completed",
+  "sync_rounds": 26
+}

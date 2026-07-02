@@ -1,0 +1,10 @@
+{
+  "attempted": true,
+  "final_round_before_shutdown": 9,
+  "late_learner_failures_ignored": false,
+  "learner_failures": [],
+  "recovered": true,
+  "restart_error": null,
+  "restart_round": 1,
+  "rounds_after_restart": 8
+}

@@ -1,0 +1,4 @@
+{"event_type": "starting", "learner_id": "learner-1", "payload": {}}
+{"event_type": "registered", "learner_id": "learner-1", "payload": {"global_version": 0, "reconnected": false, "slow_factor": 1.0, "trainer_type": "torch_causal_lm"}}
+{"event_type": "submitted_fragment", "learner_id": "learner-1", "payload": {"idempotency_key": "lambda-pathway-chunked-gpu-20260701004933:learner-1:step-1:v-0", "outcome": "queued", "response_type": "submit_fragment_ack"}}
+{"event_type": "finished", "learner_id": "learner-1", "payload": {}}

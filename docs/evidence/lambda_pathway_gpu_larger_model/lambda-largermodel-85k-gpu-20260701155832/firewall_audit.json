@@ -1,0 +1,30 @@
+{
+  "attempted": false,
+  "original_rule_count": 2,
+  "restore_attempts": [
+    {
+      "attempt": 1,
+      "restored": true
+    }
+  ],
+  "restore_error": null,
+  "restore_response": {
+    "data": [
+      {
+        "description": "Allow SSH connections from any IP",
+        "port_range": [
+          22,
+          22
+        ],
+        "protocol": "tcp",
+        "source_network": "0.0.0.0/0"
+      },
+      {
+        "description": "Allow Ping from any IP",
+        "protocol": "icmp",
+        "source_network": "0.0.0.0/0"
+      }
+    ]
+  },
+  "restored": true
+}

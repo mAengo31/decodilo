@@ -25,6 +25,7 @@ from decodilo.pricing.budget import (
 from decodilo.pricing.freshness import require_usable_snapshot
 from decodilo.pricing.registry import load_price_snapshot, query_snapshot_price
 from decodilo.runtime.artifact_manifest import build_artifact_manifest, write_artifact_manifest
+from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
 from decodilo.runtime.chaos_plan import (
     RoundAction,
     SlowLearnerAction,
@@ -50,6 +51,7 @@ from decodilo.runtime.run_spec import (
 from decodilo.sim.fake_model import convex_loss, make_target_vector
 from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.codec_registry import validate_artifact_codec
+from decodilo.storage.s3_compatible_backend import S3CompatibleBackendConfig
 from decodilo.syncer.event_log import EventType, read_event_log
 from decodilo.syncer.outer_optimizer import create_outer_optimizer
 from decodilo.syncer.replay import replay_event_log
@@ -120,6 +122,38 @@ class LocalRunConfig:
     tensor_artifact_codec: str = "json_safe"
     fragment_artifact_codec: str = "json_safe"
     checkpoint_artifact_codec: str = "json_safe"
+    artifact_transfer_mode: str = "bundle"
+    artifact_storage_backend: str = "auto"
+    s3_endpoint_url: str | None = None
+    s3_bucket: str | None = None
+    s3_prefix: str = "decodilo-artifacts"
+    s3_region: str | None = None
+    s3_access_key_ref: str | None = None
+    s3_secret_key_ref: str | None = None
+    s3_session_token_ref: str | None = None
+
+
+
+def _s3_runtime_args(config: LocalRunConfig) -> list[str]:
+    if config.artifact_storage_backend != "s3_compatible":
+        return []
+    values = [
+        "--s3-endpoint-url",
+        str(config.s3_endpoint_url or ""),
+        "--s3-bucket",
+        str(config.s3_bucket or ""),
+        "--s3-prefix",
+        str(config.s3_prefix),
+        "--s3-access-key-ref",
+        str(config.s3_access_key_ref or ""),
+        "--s3-secret-key-ref",
+        str(config.s3_secret_key_ref or ""),
+    ]
+    if config.s3_region:
+        values.extend(["--s3-region", config.s3_region])
+    if config.s3_session_token_ref:
+        values.extend(["--s3-session-token-ref", config.s3_session_token_ref])
+    return values
 
 
 class LocalRunner:
@@ -283,6 +317,11 @@ class LocalRunner:
             self.config.fragment_artifact_codec,
             "--checkpoint-artifact-codec",
             self.config.checkpoint_artifact_codec,
+            "--artifact-transfer-mode",
+            self.config.artifact_transfer_mode,
+            "--artifact-storage-backend",
+            self.config.artifact_storage_backend,
+            *_s3_runtime_args(self.config),
         ]
         if recover:
             command.append("--recover-from-checkpoint")
@@ -358,6 +397,11 @@ class LocalRunner:
             self.config.tensor_artifact_codec,
             "--checkpoint-artifact-codec",
             self.config.checkpoint_artifact_codec,
+            "--artifact-transfer-mode",
+            self.config.artifact_transfer_mode,
+            "--artifact-storage-backend",
+            self.config.artifact_storage_backend,
+            *_s3_runtime_args(self.config),
         ]
         proc = subprocess.Popen(
             command,
@@ -429,7 +473,14 @@ class LocalRunner:
                 try:
                     ready = json.loads(self.ready_file.read_text(encoding="utf-8"))
                     asyncio.run(self._shutdown_syncer(ready))
-                    self.syncer_proc.wait(timeout=self.config.syncer_restart_timeout_seconds)
+                    self.syncer_proc.wait(
+                        timeout=max(
+                            self.config.syncer_restart_timeout_seconds,
+                            15.0
+                            if self.config.checkpoint_storage_mode in {"chunked", "dual"}
+                            else self.config.syncer_restart_timeout_seconds,
+                        )
+                    )
                     clean_stop = True
                 except Exception:
                     clean_stop = False
@@ -475,9 +526,10 @@ class LocalRunner:
     async def _shutdown_syncer(self, ready: dict[str, Any]) -> dict[str, Any]:
         last_error: Exception | None = None
         response = None
-        shutdown_timeout = min(
-            2.0,
-            max(0.5, self.config.heartbeat_timeout_seconds + 0.5),
+        shutdown_timeout = (
+            15.0
+            if self.config.checkpoint_storage_mode in {"chunked", "dual"}
+            else min(2.0, max(0.5, self.config.heartbeat_timeout_seconds + 0.5))
         )
         for _ in range(3):
             try:
@@ -522,7 +574,10 @@ class LocalRunner:
 
     def _fallback_summary_from_replay(self, *, reason: str) -> dict[str, Any]:
         event_log_path = self.config.workdir / "events.jsonl"
-        replay = replay_event_log(event_log_path)
+        replay = replay_event_log(
+            event_log_path,
+            artifact_transport=self._replay_artifact_transport(),
+        )
         vector = (
             replay.final_global_vector
             if replay.final_global_vector is not None
@@ -563,9 +618,45 @@ class LocalRunner:
             "unhealthy_learners": [],
             "recovery_source": "event_log_fallback",
             "event_log_path": str(event_log_path),
+            "artifact_transfer_mode": self.config.artifact_transfer_mode,
+            "artifact_storage_backend": self.config.artifact_storage_backend,
             "code_version": __version__ or None,
             "warnings": [reason],
         }
+
+
+    def _replay_artifact_transport(self) -> LocalArtifactTransport | None:
+        if self.config.artifact_storage_backend != "s3_compatible":
+            return None
+        if not self.config.s3_endpoint_url or not self.config.s3_bucket:
+            return None
+        import os
+
+        from decodilo.storage.s3_runtime import create_boto3_s3_compatible_backend_from_env
+
+        backend = create_boto3_s3_compatible_backend_from_env(
+            S3CompatibleBackendConfig(
+                endpoint_url=self.config.s3_endpoint_url,
+                bucket=self.config.s3_bucket,
+                prefix=self.config.s3_prefix,
+                region=self.config.s3_region,
+                access_key_ref=self.config.s3_access_key_ref,
+                secret_key_ref=self.config.s3_secret_key_ref,
+                session_token_ref=self.config.s3_session_token_ref,
+            ),
+            environ=os.environ,
+            require_probe=True,
+        )
+        return LocalArtifactTransport(
+            policy=ArtifactTransportPolicy(
+                workdir=str(self.config.workdir),
+                artifact_root=str(
+                    self.config.artifact_root or default_artifact_root(self.config.workdir)
+                ),
+                storage_backend="s3_compatible",
+            ),
+            s3_backend=backend,
+        )
 
     def _verify_pseudo_gradient_numeric(self, event_log_path: Path) -> dict[str, Any]:
         """Numerically re-derive logged outer optimizer steps from inline commit events.
@@ -630,7 +721,10 @@ class LocalRunner:
     ) -> LocalRuntimeReport:
         event_log_path = self.config.workdir / "events.jsonl"
         try:
-            replay = replay_event_log(event_log_path)
+            replay = replay_event_log(
+                event_log_path,
+                artifact_transport=self._replay_artifact_transport(),
+            )
             replay_report = ReplayValidationReport(
                 replay_passed=True,
                 replay_final_global_version=(
@@ -775,6 +869,12 @@ class LocalRunner:
             started_at_utc=started_at,
             finished_at_utc=datetime.now(UTC).isoformat(),
             code_version=__version__ or None,
+            artifact_transfer_mode=str(
+                syncer_summary.get("artifact_transfer_mode", self.config.artifact_transfer_mode)
+            ),
+            artifact_storage_backend=str(
+                syncer_summary.get("artifact_storage_backend", "local_filesystem")
+            ),
         )
         return report.model_copy(
             update={
@@ -1177,6 +1277,15 @@ def build_config_from_args(args: argparse.Namespace) -> LocalRunConfig:
         tensor_artifact_codec=args.tensor_artifact_codec,
         fragment_artifact_codec=args.fragment_artifact_codec,
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
+        artifact_transfer_mode=args.artifact_transfer_mode,
+        artifact_storage_backend=args.artifact_storage_backend,
+        s3_endpoint_url=args.s3_endpoint_url,
+        s3_bucket=args.s3_bucket,
+        s3_prefix=args.s3_prefix,
+        s3_region=args.s3_region,
+        s3_access_key_ref=args.s3_access_key_ref,
+        s3_secret_key_ref=args.s3_secret_key_ref,
+        s3_session_token_ref=args.s3_session_token_ref,
     )
 
 

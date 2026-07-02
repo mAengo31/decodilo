@@ -1,0 +1,15 @@
+{
+  "api_endpoints_checked": [
+    "/api/v1/instances",
+    "/api/v1/file-systems"
+  ],
+  "checked_at_utc": "2026-07-01T13:50:50.806537+00:00",
+  "file_system_count": 0,
+  "interpretation": "No Lambda Cloud file systems/S3-compatible bucket were available from the live API response in this account at check time.",
+  "launch_allowed": false,
+  "launch_ready": false,
+  "live_instance_count": 0,
+  "provider": "Lambda Cloud",
+  "raw_secrets_recorded": false,
+  "s3_bucket_available_from_lambda_api": false
+}

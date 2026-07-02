@@ -13,10 +13,25 @@ from decodilo.errors import InvariantViolation
 from decodilo.protocol.messages import CheckpointRecord, MergeDecision
 from decodilo.sim.fake_model import split_vector
 from decodilo.syncer.event_log import EventLog, EventType
-from decodilo.syncer.outer_optimizer import OuterOptimizer, SGDOuterOptimizer, outer_optimizer_name
+from decodilo.syncer.outer_optimizer import (
+    OuterOptimizer,
+    SGDOuterOptimizer,
+    outer_optimizer_name,
+    outer_optimizer_state,
+)
 from decodilo.syncer.quorum import PendingUpdate, QuorumPolicy, QuorumTracker
 from decodilo.syncer.streaming_merge import streaming_token_weighted_merge
 from decodilo.syncer.token_weighted_merge import LearnerDelta, token_weighted_merge
+
+
+def _restore_outer_optimizer_state(optimizer: OuterOptimizer, state: dict[str, object]) -> None:
+    if hasattr(optimizer, "step"):
+        optimizer.step = int(state.get("step", 0))  # type: ignore[attr-defined]
+    if hasattr(optimizer, "velocity"):
+        velocity = state.get("velocity", [])
+        optimizer.velocity = (
+            None if not velocity else np.asarray(velocity, dtype=np.float64)
+        )  # type: ignore[attr-defined]
 
 
 @dataclass(frozen=True)
@@ -254,19 +269,9 @@ class FragmentStore:
             raise InvariantViolation("sync round cannot commit below quorum")
 
         round_id = decision.round_id or f"round-{self.global_version + 1:08d}"
+        optimizer_state_before_commit = outer_optimizer_state(self.optimizer)
         optimizer_name = outer_optimizer_name(self.optimizer)
         outer_momentum = getattr(self.optimizer, "momentum", None)
-        self.event_log.append(
-            EventType.SYNC_ROUND_STARTED,
-            logical_time=current_tick,
-            round_id=round_id,
-            payload={
-                "round_id": round_id,
-                "previous_global_version": self.global_version,
-                "accepted_learner_ids": [update.learner_id for update in accepted_updates],
-                "reason": decision.reason,
-            },
-        )
 
         learner_deltas = [
             LearnerDelta(
@@ -316,7 +321,7 @@ class FragmentStore:
                 if hasattr(streaming, "result")
                 else streaming.new_values
             )
-            if not np.allclose(
+            if optimizer_name == "sgd" and not np.allclose(
                 streaming_values,
                 merge_result.new_global_vector,
                 rtol=0.0,
@@ -389,10 +394,7 @@ class FragmentStore:
 
         old_vector = self.global_vector.copy()
         previous_version = self.global_version
-        self.global_vector = merge_result.new_global_vector.copy()
-        self.global_version += 1
-        if self.global_version != previous_version + 1:
-            raise InvariantViolation("global_version must increase by exactly one per commit")
+        next_version = previous_version + 1
 
         accepted_fragment_artifacts = {
             update.learner_id: self.pending_artifact_refs.get(update.learner_id)
@@ -400,19 +402,10 @@ class FragmentStore:
             if self.pending_artifact_refs.get(update.learner_id) is not None
         }
 
-        for learner_id in merge_result.included_learner_ids:
-            self.pending.pop(learner_id, None)
-            self.pending_artifact_refs.pop(learner_id, None)
-
-        self.metrics.accepted_updates += len(merge_result.included_learner_ids)
-        self.metrics.useful_tokens += merge_result.useful_tokens
-        self.metrics.sync_rounds_committed += 1
-        self.metrics.quorum_compositions.append(merge_result.included_learner_ids)
-
         merge_decision = MergeDecision(
             round_id=round_id,
             previous_global_version=previous_version,
-            new_global_version=self.global_version,
+            new_global_version=next_version,
             accepted_learner_ids=merge_result.included_learner_ids,
             token_weights=merge_result.token_weights,
             useful_tokens=merge_result.useful_tokens,
@@ -421,32 +414,36 @@ class FragmentStore:
             outer_momentum=float(outer_momentum) if outer_momentum is not None else None,
             old_global_vector=old_vector.tolist(),
             weighted_delta=merge_result.weighted_delta.tolist(),
-            new_global_vector=self.global_vector.tolist(),
+            new_global_vector=merge_result.new_global_vector.tolist(),
         )
         commit_payload: dict[str, Any] = merge_decision.model_dump(mode="json")
         if (
             self.event_payload_mode == "chunked"
             and self.global_vector_artifact_writer is not None
         ):
-            old_ref = self.global_vector_artifact_writer(
-                "old_global_vector",
-                old_vector,
-                previous_version,
-            )
-            delta_ref = self.global_vector_artifact_writer(
-                "weighted_delta",
-                merge_result.weighted_delta,
-                self.global_version,
-            )
-            new_ref = self.global_vector_artifact_writer(
-                "new_global_vector",
-                self.global_vector,
-                self.global_version,
-            )
+            try:
+                old_ref = self.global_vector_artifact_writer(
+                    "old_global_vector",
+                    old_vector,
+                    previous_version,
+                )
+                delta_ref = self.global_vector_artifact_writer(
+                    "weighted_delta",
+                    merge_result.weighted_delta,
+                    next_version,
+                )
+                new_ref = self.global_vector_artifact_writer(
+                    "new_global_vector",
+                    merge_result.new_global_vector,
+                    next_version,
+                )
+            except Exception:
+                _restore_outer_optimizer_state(self.optimizer, optimizer_state_before_commit)
+                raise
             commit_payload = {
                 "round_id": round_id,
                 "previous_global_version": previous_version,
-                "new_global_version": self.global_version,
+                "new_global_version": next_version,
                 "accepted_learner_ids": merge_result.included_learner_ids,
                 "token_weights": merge_result.token_weights,
                 "useful_tokens": merge_result.useful_tokens,
@@ -463,6 +460,31 @@ class FragmentStore:
                 "weighted_delta_artifact_ref": delta_ref,
                 "new_global_vector_artifact_ref": new_ref,
             }
+        self.global_vector = merge_result.new_global_vector.copy()
+        self.global_version = next_version
+        if self.global_version != previous_version + 1:
+            raise InvariantViolation("global_version must increase by exactly one per commit")
+
+        for learner_id in merge_result.included_learner_ids:
+            self.pending.pop(learner_id, None)
+            self.pending_artifact_refs.pop(learner_id, None)
+
+        self.metrics.accepted_updates += len(merge_result.included_learner_ids)
+        self.metrics.useful_tokens += merge_result.useful_tokens
+        self.metrics.sync_rounds_committed += 1
+        self.metrics.quorum_compositions.append(merge_result.included_learner_ids)
+
+        self.event_log.append(
+            EventType.SYNC_ROUND_STARTED,
+            logical_time=current_tick,
+            round_id=round_id,
+            payload={
+                "round_id": round_id,
+                "previous_global_version": previous_version,
+                "accepted_learner_ids": [update.learner_id for update in accepted_updates],
+                "reason": decision.reason,
+            },
+        )
         self.event_log.append(
             EventType.SYNC_ROUND_COMMITTED,
             logical_time=current_tick,

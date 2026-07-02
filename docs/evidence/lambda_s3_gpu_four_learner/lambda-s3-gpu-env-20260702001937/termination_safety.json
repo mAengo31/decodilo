@@ -1,0 +1,12 @@
+{
+  "billing_safety_status": "BILLING_SAFETY_OK",
+  "contains_credentials": false,
+  "observed_final_live_instance_count": 0,
+  "owned_instance_ids": [
+    "c950ead0eff249fe844037ed5f4040c2",
+    "daf115be4b83454cb7aa6d83253ad447",
+    "90f416d3ead54321945d3e114cba08cf",
+    "909461bea81e4cc49a55392d4f33a6e7",
+    "cc1e0e64fe2c44ee961d68bd61c4252b"
+  ]
+}

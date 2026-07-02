@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 
 from decodilo.lambda_cloud.api_models import LambdaInstanceType
 from decodilo.lambda_cloud.launch_plan import build_lambda_launch_plan, write_lambda_launch_plan
@@ -19,6 +20,10 @@ from decodilo.pricing.snapshots import (
 )
 
 
+def _fresh_price_timestamp() -> str:
+    return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
 def _write_inputs(tmp_path, *, records: list[SnapshotPriceRecord], sample: bool = False):
     discovery = LambdaLiveDiscoveryReport(
         live_api_used=True,
@@ -37,7 +42,7 @@ def _write_inputs(tmp_path, *, records: list[SnapshotPriceRecord], sample: bool 
     snapshot = PriceSnapshot(
         snapshot_id="snap",
         provider="lambda",
-        captured_at_utc="2026-06-16T00:00:00Z",
+        captured_at_utc=_fresh_price_timestamp(),
         source_type=PriceSourceType.MANUAL_JSON,
         source_sha256="0" * 64,
         records=records,
@@ -68,7 +73,7 @@ def _record(record_id: str = "price-0") -> SnapshotPriceRecord:
         region="sample-offline",
         price_per_gpu_hour=2.5,
         price_per_instance_hour=20.0,
-        captured_at_utc="2026-06-16T00:00:00Z",
+        captured_at_utc=_fresh_price_timestamp(),
         record_id=record_id,
     )
 
@@ -161,7 +166,7 @@ def test_lambda_price_reconciliation_uses_resolved_shape_evidence(tmp_path) -> N
     snapshot = PriceSnapshot(
         snapshot_id="snap",
         provider="lambda",
-        captured_at_utc="2026-06-18T00:00:00Z",
+        captured_at_utc=_fresh_price_timestamp(),
         source_type=PriceSourceType.MANUAL_HTML,
         source_url="https://lambda.ai/instances",
         source_sha256="0" * 64,
@@ -173,7 +178,7 @@ def test_lambda_price_reconciliation_uses_resolved_shape_evidence(tmp_path) -> N
                 gpus_per_instance=8,
                 price_per_gpu_hour=3.99,
                 price_per_instance_hour=31.92,
-                captured_at_utc="2026-06-18T00:00:00Z",
+                captured_at_utc=_fresh_price_timestamp(),
                 record_id="lambda:gpu_8x_h100_sxm:0",
             )
         ],

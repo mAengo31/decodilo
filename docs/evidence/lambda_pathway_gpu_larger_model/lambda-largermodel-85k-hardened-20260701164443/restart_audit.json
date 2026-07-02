@@ -1,0 +1,10 @@
+{
+  "attempted": true,
+  "final_round_before_shutdown": 1,
+  "late_learner_failures_ignored": false,
+  "learner_failures": [],
+  "recovered": false,
+  "restart_error": "Command '['ssh', '-i', '/Users/edward/.ssh/diloco_lambda', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=10', 'ubuntu@132.145.198.74', \"cd /home/ubuntu/diloco_l5_src && PYTHONPATH=src python3 - <<'PY' > /home/ubuntu/lambda_l5_run/syncer_summary.json\\n\\nimport asyncio, json\\nfrom decodilo.transport.tcp_client import JsonlTcpClient\\nfrom decodilo.transport.envelope import MessageType, make_envelope\\nasync def main():\\n    async with JsonlTcpClient(host='127.0.0.1', port=28080, timeout_seconds=5) as client:\\n        envelope = make_envelope(\\n            run_id='lambda-largermodel-85k-hardened-20260701164443',\\n            sender_id='l2-supervisor',\\n            recipient_id='syncer',\\n            message_type=MessageType.SYNCER_SHUTDOWN,\\n            payload={'reason': 'lambda_l5_complete'},\\n        )\\n        response = await client.request(envelope)\\n        print(json.dumps(response.payload, sort_keys=True))\\nasyncio.run(main())\\nPY\\n\"]' returned non-zero exit status 1.",
+  "restart_round": 1,
+  "rounds_after_restart": 0
+}

@@ -8,6 +8,7 @@ import pytest
 
 from decodilo.errors import ReplayMismatchError
 from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
+from decodilo.runtime.syncer_service import SyncerService, SyncerServiceConfig
 from decodilo.syncer.event_log import EventLog
 from decodilo.syncer.fragment_store import FragmentStore
 from decodilo.syncer.global_state_store import write_global_vector_artifact
@@ -24,6 +25,8 @@ def _run_local(
     restart: bool = False,
     steps: int = 40,
     run_id: str | None = None,
+    artifact_transfer_mode: str = "bundle",
+    artifact_storage_backend: str = "auto",
 ) -> dict:
     args = [
         sys.executable,
@@ -68,6 +71,10 @@ def _run_local(
                 "--memory-budget-mb",
                 "1",
                 "--allow-spill-to-disk",
+                "--artifact-transfer-mode",
+                artifact_transfer_mode,
+                "--artifact-storage-backend",
+                artifact_storage_backend,
             ]
         )
     if restart:
@@ -90,6 +97,87 @@ def _events(workdir: Path) -> list[dict]:
         if line.strip()
     ]
 
+
+def test_chunked_syncer_control_commit_payloads_do_not_inline_vectors(tmp_path) -> None:
+    service = SyncerService(
+        SyncerServiceConfig(
+            run_id="compact-control",
+            workdir=tmp_path,
+            vector_dim=13_216,
+            learners=2,
+            min_quorum=2,
+            payload_storage_mode="chunked",
+            global_update_storage_mode="chunked",
+            checkpoint_storage_mode="chunked",
+            merge_mode="streaming_chunked",
+            inline_payload_max_bytes=1024,
+            tensor_artifact_codec="binary_v1",
+            fragment_artifact_codec="binary_v1",
+            checkpoint_artifact_codec="binary_v1",
+        )
+    )
+    first = np.ones(13_216, dtype=np.float64)
+    second = np.full(13_216, 2.0, dtype=np.float64)
+    service.store.submit_learner_update(
+        learner_id="learner-0",
+        vector=first,
+        global_version_seen=0,
+        tokens=64,
+        submitted_at=1,
+    )
+    service.store.submit_learner_update(
+        learner_id="learner-1",
+        vector=second,
+        global_version_seen=0,
+        tokens=64,
+        submitted_at=2,
+    )
+
+    commit = service._maybe_commit()
+
+    assert commit is not None
+    assert service.last_commit_payload is not None
+    assert service.last_commit_payload["control_payload_compacted"] is True
+    assert service.last_commit_payload["accepted_learner_ids"] == ["learner-0", "learner-1"]
+    assert "old_global_vector" not in service.last_commit_payload
+    assert "weighted_delta" not in service.last_commit_payload
+    assert "new_global_vector" not in service.last_commit_payload
+    serialized_payload = json.dumps(service.last_commit_payload)
+    assert "global_vector" not in serialized_payload
+    assert "weighted_delta" not in serialized_payload
+    assert len(serialized_payload.encode("utf-8")) < 2048
+
+
+
+@pytest.mark.integration
+def test_live_chunked_runtime_supports_syncer_object_store_transfer(tmp_path) -> None:
+    report = _run_local(tmp_path, chunked=True, artifact_transfer_mode="object_store")
+    metrics = report["metrics"]
+
+    assert report["artifact_transfer_mode"] == "object_store"
+    assert report["artifact_storage_backend"] == "syncer_object_store"
+    assert report["replay_validation"]["replay_passed"] is True
+    assert report["metric_validation"]["passed"] is True
+    assert metrics["chunked_fragment_submissions"] > 0
+
+
+
+@pytest.mark.integration
+def test_live_chunked_runtime_supports_durable_filesystem_backend(tmp_path) -> None:
+    report = _run_local(
+        tmp_path,
+        chunked=True,
+        artifact_transfer_mode="object_store",
+        artifact_storage_backend="durable_filesystem_object_store",
+    )
+    metrics = report["metrics"]
+
+    assert report["artifact_transfer_mode"] == "object_store"
+    assert report["artifact_storage_backend"] == "durable_filesystem_object_store"
+    assert report["replay_validation"]["replay_passed"] is True
+    assert report["metric_validation"]["passed"] is True
+    assert metrics["chunked_fragment_submissions"] > 0
+    assert list((tmp_path / "artifacts" / "durable_objects").glob("artifact_index.json"))
 
 @pytest.mark.integration
 def test_live_chunked_fragment_submission_update_delivery_and_replay(tmp_path) -> None:

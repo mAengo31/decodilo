@@ -1,0 +1,28 @@
+{
+  "attempted": true,
+  "final_round_before_shutdown": 2,
+  "graceful_shutdown_error": null,
+  "late_learner_failures_ignored": false,
+  "learner_failures": [
+    {
+      "exit_code": 1,
+      "learner_id": "learner-0"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-1"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-2"
+    },
+    {
+      "exit_code": 1,
+      "learner_id": "learner-3"
+    }
+  ],
+  "recovered": false,
+  "restart_error": "pathway restart recovery fence not satisfied",
+  "restart_round": 2,
+  "rounds_after_restart": 0
+}

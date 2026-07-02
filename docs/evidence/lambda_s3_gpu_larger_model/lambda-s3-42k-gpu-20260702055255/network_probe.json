@@ -1,0 +1,14 @@
+{
+  "direct_tcp_probe_passed": true,
+  "errors": {
+    "learner-0": "Command '['ssh', '-i', '/Users/edward/.ssh/diloco_lambda', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=10', 'ubuntu@150.136.91.131', \"python3 - <<'PY'\\nimport socket\\ns=socket.create_connection(('141.148.62.131',28080),5)\\ns.close()\\nPY\\n\"]' returned non-zero exit status 1."
+  },
+  "results": {
+    "learner-0": true,
+    "learner-1": true,
+    "learner-2": true,
+    "learner-3": true
+  },
+  "syncer_ip": "141.148.62.131",
+  "syncer_port": 28080
+}

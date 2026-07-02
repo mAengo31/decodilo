@@ -25,7 +25,18 @@ from decodilo.operation.local_backend import LocalOperationBackend
 from decodilo.operation.pathway import (
     PathwayManagedExperimentPlan,
     build_next_lambda_gpu_chunked_experiment,
+    build_six_step_production_candidate_experiments,
     compile_pathway_managed_experiment,
+    compile_six_step_production_candidate,
+)
+from decodilo.operation.pathway_scheduler import (
+    PathwayArtifactFuture,
+    PathwayExecutionContext,
+    PathwayResourcePolicy,
+    PathwayScheduler,
+    PathwaySchedulerError,
+    PathwayScheduleResult,
+    PathwayTask,
 )
 from decodilo.operation.result import OperationResult
 from decodilo.operation.runner import run_operation
@@ -43,8 +54,17 @@ __all__ = [
     "PathwayManagedExperimentPlan",
     "build_next_lambda_gpu_chunked_experiment",
     "compile_pathway_managed_experiment",
+    "build_six_step_production_candidate_experiments",
+    "compile_six_step_production_candidate",
     "OperationSafetyEnvelope",
     "OperationSpec",
     "OperationResult",
+    "PathwayArtifactFuture",
+    "PathwayExecutionContext",
+    "PathwayResourcePolicy",
+    "PathwayScheduleResult",
+    "PathwayScheduler",
+    "PathwaySchedulerError",
+    "PathwayTask",
     "run_operation",
 ]

@@ -60,7 +60,7 @@ def test_local_recovery_after_kill(tmp_path) -> None:
         report = _run_local(
             attempt_dir,
             "--steps",
-            "160",
+            "300",
             "--kill-learner",
             "learner-0:after-round=2",
             "--restart-learner",
@@ -73,8 +73,7 @@ def test_local_recovery_after_kill(tmp_path) -> None:
         recovered = [
             event
             for event in records
-            if event["event_type"] == "learner_recovered"
-            and event["learner_id"] == "learner-0"
+            if event["event_type"] == "learner_recovered" and event["learner_id"] == "learner-0"
         ]
         later_accept = [
             event
@@ -94,8 +93,7 @@ def test_local_recovery_after_kill(tmp_path) -> None:
     report, retry_report = run_bounded_subprocess_retry(
         label="test_local_recovery_after_kill",
         reason=(
-            "subprocess scheduling can delay the restarted learner until peer "
-            "processes have exited"
+            "subprocess scheduling can delay the restarted learner until peer processes have exited"
         ),
         attempts=3,
         base_tmp_path=tmp_path,
