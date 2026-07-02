@@ -435,3 +435,52 @@ def test_l5_shutdown_syncer_retries_transient_shutdown_failure(monkeypatch) -> N
 
     assert attempts["count"] == 2
     assert sleeps == [5.0]
+
+
+def test_l5_restart_falls_back_to_force_stop_when_graceful_shutdown_fails(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    import subprocess
+
+    runner = _load_runner()
+    syncer = runner.Instance("syncer", "sid", "127.0.0.1", "us-east-1", "gpu_1x_a10")
+    learner = runner.Instance("learner-0", "lid", "127.0.0.2", "us-east-1", "gpu_1x_a10")
+    calls: list[str] = []
+
+    class Proc:
+        def poll(self):
+            return None if calls.count("poll") == 0 else 0
+
+        def wait(self, timeout):
+            return 0
+
+    args = type(
+        "Args",
+        (),
+        {
+            "ssh_private_key": tmp_path / "key",
+            "learners": 1,
+            "learner_run_timeout_seconds": 60.0,
+            "restart_after_round": 1,
+        },
+    )()
+
+    monkeypatch.setattr(runner, "_learner_command", lambda *_args: "true")
+    monkeypatch.setattr(runner.subprocess, "Popen", lambda *_args, **_kwargs: Proc())
+    monkeypatch.setattr(runner, "_remote_committed_rounds", lambda *_args: 2)
+
+    def fail_shutdown(*_args):
+        calls.append("shutdown")
+        raise subprocess.CalledProcessError(1, ["ssh"])
+
+    monkeypatch.setattr(runner, "_shutdown_syncer", fail_shutdown)
+    monkeypatch.setattr(runner, "_force_stop_syncer", lambda *_args: calls.append("force"))
+    monkeypatch.setattr(runner, "_start_syncer", lambda *_args, **_kwargs: calls.append("start"))
+    monkeypatch.setattr(runner, "_wait_remote_file", lambda *_args: calls.append("ready"))
+    monkeypatch.setattr(runner, "_wait_direct_tcp", lambda *_args: calls.append("tcp"))
+    monkeypatch.setattr(runner.time, "sleep", lambda *_args: calls.append("poll"))
+
+    runner._run_learners_with_restart([syncer, learner], syncer, args, tmp_path)
+
+    assert calls[:5] == ["shutdown", "force", "start", "ready", "tcp"]

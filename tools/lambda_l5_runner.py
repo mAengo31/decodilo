@@ -899,7 +899,21 @@ def _run_learners_with_restart(
             if restart_round is None and current_round >= args.restart_after_round:
                 restart_round = current_round
                 try:
-                    _shutdown_syncer(syncer, args)
+                    graceful_shutdown_error = None
+                    try:
+                        _shutdown_syncer(syncer, args)
+                    except Exception as exc:  # noqa: BLE001 - fall back to checkpoint recovery
+                        graceful_shutdown_error = str(exc)
+                        print(
+                            json.dumps(
+                                {
+                                    "event": "syncer_graceful_shutdown_failed",
+                                    "error": graceful_shutdown_error,
+                                }
+                            ),
+                            flush=True,
+                        )
+                        _force_stop_syncer(syncer, args)
                     _start_syncer(syncer, args, recover=True)
                     _wait_remote_file(
                         syncer.ip,
@@ -947,6 +961,9 @@ def _run_learners_with_restart(
                 0 if restart_round is None else max(final_round - restart_round, 0)
             ),
             "restart_error": restart_error,
+            "graceful_shutdown_error": (
+                graceful_shutdown_error if 'graceful_shutdown_error' in locals() else None
+            ),
             "late_learner_failures_ignored": bool(
                 'failures' in locals() and failures and recovery_sufficient
             ),
@@ -1013,6 +1030,21 @@ def _run_learners(owned: list[Instance], syncer_ip: str, args: argparse.Namespac
             failures.append((learner_id, code))
     if failures:
         raise RuntimeError(f"learner failures: {failures}")
+
+
+
+def _force_stop_syncer(syncer: Instance, args: argparse.Namespace) -> None:
+    pattern = "decodilo.cli syncer serve"
+    command = (
+        "pkill -TERM -f "
+        + shlex.quote(pattern)
+        + " || true; "
+        "sleep 2; "
+        "pkill -KILL -f "
+        + shlex.quote(pattern)
+        + " || true"
+    )
+    _ssh(syncer.ip, args.ssh_private_key, command, timeout=30)
 
 
 def _shutdown_syncer(syncer: Instance, args: argparse.Namespace) -> None:

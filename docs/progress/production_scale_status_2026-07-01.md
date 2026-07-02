@@ -456,6 +456,27 @@ reason=syncer shutdown/restart failed under 85k S3 artifact pressure; learners l
 
 Interpretation: 85k+ model scale is still blocked. The failure is now specifically in restart/orchestration under larger S3 artifact pressure, not in basic S3 object storage or small-model training.
 
+## Latest Lambda S3-backed 85k force-restart attempt
+
+Run ID: `lambda-s3-85k-force-restart-20260702064002`
+Evidence root: `docs/evidence/lambda_s3_gpu_85k_model/lambda-s3-85k-force-restart-20260702064002/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+model_parameters=85504
+remote_instance_count=5
+final_instance_count=0
+status=failed
+initial_failure=graceful syncer shutdown timed out under 85k S3 artifact pressure
+fallback_attempted=force stop remote syncer process
+fallback_result=failed because remote SSH control command returned 255
+learner_result=all learners lost direct TCP syncer connection before recovery acceptance
+```
+
+Interpretation: 85k scale now requires a stronger control plane for restart/recovery. The current SSH-based direct-TCP runner is not reliable enough to orchestrate syncer restarts under this artifact pressure. Next work should move restart orchestration into the Pathway scheduler/control plane or avoid mid-run syncer restart for the 85k proof while separately proving recovery.
+
 ## Safety flags
 
 ```text
