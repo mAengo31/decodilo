@@ -1,0 +1,41 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 219, in _request
+    return await self.client.request(envelope)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/tcp_client.py", line 55, in request
+    return await read_envelope(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/transport/jsonl.py", line 59, in read_envelope
+    raise TransportTimeoutError("transport stream closed")
+decodilo.transport.errors.TransportTimeoutError: transport stream closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28386, in <module>
+    raise SystemExit(main())
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28382, in main
+    return int(args.func(args))
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 17768, in _cmd_learner_run
+    return learner_worker.main(args)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 801, in main
+    return asyncio.run(async_main(args))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 797, in async_main
+    return await worker.run()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 210, in run
+    await self._training_loop()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 347, in _training_loop
+    await self._heartbeat()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 400, in _heartbeat
+    response = await self._request(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 223, in _request
+    await self._reconnect()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 248, in _reconnect
+    raise RuntimeError(f"learner reconnect failed: {last_error}")
+RuntimeError: learner reconnect failed: [Errno 111] Connect call failed ('150.136.67.71', 28080)

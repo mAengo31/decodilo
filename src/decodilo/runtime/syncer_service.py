@@ -358,7 +358,7 @@ class SyncerService:
             if envelope.message_type == MessageType.LEARNER_SHUTDOWN:
                 return self._handle_learner_shutdown(envelope)
             if envelope.message_type == MessageType.SYNCER_SHUTDOWN:
-                return self._handle_syncer_shutdown(envelope)
+                return await self._handle_syncer_shutdown(envelope)
         except Exception as exc:  # noqa: BLE001 - returned to local caller as protocol error
             return self._envelope(
                 message_type=MessageType.ERROR,
@@ -913,11 +913,15 @@ class SyncerService:
             "vector_payload_location": "global_update_payload_or_artifacts",
         }
 
-    def _handle_syncer_shutdown(self, envelope: TransportEnvelope) -> TransportEnvelope:
+    async def _handle_syncer_shutdown(self, envelope: TransportEnvelope) -> TransportEnvelope:
         self._write_syncer_checkpoint()
         self.store.write_checkpoint(checkpoint_id="final", logical_time=self._time())
         payload = self.build_summary()
-        asyncio.get_running_loop().call_soon(asyncio.create_task, self.stop())
+        if envelope.payload.get("immediate_server_close") is True:
+            self.stop_event.set()
+            await self.server.close()
+        else:
+            asyncio.get_running_loop().call_soon(asyncio.create_task, self.stop())
         return self._envelope(
             message_type=MessageType.SYNCER_SHUTDOWN,
             recipient_id=envelope.sender_id,

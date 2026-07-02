@@ -1,0 +1,9 @@
+{
+  "error": "task stop_fence failed after 1 attempts: syncer process still running after force-stop; force_stop_error=force_stop_syncer failed after 1 attempts: Command '['ssh', '-i', '/Users/edward/.ssh/diloco_lambda', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=10', 'ubuntu@150.136.218.206', \"pkill -TERM -f 'decodilo.cli syncer serve' || true; sleep 2; pkill -KILL -f 'decodilo.cli syncer serve' || true\"]' returned non-zero exit status 255.",
+  "failed_task": "stop_fence",
+  "launch_allowed": false,
+  "launch_ready": false,
+  "production_scale_ready": false,
+  "restart_round": 2,
+  "status": "failed"
+}

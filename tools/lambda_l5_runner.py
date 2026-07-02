@@ -24,6 +24,12 @@ from decodilo.lambda_cloud.l5_restart_recovery_direct_tcp_evidence_package impor
     build_lambda_l5_restart_recovery_direct_tcp_evidence_package_from_dir,
     write_lambda_l5_restart_recovery_direct_tcp_evidence_package,
 )
+from decodilo.operation.pathway_scheduler import (
+    PathwayResourcePolicy,
+    PathwayScheduler,
+    PathwaySchedulerError,
+    PathwayTask,
+)
 
 API_BASE = "https://cloud.lambdalabs.com/api/v1"
 REMOTE_SRC = "/home/ubuntu/diloco_l5_src"
@@ -125,6 +131,18 @@ def main() -> int:
         type=float,
         default=300.0,
         help="Maximum wall-clock time to wait for learner SSH commands",
+    )
+    parser.add_argument(
+        "--syncer-stop-timeout-seconds",
+        type=float,
+        default=90.0,
+        help="Maximum wall-clock time to wait for syncer process stop during restart",
+    )
+    parser.add_argument(
+        "--restart-shutdown-request-timeout-seconds",
+        type=float,
+        default=20.0,
+        help="Single shutdown RPC timeout for Pathway-managed restart",
     )
     parser.add_argument("--skip-launch", action="store_true", help="Only print planned commands")
     args = parser.parse_args()
@@ -938,29 +956,16 @@ def _run_learners_with_restart(
             if restart_round is None and current_round >= args.restart_after_round:
                 restart_round = current_round
                 try:
-                    graceful_shutdown_error = None
-                    try:
-                        _shutdown_syncer(syncer, args)
-                    except Exception as exc:  # noqa: BLE001 - fall back to checkpoint recovery
-                        graceful_shutdown_error = str(exc)
-                        print(
-                            json.dumps(
-                                {
-                                    "event": "syncer_graceful_shutdown_failed",
-                                    "error": graceful_shutdown_error,
-                                }
-                            ),
-                            flush=True,
-                        )
-                        _force_stop_syncer(syncer, args)
-                    _start_syncer(syncer, args, recover=True)
-                    _wait_remote_file(
-                        syncer.ip,
-                        args.ssh_private_key,
-                        f"{REMOTE_RUN}/syncer_ready.json",
+                    recovered = _pathway_restart_syncer(
+                        owned,
+                        syncer,
+                        args,
+                        evidence_dir,
+                        restart_round=restart_round,
                     )
-                    _wait_direct_tcp(owned, syncer.ip, args, evidence_dir)
-                    recovered = _remote_committed_rounds(syncer, args) >= restart_round
+                    if not recovered:
+                        restart_error = "pathway restart recovery fence not satisfied"
+                        break
                 except Exception as exc:  # noqa: BLE001 - record restart failure
                     restart_error = str(exc)
                     break
@@ -1000,9 +1005,7 @@ def _run_learners_with_restart(
                 0 if restart_round is None else max(final_round - restart_round, 0)
             ),
             "restart_error": restart_error,
-            "graceful_shutdown_error": (
-                graceful_shutdown_error if 'graceful_shutdown_error' in locals() else None
-            ),
+            "graceful_shutdown_error": None,
             "late_learner_failures_ignored": bool(
                 'failures' in locals() and failures and recovery_sufficient
             ),
@@ -1088,6 +1091,201 @@ def _restart_recovery_sufficient(
     return bool(recovered and restart_round is not None and final_round > restart_round)
 
 
+def _pathway_restart_syncer(
+    owned: list[Instance],
+    syncer: Instance,
+    args: argparse.Namespace,
+    evidence_dir: Path,
+    *,
+    restart_round: int,
+) -> bool:
+    """Run a fenced Pathway-style syncer restart sequence.
+
+    This is intentionally an operator-side control graph, not full Google
+    Pathways. It makes the fragile restart path explicit and auditable before
+    we retry larger S3-backed model recovery experiments.
+    """
+
+    scheduler = PathwayScheduler(resource_policy=PathwayResourcePolicy(local_only=True))
+    scheduler.add_task(
+        PathwayTask(
+            task_id="checkpoint_fence",
+            op="wait_syncer_checkpoint_at_restart_round",
+            produces=["checkpoint_round"],
+            run=lambda _ctx: {
+                "checkpoint_round": _wait_remote_checkpoint_at_least(
+                    syncer,
+                    args,
+                    restart_round,
+                )
+            },
+        )
+    )
+
+    def shutdown_task(_ctx):
+        try:
+            _request_syncer_shutdown_for_restart(syncer, args)
+            return {"shutdown_error": None}
+        except Exception as exc:  # noqa: BLE001 - stop fence/force-stop handles this
+            print(
+                json.dumps(
+                    {
+                        "event": "syncer_graceful_shutdown_failed",
+                        "error": str(exc),
+                    }
+                ),
+                flush=True,
+            )
+            return {"shutdown_error": str(exc)}
+
+    scheduler.add_task(
+        PathwayTask(
+            task_id="shutdown_syncer",
+            op="request_syncer_shutdown",
+            depends_on=["checkpoint_fence"],
+            consumes=["checkpoint_round"],
+            produces=["shutdown_error"],
+            run=shutdown_task,
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="stop_fence",
+            op="wait_syncer_stopped_or_force",
+            depends_on=["shutdown_syncer"],
+            consumes=["shutdown_error"],
+            produces=["stop_result"],
+            run=lambda ctx: {
+                "stop_result": _wait_syncer_stopped_or_force(
+                    syncer,
+                    args,
+                    ctx.resolve("shutdown_error"),
+                )
+            },
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="start_recovered_syncer",
+            op="start_syncer_recover_from_checkpoint",
+            depends_on=["stop_fence"],
+            consumes=["stop_result"],
+            produces=["recover_start"],
+            run=lambda _ctx: (
+                _start_syncer(syncer, args, recover=True) or {"recover_start": True}
+            ),
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="ready_fence",
+            op="wait_recovered_syncer_ready_file",
+            depends_on=["start_recovered_syncer"],
+            consumes=["recover_start"],
+            produces=["ready_file"],
+            run=lambda _ctx: (
+                _wait_remote_file(
+                    syncer.ip,
+                    args.ssh_private_key,
+                    f"{REMOTE_RUN}/syncer_ready.json",
+                )
+                or {"ready_file": f"{REMOTE_RUN}/syncer_ready.json"}
+            ),
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="direct_tcp_fence",
+            op="wait_learners_can_reach_recovered_syncer",
+            depends_on=["ready_fence"],
+            consumes=["ready_file"],
+            produces=["direct_tcp_ready"],
+            run=lambda _ctx: (
+                _wait_direct_tcp(owned, syncer.ip, args, evidence_dir)
+                or {"direct_tcp_ready": True}
+            ),
+        )
+    )
+    scheduler.add_task(
+        PathwayTask(
+            task_id="post_restart_round_fence",
+            op="wait_post_restart_committed_round",
+            depends_on=["direct_tcp_fence"],
+            consumes=["direct_tcp_ready"],
+            produces=["post_restart_round"],
+            run=lambda _ctx: {
+                "post_restart_round": _wait_post_restart_round(
+                    syncer,
+                    args,
+                    restart_round,
+                )
+            },
+        )
+    )
+
+    try:
+        result = scheduler.run()
+    except PathwaySchedulerError as exc:
+        _write_pathway_restart_audit(
+            evidence_dir,
+            {
+                "status": "failed",
+                "restart_round": restart_round,
+                "error": str(exc),
+                "failed_task": _failed_pathway_task_from_error(str(exc)),
+                "launch_ready": False,
+                "launch_allowed": False,
+                "production_scale_ready": False,
+            },
+        )
+        return False
+
+    _write_pathway_restart_audit(
+        evidence_dir,
+        {
+            **result.to_dict(),
+            "restart_round": restart_round,
+            "pathway_restart_orchestration": True,
+        },
+    )
+    post_restart_round = result.artifacts["post_restart_round"].value
+    return int(post_restart_round) > restart_round
+
+
+def _write_pathway_restart_audit(evidence_dir: Path, payload: dict[str, Any]) -> None:
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "pathway_restart_audit.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _failed_pathway_task_from_error(message: str) -> str | None:
+    if message.startswith("task "):
+        parts = message.split()
+        if len(parts) >= 2:
+            return parts[1]
+    return None
+
+
+def _wait_post_restart_round(
+    syncer: Instance,
+    args: argparse.Namespace,
+    restart_round: int,
+) -> int:
+    deadline = time.time() + float(getattr(args, "learner_reconnect_timeout_seconds", 90.0))
+    last_round = _remote_committed_rounds(syncer, args)
+    while time.time() < deadline:
+        last_round = _remote_committed_rounds(syncer, args)
+        if last_round > restart_round:
+            return last_round
+        time.sleep(1)
+    raise TimeoutError(
+        f"post-restart round fence not satisfied: last_round={last_round}, "
+        f"restart_round={restart_round}"
+    )
+
+
 def _remote_committed_rounds(syncer: Instance, args: argparse.Namespace) -> int:
     command = (
         f"grep -c '\"event_type\":\"sync_round_committed\"' "
@@ -1145,6 +1343,103 @@ def _force_stop_syncer(syncer: Instance, args: argparse.Namespace) -> None:
         + " || true"
     )
     _ssh(syncer.ip, args.ssh_private_key, command, timeout=30)
+
+
+def _wait_remote_checkpoint_at_least(
+    syncer: Instance,
+    args: argparse.Namespace,
+    target_round: int,
+) -> int:
+    script = (
+        "python3 - <<'PY'\n"
+        "import json\n"
+        "from pathlib import Path\n"
+        f"target={int(target_round)}\n"
+        f"path=Path({str(REMOTE_RUN + '/events.jsonl')!r})\n"
+        "latest=0\n"
+        "if path.exists():\n"
+        "    for line in path.read_text(encoding='utf-8').splitlines():\n"
+        "        if not line:\n"
+        "            continue\n"
+        "        event=json.loads(line)\n"
+        "        checkpoint_events={'syncer_checkpoint_written','checkpoint_written'}\n"
+        "        if event.get('event_type') not in checkpoint_events:\n"
+        "            continue\n"
+        "        payload=event.get('payload') or {}\n"
+        "        latest=max(latest, int(payload.get('global_version') or 0))\n"
+        "print(latest)\n"
+        "raise SystemExit(0 if latest >= target else 1)\n"
+        "PY\n"
+    )
+    deadline = time.time() + 180
+    last_round = 0
+    last_error: str | None = None
+    while time.time() < deadline:
+        try:
+            result = _ssh(syncer.ip, args.ssh_private_key, script, timeout=15)
+            last_round = int(result.stdout.strip().splitlines()[-1])
+            if last_round >= target_round:
+                return last_round
+        except Exception as exc:  # noqa: BLE001 - checkpoint can lag commit briefly
+            last_error = str(exc)
+        time.sleep(1)
+    raise TimeoutError(
+        f"checkpoint fence not satisfied: latest={last_round}, "
+        f"target={target_round}, last_error={last_error}"
+    )
+
+
+def _wait_syncer_stopped_or_force(
+    syncer: Instance,
+    args: argparse.Namespace,
+    graceful_shutdown_error: str | None,
+) -> dict[str, Any]:
+    deadline = time.time() + float(getattr(args, "syncer_stop_timeout_seconds", 90.0))
+    while time.time() < deadline:
+        if not _syncer_process_running(syncer, args):
+            return {
+                "stopped": True,
+                "forced": False,
+                "graceful_shutdown_error": graceful_shutdown_error,
+            }
+        time.sleep(1)
+    force_stop_error: str | None = None
+    try:
+        _retry_operation(
+            "force_stop_syncer",
+            lambda: _force_stop_syncer(syncer, args),
+            attempts=1,
+            delay_seconds=5.0,
+        )
+    except RuntimeError as exc:
+        force_stop_error = str(exc)
+    deadline = time.time() + 30
+    while time.time() < deadline:
+        if not _syncer_process_running(syncer, args):
+            return {
+                "stopped": True,
+                "forced": True,
+                "graceful_shutdown_error": graceful_shutdown_error,
+                "force_stop_error": force_stop_error,
+            }
+        time.sleep(1)
+    raise TimeoutError(
+        f"syncer process still running after force-stop; force_stop_error={force_stop_error}"
+    )
+
+
+def _syncer_process_running(syncer: Instance, args: argparse.Namespace) -> bool:
+    pattern = "decodilo.cli syncer serve"
+    try:
+        _ssh(
+            syncer.ip,
+            args.ssh_private_key,
+            "pgrep -f " + shlex.quote(pattern) + " >/dev/null",
+            timeout=15,
+        )
+        return True
+    except Exception:  # noqa: BLE001 - pgrep exit 1 means no process
+        return False
 
 
 def _shutdown_syncer_after_experiment(
@@ -1225,6 +1520,39 @@ asyncio.run(main())
         delay_seconds=5.0,
     )
     _wait_for_background_procs(timeout=30)
+
+
+def _request_syncer_shutdown_for_restart(syncer: Instance, args: argparse.Namespace) -> None:
+    timeout_seconds = float(getattr(args, "restart_shutdown_request_timeout_seconds", 20.0))
+    script = f"""
+import asyncio, json
+from decodilo.transport.tcp_client import JsonlTcpClient
+from decodilo.transport.envelope import MessageType, make_envelope
+async def main():
+    async with JsonlTcpClient(
+        host='127.0.0.1',
+        port={args.port},
+        timeout_seconds={timeout_seconds!r},
+    ) as client:
+        envelope = make_envelope(
+            run_id={args.run_id!r},
+            sender_id='pathway-restart-supervisor',
+            recipient_id='syncer',
+            message_type=MessageType.SYNCER_SHUTDOWN,
+            payload={{'reason': 'pathway_restart_recovery', 'immediate_server_close': True}},
+        )
+        response = await client.request(envelope)
+        print(json.dumps(response.payload, sort_keys=True))
+asyncio.run(main())
+"""
+    remote = (
+        f"cd {REMOTE_SRC} && PYTHONPATH=src python3 - <<'PY' > "
+        f"{REMOTE_RUN}/syncer_restart_shutdown_response.json.tmp\n"
+        + script
+        + f"PY\nmv {REMOTE_RUN}/syncer_restart_shutdown_response.json.tmp "
+        f"{REMOTE_RUN}/syncer_restart_shutdown_response.json\n"
+    )
+    _ssh(syncer.ip, args.ssh_private_key, remote, timeout=int(timeout_seconds) + 15)
 
 
 def _wait_remote_file(ip: str, key: Path, path: str) -> None:
