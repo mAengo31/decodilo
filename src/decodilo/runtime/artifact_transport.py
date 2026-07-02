@@ -155,6 +155,8 @@ class LocalArtifactTransport:
             "s3_compatible",
         }:
             raise InvariantViolation("unsupported artifact storage backend")
+        if artifact_ref.storage_backend == "s3_compatible":
+            self._materialize_s3_backend_mirror_if_needed(artifact_ref)
         manifest_path = self._resolve_ref_path(artifact_ref.manifest_path)
         chunk_root = self._resolve_ref_path(artifact_ref.chunk_root)
         if not manifest_path.exists() or not manifest_path.is_file():
@@ -271,6 +273,34 @@ class LocalArtifactTransport:
             ):
                 raise InvariantViolation(f"durable artifact chunk mirror mismatch {chunk_hash}")
 
+
+
+    def _materialize_s3_backend_mirror_if_needed(self, ref: ArtifactRef) -> None:
+        backend = self._require_s3_backend()
+        manifest_path = self._resolve_ref_path(ref.manifest_path)
+        chunk_root = self._resolve_ref_path(ref.chunk_root)
+        manifest_payload = ref.metadata.get("s3_compatible_manifest_ref")
+        chunk_payloads = ref.metadata.get("s3_compatible_chunk_refs")
+        if not isinstance(manifest_payload, dict) or not isinstance(chunk_payloads, list):
+            return
+        store = ChunkStore(chunk_root)
+        if not manifest_path.exists():
+            manifest_ref = self._artifact_backend_ref_from_json(manifest_payload)
+            manifest_bytes = backend.read_bytes(manifest_ref)
+            manifest_path.parent.mkdir(parents=True, exist_ok=True)
+            manifest_path.write_bytes(manifest_bytes)
+        for chunk_payload in chunk_payloads:
+            if not isinstance(chunk_payload, dict):
+                raise InvariantViolation("S3-compatible artifact chunk ref metadata is invalid")
+            chunk_ref = self._artifact_backend_ref_from_json(chunk_payload)
+            chunk_hash = str(chunk_ref.artifact_id).rsplit(":chunk:", 1)[-1]
+            if not store.cas.path_for_hash(chunk_hash).is_file():
+                data = backend.read_bytes(chunk_ref)
+                written = store.cas.put_bytes(data)
+                if written != chunk_hash:
+                    raise InvariantViolation(
+                        f"S3-compatible materialized chunk hash mismatch {chunk_hash}"
+                    )
 
     def _mirror_to_s3_backend(
         self,

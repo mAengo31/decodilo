@@ -13,10 +13,25 @@ from decodilo.errors import InvariantViolation
 from decodilo.protocol.messages import CheckpointRecord, MergeDecision
 from decodilo.sim.fake_model import split_vector
 from decodilo.syncer.event_log import EventLog, EventType
-from decodilo.syncer.outer_optimizer import OuterOptimizer, SGDOuterOptimizer, outer_optimizer_name
+from decodilo.syncer.outer_optimizer import (
+    OuterOptimizer,
+    SGDOuterOptimizer,
+    outer_optimizer_name,
+    outer_optimizer_state,
+)
 from decodilo.syncer.quorum import PendingUpdate, QuorumPolicy, QuorumTracker
 from decodilo.syncer.streaming_merge import streaming_token_weighted_merge
 from decodilo.syncer.token_weighted_merge import LearnerDelta, token_weighted_merge
+
+
+def _restore_outer_optimizer_state(optimizer: OuterOptimizer, state: dict[str, object]) -> None:
+    if hasattr(optimizer, "step"):
+        optimizer.step = int(state.get("step", 0))  # type: ignore[attr-defined]
+    if hasattr(optimizer, "velocity"):
+        velocity = state.get("velocity", [])
+        optimizer.velocity = (
+            None if not velocity else np.asarray(velocity, dtype=np.float64)
+        )  # type: ignore[attr-defined]
 
 
 @dataclass(frozen=True)
@@ -254,6 +269,7 @@ class FragmentStore:
             raise InvariantViolation("sync round cannot commit below quorum")
 
         round_id = decision.round_id or f"round-{self.global_version + 1:08d}"
+        optimizer_state_before_commit = outer_optimizer_state(self.optimizer)
         optimizer_name = outer_optimizer_name(self.optimizer)
         outer_momentum = getattr(self.optimizer, "momentum", None)
 
@@ -405,21 +421,25 @@ class FragmentStore:
             self.event_payload_mode == "chunked"
             and self.global_vector_artifact_writer is not None
         ):
-            old_ref = self.global_vector_artifact_writer(
-                "old_global_vector",
-                old_vector,
-                previous_version,
-            )
-            delta_ref = self.global_vector_artifact_writer(
-                "weighted_delta",
-                merge_result.weighted_delta,
-                next_version,
-            )
-            new_ref = self.global_vector_artifact_writer(
-                "new_global_vector",
-                merge_result.new_global_vector,
-                next_version,
-            )
+            try:
+                old_ref = self.global_vector_artifact_writer(
+                    "old_global_vector",
+                    old_vector,
+                    previous_version,
+                )
+                delta_ref = self.global_vector_artifact_writer(
+                    "weighted_delta",
+                    merge_result.weighted_delta,
+                    next_version,
+                )
+                new_ref = self.global_vector_artifact_writer(
+                    "new_global_vector",
+                    merge_result.new_global_vector,
+                    next_version,
+                )
+            except Exception:
+                _restore_outer_optimizer_state(self.optimizer, optimizer_state_before_commit)
+                raise
             commit_payload = {
                 "round_id": round_id,
                 "previous_global_version": previous_version,

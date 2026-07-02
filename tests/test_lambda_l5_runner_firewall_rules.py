@@ -340,3 +340,71 @@ def test_l5_runner_uses_configurable_learner_run_timeout(monkeypatch, tmp_path) 
     runner._run_learners_with_restart([syncer, learner], syncer, args, tmp_path)
 
     assert waits == [900]
+
+
+def test_l5_runner_commands_include_s3_runtime_args_when_enabled() -> None:
+    runner = _load_runner()
+    args = type(
+        "Args",
+        (),
+        {
+            "port": 28080,
+            "run_id": "lambda-l5-s3",
+            "trainer_type": "torch_causal_lm",
+            "trainer_config_json": '{"device":"cuda","optimizer":"adamw"}',
+            "vector_dim": 1234,
+            "learners": 2,
+            "steps": 8,
+            "min_quorum": 2,
+            "local_steps_per_sync": 1,
+            "fragments": 1,
+            "payload_storage_mode": "chunked",
+            "checkpoint_storage_mode": "chunked",
+            "merge_mode": "streaming_chunked",
+            "global_update_storage_mode": "chunked",
+            "chunk_size_mb": 1,
+            "inline_payload_max_bytes": 1024,
+            "artifact_transfer_mode": "object_store",
+            "artifact_storage_backend": "s3_compatible",
+            "s3_endpoint_url": "https://object.example.invalid",
+            "s3_bucket": "bucket",
+            "s3_prefix": "runs/test",
+            "s3_region": "us-east-1",
+            "s3_access_key_ref": "AWS_ACCESS_KEY_ID",
+            "s3_secret_key_ref": "AWS_SECRET_ACCESS_KEY",
+            "s3_session_token_ref": None,
+            "learner_reconnect_timeout_seconds": 90.0,
+        },
+    )()
+
+    commands = [
+        runner._syncer_command(args),
+        runner._learner_command(args, "learner-0", "127.0.0.1"),
+    ]
+    for command in commands:
+        assert "--artifact-storage-backend s3_compatible" in command
+        assert "--s3-endpoint-url https://object.example.invalid" in command
+        assert "--s3-bucket bucket" in command
+        assert "--s3-prefix runs/test" in command
+        assert "--s3-access-key-ref AWS_ACCESS_KEY_ID" in command
+        assert "--s3-secret-key-ref AWS_SECRET_ACCESS_KEY" in command
+
+
+def test_l5_s3_runtime_env_prefix_is_used_without_secret_values() -> None:
+    runner = _load_runner()
+    args = type("Args", (), {"artifact_storage_backend": "s3_compatible"})()
+
+    prefix = runner._remote_env_prefix(args)
+
+    assert "s3_runtime_env.sh" in prefix
+    assert "AWS_SECRET_ACCESS_KEY=" not in prefix
+
+
+def test_l5_remote_dependency_install_includes_boto3_for_s3_backend() -> None:
+    runner = _load_runner()
+    args = type("Args", (), {"artifact_storage_backend": "s3_compatible"})()
+
+    command = runner._remote_dependency_install_command(args)
+
+    assert "pydantic" in command
+    assert "boto3" in command

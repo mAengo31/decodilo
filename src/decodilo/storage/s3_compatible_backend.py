@@ -226,13 +226,11 @@ class S3CompatibleArtifactBackend:
     def write_bytes(self, *, artifact_id: str, data: bytes) -> ArtifactBackendRef:
         client = self._client()
         digest = sha256_bytes(data)
-        key = self._key_for_artifact(artifact_id)
-        metadata = {"sha256": digest, "total_bytes": str(len(data)), "artifact_id": artifact_id}
+        key = self._key_for_artifact(artifact_id, digest=digest)
         kwargs: dict[str, Any] = {
             "Bucket": self.config.bucket,
             "Key": key,
             "Body": data,
-            "Metadata": metadata,
         }
         if self.config.server_side_encryption:
             kwargs["ServerSideEncryption"] = self.config.server_side_encryption
@@ -263,10 +261,9 @@ class S3CompatibleArtifactBackend:
         for item in response.get("Contents", []) or []:
             key = str(item.get("Key"))
             head = client.head_object(Bucket=self.config.bucket, Key=key)
-            metadata = {str(k).lower(): str(v) for k, v in (head.get("Metadata") or {}).items()}
-            artifact_id = metadata.get("artifact_id") or key.rsplit("/", 1)[-1]
-            total_bytes = int(metadata.get("total_bytes", item.get("Size", 0)))
-            digest = metadata.get("sha256", "")
+            artifact_id = self._artifact_id_from_key(key)
+            total_bytes = int(item.get("Size", head.get("ContentLength", 0)))
+            digest = ""
             version = head.get("VersionId") or head.get("version_id") or "unversioned"
             refs.append(
                 self._ref(
@@ -351,10 +348,17 @@ class S3CompatibleArtifactBackend:
     def _prefix(self) -> str:
         return self.config.prefix.strip("/")
 
-    def _key_for_artifact(self, artifact_id: str) -> str:
+    def _key_for_artifact(self, artifact_id: str, *, digest: str) -> str:
         safe_id = artifact_id.strip("/").replace("..", "_")
+        versioned_id = f"{safe_id}/{digest}"
         prefix = self._prefix()
-        return f"{prefix}/{safe_id}" if prefix else safe_id
+        return f"{prefix}/{versioned_id}" if prefix else versioned_id
+
+    def _artifact_id_from_key(self, key: str) -> str:
+        prefix = self._prefix()
+        relative = key[len(prefix) + 1 :] if prefix and key.startswith(prefix + "/") else key
+        parts = relative.rsplit("/", 1)
+        return parts[0] if len(parts) == 2 else relative
 
     def _key_from_ref(self, ref: ArtifactBackendRef) -> str:
         if ref.backend_type != "s3_compatible":

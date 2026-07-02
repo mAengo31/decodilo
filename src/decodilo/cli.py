@@ -2862,13 +2862,38 @@ _CLI_UNINJECTABLE_ARTIFACT_BACKENDS = frozenset({"s3_compatible"})
 
 def _reject_uninjectable_artifact_backend_over_cli(args: argparse.Namespace) -> None:
     backend = getattr(args, "artifact_storage_backend", "auto")
-    if backend in _CLI_UNINJECTABLE_ARTIFACT_BACKENDS:
-        raise SystemExit(
-            f"artifact-storage-backend={backend} is not supported over the CLI "
-            "subprocess boundary: it requires an explicitly injected in-process "
-            "client/backend. Use it via the in-process runtime API instead."
-        )
+    if backend not in _CLI_UNINJECTABLE_ARTIFACT_BACKENDS:
+        return
+    if _has_explicit_s3_runtime_config(args):
+        return
+    raise SystemExit(
+        f"artifact-storage-backend={backend} requires explicit S3 runtime config over "
+        "the CLI subprocess boundary: provide --s3-endpoint-url, --s3-bucket, "
+        "--s3-access-key-ref, and --s3-secret-key-ref."
+    )
 
+
+def _has_explicit_s3_runtime_config(args: argparse.Namespace) -> bool:
+    return all(
+        bool(getattr(args, name, None))
+        for name in (
+            "s3_endpoint_url",
+            "s3_bucket",
+            "s3_access_key_ref",
+            "s3_secret_key_ref",
+        )
+    )
+
+
+
+def _add_s3_runtime_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--s3-endpoint-url", default=None)
+    parser.add_argument("--s3-bucket", default=None)
+    parser.add_argument("--s3-prefix", default="decodilo-artifacts")
+    parser.add_argument("--s3-region", default=None)
+    parser.add_argument("--s3-access-key-ref", default=None)
+    parser.add_argument("--s3-secret-key-ref", default=None)
+    parser.add_argument("--s3-session-token-ref", default=None)
 
 def _cmd_local_run(args: argparse.Namespace) -> int:
     _reject_uninjectable_artifact_backend_over_cli(args)
@@ -18484,6 +18509,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     local_run.add_argument("--artifact-transfer-mode", default="bundle")
     local_run.add_argument("--artifact-storage-backend", default="auto")
+    _add_s3_runtime_args(local_run)
     local_run.add_argument("--syncer-checkpoint-interval-rounds", type=int, default=0)
     local_run.add_argument("--restart-syncer-after-round", type=int, default=None)
     local_run.add_argument("--syncer-restart-timeout-seconds", type=float, default=3.0)
@@ -28194,6 +28220,7 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--checkpoint-artifact-codec", default="json_safe")
     serve.add_argument("--artifact-transfer-mode", default="bundle")
     serve.add_argument("--artifact-storage-backend", default="auto")
+    _add_s3_runtime_args(serve)
     serve.set_defaults(func=_cmd_syncer_serve)
 
     learner = subparsers.add_parser("learner", help=argparse.SUPPRESS)
@@ -28224,6 +28251,7 @@ def build_parser() -> argparse.ArgumentParser:
     learner_run.add_argument("--checkpoint-artifact-codec", default="json_safe")
     learner_run.add_argument("--artifact-transfer-mode", default="bundle")
     learner_run.add_argument("--artifact-storage-backend", default="auto")
+    _add_s3_runtime_args(learner_run)
     learner_run.add_argument("--reconnect-timeout-seconds", type=float, default=15.0)
     learner_run.set_defaults(func=_cmd_learner_run)
 

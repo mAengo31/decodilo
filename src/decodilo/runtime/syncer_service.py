@@ -44,7 +44,10 @@ from decodilo.sim.runner import SimulationConfig, deterministic_run_id
 from decodilo.storage.checksums import sha256_file
 from decodilo.storage.chunk_store import ChunkStore
 from decodilo.storage.codec_registry import validate_artifact_codec
-from decodilo.storage.s3_compatible_backend import S3CompatibleArtifactBackend
+from decodilo.storage.s3_compatible_backend import (
+    S3CompatibleArtifactBackend,
+    S3CompatibleBackendConfig,
+)
 from decodilo.syncer.binary_streaming_merge import binary_streaming_token_weighted_merge
 from decodilo.syncer.event_log import EventLog, EventType
 from decodilo.syncer.fragment_store import FragmentStore
@@ -117,7 +120,40 @@ class SyncerServiceConfig:
     artifact_transfer_mode: str = "bundle"
     artifact_storage_backend: str = "auto"
     s3_artifact_backend: S3CompatibleArtifactBackend | None = None
+    s3_endpoint_url: str | None = None
+    s3_bucket: str | None = None
+    s3_prefix: str = "decodilo-artifacts"
+    s3_region: str | None = None
+    s3_access_key_ref: str | None = None
+    s3_secret_key_ref: str | None = None
+    s3_session_token_ref: str | None = None
 
+
+
+def _runtime_s3_backend_from_config(
+    config: SyncerServiceConfig,
+) -> S3CompatibleArtifactBackend | None:
+    if config.artifact_storage_backend != "s3_compatible":
+        return None
+    if not config.s3_endpoint_url or not config.s3_bucket:
+        return None
+    import os
+
+    from decodilo.storage.s3_runtime import create_boto3_s3_compatible_backend_from_env
+
+    return create_boto3_s3_compatible_backend_from_env(
+        S3CompatibleBackendConfig(
+            endpoint_url=config.s3_endpoint_url,
+            bucket=config.s3_bucket,
+            prefix=config.s3_prefix,
+            region=config.s3_region,
+            access_key_ref=config.s3_access_key_ref,
+            secret_key_ref=config.s3_secret_key_ref,
+            session_token_ref=config.s3_session_token_ref,
+        ),
+        environ=os.environ,
+        require_probe=True,
+    )
 
 def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> str:
     if storage_backend != "auto":
@@ -146,6 +182,7 @@ class SyncerService:
         validate_artifact_codec(config.checkpoint_artifact_codec)
         self.artifact_root = config.artifact_root or default_artifact_root(config.workdir)
         self.chunk_store_root = config.chunk_store_root or default_chunk_store_root(config.workdir)
+        s3_backend = config.s3_artifact_backend or _runtime_s3_backend_from_config(config)
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(config.workdir),
@@ -155,7 +192,7 @@ class SyncerService:
                     storage_backend=config.artifact_storage_backend,
                 ),
             ),
-            s3_backend=config.s3_artifact_backend,
+            s3_backend=s3_backend,
         )
         self.event_log = EventLog(
             self.config.workdir / "events.jsonl",
@@ -1507,6 +1544,13 @@ def build_config_from_args(args: argparse.Namespace) -> SyncerServiceConfig:
         checkpoint_artifact_codec=args.checkpoint_artifact_codec,
         artifact_transfer_mode=args.artifact_transfer_mode,
         artifact_storage_backend=args.artifact_storage_backend,
+        s3_endpoint_url=args.s3_endpoint_url,
+        s3_bucket=args.s3_bucket,
+        s3_prefix=args.s3_prefix,
+        s3_region=args.s3_region,
+        s3_access_key_ref=args.s3_access_key_ref,
+        s3_secret_key_ref=args.s3_secret_key_ref,
+        s3_session_token_ref=args.s3_session_token_ref,
     )
 
 

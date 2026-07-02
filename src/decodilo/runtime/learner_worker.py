@@ -25,7 +25,10 @@ from decodilo.runtime.remote_artifact_fetch import (
     materialize_artifact_bundle,
     materialize_artifact_chunk_upload,
 )
-from decodilo.storage.s3_compatible_backend import S3CompatibleArtifactBackend
+from decodilo.storage.s3_compatible_backend import (
+    S3CompatibleArtifactBackend,
+    S3CompatibleBackendConfig,
+)
 from decodilo.trainer.fragment_artifacts import write_fragment_artifact
 from decodilo.trainer.interface import TrainerAdapter
 from decodilo.trainer.registry import create_trainer
@@ -39,6 +42,41 @@ def _artifact_storage_backend(*, transfer_mode: str, storage_backend: str) -> st
     if storage_backend != "auto":
         return storage_backend
     return "syncer_object_store" if transfer_mode == "object_store" else "local_filesystem"
+
+
+
+def _runtime_s3_backend_from_args(
+    *,
+    artifact_storage_backend: str,
+    endpoint_url: str | None,
+    bucket: str | None,
+    prefix: str,
+    region: str | None,
+    access_key_ref: str | None,
+    secret_key_ref: str | None,
+    session_token_ref: str | None,
+) -> S3CompatibleArtifactBackend | None:
+    if artifact_storage_backend != "s3_compatible":
+        return None
+    if not endpoint_url or not bucket:
+        return None
+    import os
+
+    from decodilo.storage.s3_runtime import create_boto3_s3_compatible_backend_from_env
+
+    return create_boto3_s3_compatible_backend_from_env(
+        S3CompatibleBackendConfig(
+            endpoint_url=endpoint_url,
+            bucket=bucket,
+            prefix=prefix,
+            region=region,
+            access_key_ref=access_key_ref,
+            secret_key_ref=secret_key_ref,
+            session_token_ref=session_token_ref,
+        ),
+        environ=os.environ,
+        require_probe=True,
+    )
 
 
 class LearnerWorker:
@@ -74,6 +112,13 @@ class LearnerWorker:
         artifact_storage_backend: str = "auto",
         reconnect_timeout_seconds: float = 15.0,
         s3_artifact_backend: S3CompatibleArtifactBackend | None = None,
+        s3_endpoint_url: str | None = None,
+        s3_bucket: str | None = None,
+        s3_prefix: str = "decodilo-artifacts",
+        s3_region: str | None = None,
+        s3_access_key_ref: str | None = None,
+        s3_secret_key_ref: str | None = None,
+        s3_session_token_ref: str | None = None,
     ) -> None:
         self.learner_id = learner_id
         self.run_id = run_id
@@ -101,6 +146,16 @@ class LearnerWorker:
         self.artifact_transfer_mode = artifact_transfer_mode
         self.artifact_storage_backend = artifact_storage_backend
         self.reconnect_timeout_seconds = reconnect_timeout_seconds
+        s3_backend = s3_artifact_backend or _runtime_s3_backend_from_args(
+            artifact_storage_backend=artifact_storage_backend,
+            endpoint_url=s3_endpoint_url,
+            bucket=s3_bucket,
+            prefix=s3_prefix,
+            region=s3_region,
+            access_key_ref=s3_access_key_ref,
+            secret_key_ref=s3_secret_key_ref,
+            session_token_ref=s3_session_token_ref,
+        )
         self.artifact_transport = LocalArtifactTransport(
             policy=ArtifactTransportPolicy(
                 workdir=str(workdir),
@@ -110,7 +165,7 @@ class LearnerWorker:
                     storage_backend=artifact_storage_backend,
                 ),
             ),
-            s3_backend=s3_artifact_backend,
+            s3_backend=s3_backend,
         )
         self.log_path = workdir / f"{learner_id}.log"
         self.checkpoint_path = workdir / f"{learner_id}.checkpoint.json"
@@ -731,6 +786,13 @@ async def async_main(args: argparse.Namespace) -> int:
         artifact_transfer_mode=args.artifact_transfer_mode,
         artifact_storage_backend=args.artifact_storage_backend,
         reconnect_timeout_seconds=args.reconnect_timeout_seconds,
+        s3_endpoint_url=args.s3_endpoint_url,
+        s3_bucket=args.s3_bucket,
+        s3_prefix=args.s3_prefix,
+        s3_region=args.s3_region,
+        s3_access_key_ref=args.s3_access_key_ref,
+        s3_secret_key_ref=args.s3_secret_key_ref,
+        s3_session_token_ref=args.s3_session_token_ref,
     )
     return await worker.run()
 

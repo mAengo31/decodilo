@@ -66,7 +66,7 @@ def test_local_run_rejects_s3_compatible_backend_cleanly(tmp_path: Path) -> None
     assert completed.returncode != 0
     combined = completed.stdout + completed.stderr
     assert "s3_compatible" in combined
-    assert "explicitly injected" in combined or "not supported over the CLI" in combined
+    assert "explicit" in combined or "not supported over the CLI" in combined
     assert "syncer shutdown failed" not in combined
     assert "Traceback (most recent call last)" not in combined
 
@@ -125,3 +125,49 @@ def test_learner_run_rejects_s3_compatible_backend_cleanly(tmp_path: Path) -> No
     combined = completed.stdout + completed.stderr
     assert "s3_compatible" in combined
     assert "Traceback (most recent call last)" not in combined
+
+
+def test_local_run_accepts_s3_backend_when_explicit_runtime_config_is_present(
+    tmp_path: Path,
+) -> None:
+    completed = _run_cli(
+        [
+            "local",
+            "run",
+            "--learners",
+            "2",
+            "--steps",
+            "4",
+            "--min-quorum",
+            "1",
+            "--workdir",
+            str(tmp_path),
+            "--report-json",
+            str(tmp_path / "report.json"),
+            "--payload-storage-mode",
+            "chunked",
+            "--global-update-storage-mode",
+            "chunked",
+            "--checkpoint-storage-mode",
+            "chunked",
+            "--merge-mode",
+            "streaming_chunked",
+            "--artifact-transfer-mode",
+            "object_store",
+            "--artifact-storage-backend",
+            "s3_compatible",
+            "--s3-endpoint-url",
+            "https://object.example.invalid",
+            "--s3-bucket",
+            "bucket",
+            "--s3-access-key-ref",
+            "AWS_ACCESS_KEY_ID",
+            "--s3-secret-key-ref",
+            "AWS_SECRET_ACCESS_KEY",
+        ]
+    )
+
+    assert completed.returncode != 0
+    combined = completed.stdout + completed.stderr
+    assert "not supported over the CLI" not in combined
+    assert "s3_compatible" in combined or "S3" in combined

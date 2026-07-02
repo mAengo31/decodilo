@@ -1,0 +1,2 @@
+{"event_type": "starting", "learner_id": "learner-3", "payload": {}}
+{"event_type": "registered", "learner_id": "learner-3", "payload": {"global_version": 0, "reconnected": false, "slow_factor": 1.0, "trainer_type": "torch_causal_lm"}}

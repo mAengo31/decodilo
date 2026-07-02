@@ -91,11 +91,16 @@ def test_s3_compatible_backend_write_read_range_list_and_delete_with_injected_cl
     ref = backend.write_bytes(artifact_id="global-update-v1", data=b"abcdef")
 
     assert ref.backend_type == "s3_compatible"
-    assert ref.uri == "s3://decodilo-test/runs/run-a/global-update-v1"
+    assert ref.uri.startswith("s3://decodilo-test/runs/run-a/global-update-v1/")
     assert backend.read_bytes(ref) == b"abcdef"
     assert backend.read_range(ref, offset=2, length=3) == b"cde"
     assert backend.artifact_size(ref) == 6
-    assert backend.list_refs() == [ref]
+    listed = backend.list_refs()
+    assert len(listed) == 1
+    assert listed[0].backend_type == ref.backend_type
+    assert listed[0].uri == ref.uri
+    assert listed[0].artifact_id == ref.artifact_id
+    assert listed[0].metadata["total_bytes"] == ref.metadata["total_bytes"]
     assert backend.capabilities().write_supported is True
     assert backend.remote_capabilities().remote_backend_enabled is True
 

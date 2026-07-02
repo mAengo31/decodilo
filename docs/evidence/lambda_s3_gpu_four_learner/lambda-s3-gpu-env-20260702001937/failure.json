@@ -1,0 +1,3 @@
+{
+  "error": "remote file not ready: /home/ubuntu/lambda_l5_run/syncer_ready.json; diagnostic=total 16\ndrwxrwxr-x  2 ubuntu ubuntu 4096 Jul  2 00:26 .\ndrwxr-x--- 10 ubuntu ubuntu 4096 Jul  2 00:24 ..\n-rw-------  1 ubuntu ubuntu  116 Jul  2 00:24 s3_runtime_env.sh\n-rw-rw-r--  1 ubuntu ubuntu 2082 Jul  2 00:26 syncer.initial.stderr\n-rw-rw-r--  1 ubuntu ubuntu    0 Jul  2 00:26 syncer.initial.stdout\n---stdout---\n---stderr---\n---ps---\n"
+}

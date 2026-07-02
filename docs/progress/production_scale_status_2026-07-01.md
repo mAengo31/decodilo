@@ -305,6 +305,44 @@ ruff=passed
 
 Current blocker remains external object storage: no Lambda filesystem/S3-compatible bucket is visible and no local object-store provider config is present.
 
+## Latest Lambda S3-backed artifact experiment — 4 learners
+
+Run ID: `lambda-s3-gpu-ca-20260702013716`
+Evidence root: `docs/evidence/lambda_s3_gpu_four_learner/lambda-s3-gpu-ca-20260702013716/`
+
+Result:
+
+```text
+artifact_storage_backend=s3_compatible
+artifact_transfer_mode=object_store
+remote_instance_count=5
+remote_process_roles=syncer + learner-0..learner-3
+committed_sync_rounds=4
+accepted_updates=12
+useful_tokens_accepted=512
+inner_optimizer_semantics=adamw
+outer_optimizer_semantics=nesterov
+pseudo_gradient_numeric_check_passed=true
+restart_recovered=true
+direct_tcp_probe_passed=true
+firewall_rules_restored=true
+final_instance_count=0
+lambda_l5_restart_recovery_direct_tcp_passed=true
+production_scale_ready=false
+pathway_operation_layer_ready=false
+billable_action_performed=true
+```
+
+This is the first successful live Lambda GPU run in the repo that uses the S3-compatible artifact backend. It required several fixes discovered by earlier failed attempts:
+
+- subprocess-side S3 runtime config and explicit remote credential environment file
+- boto3 installation for S3-enabled remote nodes
+- replay/evidence readers that can resolve S3-compatible artifact refs
+- content-addressed S3 object keys to avoid overwriting repeated artifact IDs
+- rollback of Nesterov optimizer state when chunked artifact commit writing fails before a round is committed
+
+The run is still not production-scale: it is a 4-learner proof, not an 8+ learner S3 run, not 85k+ model scale, and not a full Pathway-style scheduler.
+
 ## Safety flags
 
 ```text

@@ -1,0 +1,52 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/artifact_transport.py", line 345, in _validate_s3_backend_mirror
+    manifest_bytes = backend.read_bytes(manifest_ref)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/storage/s3_compatible_backend.py", line 254, in read_bytes
+    raise ValueError("S3-compatible object checksum mismatch")
+ValueError: S3-compatible object checksum mismatch
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 674, in _apply_update_ref_to_vector
+    return apply_update_ref_to_vector(ref=ref, transport=self.artifact_transport)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/chunked_update_delivery.py", line 16, in apply_update_ref_to_vector
+    return read_global_vector_artifact(ref=ref, transport=transport)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/syncer/global_state_store.py", line 106, in read_global_vector_artifact
+    manifest = transport.validate_ref(ref)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/artifact_transport.py", line 183, in validate_ref
+    self._validate_s3_backend_mirror(artifact_ref, manifest, chunk_root)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/artifact_transport.py", line 347, in _validate_s3_backend_mirror
+    raise InvariantViolation("S3-compatible artifact manifest mirror mismatch") from exc
+decodilo.errors.InvariantViolation: S3-compatible artifact manifest mirror mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28386, in <module>
+    raise SystemExit(main())
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 28382, in main
+    return int(args.func(args))
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/cli.py", line 17768, in _cmd_learner_run
+    return learner_worker.main(args)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 801, in main
+    return asyncio.run(async_main(args))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 797, in async_main
+    return await worker.run()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 209, in run
+    await self._register()
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 278, in _register
+    target_vector, _ = await self._apply_update_ref_to_vector(
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 677, in _apply_update_ref_to_vector
+    await self._fetch_artifact_ref_from_syncer(ref)
+  File "/home/ubuntu/diloco_l5_src/src/decodilo/runtime/learner_worker.py", line 644, in _fetch_artifact_ref_from_syncer
+    raise RuntimeError(f"artifact metadata fetch failed: {response.payload}")
+RuntimeError: artifact metadata fetch failed: {'error': 'S3-compatible artifact manifest mirror mismatch', 'error_type': 'InvariantViolation'}

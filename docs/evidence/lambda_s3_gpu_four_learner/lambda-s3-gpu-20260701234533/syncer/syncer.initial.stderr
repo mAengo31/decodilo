@@ -1,0 +1,1 @@
+artifact-storage-backend=s3_compatible requires explicit S3 runtime config over the CLI subprocess boundary: provide --s3-endpoint-url, --s3-bucket, --s3-access-key-ref, and --s3-secret-key-ref.

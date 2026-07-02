@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os as operating_system
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from decodilo.runtime.artifact_transport import ArtifactTransportPolicy, LocalArtifactTransport
+from decodilo.runtime.artifact_transport import LocalArtifactTransport
 from decodilo.runtime.syncer_checkpoint import load_chunked_syncer_checkpoint
+from decodilo.storage.s3_runtime import artifact_transport_for_s3_ref
 from decodilo.syncer.global_state_store import read_global_vector_artifact
 
 _NUMERIC_TOLERANCE = 1e-9
@@ -392,15 +394,19 @@ def _payload_vector(
         return [float(value) for value in payload.get(inline_key, [])]
     ref = payload.get(ref_key)
     if isinstance(ref, dict):
-        transport = LocalArtifactTransport(
-            policy=ArtifactTransportPolicy(
-                workdir=str(root / "syncer"),
-                artifact_root=str(root / "syncer" / "artifacts"),
-            )
-        )
+        transport = _artifact_transport_for_ref(root, ref)
         vector, _ = read_global_vector_artifact(ref=ref, transport=transport)
         return [float(value) for value in vector.reshape(-1)]
     return []
+
+
+def _artifact_transport_for_ref(root: Path, ref: dict[str, Any]) -> LocalArtifactTransport:
+    return artifact_transport_for_s3_ref(
+        workdir=root / "syncer",
+        artifact_root=root / "syncer" / "artifacts",
+        ref=ref,
+        environ=vars(operating_system)["environ"],
+    )
 
 def _failed_check(reason: str, *, rounds_checked: int) -> dict[str, Any]:
     return {

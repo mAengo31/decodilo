@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shlex
 import subprocess
 import tarfile
@@ -86,6 +87,13 @@ def main() -> int:
     parser.add_argument("--checkpoint-artifact-codec", default="binary_v1")
     parser.add_argument("--artifact-transfer-mode", default="bundle")
     parser.add_argument("--artifact-storage-backend", default="auto")
+    parser.add_argument("--s3-endpoint-url", default=None)
+    parser.add_argument("--s3-bucket", default=None)
+    parser.add_argument("--s3-prefix", default="decodilo-artifacts")
+    parser.add_argument("--s3-region", default=None)
+    parser.add_argument("--s3-access-key-ref", default=None)
+    parser.add_argument("--s3-secret-key-ref", default=None)
+    parser.add_argument("--s3-session-token-ref", default=None)
     parser.add_argument(
         "--launch-delay-seconds",
         type=float,
@@ -128,7 +136,7 @@ def main() -> int:
         owned = _wait_for_ips(api_key, owned)
         for inst in owned:
             _wait_for_ssh(inst.ip, args.ssh_private_key)
-            _install_source(inst.ip, args.ssh_private_key, bundle)
+            _install_source(inst.ip, args.ssh_private_key, bundle, args)
         syncer = _by_role(owned, "syncer")
         _apply_temporary_firewall_rules(
             api_key,
@@ -207,13 +215,18 @@ def _launch_owned_instances(
         )
     return owned
 
-def _load_env(path: Path) -> tuple[str, str | None]:
-    values: dict[str, str] = {}
+def _load_env_values(path: Path) -> dict[str, str]:
+    values: dict[str, str] = dict(os.environ)
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        values[key.strip()] = value.strip()
+        values[key.strip()] = value.strip().strip("\"").strip("'")
+    return values
+
+
+def _load_env(path: Path) -> tuple[str, str | None]:
+    values = _load_env_values(path)
     return values["LAMBDA_API_KEY"], values.get("LAMBDA_SSH_KEY")
 
 
@@ -411,7 +424,68 @@ def _retry_operation(label: str, operation, *, attempts: int = 3, delay_seconds:
             time.sleep(delay_seconds * attempt)
     raise RuntimeError(f"{label} failed after {attempts} attempts: {last_error}") from last_error
 
-def _install_source(ip: str, key: Path, bundle: Path) -> None:
+
+
+
+def _remote_dependency_install_command(args: argparse.Namespace) -> str:
+    packages = ["'pydantic>=2,<3'"]
+    if getattr(args, "artifact_storage_backend", "auto") == "s3_compatible":
+        packages.append("boto3")
+    return "python3 -m pip install --user " + " ".join(packages)
+
+
+def _install_s3_runtime_env(ip: str, key: Path, args: argparse.Namespace) -> None:
+    if getattr(args, "artifact_storage_backend", "auto") != "s3_compatible":
+        return
+    values = _s3_runtime_env_values(args)
+    local_env = Path("/tmp") / f"decodilo-l5-s3-env-{args.run_id}.sh"
+    local_env.write_text(
+        "\n".join(f"export {name}={shlex.quote(value)}" for name, value in values.items())
+        + "\n",
+        encoding="utf-8",
+    )
+    try:
+        _retry_operation(
+            "upload_s3_runtime_env",
+            lambda: subprocess.run(
+                [
+                    "scp",
+                    "-i",
+                    str(key),
+                    "-o",
+                    "StrictHostKeyChecking=no",
+                    "-o",
+                    "UserKnownHostsFile=/dev/null",
+                    str(local_env),
+                    f"ubuntu@{ip}:{REMOTE_RUN}/s3_runtime_env.sh",
+                ],
+                check=True,
+            ),
+        )
+        _ssh(ip, key, f"chmod 600 {REMOTE_RUN}/s3_runtime_env.sh")
+    finally:
+        local_env.unlink(missing_ok=True)
+
+
+def _s3_runtime_env_values(args: argparse.Namespace) -> dict[str, str]:
+    env_values = _load_env_values(args.env_file)
+    required_refs = [args.s3_access_key_ref, args.s3_secret_key_ref]
+    if args.s3_session_token_ref:
+        required_refs.append(args.s3_session_token_ref)
+    values: dict[str, str] = {}
+    for ref in required_refs:
+        if not ref or not env_values.get(ref):
+            raise RuntimeError(f"missing local S3 env ref {ref!r}")
+        values[str(ref)] = env_values[str(ref)]
+    return values
+
+
+def _remote_env_prefix(args: argparse.Namespace) -> str:
+    if getattr(args, "artifact_storage_backend", "auto") != "s3_compatible":
+        return ""
+    return f"set -a && . {REMOTE_RUN}/s3_runtime_env.sh && set +a && "
+
+def _install_source(ip: str, key: Path, bundle: Path, args: argparse.Namespace) -> None:
     _retry_operation(
         "prepare_remote_source_dir",
         lambda: _ssh(
@@ -444,13 +518,14 @@ def _install_source(ip: str, key: Path, bundle: Path) -> None:
             key,
             (
                 f"tar -xzf /home/ubuntu/diloco_l5_src.tar.gz -C {REMOTE_SRC} "
-                "&& python3 -m pip install --user 'pydantic>=2,<3' "
+                f"&& {_remote_dependency_install_command(args)} "
                 f"&& cd {REMOTE_SRC} && PYTHONPATH=src python3 -c "
                 + shlex.quote("import decodilo, numpy, pydantic; print('deps-ok')")
             ),
             timeout=240,
         ),
     )
+    _install_s3_runtime_env(ip, key, args)
 
 
 def _start_syncer(syncer: Instance, args: argparse.Namespace, *, recover: bool = False) -> None:
@@ -459,7 +534,7 @@ def _start_syncer(syncer: Instance, args: argparse.Namespace, *, recover: bool =
     remote = (
         f"mkdir -p {REMOTE_RUN} && rm -f {REMOTE_RUN}/syncer_ready.json && "
         f"cd {REMOTE_SRC} && "
-        f"{cmd} > {REMOTE_RUN}/syncer.{suffix}.stdout "
+        f"{_remote_env_prefix(args)}{cmd} > {REMOTE_RUN}/syncer.{suffix}.stdout "
         f"2> {REMOTE_RUN}/syncer.{suffix}.stderr"
     )
     proc = subprocess.Popen(
@@ -504,6 +579,29 @@ def _runtime_mode_args(args: argparse.Namespace, *, include_syncer_only: bool) -
             str(getattr(args, "artifact_storage_backend", "auto")),
         ]
     )
+    return values
+
+
+
+def _s3_runtime_args(args: argparse.Namespace) -> list[str]:
+    if getattr(args, "artifact_storage_backend", "auto") != "s3_compatible":
+        return []
+    values = [
+        "--s3-endpoint-url",
+        str(args.s3_endpoint_url or ""),
+        "--s3-bucket",
+        str(args.s3_bucket or ""),
+        "--s3-prefix",
+        str(args.s3_prefix),
+        "--s3-access-key-ref",
+        str(args.s3_access_key_ref or ""),
+        "--s3-secret-key-ref",
+        str(args.s3_secret_key_ref or ""),
+    ]
+    if args.s3_region:
+        values.extend(["--s3-region", str(args.s3_region)])
+    if args.s3_session_token_ref:
+        values.extend(["--s3-session-token-ref", str(args.s3_session_token_ref)])
     return values
 
 
@@ -557,6 +655,7 @@ def _syncer_command(args: argparse.Namespace, *, recover: bool = False) -> str:
         "--syncer-checkpoint-interval-rounds",
         "1",
         *_runtime_mode_args(args, include_syncer_only=True),
+        *_s3_runtime_args(args),
     ]
     if recover:
         command.append("--recover-from-checkpoint")
@@ -601,6 +700,7 @@ def _learner_command(args: argparse.Namespace, learner_id: str, syncer_ip: str) 
             "--reconnect-timeout-seconds",
             str(getattr(args, "learner_reconnect_timeout_seconds", 15.0)),
             *_runtime_mode_args(args, include_syncer_only=False),
+            *_s3_runtime_args(args),
         ]
     )
 
@@ -777,7 +877,8 @@ def _run_learners_with_restart(
         inst = _by_role(owned, learner_id)
         cmd = _learner_command(args, learner_id, syncer.ip)
         remote = (
-            f"cd {REMOTE_SRC} && {cmd} > {REMOTE_RUN}/{learner_id}.stdout "
+            f"cd {REMOTE_SRC} && {_remote_env_prefix(args)}{cmd} "
+            f"> {REMOTE_RUN}/{learner_id}.stdout "
             f"2> {REMOTE_RUN}/{learner_id}.stderr"
         )
         procs.append(
@@ -895,7 +996,8 @@ def _run_learners(owned: list[Instance], syncer_ip: str, args: argparse.Namespac
         inst = _by_role(owned, learner_id)
         cmd = _learner_command(args, learner_id, syncer_ip)
         remote = (
-            f"cd {REMOTE_SRC} && {cmd} > {REMOTE_RUN}/{learner_id}.stdout "
+            f"cd {REMOTE_SRC} && {_remote_env_prefix(args)}{cmd} "
+            f"> {REMOTE_RUN}/{learner_id}.stdout "
             f"2> {REMOTE_RUN}/{learner_id}.stderr"
         )
         procs.append(

@@ -2,6 +2,7 @@ import numpy as np
 
 from decodilo.syncer.event_log import EventLog
 from decodilo.syncer.fragment_store import FragmentStore
+from decodilo.syncer.outer_optimizer import create_outer_optimizer
 from decodilo.syncer.quorum import PendingUpdate, QuorumPolicy, QuorumTracker
 
 
@@ -112,6 +113,7 @@ def test_chunked_commit_writer_failure_does_not_orphan_started_round() -> None:
         initial_global_vector=np.array([0.0]),
         num_fragments=1,
         quorum_policy=QuorumPolicy(min_quorum=1),
+        optimizer=create_outer_optimizer("nesterov", outer_lr=0.5, momentum=0.9),
         event_log=event_log,
         event_payload_mode="chunked",
         merge_mode="streaming_chunked",
@@ -133,6 +135,7 @@ def test_chunked_commit_writer_failure_does_not_orphan_started_round() -> None:
         raise AssertionError("commit unexpectedly succeeded")
 
     assert store.global_version == 0
+    assert getattr(store.optimizer, "step", 0) == 0
     event_types = [event.event_type.value for event in event_log.events]
     assert "sync_round_started" not in event_types
     assert "sync_round_committed" not in event_types

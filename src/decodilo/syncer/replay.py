@@ -65,7 +65,12 @@ def _assert_vectors_close(
         raise ReplayMismatchError(f"{label} does not match replay-computed vector")
 
 
-def _transport_for_artifacts(artifact_workdir: Path | None) -> LocalArtifactTransport:
+def _transport_for_artifacts(
+    artifact_workdir: Path | None,
+    artifact_transport: LocalArtifactTransport | None = None,
+) -> LocalArtifactTransport:
+    if artifact_transport is not None:
+        return artifact_transport
     if artifact_workdir is None:
         raise ReplayMismatchError("chunked replay requires artifact_workdir")
     return LocalArtifactTransport(
@@ -80,12 +85,13 @@ def _read_vector_ref(
     ref: dict,
     *,
     artifact_workdir: Path | None,
+    artifact_transport: LocalArtifactTransport | None = None,
     expected_version: int | None = None,
 ) -> NDArray[np.float64]:
     try:
         vector, version = read_global_vector_artifact(
             ref=ref,
-            transport=_transport_for_artifacts(artifact_workdir),
+            transport=_transport_for_artifacts(artifact_workdir, artifact_transport),
         )
     except Exception as exc:  # noqa: BLE001 - replay failures should be explicit
         raise ReplayMismatchError(f"failed to read chunked global vector artifact: {exc}") from exc
@@ -98,11 +104,12 @@ def _read_submission_from_artifact(
     ref: dict,
     *,
     artifact_workdir: Path | None,
+    artifact_transport: LocalArtifactTransport | None = None,
 ) -> tuple[NDArray[np.float64], int, int]:
     try:
         fragment = read_fragment_artifact(
             ref=ref,
-            transport=_transport_for_artifacts(artifact_workdir),
+            transport=_transport_for_artifacts(artifact_workdir, artifact_transport),
         )
     except Exception as exc:  # noqa: BLE001 - replay failures should be explicit
         raise ReplayMismatchError(
@@ -120,6 +127,7 @@ def replay_events(
     *,
     allow_out_of_order: bool = False,
     artifact_workdir: Path | None = None,
+    artifact_transport: LocalArtifactTransport | None = None,
     initial_global_version: int = 0,
     initial_global_vector: NDArray[np.float64] | None = None,
     initial_useful_tokens: int = 0,
@@ -165,6 +173,7 @@ def replay_events(
                 vector, artifact_tokens, artifact_version = _read_submission_from_artifact(
                     dict(event.payload["artifact_ref"]),
                     artifact_workdir=artifact_workdir,
+                    artifact_transport=artifact_transport,
                 )
                 state.replay_mode = "numeric_recompute"
                 if artifact_tokens != int(event.payload["tokens"]):
@@ -274,16 +283,19 @@ def replay_events(
                 old_vector = _read_vector_ref(
                     dict(payload["old_global_vector_artifact_ref"]),
                     artifact_workdir=artifact_workdir,
+                    artifact_transport=artifact_transport,
                     expected_version=previous_version,
                 )
                 logged_delta = _read_vector_ref(
                     dict(payload["weighted_delta_artifact_ref"]),
                     artifact_workdir=artifact_workdir,
+                    artifact_transport=artifact_transport,
                     expected_version=new_version,
                 )
                 logged_new_vector = _read_vector_ref(
                     dict(payload["new_global_vector_artifact_ref"]),
                     artifact_workdir=artifact_workdir,
+                    artifact_transport=artifact_transport,
                     expected_version=new_version,
                 )
             else:
@@ -383,6 +395,7 @@ def replay_events(
                     _read_vector_ref(
                         dict(event.payload["global_vector_artifact_ref"]),
                         artifact_workdir=artifact_workdir,
+                        artifact_transport=artifact_transport,
                         expected_version=current_version,
                     )
                     if "global_vector_artifact_ref" in event.payload
@@ -403,6 +416,7 @@ def replay_event_log(
     path: str | Path,
     *,
     allow_out_of_order: bool = False,
+    artifact_transport: LocalArtifactTransport | None = None,
 ) -> ReplayState:
     """Replay a JSONL event log from disk."""
 
@@ -411,4 +425,5 @@ def replay_event_log(
         read_event_log(event_log_path),
         allow_out_of_order=allow_out_of_order,
         artifact_workdir=event_log_path.parent,
+        artifact_transport=artifact_transport,
     )
